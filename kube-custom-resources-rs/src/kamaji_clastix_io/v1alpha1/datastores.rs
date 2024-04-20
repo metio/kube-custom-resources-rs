@@ -11,19 +11,22 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "DataStoreStatus")]
 #[kube(schema = "disabled")]
 pub struct DataStoreSpec {
-    /// In case of authentication enabled for the given data store, specifies the username and password pair. This value is optional.
+    /// In case of authentication enabled for the given data store, specifies the username and password pair.
+    /// This value is optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<DataStoreBasicAuth>,
     /// The driver to use to connect to the shared datastore.
     pub driver: DataStoreDriver,
-    /// List of the endpoints to connect to the shared datastore. No need for protocol, just bare IP/FQDN and port.
+    /// List of the endpoints to connect to the shared datastore.
+    /// No need for protocol, just bare IP/FQDN and port.
     pub endpoints: Vec<String>,
     /// Defines the TLS/SSL configuration required to connect to the data store in a secure way.
     #[serde(rename = "tlsConfig")]
     pub tls_config: DataStoreTlsConfig,
 }
 
-/// In case of authentication enabled for the given data store, specifies the username and password pair. This value is optional.
+/// In case of authentication enabled for the given data store, specifies the username and password pair.
+/// This value is optional.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreBasicAuth {
     pub password: DataStoreBasicAuthPassword,
@@ -32,7 +35,8 @@ pub struct DataStoreBasicAuth {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreBasicAuthPassword {
-    /// Bare content of the file, base64 encoded. It has precedence over the SecretReference value.
+    /// Bare content of the file, base64 encoded.
+    /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
@@ -41,7 +45,8 @@ pub struct DataStoreBasicAuthPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreBasicAuthPasswordSecretReference {
-    /// Name of the key for the given Secret reference where the content is stored. This value is mandatory.
+    /// Name of the key for the given Secret reference where the content is stored.
+    /// This value is mandatory.
     #[serde(rename = "keyPath")]
     pub key_path: String,
     /// name is unique within a namespace to reference a secret resource.
@@ -54,7 +59,8 @@ pub struct DataStoreBasicAuthPasswordSecretReference {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreBasicAuthUsername {
-    /// Bare content of the file, base64 encoded. It has precedence over the SecretReference value.
+    /// Bare content of the file, base64 encoded.
+    /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
@@ -63,7 +69,8 @@ pub struct DataStoreBasicAuthUsername {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreBasicAuthUsernameSecretReference {
-    /// Name of the key for the given Secret reference where the content is stored. This value is mandatory.
+    /// Name of the key for the given Secret reference where the content is stored.
+    /// This value is mandatory.
     #[serde(rename = "keyPath")]
     pub key_path: String,
     /// name is unique within a namespace to reference a secret resource.
@@ -88,7 +95,8 @@ pub enum DataStoreDriver {
 /// Defines the TLS/SSL configuration required to connect to the data store in a secure way.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfig {
-    /// Retrieve the Certificate Authority certificate and private key, such as bare content of the file, or a SecretReference. The key reference is required since etcd authentication is based on certificates, and Kamaji is responsible in creating this.
+    /// Retrieve the Certificate Authority certificate and private key, such as bare content of the file, or a SecretReference.
+    /// The key reference is required since etcd authentication is based on certificates, and Kamaji is responsible in creating this.
     #[serde(rename = "certificateAuthority")]
     pub certificate_authority: DataStoreTlsConfigCertificateAuthority,
     /// Specifies the SSL/TLS key and private key pair used to connect to the data store.
@@ -96,7 +104,8 @@ pub struct DataStoreTlsConfig {
     pub client_certificate: DataStoreTlsConfigClientCertificate,
 }
 
-/// Retrieve the Certificate Authority certificate and private key, such as bare content of the file, or a SecretReference. The key reference is required since etcd authentication is based on certificates, and Kamaji is responsible in creating this.
+/// Retrieve the Certificate Authority certificate and private key, such as bare content of the file, or a SecretReference.
+/// The key reference is required since etcd authentication is based on certificates, and Kamaji is responsible in creating this.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfigCertificateAuthority {
     pub certificate: DataStoreTlsConfigCertificateAuthorityCertificate,
@@ -106,7 +115,8 @@ pub struct DataStoreTlsConfigCertificateAuthority {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfigCertificateAuthorityCertificate {
-    /// Bare content of the file, base64 encoded. It has precedence over the SecretReference value.
+    /// Bare content of the file, base64 encoded.
+    /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
@@ -115,7 +125,8 @@ pub struct DataStoreTlsConfigCertificateAuthorityCertificate {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfigCertificateAuthorityCertificateSecretReference {
-    /// Name of the key for the given Secret reference where the content is stored. This value is mandatory.
+    /// Name of the key for the given Secret reference where the content is stored.
+    /// This value is mandatory.
     #[serde(rename = "keyPath")]
     pub key_path: String,
     /// name is unique within a namespace to reference a secret resource.
@@ -128,7 +139,8 @@ pub struct DataStoreTlsConfigCertificateAuthorityCertificateSecretReference {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfigCertificateAuthorityPrivateKey {
-    /// Bare content of the file, base64 encoded. It has precedence over the SecretReference value.
+    /// Bare content of the file, base64 encoded.
+    /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
@@ -137,7 +149,8 @@ pub struct DataStoreTlsConfigCertificateAuthorityPrivateKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfigCertificateAuthorityPrivateKeySecretReference {
-    /// Name of the key for the given Secret reference where the content is stored. This value is mandatory.
+    /// Name of the key for the given Secret reference where the content is stored.
+    /// This value is mandatory.
     #[serde(rename = "keyPath")]
     pub key_path: String,
     /// name is unique within a namespace to reference a secret resource.
@@ -158,7 +171,8 @@ pub struct DataStoreTlsConfigClientCertificate {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfigClientCertificateCertificate {
-    /// Bare content of the file, base64 encoded. It has precedence over the SecretReference value.
+    /// Bare content of the file, base64 encoded.
+    /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
@@ -167,7 +181,8 @@ pub struct DataStoreTlsConfigClientCertificateCertificate {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfigClientCertificateCertificateSecretReference {
-    /// Name of the key for the given Secret reference where the content is stored. This value is mandatory.
+    /// Name of the key for the given Secret reference where the content is stored.
+    /// This value is mandatory.
     #[serde(rename = "keyPath")]
     pub key_path: String,
     /// name is unique within a namespace to reference a secret resource.
@@ -180,7 +195,8 @@ pub struct DataStoreTlsConfigClientCertificateCertificateSecretReference {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfigClientCertificatePrivateKey {
-    /// Bare content of the file, base64 encoded. It has precedence over the SecretReference value.
+    /// Bare content of the file, base64 encoded.
+    /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
@@ -189,7 +205,8 @@ pub struct DataStoreTlsConfigClientCertificatePrivateKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfigClientCertificatePrivateKeySecretReference {
-    /// Name of the key for the given Secret reference where the content is stored. This value is mandatory.
+    /// Name of the key for the given Secret reference where the content is stored.
+    /// This value is mandatory.
     #[serde(rename = "keyPath")]
     pub key_path: String,
     /// name is unique within a namespace to reference a secret resource.

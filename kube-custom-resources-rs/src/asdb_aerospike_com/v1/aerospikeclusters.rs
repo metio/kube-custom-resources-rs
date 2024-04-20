@@ -23,6 +23,9 @@ pub struct AerospikeClusterSpec {
     /// AerospikeNetworkPolicy specifies how clients and tools access the Aerospike cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeNetworkPolicy")]
     pub aerospike_network_policy: Option<AerospikeClusterAerospikeNetworkPolicy>,
+    /// EnableDynamicConfigUpdate enables dynamic config update flow of the operator. If enabled, operator will try to update the Aerospike config dynamically. In case of inconsistent state during dynamic config update, operator falls back to rolling restart.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDynamicConfigUpdate")]
+    pub enable_dynamic_config_update: Option<bool>,
     /// Aerospike server image
     pub image: String,
     /// K8sNodeBlockList is a list of Kubernetes nodes which are not used for Aerospike pods. Pods are not scheduled on these nodes. Pods are migrated from these nodes if already present. This is useful for the maintenance of Kubernetes nodes.
@@ -2778,9 +2781,12 @@ pub struct AerospikeClusterRackConfig {
     /// Racks is the list of all racks
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub racks: Option<Vec<AerospikeClusterRackConfigRacks>>,
-    /// RollingUpdateBatchSize is the percentage/number of rack pods that will be restarted simultaneously
+    /// RollingUpdateBatchSize is the percentage/number of rack pods that can be restarted simultaneously
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdateBatchSize")]
     pub rolling_update_batch_size: Option<IntOrString>,
+    /// ScaleDownBatchSize is the percentage/number of rack pods that can be scaled down simultaneously
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleDownBatchSize")]
+    pub scale_down_batch_size: Option<IntOrString>,
 }
 
 /// Rack specifies single rack config
@@ -8016,9 +8022,9 @@ pub struct AerospikeClusterStatusPods {
     /// DirtyVolumes is the list of volume names that are removed from aerospike namespaces and will be cleaned during init if they are reused in any namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dirtyVolumes")]
     pub dirty_volumes: Option<Vec<String>>,
-    /// DynamicConfigFailed is true if aerospike config change failed to apply dynamically.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicConfigFailed")]
-    pub dynamic_config_failed: Option<bool>,
+    /// DynamicConfigUpdateStatus is the status of dynamic config update operation. Empty "" status means successful update.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicConfigUpdateStatus")]
+    pub dynamic_config_update_status: Option<AerospikeClusterStatusPodsDynamicConfigUpdateStatus>,
     /// HostExternalIP of the K8s host this pod is scheduled on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostExternalIP")]
     pub host_external_ip: Option<String>,
@@ -8080,6 +8086,15 @@ pub struct AerospikeClusterStatusPodsAerospike {
     pub tls_name: Option<String>,
 }
 
+/// Pods has Aerospike specific status of the pods. This is map instead of the conventional map as list convention to allow each pod to patch update its own status. The map key is the name of the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AerospikeClusterStatusPodsDynamicConfigUpdateStatus {
+    Failed,
+    PartiallyFailed,
+    #[serde(rename = "")]
+    KopiumEmpty,
+}
+
 /// RackConfig Configures the operator to deploy rack aware Aerospike cluster. Pods will be deployed in given racks based on given configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusRackConfig {
@@ -8092,9 +8107,12 @@ pub struct AerospikeClusterStatusRackConfig {
     /// Racks is the list of all racks
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub racks: Option<Vec<AerospikeClusterStatusRackConfigRacks>>,
-    /// RollingUpdateBatchSize is the percentage/number of rack pods that will be restarted simultaneously
+    /// RollingUpdateBatchSize is the percentage/number of rack pods that can be restarted simultaneously
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdateBatchSize")]
     pub rolling_update_batch_size: Option<IntOrString>,
+    /// ScaleDownBatchSize is the percentage/number of rack pods that can be scaled down simultaneously
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleDownBatchSize")]
+    pub scale_down_batch_size: Option<IntOrString>,
 }
 
 /// Rack specifies single rack config

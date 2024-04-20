@@ -7,7 +7,8 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
-/// PolicyRecommendationSpec defines configuration for the Calico Enterprise Policy Recommendation service.
+/// PolicyRecommendationSpec defines configuration for the Calico Enterprise Policy Recommendation
+/// service.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "operator.tigera.io", version = "v1", kind = "PolicyRecommendation", plural = "policyrecommendations")]
 #[kube(status = "PolicyRecommendationStatus")]
@@ -45,10 +46,14 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplate {
 /// Spec is the PolicyRecommendation Deployment's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpec {
-    /// Containers is a list of PolicyRecommendation containers. If specified, this overrides the specified PolicyRecommendation Deployment containers. If omitted, the PolicyRecommendation Deployment will use its default values for its containers.
+    /// Containers is a list of PolicyRecommendation containers.
+    /// If specified, this overrides the specified PolicyRecommendation Deployment containers.
+    /// If omitted, the PolicyRecommendation Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of PolicyRecommendation init containers. If specified, this overrides the specified PolicyRecommendation Deployment init containers. If omitted, the PolicyRecommendation Deployment will use its default values for its init containers.
+    /// InitContainers is a list of PolicyRecommendation init containers.
+    /// If specified, this overrides the specified PolicyRecommendation Deployment init containers.
+    /// If omitted, the PolicyRecommendation Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainers>>,
 }
@@ -56,9 +61,12 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpec {
 /// PolicyRecommendationDeploymentContainer is a PolicyRecommendation Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the PolicyRecommendation Deployment container by name. Supported values are: policy-recommendation-controller
+    /// Name is an enum which identifies the PolicyRecommendation Deployment container by name.
+    /// Supported values are: policy-recommendation-controller
     pub name: PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named PolicyRecommendation Deployment container's resources. If omitted, the PolicyRecommendation Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named PolicyRecommendation Deployment container's resources.
+    /// If omitted, the PolicyRecommendation Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainersResources>,
 }
@@ -70,18 +78,26 @@ pub enum PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecConta
     PolicyRecommendationController,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named PolicyRecommendation Deployment container's resources. If omitted, the PolicyRecommendation Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named PolicyRecommendation Deployment container's resources.
+/// If omitted, the PolicyRecommendation Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -89,7 +105,9 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecCon
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -98,7 +116,9 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecCon
 pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainers {
     /// Name is an enum which identifies the PolicyRecommendation Deployment init container by name.
     pub name: PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named PolicyRecommendation Deployment init container's resources. If omitted, the PolicyRecommendation Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named PolicyRecommendation Deployment init container's resources.
+    /// If omitted, the PolicyRecommendation Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainersResources>,
 }
@@ -110,18 +130,26 @@ pub enum PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitC
     PolicyRecommendationTlsKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named PolicyRecommendation Deployment init container's resources. If omitted, the PolicyRecommendation Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named PolicyRecommendation Deployment init container's resources.
+/// If omitted, the PolicyRecommendation Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -129,7 +157,9 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecIni
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 

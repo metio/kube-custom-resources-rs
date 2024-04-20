@@ -243,7 +243,8 @@ pub struct FilterFiltersLua {
     /// Lua function name that will be triggered to do filtering. It's assumed that the function is declared inside the Script defined above.
     pub call: String,
     /// Inline LUA code instead of loading from a path via script.
-    pub code: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
     /// If enabled, Lua script will be executed in protected mode. It prevents to crash when invalid Lua script is executed. Default is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectedMode")]
     pub protected_mode: Option<bool>,
@@ -251,7 +252,8 @@ pub struct FilterFiltersLua {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Path to the Lua script that will be used.
-    pub script: FilterFiltersLuaScript,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<FilterFiltersLuaScript>,
     /// By default when the Lua script is invoked, the record timestamp is passed as a Floating number which might lead to loss precision when the data is converted back. If you desire timestamp precision enabling this option will pass the timestamp as a Lua table with keys sec for seconds since epoch and nsec for nanoseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAsTable")]
     pub time_as_table: Option<bool>,

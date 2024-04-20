@@ -215,6 +215,9 @@ pub struct MachinePoolPlatformGcp {
     /// NetworkProjectID specifies which project the network and subnets exist in when they are not in the main ProjectID.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkProjectID")]
     pub network_project_id: Option<String>,
+    /// OnHostMaintenance determines the behavior when a maintenance event occurs that might cause the instance to reboot. This is required to be set to "Terminate" if you want to provision machine with attached GPUs. Otherwise, allowed values are "Migrate" and "Terminate". If omitted, the platform chooses a default, which is subject to change over time, currently that default is "Migrate".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onHostMaintenance")]
+    pub on_host_maintenance: Option<MachinePoolPlatformGcpOnHostMaintenance>,
     /// OSDisk defines the storage for instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "osDisk")]
     pub os_disk: Option<MachinePoolPlatformGcpOsDisk>,
@@ -227,6 +230,13 @@ pub struct MachinePoolPlatformGcp {
     /// Zones is list of availability zones that can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zones: Option<Vec<String>>,
+}
+
+/// GCP is the configuration used when installing on GCP.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolPlatformGcpOnHostMaintenance {
+    Migrate,
+    Terminate,
 }
 
 /// OSDisk defines the storage for instances.

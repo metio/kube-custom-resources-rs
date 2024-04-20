@@ -22,7 +22,8 @@ pub struct ServerStatusRequestStatus {
     /// Plugins list information about the plugins running on the Velero server
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugins: Option<Vec<ServerStatusRequestStatusPlugins>>,
-    /// ProcessedTimestamp is when the ServerStatusRequest was processed by the ServerStatusRequestController.
+    /// ProcessedTimestamp is when the ServerStatusRequest was processed
+    /// by the ServerStatusRequestController.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "processedTimestamp")]
     pub processed_timestamp: Option<String>,
     /// ServerVersion is the Velero server version.

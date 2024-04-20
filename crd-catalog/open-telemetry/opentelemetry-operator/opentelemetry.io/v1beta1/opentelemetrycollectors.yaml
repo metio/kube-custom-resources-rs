@@ -2344,6 +2344,9 @@ spec:
                     properties:
                       appProtocol:
                         type: "string"
+                      hostPort:
+                        format: "int32"
+                        type: "integer"
                       name:
                         type: "string"
                       nodePort:
@@ -2878,6 +2881,7 @@ spec:
                       enum:
                         - "least-weighted"
                         - "consistent-hashing"
+                        - "per-node"
                       type: "string"
                     enabled:
                       type: "boolean"

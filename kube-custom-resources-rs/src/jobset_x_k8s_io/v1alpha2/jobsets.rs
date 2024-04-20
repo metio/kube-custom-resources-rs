@@ -73,6 +73,10 @@ pub struct JobSetNetwork {
     /// <jobSet.name>-<spec.replicatedJob.name>-<job-index>-<pod-index>.<subdomain>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDNSHostnames")]
     pub enable_dns_hostnames: Option<bool>,
+    /// Indicates if DNS records of pods should be published before the pods are ready.
+    /// Defaults to True.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
+    pub publish_not_ready_addresses: Option<bool>,
     /// Subdomain is an explicit choice for a network subdomain name
     /// When set, any replicated job in the set is added to this network.
     /// Defaults to <jobSet.name> if not set.

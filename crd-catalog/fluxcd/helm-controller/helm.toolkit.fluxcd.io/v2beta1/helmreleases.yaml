@@ -703,6 +703,9 @@ spec:
                       namespace:
                         description: "Namespace is the namespace the release is deployed to."
                         type: "string"
+                      ociDigest:
+                        description: "OCIDigest is the digest of the OCI artifact associated with the release."
+                        type: "string"
                       status:
                         description: "Status is the current state of the release."
                         type: "string"

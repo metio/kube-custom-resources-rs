@@ -86,6 +86,11 @@ spec:
                         - "fifo"
                         - "sequential"
                       type: "string"
+                    platforms:
+                      description: "The list of platforms used in order to build a container image."
+                      items:
+                        type: "string"
+                      type: "array"
                     requestCPU:
                       description: "The minimum amount of CPU required. Only used for `pod` strategy"
                       type: "string"
@@ -115,7 +120,7 @@ spec:
                     description: "Task represents the abstract task. Only one of the task should be configured to represent the specific task chosen."
                     properties:
                       buildah:
-                        description: "a BuildahTask, for Buildah strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead"
+                        description: "a BuildahTask, for Buildah strategy Deprecated: use jib, s2i or a custom publishing strategy instead"
                         properties:
                           baseImage:
                             description: "base image layer"
@@ -149,6 +154,11 @@ spec:
                                   - "fifo"
                                   - "sequential"
                                 type: "string"
+                              platforms:
+                                description: "The list of platforms used in order to build a container image."
+                                items:
+                                  type: "string"
+                                type: "array"
                               requestCPU:
                                 description: "The minimum amount of CPU required. Only used for `pod` strategy"
                                 type: "string"
@@ -241,6 +251,11 @@ spec:
                                   - "fifo"
                                   - "sequential"
                                 type: "string"
+                              platforms:
+                                description: "The list of platforms used in order to build a container image."
+                                items:
+                                  type: "string"
+                                type: "array"
                               requestCPU:
                                 description: "The minimum amount of CPU required. Only used for `pod` strategy"
                                 type: "string"
@@ -505,9 +520,23 @@ spec:
                                 type: "string"
                               capabilities:
                                 additionalProperties:
-                                  description: "Capability is a particular feature which requires a well known set of dependencies which are specified in the runtime catalog."
+                                  description: "Capability is a particular feature which requires a well known set of dependencies and other properties which are specified in the runtime catalog."
                                   properties:
+                                    buildTimeProperties:
+                                      description: "Set of required Camel build time properties"
+                                      items:
+                                        description: "CamelProperty represents a Camel property that may end up in an application.properties file."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          value:
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                        type: "object"
+                                      type: "array"
                                     dependencies:
+                                      description: "List of required Maven dependencies"
                                       items:
                                         description: "MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact."
                                         properties:
@@ -531,8 +560,24 @@ spec:
                                           - "groupId"
                                         type: "object"
                                       type: "array"
-                                  required:
-                                    - "dependencies"
+                                    metadata:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "Set of generic metadata"
+                                      type: "object"
+                                    runtimeProperties:
+                                      description: "Set of required Camel runtime properties"
+                                      items:
+                                        description: "CamelProperty represents a Camel property that may end up in an application.properties file."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          value:
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                        type: "object"
+                                      type: "array"
                                   type: "object"
                                 description: "features offered by this runtime"
                                 type: "object"
@@ -678,6 +723,11 @@ spec:
                                   - "fifo"
                                   - "sequential"
                                 type: "string"
+                              platforms:
+                                description: "The list of platforms used in order to build a container image."
+                                items:
+                                  type: "string"
+                                type: "array"
                               requestCPU:
                                 description: "The minimum amount of CPU required. Only used for `pod` strategy"
                                 type: "string"
@@ -743,6 +793,11 @@ spec:
                                   - "fifo"
                                   - "sequential"
                                 type: "string"
+                              platforms:
+                                description: "The list of platforms used in order to build a container image."
+                                items:
+                                  type: "string"
+                                type: "array"
                               requestCPU:
                                 description: "The minimum amount of CPU required. Only used for `pod` strategy"
                                 type: "string"
@@ -789,7 +844,7 @@ spec:
                             type: "object"
                         type: "object"
                       kaniko:
-                        description: "a KanikoTask, for Kaniko strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead"
+                        description: "a KanikoTask, for Kaniko strategy Deprecated: use jib, s2i or a custom publishing strategy instead"
                         properties:
                           baseImage:
                             description: "base image layer"
@@ -833,6 +888,11 @@ spec:
                                   - "fifo"
                                   - "sequential"
                                 type: "string"
+                              platforms:
+                                description: "The list of platforms used in order to build a container image."
+                                items:
+                                  type: "string"
+                                type: "array"
                               requestCPU:
                                 description: "The minimum amount of CPU required. Only used for `pod` strategy"
                                 type: "string"
@@ -922,6 +982,11 @@ spec:
                                   - "fifo"
                                   - "sequential"
                                 type: "string"
+                              platforms:
+                                description: "The list of platforms used in order to build a container image."
+                                items:
+                                  type: "string"
+                                type: "array"
                               requestCPU:
                                 description: "The minimum amount of CPU required. Only used for `pod` strategy"
                                 type: "string"
@@ -1186,9 +1251,23 @@ spec:
                                 type: "string"
                               capabilities:
                                 additionalProperties:
-                                  description: "Capability is a particular feature which requires a well known set of dependencies which are specified in the runtime catalog."
+                                  description: "Capability is a particular feature which requires a well known set of dependencies and other properties which are specified in the runtime catalog."
                                   properties:
+                                    buildTimeProperties:
+                                      description: "Set of required Camel build time properties"
+                                      items:
+                                        description: "CamelProperty represents a Camel property that may end up in an application.properties file."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          value:
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                        type: "object"
+                                      type: "array"
                                     dependencies:
+                                      description: "List of required Maven dependencies"
                                       items:
                                         description: "MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact."
                                         properties:
@@ -1212,8 +1291,24 @@ spec:
                                           - "groupId"
                                         type: "object"
                                       type: "array"
-                                  required:
-                                    - "dependencies"
+                                    metadata:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "Set of generic metadata"
+                                      type: "object"
+                                    runtimeProperties:
+                                      description: "Set of required Camel runtime properties"
+                                      items:
+                                        description: "CamelProperty represents a Camel property that may end up in an application.properties file."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          value:
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                        type: "object"
+                                      type: "array"
                                   type: "object"
                                 description: "features offered by this runtime"
                                 type: "object"
@@ -1351,6 +1446,11 @@ spec:
                                   - "fifo"
                                   - "sequential"
                                 type: "string"
+                              platforms:
+                                description: "The list of platforms used in order to build a container image."
+                                items:
+                                  type: "string"
+                                type: "array"
                               requestCPU:
                                 description: "The minimum amount of CPU required. Only used for `pod` strategy"
                                 type: "string"
@@ -1378,7 +1478,7 @@ spec:
                             type: "string"
                         type: "object"
                       spectrum:
-                        description: "a SpectrumTask, for Spectrum strategy"
+                        description: "a SpectrumTask, for Spectrum strategy Deprecated: use jib, s2i or a custom publishing strategy instead"
                         properties:
                           baseImage:
                             description: "base image layer"
@@ -1412,6 +1512,11 @@ spec:
                                   - "fifo"
                                   - "sequential"
                                 type: "string"
+                              platforms:
+                                description: "The list of platforms used in order to build a container image."
+                                items:
+                                  type: "string"
+                                type: "array"
                               requestCPU:
                                 description: "The minimum amount of CPU required. Only used for `pod` strategy"
                                 type: "string"

@@ -256,15 +256,12 @@ spec:
                       instances:
                         description: "Specifies instances to be added and/or deleted for the workloads. Name and Replicas should be provided. Other fields will simply be ignored. The Replicas will be overridden if an existing InstanceTemplate is matched by Name. Or the InstanceTemplate will be added as a new one."
                         items:
-                          description: "InstanceTemplate defines values to override in pod template."
+                          description: "InstanceTemplate allows customization of individual replica configurations within a Component, without altering the base component template defined in ClusterComponentSpec. It enables the application of distinct settings to specific instances (replicas), providing flexibility while maintaining a common configuration baseline."
                           properties:
-                            RuntimeClassName:
-                              description: "Defines RuntimeClass to override."
-                              type: "string"
                             annotations:
                               additionalProperties:
                                 type: "string"
-                              description: "Defines annotations to override. Add new or override existing annotations."
+                              description: "Specifies a map of key-value pairs to be merged into the Pod's existing annotations. Existing keys will have their values overwritten, while new keys will be added to the annotations."
                               type: "object"
                             env:
                               description: "Defines Env to override. Add new or override existing envs."
@@ -351,20 +348,20 @@ spec:
                                 type: "object"
                               type: "array"
                             image:
-                              description: "Defines image to override. Will override the first container's image of the pod."
+                              description: "Specifies an override for the first container's image in the pod."
                               type: "string"
                             labels:
                               additionalProperties:
                                 type: "string"
-                              description: "Defines labels to override. Add new or override existing labels."
+                              description: "Specifies a map of key-value pairs that will be merged into the Pod's existing labels. Values for existing keys will be overwritten, and new keys will be added."
                               type: "object"
                             name:
-                              description: "Specifies the name of the template. Each instance of the template derives its name from the Component's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(component.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default."
+                              description: "Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns."
                               maxLength: 54
                               pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                               type: "string"
                             nodeName:
-                              description: "Defines NodeName to override."
+                              description: "Specifies the name of the node where the Pod should be scheduled. If set, the Pod will be directly assigned to the specified node, bypassing the Kubernetes scheduler. This is useful for controlling Pod placement on specific nodes. \n Important considerations: - `nodeName` bypasses default scheduling constraints (e.g., resource requirements, node selectors, affinity rules). - It is the user's responsibility to ensure the node is suitable for the Pod. - If the node is unavailable, the Pod will remain in \"Pending\" state until the node is available or the Pod is deleted."
                               type: "string"
                             nodeSelector:
                               additionalProperties:
@@ -373,12 +370,12 @@ spec:
                               type: "object"
                             replicas:
                               default: 1
-                              description: "Number of replicas of this template. Default is 1."
+                              description: "Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation."
                               format: "int32"
                               minimum: 0.0
                               type: "integer"
                             resources:
-                              description: "Defines Resources to override. Will override the first container's resources of the pod."
+                              description: "Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container."
                               properties:
                                 claims:
                                   description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
@@ -415,7 +412,7 @@ spec:
                                   type: "object"
                               type: "object"
                             tolerations:
-                              description: "Defines Tolerations to override. Add new or override existing tolerations."
+                              description: "Tolerations specifies a list of tolerations to be applied to the Pod, allowing it to tolerate node taints. This field can be used to add new tolerations or override existing ones."
                               items:
                                 description: "The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>."
                                 properties:
@@ -2360,15 +2357,12 @@ spec:
                           instances:
                             description: "Records the last instances of the component."
                             items:
-                              description: "InstanceTemplate defines values to override in pod template."
+                              description: "InstanceTemplate allows customization of individual replica configurations within a Component, without altering the base component template defined in ClusterComponentSpec. It enables the application of distinct settings to specific instances (replicas), providing flexibility while maintaining a common configuration baseline."
                               properties:
-                                RuntimeClassName:
-                                  description: "Defines RuntimeClass to override."
-                                  type: "string"
                                 annotations:
                                   additionalProperties:
                                     type: "string"
-                                  description: "Defines annotations to override. Add new or override existing annotations."
+                                  description: "Specifies a map of key-value pairs to be merged into the Pod's existing annotations. Existing keys will have their values overwritten, while new keys will be added to the annotations."
                                   type: "object"
                                 env:
                                   description: "Defines Env to override. Add new or override existing envs."
@@ -2455,20 +2449,20 @@ spec:
                                     type: "object"
                                   type: "array"
                                 image:
-                                  description: "Defines image to override. Will override the first container's image of the pod."
+                                  description: "Specifies an override for the first container's image in the pod."
                                   type: "string"
                                 labels:
                                   additionalProperties:
                                     type: "string"
-                                  description: "Defines labels to override. Add new or override existing labels."
+                                  description: "Specifies a map of key-value pairs that will be merged into the Pod's existing labels. Values for existing keys will be overwritten, and new keys will be added."
                                   type: "object"
                                 name:
-                                  description: "Specifies the name of the template. Each instance of the template derives its name from the Component's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(component.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default."
+                                  description: "Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns."
                                   maxLength: 54
                                   pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                                   type: "string"
                                 nodeName:
-                                  description: "Defines NodeName to override."
+                                  description: "Specifies the name of the node where the Pod should be scheduled. If set, the Pod will be directly assigned to the specified node, bypassing the Kubernetes scheduler. This is useful for controlling Pod placement on specific nodes. \n Important considerations: - `nodeName` bypasses default scheduling constraints (e.g., resource requirements, node selectors, affinity rules). - It is the user's responsibility to ensure the node is suitable for the Pod. - If the node is unavailable, the Pod will remain in \"Pending\" state until the node is available or the Pod is deleted."
                                   type: "string"
                                 nodeSelector:
                                   additionalProperties:
@@ -2477,12 +2471,12 @@ spec:
                                   type: "object"
                                 replicas:
                                   default: 1
-                                  description: "Number of replicas of this template. Default is 1."
+                                  description: "Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation."
                                   format: "int32"
                                   minimum: 0.0
                                   type: "integer"
                                 resources:
-                                  description: "Defines Resources to override. Will override the first container's resources of the pod."
+                                  description: "Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container."
                                   properties:
                                     claims:
                                       description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
@@ -2519,7 +2513,7 @@ spec:
                                       type: "object"
                                   type: "object"
                                 tolerations:
-                                  description: "Defines Tolerations to override. Add new or override existing tolerations."
+                                  description: "Tolerations specifies a list of tolerations to be applied to the Pod, allowing it to tolerate node taints. This field can be used to add new tolerations or override existing ones."
                                   items:
                                     description: "The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>."
                                     properties:
@@ -3810,7 +3804,7 @@ spec:
                                   type: "boolean"
                                 serviceType:
                                   default: "ClusterIP"
-                                  description: "Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. \n - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is \"None\", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. \n More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
+                                  description: "Determines how the Service is exposed. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`. \n - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is \"None\", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. \n More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
                                   enum:
                                     - "ClusterIP"
                                     - "NodePort"
@@ -4038,15 +4032,12 @@ spec:
                           instances:
                             description: "Records the last instances of the component."
                             items:
-                              description: "InstanceTemplate defines values to override in pod template."
+                              description: "InstanceTemplate allows customization of individual replica configurations within a Component, without altering the base component template defined in ClusterComponentSpec. It enables the application of distinct settings to specific instances (replicas), providing flexibility while maintaining a common configuration baseline."
                               properties:
-                                RuntimeClassName:
-                                  description: "Defines RuntimeClass to override."
-                                  type: "string"
                                 annotations:
                                   additionalProperties:
                                     type: "string"
-                                  description: "Defines annotations to override. Add new or override existing annotations."
+                                  description: "Specifies a map of key-value pairs to be merged into the Pod's existing annotations. Existing keys will have their values overwritten, while new keys will be added to the annotations."
                                   type: "object"
                                 env:
                                   description: "Defines Env to override. Add new or override existing envs."
@@ -4133,20 +4124,20 @@ spec:
                                     type: "object"
                                   type: "array"
                                 image:
-                                  description: "Defines image to override. Will override the first container's image of the pod."
+                                  description: "Specifies an override for the first container's image in the pod."
                                   type: "string"
                                 labels:
                                   additionalProperties:
                                     type: "string"
-                                  description: "Defines labels to override. Add new or override existing labels."
+                                  description: "Specifies a map of key-value pairs that will be merged into the Pod's existing labels. Values for existing keys will be overwritten, and new keys will be added."
                                   type: "object"
                                 name:
-                                  description: "Specifies the name of the template. Each instance of the template derives its name from the Component's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(component.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default."
+                                  description: "Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns."
                                   maxLength: 54
                                   pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                                   type: "string"
                                 nodeName:
-                                  description: "Defines NodeName to override."
+                                  description: "Specifies the name of the node where the Pod should be scheduled. If set, the Pod will be directly assigned to the specified node, bypassing the Kubernetes scheduler. This is useful for controlling Pod placement on specific nodes. \n Important considerations: - `nodeName` bypasses default scheduling constraints (e.g., resource requirements, node selectors, affinity rules). - It is the user's responsibility to ensure the node is suitable for the Pod. - If the node is unavailable, the Pod will remain in \"Pending\" state until the node is available or the Pod is deleted."
                                   type: "string"
                                 nodeSelector:
                                   additionalProperties:
@@ -4155,12 +4146,12 @@ spec:
                                   type: "object"
                                 replicas:
                                   default: 1
-                                  description: "Number of replicas of this template. Default is 1."
+                                  description: "Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation."
                                   format: "int32"
                                   minimum: 0.0
                                   type: "integer"
                                 resources:
-                                  description: "Defines Resources to override. Will override the first container's resources of the pod."
+                                  description: "Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container."
                                   properties:
                                     claims:
                                       description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
@@ -4197,7 +4188,7 @@ spec:
                                       type: "object"
                                   type: "object"
                                 tolerations:
-                                  description: "Defines Tolerations to override. Add new or override existing tolerations."
+                                  description: "Tolerations specifies a list of tolerations to be applied to the Pod, allowing it to tolerate node taints. This field can be used to add new tolerations or override existing ones."
                                   items:
                                     description: "The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>."
                                     properties:
@@ -5485,7 +5476,7 @@ spec:
                                   type: "boolean"
                                 serviceType:
                                   default: "ClusterIP"
-                                  description: "Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. \n - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is \"None\", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. \n More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
+                                  description: "Determines how the Service is exposed. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`. \n - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is \"None\", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. \n More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
                                   enum:
                                     - "ClusterIP"
                                     - "NodePort"

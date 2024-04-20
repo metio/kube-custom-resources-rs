@@ -65,6 +65,9 @@ spec:
                     enableDNSHostnames:
                       description: "EnableDNSHostnames allows pods to be reached via their hostnames.\nPods will be reachable using the fully qualified pod hostname:\n<jobSet.name>-<spec.replicatedJob.name>-<job-index>-<pod-index>.<subdomain>"
                       type: "boolean"
+                    publishNotReadyAddresses:
+                      description: "Indicates if DNS records of pods should be published before the pods are ready.\nDefaults to True."
+                      type: "boolean"
                     subdomain:
                       description: "Subdomain is an explicit choice for a network subdomain name\nWhen set, any replicated job in the set is added to this network.\nDefaults to <jobSet.name> if not set."
                       type: "string"

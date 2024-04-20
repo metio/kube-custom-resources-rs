@@ -1,0 +1,253 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.6.2"
+  name: "devices.devices.kubeedge.io"
+spec:
+  group: "devices.kubeedge.io"
+  names:
+    kind: "Device"
+    listKind: "DeviceList"
+    plural: "devices"
+    singular: "device"
+  scope: "Namespaced"
+  versions:
+    - name: "v1beta1"
+      schema:
+        openAPIV3Schema:
+          description: "Device is the Schema for the devices API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "DeviceSpec represents a single device instance."
+              properties:
+                deviceModelRef:
+                  description: "Required: DeviceModelRef is reference to the device model used as a template to create the device instance."
+                  properties:
+                    name:
+                      description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                      type: "string"
+                  type: "object"
+                nodeName:
+                  description: "NodeName is a request to schedule this device onto a specific node. If it is non-empty, the scheduler simply schedules this device onto that node, assuming that it fits resource requirements."
+                  type: "string"
+                properties:
+                  description: "List of properties which describe the device properties. properties list item must be unique by properties.Name."
+                  items:
+                    description: "DeviceProperty describes the specifics all the properties of the device."
+                    properties:
+                      collectCycle:
+                        description: "Define how frequent mapper will collect from device."
+                        format: "int64"
+                        type: "integer"
+                      desired:
+                        description: "The desired property value."
+                        properties:
+                          metadata:
+                            additionalProperties:
+                              type: "string"
+                            description: "Additional metadata like timestamp when the value was reported etc."
+                            type: "object"
+                          value:
+                            description: "Required: The value for this property."
+                            type: "string"
+                        required:
+                          - "value"
+                        type: "object"
+                      name:
+                        description: "Required: The device property name to be accessed. It must be unique."
+                        type: "string"
+                      pushMethod:
+                        description: "PushMethod represents the protocol used to push data, please ensure that the mapper can access the destination address."
+                        properties:
+                          dbMethod:
+                            description: "DBMethod represents the method used to push data to database, please ensure that the mapper can access the destination address."
+                            properties:
+                              TDEngine:
+                                properties:
+                                  TDEngineClientConfig:
+                                    description: "tdengineClientConfig of tdengine database"
+                                    properties:
+                                      addr:
+                                        description: "addr of tdEngine database"
+                                        type: "string"
+                                      dbName:
+                                        description: "dbname of tdEngine database"
+                                        type: "string"
+                                    type: "object"
+                                type: "object"
+                              influxdb2:
+                                description: "method configuration for database"
+                                properties:
+                                  influxdb2ClientConfig:
+                                    description: "Config of influx database"
+                                    properties:
+                                      bucket:
+                                        description: "Bucket of the user in influx database"
+                                        type: "string"
+                                      org:
+                                        description: "Org of the user in influx database"
+                                        type: "string"
+                                      url:
+                                        description: "Url of influx database"
+                                        type: "string"
+                                    type: "object"
+                                  influxdb2DataConfig:
+                                    description: "config of device data when push to influx database"
+                                    properties:
+                                      fieldKey:
+                                        description: "FieldKey of the user data"
+                                        type: "string"
+                                      measurement:
+                                        description: "Measurement of the user data"
+                                        type: "string"
+                                      tag:
+                                        additionalProperties:
+                                          type: "string"
+                                        description: "the tag of device data"
+                                        type: "object"
+                                    type: "object"
+                                type: "object"
+                              redis:
+                                properties:
+                                  redisClientConfig:
+                                    description: "RedisClientConfig of redis database"
+                                    properties:
+                                      addr:
+                                        description: "Addr of Redis database"
+                                        type: "string"
+                                      db:
+                                        description: "Db of Redis database"
+                                        type: "integer"
+                                      minIdleConns:
+                                        description: "MinIdleConns of Redis database"
+                                        type: "integer"
+                                      poolsize:
+                                        description: "Poolsize of Redis database"
+                                        type: "integer"
+                                    type: "object"
+                                type: "object"
+                            type: "object"
+                          http:
+                            description: "HTTP Push method configuration for http"
+                            properties:
+                              hostName:
+                                type: "string"
+                              port:
+                                format: "int64"
+                                type: "integer"
+                              requestPath:
+                                type: "string"
+                              timeout:
+                                format: "int64"
+                                type: "integer"
+                            type: "object"
+                          mqtt:
+                            description: "MQTT Push method configuration for mqtt"
+                            properties:
+                              address:
+                                description: "broker address, like mqtt://127.0.0.1:1883"
+                                type: "string"
+                              qos:
+                                description: "qos of mqtt publish param"
+                                format: "int32"
+                                type: "integer"
+                              retained:
+                                description: "Is the message retained"
+                                type: "boolean"
+                              topic:
+                                description: "publish topic for mqtt"
+                                type: "string"
+                            type: "object"
+                        type: "object"
+                      reportCycle:
+                        description: "Define how frequent mapper will report the value."
+                        format: "int64"
+                        type: "integer"
+                      reportToCloud:
+                        description: "whether be reported to the cloud"
+                        type: "boolean"
+                      visitors:
+                        description: "Visitors are intended to be consumed by device mappers which connect to devices and collect data / perform actions on the device. Required: Protocol relevant config details about the how to access the device property."
+                        properties:
+                          configData:
+                            description: "Required: The configData of customized protocol"
+                            type: "object"
+                            x-kubernetes-preserve-unknown-fields: true
+                          protocolName:
+                            description: "Required: name of customized protocol"
+                            type: "string"
+                        type: "object"
+                    type: "object"
+                  type: "array"
+                protocol:
+                  description: "Required: The protocol configuration used to connect to the device."
+                  properties:
+                    configData:
+                      description: "Any config data"
+                      type: "object"
+                      x-kubernetes-preserve-unknown-fields: true
+                    protocolName:
+                      description: "Unique protocol name Required."
+                      type: "string"
+                  type: "object"
+              type: "object"
+            status:
+              description: "DeviceStatus reports the device state and the desired/reported values of twin attributes."
+              properties:
+                twins:
+                  description: "A list of device twins containing desired/reported desired/reported values of twin properties. Optional: A passive device won't have twin properties and this list could be empty."
+                  items:
+                    description: "Twin provides a logical representation of control properties (writable properties in the device model). The properties can have a Desired state and a Reported state. The cloud configures the `Desired`state of a device property and this configuration update is pushed to the edge node. The mapper sends a command to the device to change this property value as per the desired state . It receives the `Reported` state of the property once the previous operation is complete and sends the reported state to the cloud. Offline device interaction in the edge is possible via twin properties for control/command operations."
+                    properties:
+                      observedDesired:
+                        description: "The meaning of here is to indicate desired value of `deviceProperty.Desired` that the mapper has received in current cycle. Useful in cases that people want to check whether the mapper is working appropriately and its internal status is up-to-date. This value should be only updated by devicecontroller upstream."
+                        properties:
+                          metadata:
+                            additionalProperties:
+                              type: "string"
+                            description: "Additional metadata like timestamp when the value was reported etc."
+                            type: "object"
+                          value:
+                            description: "Required: The value for this property."
+                            type: "string"
+                        required:
+                          - "value"
+                        type: "object"
+                      propertyName:
+                        description: "Required: The property name for which the desired/reported values are specified. This property should be present in the device model."
+                        type: "string"
+                      reported:
+                        description: "Required: the reported property value."
+                        properties:
+                          metadata:
+                            additionalProperties:
+                              type: "string"
+                            description: "Additional metadata like timestamp when the value was reported etc."
+                            type: "object"
+                          value:
+                            description: "Required: The value for this property."
+                            type: "string"
+                        required:
+                          - "value"
+                        type: "object"
+                    type: "object"
+                  type: "array"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

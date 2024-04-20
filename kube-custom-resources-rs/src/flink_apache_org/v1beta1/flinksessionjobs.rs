@@ -58,10 +58,10 @@ pub enum FlinkSessionJobJobState {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlinkSessionJobJobUpgradeMode {
-    #[serde(rename = "savepoint")]
-    Savepoint,
     #[serde(rename = "last-state")]
     LastState,
+    #[serde(rename = "savepoint")]
+    Savepoint,
     #[serde(rename = "stateless")]
     Stateless,
 }
@@ -152,10 +152,10 @@ pub enum FlinkSessionJobStatusJobStatusCheckpointInfoLastCheckpointTriggerType {
     Manual,
     #[serde(rename = "PERIODIC")]
     Periodic,
-    #[serde(rename = "UPGRADE")]
-    Upgrade,
     #[serde(rename = "UNKNOWN")]
     Unknown,
+    #[serde(rename = "UPGRADE")]
+    Upgrade,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -164,10 +164,10 @@ pub enum FlinkSessionJobStatusJobStatusCheckpointInfoTriggerType {
     Manual,
     #[serde(rename = "PERIODIC")]
     Periodic,
-    #[serde(rename = "UPGRADE")]
-    Upgrade,
     #[serde(rename = "UNKNOWN")]
     Unknown,
+    #[serde(rename = "UPGRADE")]
+    Upgrade,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -228,10 +228,10 @@ pub enum FlinkSessionJobStatusJobStatusSavepointInfoLastSavepointTriggerType {
     Manual,
     #[serde(rename = "PERIODIC")]
     Periodic,
-    #[serde(rename = "UPGRADE")]
-    Upgrade,
     #[serde(rename = "UNKNOWN")]
     Unknown,
+    #[serde(rename = "UPGRADE")]
+    Upgrade,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -264,10 +264,10 @@ pub enum FlinkSessionJobStatusJobStatusSavepointInfoSavepointHistoryTriggerType 
     Manual,
     #[serde(rename = "PERIODIC")]
     Periodic,
-    #[serde(rename = "UPGRADE")]
-    Upgrade,
     #[serde(rename = "UNKNOWN")]
     Unknown,
+    #[serde(rename = "UPGRADE")]
+    Upgrade,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -276,30 +276,30 @@ pub enum FlinkSessionJobStatusJobStatusSavepointInfoTriggerType {
     Manual,
     #[serde(rename = "PERIODIC")]
     Periodic,
-    #[serde(rename = "UPGRADE")]
-    Upgrade,
     #[serde(rename = "UNKNOWN")]
     Unknown,
+    #[serde(rename = "UPGRADE")]
+    Upgrade,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlinkSessionJobStatusLifecycleState {
     #[serde(rename = "CREATED")]
     Created,
+    #[serde(rename = "DEPLOYED")]
+    Deployed,
+    #[serde(rename = "FAILED")]
+    Failed,
+    #[serde(rename = "ROLLED_BACK")]
+    RolledBack,
+    #[serde(rename = "ROLLING_BACK")]
+    RollingBack,
+    #[serde(rename = "STABLE")]
+    Stable,
     #[serde(rename = "SUSPENDED")]
     Suspended,
     #[serde(rename = "UPGRADING")]
     Upgrading,
-    #[serde(rename = "DEPLOYED")]
-    Deployed,
-    #[serde(rename = "STABLE")]
-    Stable,
-    #[serde(rename = "ROLLING_BACK")]
-    RollingBack,
-    #[serde(rename = "ROLLED_BACK")]
-    RolledBack,
-    #[serde(rename = "FAILED")]
-    Failed,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -318,11 +318,11 @@ pub struct FlinkSessionJobStatusReconciliationStatus {
 pub enum FlinkSessionJobStatusReconciliationStatusState {
     #[serde(rename = "DEPLOYED")]
     Deployed,
-    #[serde(rename = "UPGRADING")]
-    Upgrading,
-    #[serde(rename = "ROLLING_BACK")]
-    RollingBack,
     #[serde(rename = "ROLLED_BACK")]
     RolledBack,
+    #[serde(rename = "ROLLING_BACK")]
+    RollingBack,
+    #[serde(rename = "UPGRADING")]
+    Upgrading,
 }
 

@@ -144,6 +144,9 @@ spec:
                     config:
                       description: "Config is the engine configuration"
                       type: "string"
+                    crVersion:
+                      description: "CRVersion is the desired version of the CR to use with the\nunderlying operator.\nIf unspecified, everest-operator will use the same version as the operator.\n\n\nNOTE: Updating this property post installation may lead to a restart of the cluster."
+                      type: "string"
                     replicas:
                       description: "Replicas is the number of engine replicas"
                       format: "int32"
@@ -311,6 +314,9 @@ spec:
                 activeStorage:
                   description: "ActiveStorage is the storage used in cluster (psmdb only)"
                   type: "string"
+                crVersion:
+                  description: "CRVersion is the observed version of the CR used with the underlying operator."
+                  type: "string"
                 hostname:
                   description: "Hostname is the hostname where the cluster can be reached"
                   type: "string"
@@ -325,6 +331,9 @@ spec:
                   description: "Ready is the number of ready pods"
                   format: "int32"
                   type: "integer"
+                recommendedCRVersion:
+                  description: "RecommendedCRVersion is the recommended version of the CR to use.\nIf set, the CR needs to be updated to this version before upgrading the operator.\nIf unset, the CR is already at the recommended version."
+                  type: "string"
                 size:
                   description: "Size is the total number of pods"
                   format: "int32"

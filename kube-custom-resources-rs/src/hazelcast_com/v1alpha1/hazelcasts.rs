@@ -200,9 +200,6 @@ pub struct HazelcastCpSubsystem {
     /// FailOnIndeterminateOperationState indicated whether CP Subsystem operations use at-least-once and at-most-once execution guarantees.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOnIndeterminateOperationState")]
     pub fail_on_indeterminate_operation_state: Option<bool>,
-    /// GroupSize is the number of CP members to participate in each CP group. Allowed values are 3, 5, and 7.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupSize")]
-    pub group_size: Option<i32>,
     /// MissingCpMemberAutoRemovalSeconds is the duration in seconds to wait before automatically removing a missing CP member from the CP Subsystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "missingCpMemberAutoRemovalSeconds")]
     pub missing_cp_member_auto_removal_seconds: Option<i32>,

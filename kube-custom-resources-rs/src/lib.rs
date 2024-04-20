@@ -281,8 +281,12 @@ apiVersion `apps.kubeblocks.io/v1alpha1`:
 - `Cluster`
 - `ClusterVersion`
 - `ComponentClassDefinition`
+- `ComponentDefinition`
+- `Component`
+- `ComponentVersion`
 - `ConfigConstraint`
 - `Configuration`
+- `OpsDefinition`
 - `OpsRequest`
 - `ServiceDescriptor`
 
@@ -491,6 +495,18 @@ apiVersion `bpfd.dev/v1alpha1`:
 - `UprobeProgram`
 - `XdpProgram`
 
+## bpfman_io
+
+apiVersion `bpfman.io/v1alpha1`:
+- `BpfProgram`
+- `FentryProgram`
+- `FexitProgram`
+- `KprobeProgram`
+- `TcProgram`
+- `TracepointProgram`
+- `UprobeProgram`
+- `XdpProgram`
+
 ## bus_volcano_sh
 
 apiVersion `bus.volcano.sh/v1alpha1`:
@@ -511,7 +527,9 @@ apiVersion `caching.ibm.com/v1alpha1`:
 apiVersion `camel.apache.org/v1`:
 - `Build`
 - `CamelCatalog`
+- `IntegrationProfile`
 - `Kamelet`
+- `Pipe`
 
 apiVersion `camel.apache.org/v1alpha1`:
 - `Kamelet`
@@ -583,6 +601,9 @@ apiVersion `cert-manager.io/v1`:
 apiVersion `chainsaw.kyverno.io/v1alpha1`:
 - `Configuration`
 - `Test`
+
+apiVersion `chainsaw.kyverno.io/v1alpha2`:
+- `Configuration`
 
 ## chaos_mesh_org
 
@@ -940,6 +961,10 @@ apiVersion `devices.kubeedge.io/v1alpha2`:
 - `DeviceModel`
 - `Device`
 
+apiVersion `devices.kubeedge.io/v1beta1`:
+- `DeviceModel`
+- `Device`
+
 ## devops_kubesphere_io
 
 apiVersion `devops.kubesphere.io/v1alpha1`:
@@ -1260,7 +1285,10 @@ apiVersion `gateway.networking.k8s.io/v1beta1`:
 ## gateway_nginx_org
 
 apiVersion `gateway.nginx.org/v1alpha1`:
+- `ClientSettingsPolicy`
 - `NginxGateway`
+- `NginxProxy`
+- `ObservabilityPolicy`
 
 ## getambassador_io
 
@@ -1565,6 +1593,19 @@ apiVersion `k8s.keycloak.org/v2alpha1`:
 - `KeycloakRealmImport`
 - `Keycloak`
 
+## k8s_mariadb_com
+
+apiVersion `k8s.mariadb.com/v1alpha1`:
+- `Backup`
+- `Connection`
+- `Database`
+- `Grant`
+- `MariaDB`
+- `MaxScale`
+- `Restore`
+- `SqlJob`
+- `User`
+
 ## k8s_nginx_org
 
 apiVersion `k8s.nginx.org/v1`:
@@ -1843,6 +1884,7 @@ apiVersion `kyverno.io/v2`:
 apiVersion `kyverno.io/v2alpha1`:
 - `CleanupPolicy`
 - `ClusterCleanupPolicy`
+- `GlobalContextEntry`
 - `PolicyException`
 
 apiVersion `kyverno.io/v2beta1`:
@@ -2037,8 +2079,10 @@ apiVersion `metacontroller.k8s.io/v1alpha1`:
 
 apiVersion `metal3.io/v1alpha1`:
 - `BMCEventSubscription`
+- `DataImage`
 - `FirmwareSchema`
 - `HardwareData`
+- `HostFirmwareComponents`
 - `HostFirmwareSettings`
 - `PreprovisioningImage`
 
@@ -2355,9 +2399,12 @@ apiVersion `operator.tigera.io/v1`:
 - `ManagementCluster`
 - `Manager`
 - `Monitor`
+- `PacketCapture`
 - `PolicyRecommendation`
 - `Tenant`
 - `TigeraStatus`
+- `TLSPassThroughRoute`
+- `TLSTerminatedRoute`
 
 apiVersion `operator.tigera.io/v1beta1`:
 - `AmazonCloudIntegration`
@@ -2440,6 +2487,17 @@ apiVersion `policy.karmada.io/v1alpha1`:
 - `FederatedResourceQuota`
 - `OverridePolicy`
 - `PropagationPolicy`
+
+## policy_kubeedge_io
+
+apiVersion `policy.kubeedge.io/v1alpha1`:
+- `ServiceAccountAccess`
+
+## policy_networking_k8s_io
+
+apiVersion `policy.networking.k8s.io/v1alpha1`:
+- `AdminNetworkPolicy`
+- `BaselineAdminNetworkPolicy`
 
 ## postgres_operator_crunchydata_com
 
@@ -2581,6 +2639,12 @@ apiVersion `repo-manager.pulpproject.org/v1beta2`:
 - `PulpBackup`
 - `PulpRestore`
 - `Pulp`
+
+## reports_kyverno_io
+
+apiVersion `reports.kyverno.io/v1`:
+- `ClusterEphemeralReport`
+- `EphemeralReport`
 
 ## resources_teleport_dev
 
@@ -3179,6 +3243,7 @@ apiVersion `workload.codeflare.dev/v1beta1`:
 ## workloads_kubeblocks_io
 
 apiVersion `workloads.kubeblocks.io/v1alpha1`:
+- `InstanceSet`
 - `ReplicatedStateMachine`
 
 ## zonecontrol_k8s_aws
@@ -3303,6 +3368,8 @@ pub mod bmc_tinkerbell_org;
 pub mod boskos_k8s_io;
 #[cfg(feature = "bpfd_dev")]
 pub mod bpfd_dev;
+#[cfg(feature = "bpfman_io")]
+pub mod bpfman_io;
 #[cfg(feature = "bus_volcano_sh")]
 pub mod bus_volcano_sh;
 #[cfg(feature = "cache_kubedl_io")]
@@ -3549,6 +3616,8 @@ pub mod k6_io;
 pub mod k8gb_absa_oss;
 #[cfg(feature = "k8s_keycloak_org")]
 pub mod k8s_keycloak_org;
+#[cfg(feature = "k8s_mariadb_com")]
+pub mod k8s_mariadb_com;
 #[cfg(feature = "k8s_nginx_org")]
 pub mod k8s_nginx_org;
 #[cfg(feature = "k8s_otterize_com")]
@@ -3727,6 +3796,10 @@ pub mod pkg_crossplane_io;
 pub mod policy_clusterpedia_io;
 #[cfg(feature = "policy_karmada_io")]
 pub mod policy_karmada_io;
+#[cfg(feature = "policy_kubeedge_io")]
+pub mod policy_kubeedge_io;
+#[cfg(feature = "policy_networking_k8s_io")]
+pub mod policy_networking_k8s_io;
 #[cfg(feature = "postgres_operator_crunchydata_com")]
 pub mod postgres_operator_crunchydata_com;
 #[cfg(feature = "postgresql_cnpg_io")]
@@ -3767,6 +3840,8 @@ pub mod reliablesyncs_kubeedge_io;
 pub mod remediation_medik8s_io;
 #[cfg(feature = "repo_manager_pulpproject_org")]
 pub mod repo_manager_pulpproject_org;
+#[cfg(feature = "reports_kyverno_io")]
+pub mod reports_kyverno_io;
 #[cfg(feature = "resources_teleport_dev")]
 pub mod resources_teleport_dev;
 #[cfg(feature = "rocketmq_apache_org")]

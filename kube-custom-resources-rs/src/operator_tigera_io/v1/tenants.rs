@@ -12,13 +12,15 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
 pub struct TenantSpec {
-    /// ControlPlaneReplicas defines how many replicas of the control plane core components will be deployed in the Tenant's namespace. Defaults to the controlPlaneReplicas in Installation CR
+    /// ControlPlaneReplicas defines how many replicas of the control plane core components will be deployed
+    /// in the Tenant's namespace. Defaults to the controlPlaneReplicas in Installation CR
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReplicas")]
     pub control_plane_replicas: Option<i32>,
     /// DashboardsJob configures the Dashboards job
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dashboardsJob")]
     pub dashboards_job: Option<TenantDashboardsJob>,
-    /// Elastic configures per-tenant ElasticSearch and Kibana parameters. This field is required for clusters using external ES.
+    /// Elastic configures per-tenant ElasticSearch and Kibana parameters.
+    /// This field is required for clusters using external ES.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub elastic: Option<TenantElastic>,
     /// ID is the unique identifier for this tenant.
@@ -61,7 +63,9 @@ pub struct TenantDashboardsJobSpecTemplate {
 /// Spec is the Dashboard job's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantDashboardsJobSpecTemplateSpec {
-    /// Containers is a list of dashboards job containers. If specified, this overrides the specified Dashboard job containers. If omitted, the Dashboard job will use its default values for its containers.
+    /// Containers is a list of dashboards job containers.
+    /// If specified, this overrides the specified Dashboard job containers.
+    /// If omitted, the Dashboard job will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<TenantDashboardsJobSpecTemplateSpecContainers>>,
 }
@@ -69,9 +73,12 @@ pub struct TenantDashboardsJobSpecTemplateSpec {
 /// DashboardsJobContainer is the Dashboards job container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantDashboardsJobSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the Dashboard Job container by name. Supported values are: dashboards-installer
+    /// Name is an enum which identifies the Dashboard Job container by name.
+    /// Supported values are: dashboards-installer
     pub name: TenantDashboardsJobSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dashboard Job container's resources. If omitted, the Dashboard Job will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named Dashboard Job container's resources.
+    /// If omitted, the Dashboard Job will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TenantDashboardsJobSpecTemplateSpecContainersResources>,
 }
@@ -83,18 +90,26 @@ pub enum TenantDashboardsJobSpecTemplateSpecContainersName {
     DashboardsInstaller,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dashboard Job container's resources. If omitted, the Dashboard Job will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named Dashboard Job container's resources.
+/// If omitted, the Dashboard Job will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantDashboardsJobSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TenantDashboardsJobSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -102,11 +117,14 @@ pub struct TenantDashboardsJobSpecTemplateSpecContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantDashboardsJobSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// Elastic configures per-tenant ElasticSearch and Kibana parameters. This field is required for clusters using external ES.
+/// Elastic configures per-tenant ElasticSearch and Kibana parameters.
+/// This field is required for clusters using external ES.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantElastic {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kibanaURL")]
@@ -119,7 +137,9 @@ pub struct TenantElastic {
 /// Index defines how to store a tenant's data
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantIndices {
-    /// BaseIndexName defines the name of the index that will be used to store data (this name excludes the numerical identifier suffix)
+    /// BaseIndexName defines the name of the index
+    /// that will be used to store data (this name
+    /// excludes the numerical identifier suffix)
     #[serde(rename = "baseIndexName")]
     pub base_index_name: String,
     /// DataType represents the type of data stored in the defined index
@@ -176,10 +196,14 @@ pub struct TenantLinseedDeploymentSpecTemplate {
 /// Spec is the linseed Deployment's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantLinseedDeploymentSpecTemplateSpec {
-    /// Containers is a list of linseed containers. If specified, this overrides the specified linseed Deployment containers. If omitted, the linseed Deployment will use its default values for its containers.
+    /// Containers is a list of linseed containers.
+    /// If specified, this overrides the specified linseed Deployment containers.
+    /// If omitted, the linseed Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<TenantLinseedDeploymentSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of linseed init containers. If specified, this overrides the specified linseed Deployment init containers. If omitted, the linseed Deployment will use its default values for its init containers.
+    /// InitContainers is a list of linseed init containers.
+    /// If specified, this overrides the specified linseed Deployment init containers.
+    /// If omitted, the linseed Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<TenantLinseedDeploymentSpecTemplateSpecInitContainers>>,
 }
@@ -187,9 +211,12 @@ pub struct TenantLinseedDeploymentSpecTemplateSpec {
 /// LinseedDeploymentContainer is a linseed Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantLinseedDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the linseed Deployment container by name. Supported values are: tigera-linseed
+    /// Name is an enum which identifies the linseed Deployment container by name.
+    /// Supported values are: tigera-linseed
     pub name: TenantLinseedDeploymentSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment container's resources. If omitted, the linseed Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named linseed Deployment container's resources.
+    /// If omitted, the linseed Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TenantLinseedDeploymentSpecTemplateSpecContainersResources>,
 }
@@ -201,18 +228,26 @@ pub enum TenantLinseedDeploymentSpecTemplateSpecContainersName {
     TigeraLinseed,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment container's resources. If omitted, the linseed Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named linseed Deployment container's resources.
+/// If omitted, the linseed Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantLinseedDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TenantLinseedDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -220,16 +255,21 @@ pub struct TenantLinseedDeploymentSpecTemplateSpecContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantLinseedDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// LinseedDeploymentInitContainer is a linseed Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantLinseedDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the linseed Deployment init container by name. Supported values are: tigera-secure-linseed-token-tls-key-cert-provisioner,tigera-secure-linseed-cert-key-cert-provisioner
+    /// Name is an enum which identifies the linseed Deployment init container by name.
+    /// Supported values are: tigera-secure-linseed-token-tls-key-cert-provisioner,tigera-secure-linseed-cert-key-cert-provisioner
     pub name: TenantLinseedDeploymentSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment init container's resources. If omitted, the linseed Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named linseed Deployment init container's resources.
+    /// If omitted, the linseed Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TenantLinseedDeploymentSpecTemplateSpecInitContainersResources>,
 }
@@ -243,18 +283,26 @@ pub enum TenantLinseedDeploymentSpecTemplateSpecInitContainersName {
     TigeraSecureLinseedCertKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment init container's resources. If omitted, the linseed Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named linseed Deployment init container's resources.
+/// If omitted, the linseed Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantLinseedDeploymentSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TenantLinseedDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -262,7 +310,9 @@ pub struct TenantLinseedDeploymentSpecTemplateSpecInitContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantLinseedDeploymentSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 

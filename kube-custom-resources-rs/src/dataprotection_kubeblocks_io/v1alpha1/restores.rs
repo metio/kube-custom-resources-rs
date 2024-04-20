@@ -53,6 +53,9 @@ pub struct RestoreBackup {
     pub name: String,
     /// Specifies the backup namespace.
     pub namespace: String,
+    /// Specifies the source target for restoration, identified by its name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceTargetName")]
+    pub source_target_name: Option<String>,
 }
 
 /// Specifies the required resources of restore job's container.
@@ -164,6 +167,9 @@ pub struct RestorePrepareDataConfig {
     /// Specifies the configuration when using `persistentVolumeClaim.spec.dataSourceRef` method for restoring. Describes the source volume of the backup targetVolumes and the mount path in the restoring container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<RestorePrepareDataConfigDataSourceRef>,
+    /// Specifies the restore policy, which is required when the pod selection strategy for the source target is 'All'. This field is ignored if the pod selection strategy is 'Any'. optional
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredPolicyForAllPodSelection")]
+    pub required_policy_for_all_pod_selection: Option<RestorePrepareDataConfigRequiredPolicyForAllPodSelection>,
     /// Specifies the scheduling spec for the restoring pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingSpec")]
     pub scheduling_spec: Option<RestorePrepareDataConfigSchedulingSpec>,
@@ -188,6 +194,25 @@ pub struct RestorePrepareDataConfigDataSourceRef {
     /// Describes the volume that will be restored from the specified volume of the backup targetVolumes. This is required if the backup uses a volume snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<String>,
+}
+
+/// Specifies the restore policy, which is required when the pod selection strategy for the source target is 'All'. This field is ignored if the pod selection strategy is 'Any'. optional
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RestorePrepareDataConfigRequiredPolicyForAllPodSelection {
+    /// Specifies the data restore policy. Options include: - OneToMany: Enables restoration of all volumes from a single data copy of the original target instance. The 'sourceOfOneToMany' field must be set when using this policy. - OneToOne: Restricts data restoration such that each data piece can only be restored to a single target instance. This is the default policy. When the number of target instances specified for restoration surpasses the count of original backup target instances.
+    #[serde(rename = "dataRestorePolicy")]
+    pub data_restore_policy: String,
+    /// Specifies the name of the source target pod. This field is mandatory when the DataRestorePolicy is configured to 'OneToMany'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceOfOneToMany")]
+    pub source_of_one_to_many: Option<RestorePrepareDataConfigRequiredPolicyForAllPodSelectionSourceOfOneToMany>,
+}
+
+/// Specifies the name of the source target pod. This field is mandatory when the DataRestorePolicy is configured to 'OneToMany'.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RestorePrepareDataConfigRequiredPolicyForAllPodSelectionSourceOfOneToMany {
+    /// Specifies the name of the source target pod.
+    #[serde(rename = "targetPodName")]
+    pub target_pod_name: String,
 }
 
 /// Specifies the scheduling spec for the restoring pod.
@@ -1058,11 +1083,33 @@ pub struct RestoreReadyConfigExecActionTargetPodSelectorMatchExpressions {
 /// Specifies the configuration for a job action.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigJobAction {
-    /// Defines the pod that needs to be executed for the job action. A pod that meets the conditions will be selected for execution.
+    /// Specifies the restore policy, which is required when the pod selection strategy for the source target is 'All'. This field is ignored if the pod selection strategy is 'Any'. optional
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredPolicyForAllPodSelection")]
+    pub required_policy_for_all_pod_selection: Option<RestoreReadyConfigJobActionRequiredPolicyForAllPodSelection>,
+    /// Defines the pods that needs to be executed for the job action.
     pub target: RestoreReadyConfigJobActionTarget,
 }
 
-/// Defines the pod that needs to be executed for the job action. A pod that meets the conditions will be selected for execution.
+/// Specifies the restore policy, which is required when the pod selection strategy for the source target is 'All'. This field is ignored if the pod selection strategy is 'Any'. optional
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RestoreReadyConfigJobActionRequiredPolicyForAllPodSelection {
+    /// Specifies the data restore policy. Options include: - OneToMany: Enables restoration of all volumes from a single data copy of the original target instance. The 'sourceOfOneToMany' field must be set when using this policy. - OneToOne: Restricts data restoration such that each data piece can only be restored to a single target instance. This is the default policy. When the number of target instances specified for restoration surpasses the count of original backup target instances.
+    #[serde(rename = "dataRestorePolicy")]
+    pub data_restore_policy: String,
+    /// Specifies the name of the source target pod. This field is mandatory when the DataRestorePolicy is configured to 'OneToMany'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceOfOneToMany")]
+    pub source_of_one_to_many: Option<RestoreReadyConfigJobActionRequiredPolicyForAllPodSelectionSourceOfOneToMany>,
+}
+
+/// Specifies the name of the source target pod. This field is mandatory when the DataRestorePolicy is configured to 'OneToMany'.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RestoreReadyConfigJobActionRequiredPolicyForAllPodSelectionSourceOfOneToMany {
+    /// Specifies the name of the source target pod.
+    #[serde(rename = "targetPodName")]
+    pub target_pod_name: String,
+}
+
+/// Defines the pods that needs to be executed for the job action.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigJobActionTarget {
     /// Selects one of the pods, identified by labels, to build the job spec. This includes mounting required volumes and injecting built-in environment variables of the selected pod.
@@ -1082,6 +1129,10 @@ pub struct RestoreReadyConfigJobActionTargetPodSelector {
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
+    /// Specifies the strategy to select the target pod when multiple pods are selected. Valid values are: 
+    ///  - `Any`: select any one pod that match the labelsSelector. - `All`: select all pods that match the labelsSelector. The backup data for the current pod will be stored in a subdirectory named after the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<RestoreReadyConfigJobActionTargetPodSelectorStrategy>,
 }
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
@@ -1094,6 +1145,13 @@ pub struct RestoreReadyConfigJobActionTargetPodSelectorMatchExpressions {
     /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Selects one of the pods, identified by labels, to build the job spec. This includes mounting required volumes and injecting built-in environment variables of the selected pod.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RestoreReadyConfigJobActionTargetPodSelectorStrategy {
+    Any,
+    All,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.

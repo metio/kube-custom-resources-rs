@@ -19,7 +19,7 @@ spec:
     - name: "v1beta1"
       schema:
         openAPIV3Schema:
-          description: "PGAdmin is the Schema for the pgadmins API"
+          description: "PGAdmin is the Schema for the PGAdmin API"
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -630,6 +630,10 @@ spec:
                             type: "object"
                         type: "object"
                       type: "array"
+                    gunicorn:
+                      description: "Settings for the gunicorn server. More info: https://docs.gunicorn.org/en/latest/settings.html"
+                      type: "object"
+                      x-kubernetes-preserve-unknown-fields: true
                     ldapBindPassword:
                       description: "A Secret containing the value for the LDAP_BIND_PASSWORD setting. More info: https://www.pgadmin.org/docs/pgadmin4/latest/ldap.html"
                       properties:
@@ -874,6 +878,26 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                users:
+                  description: "pgAdmin users that are managed via the PGAdmin spec. Users can still be added via the pgAdmin GUI, but those users will not show up here."
+                  items:
+                    properties:
+                      role:
+                        description: "Role determines whether the user has admin privileges or not. Defaults to User. Valid options are Administrator and User."
+                        enum:
+                          - "Administrator"
+                          - "User"
+                        type: "string"
+                      username:
+                        description: "The username for User in pgAdmin. Must be unique in the pgAdmin's users list."
+                        type: "string"
+                    required:
+                      - "username"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "username"
+                  x-kubernetes-list-type: "map"
               required:
                 - "dataVolumeClaimSpec"
               type: "object"
@@ -881,7 +905,7 @@ spec:
               description: "PGAdminStatus defines the observed state of PGAdmin"
               properties:
                 conditions:
-                  description: "conditions represent the observations of pgadmin's current state. Known .status.conditions.type are: \"PersistentVolumeResizing\", \"Progressing\", \"ProxyAvailable\""
+                  description: "conditions represent the observations of pgAdmin's current state. Known .status.conditions.type is: \"PersistentVolumeResizing\""
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                     properties:
@@ -927,6 +951,12 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "type"
                   x-kubernetes-list-type: "map"
+                imageSHA:
+                  description: "ImageSHA represents the image SHA for the container running pgAdmin."
+                  type: "string"
+                majorVersion:
+                  description: "MajorVersion represents the major version of the running pgAdmin."
+                  type: "integer"
                 observedGeneration:
                   description: "observedGeneration represents the .metadata.generation on which the status was based."
                   format: "int64"

@@ -49,14 +49,41 @@ spec:
               description: "ClusterQueueSpec defines the desired state of ClusterQueue"
               properties:
                 admissionChecks:
-                  description: "admissionChecks lists the AdmissionChecks required by this ClusterQueue"
+                  description: "admissionChecks lists the AdmissionChecks required by this ClusterQueue.\nCannot be used along with AdmissionCheckStrategy."
                   items:
                     type: "string"
                   type: "array"
+                admissionChecksStrategy:
+                  description: "admissionCheckStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.\nThis property cannot be used in conjunction with the 'admissionChecks' property."
+                  properties:
+                    admissionChecks:
+                      description: "admissionChecks is a list of strategies for AdmissionChecks"
+                      items:
+                        description: "AdmissionCheckStrategyRule defines rules for a single AdmissionCheck"
+                        properties:
+                          name:
+                            description: "name is an AdmissionCheck's name."
+                            type: "string"
+                          onFlavors:
+                            description: "onFlavors is a list of ResourceFlavors' names that this AdmissionCheck should run for.\nIf empty, the AdmissionCheck will run for all workloads submitted to the ClusterQueue."
+                            items:
+                              description: "ResourceFlavorReference is the name of the ResourceFlavor."
+                              maxLength: 253
+                              pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                              type: "string"
+                            type: "array"
+                        required:
+                          - "name"
+                        type: "object"
+                      type: "array"
+                  type: "object"
                 cohort:
                   description: "cohort that this ClusterQueue belongs to. CQs that belong to the\nsame cohort can borrow unused resources from each other.\n\n\nA CQ can be a member of a single borrowing cohort. A workload submitted\nto a queue referencing this CQ can borrow quota from any CQ in the cohort.\nOnly quota for the [resource, flavor] pairs listed in the CQ can be\nborrowed.\nIf empty, this ClusterQueue cannot borrow from any other ClusterQueue and\nvice versa.\n\n\nA cohort is a name that links CQs together, but it doesn't reference any\nobject.\n\n\nValidation of a cohort name is equivalent to that of object names:\nsubdomain in DNS (RFC 1123)."
+                  maxLength: 253
+                  pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                   type: "string"
                 flavorFungibility:
+                  default: {}
                   description: "flavorFungibility defines whether a workload should try the next flavor\nbefore borrowing or preempting in the flavor being evaluated."
                   properties:
                     whenCanBorrow:
@@ -106,9 +133,11 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 preemption:
+                  default: {}
                   description: "preemption describes policies to preempt Workloads from this ClusterQueue\nor the ClusterQueue's cohort.\n\n\nPreemption can happen in two scenarios:\n\n\n- When a Workload fits within the nominal quota of the ClusterQueue, but\n  the quota is currently borrowed by other ClusterQueues in the cohort.\n  Preempting Workloads in other ClusterQueues allows this ClusterQueue to\n  reclaim its nominal quota.\n- When a Workload doesn't fit within the nominal quota of the ClusterQueue\n  and there are admitted Workloads in the ClusterQueue with lower priority.\n\n\nThe preemption algorithm tries to find a minimal set of Workloads to\npreempt to accomomdate the pending Workload, preempting Workloads with\nlower priority first."
                   properties:
                     borrowWithinCohort:
+                      default: {}
                       description: "borrowWithinCohort provides configuration to allow preemption within\ncohort while borrowing."
                       properties:
                         maxPriorityThreshold:
@@ -140,6 +169,9 @@ spec:
                         - "LowerOrNewerEqualPriority"
                       type: "string"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "reclaimWithinCohort=Never and borrowWithinCohort.Policy!=Never"
+                      rule: "!(self.reclaimWithinCohort == 'Never' && has(self.borrowWithinCohort) &&  self.borrowWithinCohort.policy != 'Never')"
                 queueingStrategy:
                   default: "BestEffortFIFO"
                   description: "QueueingStrategy indicates the queueing strategy of the workloads\nacross the queues in this ClusterQueue.\nCurrent Supported Strategies:\n\n\n- StrictFIFO: workloads are ordered strictly by creation time.\nOlder workloads that can't be admitted will block admitting newer\nworkloads even if they fit available quota.\n- BestEffortFIFO: workloads are ordered by creation time,\nhowever older workloads that can't be admitted will not block\nadmitting newer workloads that fit existing quota."
@@ -165,6 +197,8 @@ spec:
                           properties:
                             name:
                               description: "name of this flavor. The name should match the .metadata.name of a\nResourceFlavor. If a matching ResourceFlavor does not exist, the\nClusterQueue will have an Active condition set to False."
+                              maxLength: 253
+                              pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                               type: "string"
                             resources:
                               description: "resources is the list of quotas for this flavor per resource.\nThere could be up to 16 resources."
@@ -218,6 +252,9 @@ spec:
                       - "coveredResources"
                       - "flavors"
                     type: "object"
+                    x-kubernetes-validations:
+                      - message: "flavors must have the same number of resources as the coveredResources"
+                        rule: "self.flavors.all(x, size(x.resources) == size(self.coveredResources))"
                   maxItems: 16
                   type: "array"
                   x-kubernetes-list-type: "atomic"
@@ -230,6 +267,9 @@ spec:
                     - "HoldAndDrain"
                   type: "string"
               type: "object"
+              x-kubernetes-validations:
+                - message: "borrowingLimit must be nil when cohort is empty"
+                  rule: "!has(self.cohort) && has(self.resourceGroups) ? self.resourceGroups.all(rg, rg.flavors.all(f, f.resources.all(r, !has(r.borrowingLimit)))) : true"
             status:
               description: "ClusterQueueStatus defines the observed state of ClusterQueue"
               properties:
@@ -290,6 +330,8 @@ spec:
                     properties:
                       name:
                         description: "name of the flavor."
+                        maxLength: 253
+                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                         type: "string"
                       resources:
                         description: "resources lists the quota usage for the resources in this flavor."
@@ -335,6 +377,8 @@ spec:
                     properties:
                       name:
                         description: "name of the flavor."
+                        maxLength: 253
+                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                         type: "string"
                       resources:
                         description: "resources lists the quota usage for the resources in this flavor."

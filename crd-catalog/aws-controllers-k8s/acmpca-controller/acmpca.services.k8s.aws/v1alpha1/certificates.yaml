@@ -232,11 +232,9 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
-                csr:
-                  description: "The certificate signing request (CSR) for the certificate you want to issue.\nAs an example, you can use the following OpenSSL command to create the CSR\nand a 2048 bit RSA private key.\n\n\nopenssl req -new -newkey rsa:2048 -days 365 -keyout private/test_cert_priv_key.pem\n-out csr/test_cert_.csr\n\n\nIf you have a configuration file, you can then use the following OpenSSL\ncommand. The usr_cert block in the configuration file contains your X509\nversion 3 extensions.\n\n\nopenssl req -new -config openssl_rsa.cnf -extensions usr_cert -newkey rsa:2048\n-days 365 -keyout private/test_cert_priv_key.pem -out csr/test_cert_.csr\n\n\nNote: A CSR must provide either a subject name or a subject alternative name\nor the request will be rejected."
-                  format: "byte"
+                certificateSigningRequest:
                   type: "string"
-                csrRef:
+                certificateSigningRequestRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:

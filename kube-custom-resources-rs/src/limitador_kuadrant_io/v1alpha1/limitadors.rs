@@ -38,6 +38,8 @@ pub struct LimitadorSpec {
     /// Telemetry defines the level of metrics Limitador will expose to the user
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telemetry: Option<LimitadorTelemetry>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tracing: Option<LimitadorTracing>,
     /// Sets the level of verbosity
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verbosity: Option<i64>,
@@ -630,6 +632,11 @@ pub enum LimitadorTelemetry {
     Basic,
     #[serde(rename = "exhaustive")]
     Exhaustive,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LimitadorTracing {
+    pub endpoint: String,
 }
 
 /// LimitadorStatus defines the observed state of Limitador

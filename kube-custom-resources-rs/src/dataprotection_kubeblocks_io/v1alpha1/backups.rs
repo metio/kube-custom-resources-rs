@@ -86,6 +86,9 @@ pub struct BackupStatus {
     /// Records the target information for this backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<BackupStatusTarget>,
+    /// Records the targets information for this backup.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub targets: Option<Vec<BackupStatusTargets>>,
     /// Records the time range of the data backed up. For Point-in-Time Recovery (PITR), this is the time range of recoverable data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeRange")]
     pub time_range: Option<BackupStatusTimeRange>,
@@ -123,6 +126,9 @@ pub struct BackupStatusActions {
     /// Records the time an action was started.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
+    /// Records the target pod name which has been backed up.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodName")]
+    pub target_pod_name: Option<String>,
     /// Records the time range of backed up data, for PITR, this is the time range of recoverable data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeRange")]
     pub time_range: Option<BackupStatusActionsTimeRange>,
@@ -185,6 +191,9 @@ pub struct BackupStatusActionsVolumeSnapshots {
     /// The size of the volume snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
+    /// Associates this volumeSnapshot with its corresponding target.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetName")]
+    pub target_name: Option<String>,
     /// The name of the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
@@ -213,6 +222,9 @@ pub struct BackupStatusBackupMethod {
     /// Specifies which volumes from the target should be mounted in the backup workload.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetVolumes")]
     pub target_volumes: Option<BackupStatusBackupMethodTargetVolumes>,
+    /// Specifies multiple target information for backup operations. This includes details such as the target pod and cluster connection credentials. All specified targets will be backed up collectively.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub targets: Option<Vec<BackupStatusBackupMethodTargets>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -332,6 +344,9 @@ pub struct BackupStatusBackupMethodTarget {
     /// Specifies the connection credential to connect to the target database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BackupStatusBackupMethodTargetConnectionCredential>,
+    /// Specifies a mandatory and unique identifier for each target when using the "targets" field. The backup data for the current target is stored in a uniquely named subdirectory.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Used to find the target pod. The volumes of the target pod will be backed up.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<BackupStatusBackupMethodTargetPodSelector>,
@@ -372,8 +387,8 @@ pub struct BackupStatusBackupMethodTargetPodSelector {
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
-    /// Specifies the strategy to select the target pod when multiple pods are selected. Valid values are: Any: select any one pod that match the labelsSelector. 
-    ///  - `Any`: select any one pod that match the labelsSelector. - `All`: select all pods that match the labelsSelector.
+    /// Specifies the strategy to select the target pod when multiple pods are selected. Valid values are: 
+    ///  - `Any`: select any one pod that match the labelsSelector. - `All`: select all pods that match the labelsSelector. The backup data for the current pod will be stored in a subdirectory named after the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupStatusBackupMethodTargetPodSelectorStrategy>,
 }
@@ -467,6 +482,116 @@ pub struct BackupStatusBackupMethodTargetVolumesVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusBackupMethodTargets {
+    /// Specifies the connection credential to connect to the target database cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
+    pub connection_credential: Option<BackupStatusBackupMethodTargetsConnectionCredential>,
+    /// Specifies a mandatory and unique identifier for each target when using the "targets" field. The backup data for the current target is stored in a uniquely named subdirectory.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Used to find the target pod. The volumes of the target pod will be backed up.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
+    pub pod_selector: Option<BackupStatusBackupMethodTargetsPodSelector>,
+    /// Specifies the kubernetes resources to back up.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<BackupStatusBackupMethodTargetsResources>,
+    /// Specifies the service account to run the backup workload.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
+}
+
+/// Specifies the connection credential to connect to the target database cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusBackupMethodTargetsConnectionCredential {
+    /// Specifies the map key of the host in the connection credential secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostKey")]
+    pub host_key: Option<String>,
+    /// Specifies the map key of the password in the connection credential secret. This password will be saved in the backup annotation for full backup. You can use the environment variable DP_ENCRYPTION_KEY to specify encryption key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
+    pub password_key: Option<String>,
+    /// Specifies the map key of the port in the connection credential secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
+    pub port_key: Option<String>,
+    /// Refers to the Secret object that contains the connection credential.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+    /// Specifies the map key of the user in the connection credential secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
+    pub username_key: Option<String>,
+}
+
+/// Used to find the target pod. The volumes of the target pod will be backed up.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusBackupMethodTargetsPodSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupStatusBackupMethodTargetsPodSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+    /// Specifies the strategy to select the target pod when multiple pods are selected. Valid values are: 
+    ///  - `Any`: select any one pod that match the labelsSelector. - `All`: select all pods that match the labelsSelector. The backup data for the current pod will be stored in a subdirectory named after the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<BackupStatusBackupMethodTargetsPodSelectorStrategy>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusBackupMethodTargetsPodSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Used to find the target pod. The volumes of the target pod will be backed up.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackupStatusBackupMethodTargetsPodSelectorStrategy {
+    Any,
+    All,
+}
+
+/// Specifies the kubernetes resources to back up.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusBackupMethodTargetsResources {
+    /// excluded is a slice of namespaced-scoped resource type names to exclude in the kubernetes resources. The default value is empty.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub excluded: Option<Vec<String>>,
+    /// included is a slice of namespaced-scoped resource type names to include in the kubernetes resources. The default value is empty.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub included: Option<Vec<String>>,
+    /// A metav1.LabelSelector to filter the target kubernetes resources that need to be backed up. If not set, will do not back up any kubernetes resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<BackupStatusBackupMethodTargetsResourcesSelector>,
+}
+
+/// A metav1.LabelSelector to filter the target kubernetes resources that need to be backed up. If not set, will do not back up any kubernetes resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusBackupMethodTargetsResourcesSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupStatusBackupMethodTargetsResourcesSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusBackupMethodTargetsResourcesSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
 /// Records the encryption config for this backup.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupStatusEncryptionConfig {
@@ -519,12 +644,18 @@ pub struct BackupStatusTarget {
     /// Specifies the connection credential to connect to the target database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BackupStatusTargetConnectionCredential>,
+    /// Specifies a mandatory and unique identifier for each target when using the "targets" field. The backup data for the current target is stored in a uniquely named subdirectory.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Used to find the target pod. The volumes of the target pod will be backed up.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<BackupStatusTargetPodSelector>,
     /// Specifies the kubernetes resources to back up.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BackupStatusTargetResources>,
+    /// Records the selected pods by the target info during backup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectedTargetPods")]
+    pub selected_target_pods: Option<Vec<String>>,
     /// Specifies the service account to run the backup workload.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
@@ -559,8 +690,8 @@ pub struct BackupStatusTargetPodSelector {
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
-    /// Specifies the strategy to select the target pod when multiple pods are selected. Valid values are: Any: select any one pod that match the labelsSelector. 
-    ///  - `Any`: select any one pod that match the labelsSelector. - `All`: select all pods that match the labelsSelector.
+    /// Specifies the strategy to select the target pod when multiple pods are selected. Valid values are: 
+    ///  - `Any`: select any one pod that match the labelsSelector. - `All`: select all pods that match the labelsSelector. The backup data for the current pod will be stored in a subdirectory named after the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupStatusTargetPodSelectorStrategy>,
 }
@@ -621,6 +752,119 @@ pub struct BackupStatusTargetResourcesSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusTargets {
+    /// Specifies the connection credential to connect to the target database cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
+    pub connection_credential: Option<BackupStatusTargetsConnectionCredential>,
+    /// Specifies a mandatory and unique identifier for each target when using the "targets" field. The backup data for the current target is stored in a uniquely named subdirectory.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Used to find the target pod. The volumes of the target pod will be backed up.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
+    pub pod_selector: Option<BackupStatusTargetsPodSelector>,
+    /// Specifies the kubernetes resources to back up.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<BackupStatusTargetsResources>,
+    /// Records the selected pods by the target info during backup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectedTargetPods")]
+    pub selected_target_pods: Option<Vec<String>>,
+    /// Specifies the service account to run the backup workload.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
+}
+
+/// Specifies the connection credential to connect to the target database cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusTargetsConnectionCredential {
+    /// Specifies the map key of the host in the connection credential secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostKey")]
+    pub host_key: Option<String>,
+    /// Specifies the map key of the password in the connection credential secret. This password will be saved in the backup annotation for full backup. You can use the environment variable DP_ENCRYPTION_KEY to specify encryption key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
+    pub password_key: Option<String>,
+    /// Specifies the map key of the port in the connection credential secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
+    pub port_key: Option<String>,
+    /// Refers to the Secret object that contains the connection credential.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+    /// Specifies the map key of the user in the connection credential secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
+    pub username_key: Option<String>,
+}
+
+/// Used to find the target pod. The volumes of the target pod will be backed up.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusTargetsPodSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupStatusTargetsPodSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+    /// Specifies the strategy to select the target pod when multiple pods are selected. Valid values are: 
+    ///  - `Any`: select any one pod that match the labelsSelector. - `All`: select all pods that match the labelsSelector. The backup data for the current pod will be stored in a subdirectory named after the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<BackupStatusTargetsPodSelectorStrategy>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusTargetsPodSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Used to find the target pod. The volumes of the target pod will be backed up.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackupStatusTargetsPodSelectorStrategy {
+    Any,
+    All,
+}
+
+/// Specifies the kubernetes resources to back up.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusTargetsResources {
+    /// excluded is a slice of namespaced-scoped resource type names to exclude in the kubernetes resources. The default value is empty.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub excluded: Option<Vec<String>>,
+    /// included is a slice of namespaced-scoped resource type names to include in the kubernetes resources. The default value is empty.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub included: Option<Vec<String>>,
+    /// A metav1.LabelSelector to filter the target kubernetes resources that need to be backed up. If not set, will do not back up any kubernetes resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<BackupStatusTargetsResourcesSelector>,
+}
+
+/// A metav1.LabelSelector to filter the target kubernetes resources that need to be backed up. If not set, will do not back up any kubernetes resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusTargetsResourcesSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupStatusTargetsResourcesSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStatusTargetsResourcesSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
 /// Records the time range of the data backed up. For Point-in-Time Recovery (PITR), this is the time range of recoverable data.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupStatusTimeRange {
@@ -646,6 +890,9 @@ pub struct BackupStatusVolumeSnapshots {
     /// The size of the volume snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
+    /// Associates this volumeSnapshot with its corresponding target.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetName")]
+    pub target_name: Option<String>,
     /// The name of the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,

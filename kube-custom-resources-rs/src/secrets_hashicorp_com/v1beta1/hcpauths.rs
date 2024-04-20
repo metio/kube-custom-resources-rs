@@ -12,7 +12,15 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "HCPAuthStatus")]
 #[kube(schema = "disabled")]
 pub struct HCPAuthSpec {
-    /// AllowedNamespaces Kubernetes Namespaces which are allow-listed for use with this AuthMethod. This field allows administrators to customize which Kubernetes namespaces are authorized to use with this AuthMethod. While Vault will still enforce its own rules, this has the added configurability of restricting which HCPAuthMethods can be used by which namespaces. Accepted values: []{"*"} - wildcard, all namespaces. []{"a", "b"} - list of namespaces. unset - disallow all namespaces except the Operator's the HCPAuthMethod's namespace, this is the default behavior.
+    /// AllowedNamespaces Kubernetes Namespaces which are allow-listed for use with this AuthMethod.
+    /// This field allows administrators to customize which Kubernetes namespaces are authorized to
+    /// use with this AuthMethod. While Vault will still enforce its own rules, this has the added
+    /// configurability of restricting which HCPAuthMethods can be used by which namespaces.
+    /// Accepted values:
+    /// []{"*"} - wildcard, all namespaces.
+    /// []{"a", "b"} - list of namespaces.
+    /// unset - disallow all namespaces except the Operator's the HCPAuthMethod's namespace, this
+    /// is the default behavior.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedNamespaces")]
     pub allowed_namespaces: Option<Vec<String>>,
     /// Method to use when authenticating to Vault.
@@ -24,7 +32,9 @@ pub struct HCPAuthSpec {
     /// ProjectID of the HCP project.
     #[serde(rename = "projectID")]
     pub project_id: String,
-    /// ServicePrincipal provides the necessary configuration for authenticating to HCP using a service principal. For security reasons, only project-level service principals should ever be used.
+    /// ServicePrincipal provides the necessary configuration for authenticating to
+    /// HCP using a service principal. For security reasons, only project-level
+    /// service principals should ever be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePrincipal")]
     pub service_principal: Option<HCPAuthServicePrincipal>,
 }
@@ -36,10 +46,18 @@ pub enum HCPAuthMethod {
     ServicePrincipal,
 }
 
-/// ServicePrincipal provides the necessary configuration for authenticating to HCP using a service principal. For security reasons, only project-level service principals should ever be used.
+/// ServicePrincipal provides the necessary configuration for authenticating to
+/// HCP using a service principal. For security reasons, only project-level
+/// service principals should ever be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HCPAuthServicePrincipal {
-    /// SecretRef is the name of a Kubernetes secret in the consumer's (VDS/VSS/PKI/HCP) namespace which provides the HCP ServicePrincipal clientID, and clientSecret. The secret data must have the following structure { "clientID": "clientID", "clientSecret": "clientSecret", }
+    /// SecretRef is the name of a Kubernetes secret in the consumer's
+    /// (VDS/VSS/PKI/HCP) namespace which provides the HCP ServicePrincipal clientID,
+    /// and clientSecret.
+    /// The secret data must have the following structure {
+    ///   "clientID": "clientID",
+    ///   "clientSecret": "clientSecret",
+    /// }
     #[serde(rename = "secretRef")]
     pub secret_ref: String,
 }

@@ -1026,6 +1026,9 @@ pub struct HelmReleaseStatusHistory {
     pub name: String,
     /// Namespace is the namespace the release is deployed to.
     pub namespace: String,
+    /// OCIDigest is the digest of the OCI artifact associated with the release.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ociDigest")]
+    pub oci_digest: Option<String>,
     /// Status is the current state of the release.
     pub status: String,
     /// TestHooks is the list of test hooks for the release as observed to be

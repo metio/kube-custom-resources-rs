@@ -16,7 +16,6 @@ spec:
     listKind: "IntegrationPlatformList"
     plural: "integrationplatforms"
     shortNames:
-      - "ip"
       - "itp"
     singular: "integrationplatform"
   scope: "Namespaced"
@@ -67,7 +66,7 @@ spec:
                       description: "Generic options that can used by any publish strategy"
                       type: "object"
                     baseImage:
-                      description: "a base image that can be used as base layer for all images. It can be useful if you want to provide some custom base image with further utility softwares"
+                      description: "a base image that can be used as base layer for all images. It can be useful if you want to provide some custom base image with further utility software"
                       type: "string"
                     buildCatalogToolTimeout:
                       description: "the timeout (in seconds) to use when creating the build tools container image Deprecated: no longer in use"
@@ -101,6 +100,11 @@ spec:
                             - "fifo"
                             - "sequential"
                           type: "string"
+                        platforms:
+                          description: "The list of platforms used in order to build a container image."
+                          items:
+                            type: "string"
+                          type: "array"
                         requestCPU:
                           description: "The minimum amount of CPU required. Only used for `pod` strategy"
                           type: "string"
@@ -343,7 +347,7 @@ spec:
                     repositories:
                       description: "remote repository used to retrieve Kamelet catalog"
                       items:
-                        description: "IntegrationPlatformKameletRepositorySpec defines the location of the Kamelet catalog to use."
+                        description: "KameletRepositorySpec defines the location of the Kamelet catalog to use."
                         properties:
                           uri:
                             description: "the remote repository in the format github:ORG/REPO/PATH_TO_KAMELETS_FOLDER"
@@ -450,6 +454,11 @@ spec:
                             - "fifo"
                             - "sequential"
                           type: "string"
+                        platforms:
+                          description: "The list of manifest platforms to use to build a container image (default `linux/amd64`)."
+                          items:
+                            type: "string"
+                          type: "array"
                         properties:
                           description: "A list of properties to be provided to the build task"
                           items:
@@ -473,7 +482,7 @@ spec:
                             type: "string"
                           type: "array"
                         tasksFilter:
-                          description: "A list of tasks sorted by the order of execution in a csv format, ie, `<taskName1>,<taskName2>,...`. Mind that you must include also the operator tasks (`builder`, `quarkus-native`, `package`, `jib`, `spectrum`, `s2i`) if you need to execute them. Useful only with `pod` strategy."
+                          description: "A list of tasks sorted by the order of execution in a csv format, ie, `<taskName1>,<taskName2>,...`. Mind that you must include also the operator tasks (`builder`, `quarkus-native`, `package`, `jib`, `s2i`) if you need to execute them. Useful only with `pod` strategy."
                           type: "string"
                         tasksLimitCPU:
                           description: "A list of limit cpu configuration for the specific task with format `<task-name>:<limit-cpu-conf>`."
@@ -515,7 +524,7 @@ spec:
                             type: "string"
                           type: "array"
                         runtimeVersion:
-                          description: "The camel-k-runtime version to use for the integration. It overrides the default version set in the Integration Platform."
+                          description: "The camel-k-runtime version to use for the integration. It overrides the default version set in the Integration Platform. You can use a fixed version (for example \"3.2.3\") or a semantic version (for example \"3.x\") which will try to resolve to the best matching Catalog existing on the cluster."
                           type: "string"
                       type: "object"
                     container:
@@ -661,11 +670,17 @@ spec:
                           format: "int32"
                           type: "integer"
                         rollingUpdateMaxSurge:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
                           description: "The maximum number of pods that can be scheduled above the desired number of pods. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to `25%`."
-                          type: "integer"
+                          x-kubernetes-int-or-string: true
                         rollingUpdateMaxUnavailable:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
                           description: "The maximum number of pods that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to `25%`."
-                          type: "integer"
+                          x-kubernetes-int-or-string: true
                         strategy:
                           description: "The deployment strategy to use to replace existing pods with new ones."
                           enum:
@@ -1133,13 +1148,16 @@ spec:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
                         hotReload:
-                          description: "Enable \"hot reload\" when a secret/configmap mounted is edited (default `false`). The configmap/secret must be marked with `camel.apache.org/integration` label to be taken in account."
+                          description: "Enable \"hot reload\" when a secret/configmap mounted is edited (default `false`). The configmap/secret must be marked with `camel.apache.org/integration` label to be taken in account. The resource will be watched for any kind change, also for changes in metadata."
                           type: "boolean"
                         resources:
                           description: "A list of resources (text or binary content) pointing to configmap/secret. The resources are expected to be any resource type (text or binary content). The destination path can be either a default location or any path specified by the user. Syntax: [configmap|secret]:name[/key][@path], where name represents the resource name, key optionally represents the resource key to be filtered and path represents the destination path"
                           items:
                             type: "string"
                           type: "array"
+                        scanKameletsImplicitLabelSecrets:
+                          description: "Deprecated: include your properties in an explicit property file backed by a secret. Let the operator to scan for secret labeled with `camel.apache.org/kamelet` and `camel.apache.org/kamelet.configuration`. These secrets are mounted to the application and treated as plain properties file with their key/value list (ie .spec.data[\"camel.my-property\"] = my-value) (default `true`)."
+                          type: "boolean"
                         volumes:
                           description: "A list of Persistent Volume Claims to be mounted. Syntax: [pvcname:/container/path]"
                           items:
@@ -1204,20 +1222,20 @@ spec:
                       description: "The configuration of Platform trait"
                       properties:
                         auto:
-                          description: "To automatically detect from the environment if a default platform can be created (it will be created on OpenShift only)."
+                          description: "To automatically detect from the environment if a default platform can be created (it will be created on OpenShift or when a registry address is set). Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility"
                           type: "boolean"
                         configuration:
                           description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         createDefault:
-                          description: "To create a default (empty) platform when the platform is missing."
+                          description: "To create a default (empty) platform when the platform is missing. Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility"
                           type: "boolean"
                         enabled:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
                         global:
-                          description: "Indicates if the platform should be created globally in the case of global operator (default true)."
+                          description: "Indicates if the platform should be created globally in the case of global operator (default true). Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility"
                           type: "boolean"
                       type: "object"
                     pod:
@@ -1306,7 +1324,7 @@ spec:
                           type: "array"
                       type: "object"
                     registry:
-                      description: "The configuration of Registry trait"
+                      description: "The configuration of Registry trait Deprecated: use jvm trait or read documentation."
                       properties:
                         configuration:
                           description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."
@@ -1463,7 +1481,7 @@ spec:
                       description: "Generic options that can used by any publish strategy"
                       type: "object"
                     baseImage:
-                      description: "a base image that can be used as base layer for all images. It can be useful if you want to provide some custom base image with further utility softwares"
+                      description: "a base image that can be used as base layer for all images. It can be useful if you want to provide some custom base image with further utility software"
                       type: "string"
                     buildCatalogToolTimeout:
                       description: "the timeout (in seconds) to use when creating the build tools container image Deprecated: no longer in use"
@@ -1497,6 +1515,11 @@ spec:
                             - "fifo"
                             - "sequential"
                           type: "string"
+                        platforms:
+                          description: "The list of platforms used in order to build a container image."
+                          items:
+                            type: "string"
+                          type: "array"
                         requestCPU:
                           description: "The minimum amount of CPU required. Only used for `pod` strategy"
                           type: "string"
@@ -1774,7 +1797,7 @@ spec:
                     repositories:
                       description: "remote repository used to retrieve Kamelet catalog"
                       items:
-                        description: "IntegrationPlatformKameletRepositorySpec defines the location of the Kamelet catalog to use."
+                        description: "KameletRepositorySpec defines the location of the Kamelet catalog to use."
                         properties:
                           uri:
                             description: "the remote repository in the format github:ORG/REPO/PATH_TO_KAMELETS_FOLDER"
@@ -1888,6 +1911,11 @@ spec:
                             - "fifo"
                             - "sequential"
                           type: "string"
+                        platforms:
+                          description: "The list of manifest platforms to use to build a container image (default `linux/amd64`)."
+                          items:
+                            type: "string"
+                          type: "array"
                         properties:
                           description: "A list of properties to be provided to the build task"
                           items:
@@ -1911,7 +1939,7 @@ spec:
                             type: "string"
                           type: "array"
                         tasksFilter:
-                          description: "A list of tasks sorted by the order of execution in a csv format, ie, `<taskName1>,<taskName2>,...`. Mind that you must include also the operator tasks (`builder`, `quarkus-native`, `package`, `jib`, `spectrum`, `s2i`) if you need to execute them. Useful only with `pod` strategy."
+                          description: "A list of tasks sorted by the order of execution in a csv format, ie, `<taskName1>,<taskName2>,...`. Mind that you must include also the operator tasks (`builder`, `quarkus-native`, `package`, `jib`, `s2i`) if you need to execute them. Useful only with `pod` strategy."
                           type: "string"
                         tasksLimitCPU:
                           description: "A list of limit cpu configuration for the specific task with format `<task-name>:<limit-cpu-conf>`."
@@ -1953,7 +1981,7 @@ spec:
                             type: "string"
                           type: "array"
                         runtimeVersion:
-                          description: "The camel-k-runtime version to use for the integration. It overrides the default version set in the Integration Platform."
+                          description: "The camel-k-runtime version to use for the integration. It overrides the default version set in the Integration Platform. You can use a fixed version (for example \"3.2.3\") or a semantic version (for example \"3.x\") which will try to resolve to the best matching Catalog existing on the cluster."
                           type: "string"
                       type: "object"
                     container:
@@ -2099,11 +2127,17 @@ spec:
                           format: "int32"
                           type: "integer"
                         rollingUpdateMaxSurge:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
                           description: "The maximum number of pods that can be scheduled above the desired number of pods. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to `25%`."
-                          type: "integer"
+                          x-kubernetes-int-or-string: true
                         rollingUpdateMaxUnavailable:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
                           description: "The maximum number of pods that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to `25%`."
-                          type: "integer"
+                          x-kubernetes-int-or-string: true
                         strategy:
                           description: "The deployment strategy to use to replace existing pods with new ones."
                           enum:
@@ -2571,13 +2605,16 @@ spec:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
                         hotReload:
-                          description: "Enable \"hot reload\" when a secret/configmap mounted is edited (default `false`). The configmap/secret must be marked with `camel.apache.org/integration` label to be taken in account."
+                          description: "Enable \"hot reload\" when a secret/configmap mounted is edited (default `false`). The configmap/secret must be marked with `camel.apache.org/integration` label to be taken in account. The resource will be watched for any kind change, also for changes in metadata."
                           type: "boolean"
                         resources:
                           description: "A list of resources (text or binary content) pointing to configmap/secret. The resources are expected to be any resource type (text or binary content). The destination path can be either a default location or any path specified by the user. Syntax: [configmap|secret]:name[/key][@path], where name represents the resource name, key optionally represents the resource key to be filtered and path represents the destination path"
                           items:
                             type: "string"
                           type: "array"
+                        scanKameletsImplicitLabelSecrets:
+                          description: "Deprecated: include your properties in an explicit property file backed by a secret. Let the operator to scan for secret labeled with `camel.apache.org/kamelet` and `camel.apache.org/kamelet.configuration`. These secrets are mounted to the application and treated as plain properties file with their key/value list (ie .spec.data[\"camel.my-property\"] = my-value) (default `true`)."
+                          type: "boolean"
                         volumes:
                           description: "A list of Persistent Volume Claims to be mounted. Syntax: [pvcname:/container/path]"
                           items:
@@ -2642,20 +2679,20 @@ spec:
                       description: "The configuration of Platform trait"
                       properties:
                         auto:
-                          description: "To automatically detect from the environment if a default platform can be created (it will be created on OpenShift only)."
+                          description: "To automatically detect from the environment if a default platform can be created (it will be created on OpenShift or when a registry address is set). Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility"
                           type: "boolean"
                         configuration:
                           description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         createDefault:
-                          description: "To create a default (empty) platform when the platform is missing."
+                          description: "To create a default (empty) platform when the platform is missing. Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility"
                           type: "boolean"
                         enabled:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
                         global:
-                          description: "Indicates if the platform should be created globally in the case of global operator (default true)."
+                          description: "Indicates if the platform should be created globally in the case of global operator (default true). Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility"
                           type: "boolean"
                       type: "object"
                     pod:
@@ -2744,7 +2781,7 @@ spec:
                           type: "array"
                       type: "object"
                     registry:
-                      description: "The configuration of Registry trait"
+                      description: "The configuration of Registry trait Deprecated: use jvm trait or read documentation."
                       properties:
                         configuration:
                           description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."

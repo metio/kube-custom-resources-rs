@@ -49,7 +49,9 @@ pub enum BackupStorageLocationAccessMode {
 pub struct BackupStorageLocationCredential {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -73,18 +75,27 @@ pub struct BackupStorageLocationObjectStorage {
 /// BackupStorageLocationStatus defines the observed state of BackupStorageLocation
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStorageLocationStatus {
-    /// AccessMode is an unused field. 
-    ///  Deprecated: there is now an AccessMode field on the Spec and this field will be removed entirely as of v2.0.
+    /// AccessMode is an unused field.
+    /// 
+    /// 
+    /// Deprecated: there is now an AccessMode field on the Spec and this field
+    /// will be removed entirely as of v2.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<BackupStorageLocationStatusAccessMode>,
-    /// LastSyncedRevision is the value of the `metadata/revision` file in the backup storage location the last time the BSL's contents were synced into the cluster. 
-    ///  Deprecated: this field is no longer updated or used for detecting changes to the location's contents and will be removed entirely in v2.0.
+    /// LastSyncedRevision is the value of the `metadata/revision` file in the backup
+    /// storage location the last time the BSL's contents were synced into the cluster.
+    /// 
+    /// 
+    /// Deprecated: this field is no longer updated or used for detecting changes to
+    /// the location's contents and will be removed entirely in v2.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncedRevision")]
     pub last_synced_revision: Option<String>,
-    /// LastSyncedTime is the last time the contents of the location were synced into the cluster.
+    /// LastSyncedTime is the last time the contents of the location were synced into
+    /// the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncedTime")]
     pub last_synced_time: Option<String>,
-    /// LastValidationTime is the last time the backup store location was validated the cluster.
+    /// LastValidationTime is the last time the backup store location was validated
+    /// the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastValidationTime")]
     pub last_validation_time: Option<String>,
     /// Message is a message about the backup storage location's status.

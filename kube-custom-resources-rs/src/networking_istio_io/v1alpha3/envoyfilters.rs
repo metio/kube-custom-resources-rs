@@ -18,6 +18,9 @@ pub struct EnvoyFilterSpec {
     /// Priority defines the order in which patch sets are applied within a context.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
+    /// Optional.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefs")]
+    pub target_refs: Option<Vec<EnvoyFilterTargetRefs>>,
     /// Criteria used to select the specific set of pods/VMs on which this patch configuration should be applied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadSelector")]
     pub workload_selector: Option<EnvoyFilterWorkloadSelector>,
@@ -297,6 +300,22 @@ pub enum EnvoyFilterConfigPatchesPatchOperation {
     InsertFirst,
     #[serde(rename = "REPLACE")]
     Replace,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EnvoyFilterTargetRefs {
+    /// group is the group of the target resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// kind is kind of the target resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// name is the name of the target resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// namespace is the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Criteria used to select the specific set of pods/VMs on which this patch configuration should be applied.

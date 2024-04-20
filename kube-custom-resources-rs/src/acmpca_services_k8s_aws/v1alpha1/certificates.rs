@@ -43,28 +43,8 @@ pub struct CertificateSpec {
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityRef")]
     pub certificate_authority_ref: Option<CertificateCertificateAuthorityRef>,
-    /// The certificate signing request (CSR) for the certificate you want to issue.
-    /// As an example, you can use the following OpenSSL command to create the CSR
-    /// and a 2048 bit RSA private key.
-    /// 
-    /// 
-    /// openssl req -new -newkey rsa:2048 -days 365 -keyout private/test_cert_priv_key.pem
-    /// -out csr/test_cert_.csr
-    /// 
-    /// 
-    /// If you have a configuration file, you can then use the following OpenSSL
-    /// command. The usr_cert block in the configuration file contains your X509
-    /// version 3 extensions.
-    /// 
-    /// 
-    /// openssl req -new -config openssl_rsa.cnf -extensions usr_cert -newkey rsa:2048
-    /// -days 365 -keyout private/test_cert_priv_key.pem -out csr/test_cert_.csr
-    /// 
-    /// 
-    /// Note: A CSR must provide either a subject name or a subject alternative name
-    /// or the request will be rejected.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub csr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateSigningRequest")]
+    pub certificate_signing_request: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
@@ -73,8 +53,8 @@ pub struct CertificateSpec {
     /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csrRef")]
-    pub csr_ref: Option<CertificateCsrRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateSigningRequestRef")]
+    pub certificate_signing_request_ref: Option<CertificateCertificateSigningRequestRef>,
     /// The name of the algorithm that will be used to sign the certificate to be
     /// issued.
     /// 
@@ -453,17 +433,17 @@ pub struct CertificateCertificateAuthorityRefFrom {
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CertificateCsrRef {
+pub struct CertificateCertificateSigningRequestRef {
     /// AWSResourceReference provides all the values necessary to reference another
     /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub from: Option<CertificateCsrRefFrom>,
+    pub from: Option<CertificateCertificateSigningRequestRefFrom>,
 }
 
 /// AWSResourceReference provides all the values necessary to reference another
 /// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CertificateCsrRefFrom {
+pub struct CertificateCertificateSigningRequestRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

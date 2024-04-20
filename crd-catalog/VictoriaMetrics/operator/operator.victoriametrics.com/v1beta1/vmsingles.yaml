@@ -235,9 +235,6 @@ spec:
                       description: "Name must be unique within a namespace. Is required when creating resources, although\nsome resources may allow a client to request the generation of an appropriate name\nautomatically. Name is primarily intended for creation idempotence and configuration\ndefinition.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names"
                       type: "string"
                   type: "object"
-                podSecurityPolicyName:
-                  description: "PodSecurityPolicyName - defines name for podSecurityPolicy\nin case of empty value, prefixedName will be used."
-                  type: "string"
                 port:
                   description: "Port listen port"
                   type: "string"
@@ -560,8 +557,8 @@ spec:
                                   format: "int64"
                                   type: "integer"
                                 regex:
-                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'"
-                                  type: "string"
+                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                                  x-kubernetes-preserve-unknown-fields: true
                                 replacement:
                                   description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
                                   type: "string"
@@ -616,8 +613,8 @@ spec:
                                   format: "int64"
                                   type: "integer"
                                 regex:
-                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'"
-                                  type: "string"
+                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                                  x-kubernetes-preserve-unknown-fields: true
                                 replacement:
                                   description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
                                   type: "string"

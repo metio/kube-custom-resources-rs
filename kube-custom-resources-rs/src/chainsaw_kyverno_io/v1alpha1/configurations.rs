@@ -11,7 +11,8 @@ use std::collections::BTreeMap;
 #[kube(group = "chainsaw.kyverno.io", version = "v1alpha1", kind = "Configuration", plural = "configurations")]
 #[kube(schema = "disabled")]
 pub struct ConfigurationSpec {
-    /// Catch defines what the tests steps will execute when an error happens. This will be combined with catch handlers defined at the test and step levels.
+    /// Catch defines what the tests steps will execute when an error happens.
+    /// This will be combined with catch handlers defined at the test and step levels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub catch: Option<Vec<ConfigurationCatch>>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -35,7 +36,9 @@ pub struct ConfigurationSpec {
     /// IncludeTestRegex is used to include tests based on a regular expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeTestRegex")]
     pub include_test_regex: Option<String>,
-    /// Namespace defines the namespace to use for tests. If not specified, every test will execute in a random ephemeral namespace unless the namespace is overridden in a the test spec.
+    /// Namespace defines the namespace to use for tests.
+    /// If not specified, every test will execute in a random ephemeral namespace
+    /// unless the namespace is overridden in a the test spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// NamespaceTemplate defines a template to create the test namespace.
@@ -47,7 +50,8 @@ pub struct ConfigurationSpec {
     /// RepeatCount indicates how many times the tests should be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repeatCount")]
     pub repeat_count: Option<i64>,
-    /// ReportFormat determines test report format (JSON|XML|nil) nil == no report. maps to report.Type, however we don't want generated.deepcopy to have reference to it.
+    /// ReportFormat determines test report format (JSON|XML|nil) nil == no report.
+    /// maps to report.Type, however we don't want generated.deepcopy to have reference to it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportFormat")]
     pub report_format: Option<ConfigurationReportFormat>,
     /// ReportName defines the name of report to create. It defaults to "chainsaw-report".
@@ -62,7 +66,8 @@ pub struct ConfigurationSpec {
     /// Template determines whether resources should be considered for templating.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<bool>,
-    /// TestFile is the name of the file containing the test to run. If no extension is provided, chainsaw will try with .yaml first and .yml if needed.
+    /// TestFile is the name of the file containing the test to run.
+    /// If no extension is provided, chainsaw will try with .yaml first and .yml if needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "testFile")]
     pub test_file: Option<String>,
     /// Global timeouts configuration. Applies to all tests/test steps if not overridden.
@@ -198,7 +203,8 @@ pub struct ConfigurationCatchDeleteBindings {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationCatchDeleteExpect {
     /// Check defines the verification statement.
@@ -214,15 +220,18 @@ pub struct ConfigurationCatchDeleteRef {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -236,13 +245,16 @@ pub struct ConfigurationCatchDescribe {
     /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -268,10 +280,12 @@ pub struct ConfigurationCatchEvents {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Selector defines labels selector.
@@ -294,13 +308,16 @@ pub struct ConfigurationCatchGet {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -323,16 +340,20 @@ pub struct ConfigurationCatchPodLogs {
     /// Container in pod to get logs from else --all-containers is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Selector defines labels selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Tail is the number of last lines to collect from pods. If omitted or zero, then the default is 10 if you use a selector, or -1 (all) if you use a pod name. This matches default behavior of `kubectl logs`.
+    /// Tail is the number of last lines to collect from pods. If omitted or zero,
+    /// then the default is 10 if you use a selector, or -1 (all) if you use a pod name.
+    /// This matches default behavior of `kubectl logs`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tail: Option<i64>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
@@ -421,13 +442,16 @@ pub struct ConfigurationCatchWait {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -450,6 +474,9 @@ pub struct ConfigurationCatchWaitFor {
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<ConfigurationCatchWaitForDeletion>,
+    /// JsonPath specifies the json path condition to wait for.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<ConfigurationCatchWaitForJsonPath>,
 }
 
 /// Condition specifies the condition to wait for.
@@ -465,6 +492,15 @@ pub struct ConfigurationCatchWaitForCondition {
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationCatchWaitForDeletion {
+}
+
+/// JsonPath specifies the json path condition to wait for.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationCatchWaitForJsonPath {
+    /// Path defines the json path to wait for, e.g. '{.status.phase}'.
+    pub path: String,
+    /// Value defines the expected value to wait for, e.g., "Running".
+    pub value: String,
 }
 
 /// Clusters holds a registry to clusters to support multi-cluster tests.

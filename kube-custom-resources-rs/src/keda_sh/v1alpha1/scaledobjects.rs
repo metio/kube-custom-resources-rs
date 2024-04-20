@@ -23,6 +23,8 @@ pub struct ScaledObjectSpec {
     pub fallback: Option<ScaledObjectFallback>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleReplicaCount")]
     pub idle_replica_count: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialCooldownPeriod")]
+    pub initial_cooldown_period: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicaCount")]
     pub max_replica_count: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicaCount")]

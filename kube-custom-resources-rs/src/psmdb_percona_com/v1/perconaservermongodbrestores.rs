@@ -77,8 +77,12 @@ pub struct PerconaServerMongoDBRestoreBackupSourceS3 {
     pub bucket: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
     pub credentials_secret: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugLogLevels")]
+    pub debug_log_levels: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointUrl")]
     pub endpoint_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forcePathStyle")]
+    pub force_path_style: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
     pub insecure_skip_tls_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUploadParts")]
@@ -87,12 +91,24 @@ pub struct PerconaServerMongoDBRestoreBackupSourceS3 {
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retryer: Option<PerconaServerMongoDBRestoreBackupSourceS3Retryer>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSideEncryption")]
     pub server_side_encryption: Option<PerconaServerMongoDBRestoreBackupSourceS3ServerSideEncryption>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadPartSize")]
     pub upload_part_size: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDBRestoreBackupSourceS3Retryer {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryDelay")]
+    pub max_retry_delay: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minRetryDelay")]
+    pub min_retry_delay: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numMaxRetries")]
+    pub num_max_retries: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

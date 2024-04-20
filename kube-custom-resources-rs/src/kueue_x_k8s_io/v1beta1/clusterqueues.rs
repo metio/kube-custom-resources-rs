@@ -14,9 +14,14 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "ClusterQueueStatus")]
 #[kube(schema = "disabled")]
 pub struct ClusterQueueSpec {
-    /// admissionChecks lists the AdmissionChecks required by this ClusterQueue
+    /// admissionChecks lists the AdmissionChecks required by this ClusterQueue.
+    /// Cannot be used along with AdmissionCheckStrategy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecks")]
     pub admission_checks: Option<Vec<String>>,
+    /// admissionCheckStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.
+    /// This property cannot be used in conjunction with the 'admissionChecks' property.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecksStrategy")]
+    pub admission_checks_strategy: Option<ClusterQueueAdmissionChecksStrategy>,
     /// cohort that this ClusterQueue belongs to. CQs that belong to the
     /// same cohort can borrow unused resources from each other.
     /// 
@@ -100,6 +105,26 @@ pub struct ClusterQueueSpec {
     /// - Hold - Admitted workloads will run to completion and Reserving workloads will cancel the reservation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopPolicy")]
     pub stop_policy: Option<ClusterQueueStopPolicy>,
+}
+
+/// admissionCheckStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.
+/// This property cannot be used in conjunction with the 'admissionChecks' property.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterQueueAdmissionChecksStrategy {
+    /// admissionChecks is a list of strategies for AdmissionChecks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecks")]
+    pub admission_checks: Option<Vec<ClusterQueueAdmissionChecksStrategyAdmissionChecks>>,
+}
+
+/// AdmissionCheckStrategyRule defines rules for a single AdmissionCheck
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterQueueAdmissionChecksStrategyAdmissionChecks {
+    /// name is an AdmissionCheck's name.
+    pub name: String,
+    /// onFlavors is a list of ResourceFlavors' names that this AdmissionCheck should run for.
+    /// If empty, the AdmissionCheck will run for all workloads submitted to the ClusterQueue.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onFlavors")]
+    pub on_flavors: Option<Vec<String>>,
 }
 
 /// flavorFungibility defines whether a workload should try the next flavor

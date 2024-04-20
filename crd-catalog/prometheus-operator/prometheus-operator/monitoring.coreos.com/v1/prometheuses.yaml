@@ -1096,6 +1096,9 @@ spec:
                     deny:
                       type: "boolean"
                   type: "object"
+                automountServiceAccountToken:
+                  description: "AutomountServiceAccountToken indicates whether a service account token should be automatically mounted in the pod.\nIf the field isn't set, the operator mounts the service account token by default.\n\n\n**Warning:** be aware that by default, Prometheus requires the service account token for Kubernetes service discovery.\nIt is possible to use strategic merge patch to project the service account token into the 'prometheus' container."
+                  type: "boolean"
                 baseImage:
                   description: "Deprecated: use 'spec.image' instead."
                   type: "string"
@@ -1986,7 +1989,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 enforcedNamespaceLabel:
-                  description: "When not empty, a label will be added to\n\n\n1. All metrics scraped from `ServiceMonitor`, `PodMonitor`, `Probe` and `ScrapeConfig` objects.\n2. All metrics generated from recording rules defined in `PrometheusRule` objects.\n3. All alerts generated from alerting rules defined in `PrometheusRule` objects.\n4. All vector selectors of PromQL expressions defined in `PrometheusRule` objects.\n\n\nThe label will not added for objects referenced in `spec.excludedFromEnforcement`.\n\n\nThe label's name is this field's value.\nThe label's value is the namespace of the `ServiceMonitor`,\n`PodMonitor`, `Probe` or `PrometheusRule` object."
+                  description: "When not empty, a label will be added to:\n\n\n1. All metrics scraped from `ServiceMonitor`, `PodMonitor`, `Probe` and `ScrapeConfig` objects.\n2. All metrics generated from recording rules defined in `PrometheusRule` objects.\n3. All alerts generated from alerting rules defined in `PrometheusRule` objects.\n4. All vector selectors of PromQL expressions defined in `PrometheusRule` objects.\n\n\nThe label will not added for objects referenced in `spec.excludedFromEnforcement`.\n\n\nThe label's name is this field's value.\nThe label's value is the namespace of the `ServiceMonitor`,\n`PodMonitor`, `Probe`, `PrometheusRule` or `ScrapeConfig` object."
                   type: "string"
                 enforcedSampleLimit:
                   description: "When defined, enforcedSampleLimit specifies a global limit on the number\nof scraped samples that will be accepted. This overrides any\n`spec.sampleLimit` set by ServiceMonitor, PodMonitor, Probe objects\nunless `spec.sampleLimit` is greater than zero and less than\n`spec.enforcedSampleLimit`.\n\n\nIt is meant to be used by admins to keep the overall number of\nsamples/series under a desired limit."

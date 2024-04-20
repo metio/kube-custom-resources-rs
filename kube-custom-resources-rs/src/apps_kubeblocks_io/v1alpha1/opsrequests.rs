@@ -230,39 +230,37 @@ pub struct OpsRequestHorizontalScaling {
     pub replicas: i32,
 }
 
-/// InstanceTemplate defines values to override in pod template.
+/// InstanceTemplate allows customization of individual replica configurations within a Component, without altering the base component template defined in ClusterComponentSpec. It enables the application of distinct settings to specific instances (replicas), providing flexibility while maintaining a common configuration baseline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestHorizontalScalingInstances {
-    /// Defines RuntimeClass to override.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "RuntimeClassName")]
-    pub runtime_class_name: Option<String>,
-    /// Defines annotations to override. Add new or override existing annotations.
+    /// Specifies a map of key-value pairs to be merged into the Pod's existing annotations. Existing keys will have their values overwritten, while new keys will be added to the annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Defines Env to override. Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<OpsRequestHorizontalScalingInstancesEnv>>,
-    /// Defines image to override. Will override the first container's image of the pod.
+    /// Specifies an override for the first container's image in the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Defines labels to override. Add new or override existing labels.
+    /// Specifies a map of key-value pairs that will be merged into the Pod's existing labels. Values for existing keys will be overwritten, and new keys will be added.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Specifies the name of the template. Each instance of the template derives its name from the Component's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(component.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default.
+    /// Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns.
     pub name: String,
-    /// Defines NodeName to override.
+    /// Specifies the name of the node where the Pod should be scheduled. If set, the Pod will be directly assigned to the specified node, bypassing the Kubernetes scheduler. This is useful for controlling Pod placement on specific nodes. 
+    ///  Important considerations: - `nodeName` bypasses default scheduling constraints (e.g., resource requirements, node selectors, affinity rules). - It is the user's responsibility to ensure the node is suitable for the Pod. - If the node is unavailable, the Pod will remain in "Pending" state until the node is available or the Pod is deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
     /// Defines NodeSelector to override.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// Number of replicas of this template. Default is 1.
+    /// Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Defines Resources to override. Will override the first container's resources of the pod.
+    /// Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpsRequestHorizontalScalingInstancesResources>,
-    /// Defines Tolerations to override. Add new or override existing tolerations.
+    /// Tolerations specifies a list of tolerations to be applied to the Pod, allowing it to tolerate node taints. This field can be used to add new tolerations or override existing ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<OpsRequestHorizontalScalingInstancesTolerations>>,
     /// Defines VolumeClaimTemplates to override. Add new or override existing volume claim templates.
@@ -356,7 +354,7 @@ pub struct OpsRequestHorizontalScalingInstancesEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Defines Resources to override. Will override the first container's resources of the pod.
+/// Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestHorizontalScalingInstancesResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -2170,39 +2168,37 @@ pub struct OpsRequestStatusComponentsOverrideByClaims {
     pub name: String,
 }
 
-/// InstanceTemplate defines values to override in pod template.
+/// InstanceTemplate allows customization of individual replica configurations within a Component, without altering the base component template defined in ClusterComponentSpec. It enables the application of distinct settings to specific instances (replicas), providing flexibility while maintaining a common configuration baseline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusComponentsOverrideByInstances {
-    /// Defines RuntimeClass to override.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "RuntimeClassName")]
-    pub runtime_class_name: Option<String>,
-    /// Defines annotations to override. Add new or override existing annotations.
+    /// Specifies a map of key-value pairs to be merged into the Pod's existing annotations. Existing keys will have their values overwritten, while new keys will be added to the annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Defines Env to override. Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<OpsRequestStatusComponentsOverrideByInstancesEnv>>,
-    /// Defines image to override. Will override the first container's image of the pod.
+    /// Specifies an override for the first container's image in the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Defines labels to override. Add new or override existing labels.
+    /// Specifies a map of key-value pairs that will be merged into the Pod's existing labels. Values for existing keys will be overwritten, and new keys will be added.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Specifies the name of the template. Each instance of the template derives its name from the Component's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(component.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default.
+    /// Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns.
     pub name: String,
-    /// Defines NodeName to override.
+    /// Specifies the name of the node where the Pod should be scheduled. If set, the Pod will be directly assigned to the specified node, bypassing the Kubernetes scheduler. This is useful for controlling Pod placement on specific nodes. 
+    ///  Important considerations: - `nodeName` bypasses default scheduling constraints (e.g., resource requirements, node selectors, affinity rules). - It is the user's responsibility to ensure the node is suitable for the Pod. - If the node is unavailable, the Pod will remain in "Pending" state until the node is available or the Pod is deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
     /// Defines NodeSelector to override.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// Number of replicas of this template. Default is 1.
+    /// Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Defines Resources to override. Will override the first container's resources of the pod.
+    /// Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpsRequestStatusComponentsOverrideByInstancesResources>,
-    /// Defines Tolerations to override. Add new or override existing tolerations.
+    /// Tolerations specifies a list of tolerations to be applied to the Pod, allowing it to tolerate node taints. This field can be used to add new tolerations or override existing ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<OpsRequestStatusComponentsOverrideByInstancesTolerations>>,
     /// Defines VolumeClaimTemplates to override. Add new or override existing volume claim templates.
@@ -2296,7 +2292,7 @@ pub struct OpsRequestStatusComponentsOverrideByInstancesEnvValueFromSecretKeyRef
     pub optional: Option<bool>,
 }
 
-/// Defines Resources to override. Will override the first container's resources of the pod.
+/// Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusComponentsOverrideByInstancesResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -3521,7 +3517,7 @@ pub struct OpsRequestStatusComponentsOverrideByServices {
     /// Indicates whether to generate individual services for each pod. If set to true, a separate service will be created for each pod in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podService")]
     pub pod_service: Option<bool>,
-    /// Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. 
+    /// Determines how the Service is exposed. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`. 
     ///  - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. 
     ///  More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
@@ -3687,39 +3683,37 @@ pub struct OpsRequestStatusLastConfigurationComponentsClaims {
     pub name: String,
 }
 
-/// InstanceTemplate defines values to override in pod template.
+/// InstanceTemplate allows customization of individual replica configurations within a Component, without altering the base component template defined in ClusterComponentSpec. It enables the application of distinct settings to specific instances (replicas), providing flexibility while maintaining a common configuration baseline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstances {
-    /// Defines RuntimeClass to override.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "RuntimeClassName")]
-    pub runtime_class_name: Option<String>,
-    /// Defines annotations to override. Add new or override existing annotations.
+    /// Specifies a map of key-value pairs to be merged into the Pod's existing annotations. Existing keys will have their values overwritten, while new keys will be added to the annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Defines Env to override. Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesEnv>>,
-    /// Defines image to override. Will override the first container's image of the pod.
+    /// Specifies an override for the first container's image in the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Defines labels to override. Add new or override existing labels.
+    /// Specifies a map of key-value pairs that will be merged into the Pod's existing labels. Values for existing keys will be overwritten, and new keys will be added.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Specifies the name of the template. Each instance of the template derives its name from the Component's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(component.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default.
+    /// Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns.
     pub name: String,
-    /// Defines NodeName to override.
+    /// Specifies the name of the node where the Pod should be scheduled. If set, the Pod will be directly assigned to the specified node, bypassing the Kubernetes scheduler. This is useful for controlling Pod placement on specific nodes. 
+    ///  Important considerations: - `nodeName` bypasses default scheduling constraints (e.g., resource requirements, node selectors, affinity rules). - It is the user's responsibility to ensure the node is suitable for the Pod. - If the node is unavailable, the Pod will remain in "Pending" state until the node is available or the Pod is deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
     /// Defines NodeSelector to override.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// Number of replicas of this template. Default is 1.
+    /// Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Defines Resources to override. Will override the first container's resources of the pod.
+    /// Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpsRequestStatusLastConfigurationComponentsInstancesResources>,
-    /// Defines Tolerations to override. Add new or override existing tolerations.
+    /// Tolerations specifies a list of tolerations to be applied to the Pod, allowing it to tolerate node taints. This field can be used to add new tolerations or override existing ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesTolerations>>,
     /// Defines VolumeClaimTemplates to override. Add new or override existing volume claim templates.
@@ -3813,7 +3807,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromSecre
     pub optional: Option<bool>,
 }
 
-/// Defines Resources to override. Will override the first container's resources of the pod.
+/// Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -5038,7 +5032,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsServices {
     /// Indicates whether to generate individual services for each pod. If set to true, a separate service will be created for each pod in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podService")]
     pub pod_service: Option<bool>,
-    /// Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. 
+    /// Determines how the Service is exposed. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`. 
     ///  - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. 
     ///  More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]

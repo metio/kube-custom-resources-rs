@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.12.0"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "tests.chainsaw.kyverno.io"
 spec:
   group: "chainsaw.kyverno.io"
@@ -19,10 +19,10 @@ spec:
           description: "Test is the resource that contains a test definition."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -47,7 +47,7 @@ spec:
                     type: "object"
                   type: "array"
                 catch:
-                  description: "Catch defines what the steps will execute when an error happens. This will be combined with catch handlers defined at the step level."
+                  description: "Catch defines what the steps will execute when an error happens.\nThis will be combined with catch handlers defined at the step level."
                   items:
                     description: "Catch defines actions to be executed on failure."
                     properties:
@@ -159,7 +159,7 @@ spec:
                           expect:
                             description: "Expect defines a list of matched checks to validate the operation outcome."
                             items:
-                              description: "Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered."
+                              description: "Expectation represents a check to be applied on the result of an operation\nwith a match filter to determine if the verification should be considered."
                               properties:
                                 check:
                                   description: "Check defines the verification statement."
@@ -180,7 +180,7 @@ spec:
                                 description: "API version of the referent."
                                 type: "string"
                               kind:
-                                description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                 type: "string"
                               labels:
                                 additionalProperties:
@@ -188,10 +188,10 @@ spec:
                                 description: "Label selector to match objects to delete"
                                 type: "object"
                               name:
-                                description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                 type: "string"
                               namespace:
-                                description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                 type: "string"
                             required:
                               - "apiVersion"
@@ -216,13 +216,13 @@ spec:
                             description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
                             type: "string"
                           kind:
-                            description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                            description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                             type: "string"
                           name:
-                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
                           namespace:
-                            description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                            description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                             type: "string"
                           resource:
                             description: "Resource name of the referent."
@@ -251,10 +251,10 @@ spec:
                             pattern: "^(?:json|yaml|\\(.+\\))$"
                             type: "string"
                           name:
-                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
                           namespace:
-                            description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                            description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                             type: "string"
                           selector:
                             description: "Selector defines labels selector."
@@ -277,13 +277,13 @@ spec:
                             pattern: "^(?:json|yaml|\\(.+\\))$"
                             type: "string"
                           kind:
-                            description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                            description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                             type: "string"
                           name:
-                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
                           namespace:
-                            description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                            description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                             type: "string"
                           resource:
                             description: "Resource name of the referent."
@@ -305,16 +305,16 @@ spec:
                             description: "Container in pod to get logs from else --all-containers is used."
                             type: "string"
                           name:
-                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
                           namespace:
-                            description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                            description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                             type: "string"
                           selector:
                             description: "Selector defines labels selector."
                             type: "string"
                           tail:
-                            description: "Tail is the number of last lines to collect from pods. If omitted or zero, then the default is 10 if you use a selector, or -1 (all) if you use a pod name. This matches default behavior of `kubectl logs`."
+                            description: "Tail is the number of last lines to collect from pods. If omitted or zero,\nthen the default is 10 if you use a selector, or -1 (all) if you use a pod name.\nThis matches default behavior of `kubectl logs`."
                             type: "integer"
                           timeout:
                             description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
@@ -431,19 +431,32 @@ spec:
                               deletion:
                                 description: "Deletion specifies parameters for waiting on a resource's deletion."
                                 type: "object"
+                              jsonPath:
+                                description: "JsonPath specifies the json path condition to wait for."
+                                properties:
+                                  path:
+                                    description: "Path defines the json path to wait for, e.g. '{.status.phase}'."
+                                    type: "string"
+                                  value:
+                                    description: "Value defines the expected value to wait for, e.g., \"Running\"."
+                                    type: "string"
+                                required:
+                                  - "path"
+                                  - "value"
+                                type: "object"
                             type: "object"
                           format:
                             description: "Format determines the output format (json or yaml)."
                             pattern: "^(?:json|yaml|\\(.+\\))$"
                             type: "string"
                           kind:
-                            description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                            description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                             type: "string"
                           name:
-                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
                           namespace:
-                            description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                            description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                             type: "string"
                           resource:
                             description: "Resource name of the referent."
@@ -622,7 +635,7 @@ spec:
                                 expect:
                                   description: "Expect defines a list of matched checks to validate the operation outcome."
                                   items:
-                                    description: "Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered."
+                                    description: "Expectation represents a check to be applied on the result of an operation\nwith a match filter to determine if the verification should be considered."
                                     properties:
                                       check:
                                         description: "Check defines the verification statement."
@@ -643,7 +656,7 @@ spec:
                                       description: "API version of the referent."
                                       type: "string"
                                     kind:
-                                      description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                      description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                       type: "string"
                                     labels:
                                       additionalProperties:
@@ -651,10 +664,10 @@ spec:
                                       description: "Label selector to match objects to delete"
                                       type: "object"
                                     name:
-                                      description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     namespace:
-                                      description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                      description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                       type: "string"
                                   required:
                                     - "apiVersion"
@@ -679,13 +692,13 @@ spec:
                                   description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
                                   type: "string"
                                 kind:
-                                  description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                  description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 resource:
                                   description: "Resource name of the referent."
@@ -714,10 +727,10 @@ spec:
                                   pattern: "^(?:json|yaml|\\(.+\\))$"
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
@@ -740,13 +753,13 @@ spec:
                                   pattern: "^(?:json|yaml|\\(.+\\))$"
                                   type: "string"
                                 kind:
-                                  description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                  description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 resource:
                                   description: "Resource name of the referent."
@@ -768,16 +781,16 @@ spec:
                                   description: "Container in pod to get logs from else --all-containers is used."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
                                   type: "string"
                                 tail:
-                                  description: "Tail is the number of last lines to collect from pods. If omitted or zero, then the default is 10 if you use a selector, or -1 (all) if you use a pod name. This matches default behavior of `kubectl logs`."
+                                  description: "Tail is the number of last lines to collect from pods. If omitted or zero,\nthen the default is 10 if you use a selector, or -1 (all) if you use a pod name.\nThis matches default behavior of `kubectl logs`."
                                   type: "integer"
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
@@ -894,19 +907,32 @@ spec:
                                     deletion:
                                       description: "Deletion specifies parameters for waiting on a resource's deletion."
                                       type: "object"
+                                    jsonPath:
+                                      description: "JsonPath specifies the json path condition to wait for."
+                                      properties:
+                                        path:
+                                          description: "Path defines the json path to wait for, e.g. '{.status.phase}'."
+                                          type: "string"
+                                        value:
+                                          description: "Value defines the expected value to wait for, e.g., \"Running\"."
+                                          type: "string"
+                                      required:
+                                        - "path"
+                                        - "value"
+                                      type: "object"
                                   type: "object"
                                 format:
                                   description: "Format determines the output format (json or yaml)."
                                   pattern: "^(?:json|yaml|\\(.+\\))$"
                                   type: "string"
                                 kind:
-                                  description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                  description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 resource:
                                   description: "Resource name of the referent."
@@ -1041,7 +1067,7 @@ spec:
                                 expect:
                                   description: "Expect defines a list of matched checks to validate the operation outcome."
                                   items:
-                                    description: "Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered."
+                                    description: "Expectation represents a check to be applied on the result of an operation\nwith a match filter to determine if the verification should be considered."
                                     properties:
                                       check:
                                         description: "Check defines the verification statement."
@@ -1062,7 +1088,7 @@ spec:
                                       description: "API version of the referent."
                                       type: "string"
                                     kind:
-                                      description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                      description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                       type: "string"
                                     labels:
                                       additionalProperties:
@@ -1070,10 +1096,10 @@ spec:
                                       description: "Label selector to match objects to delete"
                                       type: "object"
                                     name:
-                                      description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     namespace:
-                                      description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                      description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                       type: "string"
                                   required:
                                     - "apiVersion"
@@ -1098,13 +1124,13 @@ spec:
                                   description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
                                   type: "string"
                                 kind:
-                                  description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                  description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 resource:
                                   description: "Resource name of the referent."
@@ -1133,10 +1159,10 @@ spec:
                                   pattern: "^(?:json|yaml|\\(.+\\))$"
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
@@ -1159,13 +1185,13 @@ spec:
                                   pattern: "^(?:json|yaml|\\(.+\\))$"
                                   type: "string"
                                 kind:
-                                  description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                  description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 resource:
                                   description: "Resource name of the referent."
@@ -1187,16 +1213,16 @@ spec:
                                   description: "Container in pod to get logs from else --all-containers is used."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
                                   type: "string"
                                 tail:
-                                  description: "Tail is the number of last lines to collect from pods. If omitted or zero, then the default is 10 if you use a selector, or -1 (all) if you use a pod name. This matches default behavior of `kubectl logs`."
+                                  description: "Tail is the number of last lines to collect from pods. If omitted or zero,\nthen the default is 10 if you use a selector, or -1 (all) if you use a pod name.\nThis matches default behavior of `kubectl logs`."
                                   type: "integer"
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
@@ -1313,19 +1339,32 @@ spec:
                                     deletion:
                                       description: "Deletion specifies parameters for waiting on a resource's deletion."
                                       type: "object"
+                                    jsonPath:
+                                      description: "JsonPath specifies the json path condition to wait for."
+                                      properties:
+                                        path:
+                                          description: "Path defines the json path to wait for, e.g. '{.status.phase}'."
+                                          type: "string"
+                                        value:
+                                          description: "Value defines the expected value to wait for, e.g., \"Running\"."
+                                          type: "string"
+                                      required:
+                                        - "path"
+                                        - "value"
+                                      type: "object"
                                   type: "object"
                                 format:
                                   description: "Format determines the output format (json or yaml)."
                                   pattern: "^(?:json|yaml|\\(.+\\))$"
                                   type: "string"
                                 kind:
-                                  description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                  description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 resource:
                                   description: "Resource name of the referent."
@@ -1378,7 +1417,7 @@ spec:
                           description: "Operation defines a single operation, only one action is permitted for a given operation."
                           properties:
                             apply:
-                              description: "Apply represents resources that should be applied for this test step. This can include things like configuration settings or any other resources that need to be available during the test."
+                              description: "Apply represents resources that should be applied for this test step. This can include things\nlike configuration settings or any other resources that need to be available during the test."
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -1406,7 +1445,7 @@ spec:
                                 expect:
                                   description: "Expect defines a list of matched checks to validate the operation outcome."
                                   items:
-                                    description: "Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered."
+                                    description: "Expectation represents a check to be applied on the result of an operation\nwith a match filter to determine if the verification should be considered."
                                     properties:
                                       check:
                                         description: "Check defines the verification statement."
@@ -1421,7 +1460,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 file:
-                                  description: "File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML files within the \"manifest\" directory."
+                                  description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
                                   type: "string"
                                 outputs:
                                   description: "Outputs defines output bindings."
@@ -1480,7 +1519,7 @@ spec:
                                   description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
                                   type: "string"
                                 file:
-                                  description: "File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML files within the \"manifest\" directory."
+                                  description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
                                   type: "string"
                                 resource:
                                   description: "Check provides a check used in assertions."
@@ -1576,7 +1615,7 @@ spec:
                                 - "entrypoint"
                               type: "object"
                             continueOnError:
-                              description: "ContinueOnError determines whether a test should continue or not in case the operation was not successful. Even if the test continues executing, it will still be reported as failed."
+                              description: "ContinueOnError determines whether a test should continue or not in case the operation was not successful.\nEven if the test continues executing, it will still be reported as failed."
                               type: "boolean"
                             create:
                               description: "Create represents a creation operation."
@@ -1607,7 +1646,7 @@ spec:
                                 expect:
                                   description: "Expect defines a list of matched checks to validate the operation outcome."
                                   items:
-                                    description: "Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered."
+                                    description: "Expectation represents a check to be applied on the result of an operation\nwith a match filter to determine if the verification should be considered."
                                     properties:
                                       check:
                                         description: "Check defines the verification statement."
@@ -1622,7 +1661,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 file:
-                                  description: "File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML files within the \"manifest\" directory."
+                                  description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
                                   type: "string"
                                 outputs:
                                   description: "Outputs defines output bindings."
@@ -1683,7 +1722,7 @@ spec:
                                 expect:
                                   description: "Expect defines a list of matched checks to validate the operation outcome."
                                   items:
-                                    description: "Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered."
+                                    description: "Expectation represents a check to be applied on the result of an operation\nwith a match filter to determine if the verification should be considered."
                                     properties:
                                       check:
                                         description: "Check defines the verification statement."
@@ -1704,7 +1743,7 @@ spec:
                                       description: "API version of the referent."
                                       type: "string"
                                     kind:
-                                      description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                      description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                       type: "string"
                                     labels:
                                       additionalProperties:
@@ -1712,10 +1751,10 @@ spec:
                                       description: "Label selector to match objects to delete"
                                       type: "object"
                                     name:
-                                      description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     namespace:
-                                      description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                      description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                       type: "string"
                                   required:
                                     - "apiVersion"
@@ -1734,7 +1773,7 @@ spec:
                               description: "Description contains a description of the operation."
                               type: "string"
                             error:
-                              description: "Error represents the expected errors for this test step. If any of these errors occur, the test will consider them as expected; otherwise, they will be treated as test failures."
+                              description: "Error represents the expected errors for this test step. If any of these errors occur, the test\nwill consider them as expected; otherwise, they will be treated as test failures."
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -1757,7 +1796,7 @@ spec:
                                   description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
                                   type: "string"
                                 file:
-                                  description: "File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML files within the \"manifest\" directory."
+                                  description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
                                   type: "string"
                                 resource:
                                   description: "Check provides a check used in assertions."
@@ -1799,7 +1838,7 @@ spec:
                                 expect:
                                   description: "Expect defines a list of matched checks to validate the operation outcome."
                                   items:
-                                    description: "Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered."
+                                    description: "Expectation represents a check to be applied on the result of an operation\nwith a match filter to determine if the verification should be considered."
                                     properties:
                                       check:
                                         description: "Check defines the verification statement."
@@ -1814,7 +1853,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 file:
-                                  description: "File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML files within the \"manifest\" directory."
+                                  description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
                                   type: "string"
                                 outputs:
                                   description: "Outputs defines output bindings."
@@ -1962,7 +2001,7 @@ spec:
                                 expect:
                                   description: "Expect defines a list of matched checks to validate the operation outcome."
                                   items:
-                                    description: "Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered."
+                                    description: "Expectation represents a check to be applied on the result of an operation\nwith a match filter to determine if the verification should be considered."
                                     properties:
                                       check:
                                         description: "Check defines the verification statement."
@@ -1977,7 +2016,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 file:
-                                  description: "File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML files within the \"manifest\" directory."
+                                  description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
                                   type: "string"
                                 outputs:
                                   description: "Outputs defines output bindings."
@@ -2039,19 +2078,32 @@ spec:
                                     deletion:
                                       description: "Deletion specifies parameters for waiting on a resource's deletion."
                                       type: "object"
+                                    jsonPath:
+                                      description: "JsonPath specifies the json path condition to wait for."
+                                      properties:
+                                        path:
+                                          description: "Path defines the json path to wait for, e.g. '{.status.phase}'."
+                                          type: "string"
+                                        value:
+                                          description: "Value defines the expected value to wait for, e.g., \"Running\"."
+                                          type: "string"
+                                      required:
+                                        - "path"
+                                        - "value"
+                                      type: "object"
                                   type: "object"
                                 format:
                                   description: "Format determines the output format (json or yaml)."
                                   pattern: "^(?:json|yaml|\\(.+\\))$"
                                   type: "string"
                                 kind:
-                                  description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                  description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 namespace:
-                                  description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 resource:
                                   description: "Resource name of the referent."

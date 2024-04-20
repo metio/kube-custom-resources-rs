@@ -14,43 +14,67 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "PolicyStatus")]
 #[kube(schema = "disabled")]
 pub struct PolicySpec {
-    /// Admission controls if rules are applied during admission. Optional. Default value is "true".
+    /// Admission controls if rules are applied during admission.
+    /// Optional. Default value is "true".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub admission: Option<bool>,
-    /// ApplyRules controls how rules in a policy are applied. Rule are processed in the order of declaration. When set to `One` processing stops after a rule has been applied i.e. the rule matches and results in a pass, fail, or error. When set to `All` all rules in the policy are processed. The default is `All`.
+    /// ApplyRules controls how rules in a policy are applied. Rule are processed in
+    /// the order of declaration. When set to `One` processing stops after a rule has
+    /// been applied i.e. the rule matches and results in a pass, fail, or error. When
+    /// set to `All` all rules in the policy are processed. The default is `All`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyRules")]
     pub apply_rules: Option<PolicyApplyRules>,
-    /// Background controls if rules are applied to existing resources during a background scan. Optional. Default value is "true". The value must be set to "false" if the policy rule uses variables that are only available in the admission review request (e.g. user name).
+    /// Background controls if rules are applied to existing resources during a background scan.
+    /// Optional. Default value is "true". The value must be set to "false" if the policy rule
+    /// uses variables that are only available in the admission review request (e.g. user name).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub background: Option<bool>,
-    /// FailurePolicy defines how unexpected policy errors and webhook response timeout errors are handled. Rules within the same policy share the same failure behavior. Allowed values are Ignore or Fail. Defaults to Fail.
+    /// FailurePolicy defines how unexpected policy errors and webhook response timeout errors are handled.
+    /// Rules within the same policy share the same failure behavior.
+    /// Allowed values are Ignore or Fail. Defaults to Fail.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<PolicyFailurePolicy>,
-    /// GenerateExisting controls whether to trigger generate rule in existing resources If is set to "true" generate rule will be triggered and applied to existing matched resources. Defaults to "false" if not specified.
+    /// GenerateExisting controls whether to trigger generate rule in existing resources
+    /// If is set to "true" generate rule will be triggered and applied to existing matched resources.
+    /// Defaults to "false" if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateExisting")]
     pub generate_existing: Option<bool>,
     /// Deprecated, use generateExisting instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateExistingOnPolicyUpdate")]
     pub generate_existing_on_policy_update: Option<bool>,
-    /// MutateExistingOnPolicyUpdate controls if a mutateExisting policy is applied on policy events. Default value is "false".
+    /// MutateExistingOnPolicyUpdate controls if a mutateExisting policy is applied on policy events.
+    /// Default value is "false".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateExistingOnPolicyUpdate")]
     pub mutate_existing_on_policy_update: Option<bool>,
-    /// Rules is a list of Rule instances. A Policy contains multiple rules and each rule can validate, mutate, or generate resources.
+    /// Rules is a list of Rule instances. A Policy contains multiple rules and
+    /// each rule can validate, mutate, or generate resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<PolicyRules>>,
     /// Deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaValidation")]
     pub schema_validation: Option<bool>,
-    /// UseServerSideApply controls whether to use server-side apply for generate rules If is set to "true" create & update for generate rules will use apply instead of create/update. Defaults to "false" if not specified.
+    /// UseServerSideApply controls whether to use server-side apply for generate rules
+    /// If is set to "true" create & update for generate rules will use apply instead of create/update.
+    /// Defaults to "false" if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useServerSideApply")]
     pub use_server_side_apply: Option<bool>,
-    /// ValidationFailureAction defines if a validation policy rule violation should block the admission review request (enforce), or allow (audit) the admission review request and report an error in a policy report. Optional. Allowed values are audit or enforce. The default value is "Audit".
+    /// ValidationFailureAction defines if a validation policy rule violation should block
+    /// the admission review request (enforce), or allow (audit) the admission review request
+    /// and report an error in a policy report. Optional.
+    /// Allowed values are audit or enforce. The default value is "Audit".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
     pub validation_failure_action: Option<PolicyValidationFailureAction>,
-    /// ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction namespace-wise. It overrides ValidationFailureAction for the specified namespaces.
+    /// ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction
+    /// namespace-wise. It overrides ValidationFailureAction for the specified namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureActionOverrides")]
     pub validation_failure_action_overrides: Option<Vec<PolicyValidationFailureActionOverrides>>,
-    /// WebhookTimeoutSeconds specifies the maximum time in seconds allowed to apply this policy. After the configured time expires, the admission request may fail, or may simply ignore the policy results, based on the failure policy. The default timeout is 10s, the value must be between 1 and 30 seconds.
+    /// WebhookConfiguration specifies the custom configuration for Kubernetes admission webhookconfiguration.
+    /// Requires Kubernetes 1.27 or later.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookConfiguration")]
+    pub webhook_configuration: Option<PolicyWebhookConfiguration>,
+    /// WebhookTimeoutSeconds specifies the maximum time in seconds allowed to apply this policy.
+    /// After the configured time expires, the admission request may fail, or may simply ignore the policy results,
+    /// based on the failure policy. The default timeout is 10s, the value must be between 1 and 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookTimeoutSeconds")]
     pub webhook_timeout_seconds: Option<i32>,
 }
@@ -69,25 +93,34 @@ pub enum PolicyFailurePolicy {
     Fail,
 }
 
-/// Rule defines a validation, mutation, or generation control for matching resources. Each rules contains a match declaration to select resources, and an optional exclude declaration to specify which resources to exclude.
+/// Rule defines a validation, mutation, or generation control for matching resources.
+/// Each rules contains a match declaration to select resources, and an optional exclude
+/// declaration to specify which resources to exclude.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRules {
-    /// CELPreconditions are used to determine if a policy rule should be applied by evaluating a set of CEL conditions. It can only be used with the validate.cel subrule
+    /// CELPreconditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of CEL conditions. It can only be used with the validate.cel subrule
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "celPreconditions")]
     pub cel_preconditions: Option<Vec<PolicyRulesCelPreconditions>>,
     /// Context defines variables and data sources that can be used during rule execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<Vec<PolicyRulesContext>>,
-    /// ExcludeResources defines when this policy rule should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.
+    /// ExcludeResources defines when this policy rule should not be applied. The exclude
+    /// criteria can include resource information (e.g. kind, name, namespace, labels)
+    /// and admission review request information like the name or role.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclude: Option<PolicyRulesExclude>,
     /// Generation is used to create new resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<PolicyRulesGenerate>,
-    /// ImageExtractors defines a mapping from kinds to ImageExtractorConfigs. This config is only valid for verifyImages rules.
+    /// ImageExtractors defines a mapping from kinds to ImageExtractorConfigs.
+    /// This config is only valid for verifyImages rules.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageExtractors")]
     pub image_extractors: Option<BTreeMap<String, PolicyRulesImageExtractors>>,
-    /// MatchResources defines when this policy rule should be applied. The match criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the user name or role. At least one kind is required.
+    /// MatchResources defines when this policy rule should be applied. The match
+    /// criteria can include resource information (e.g. kind, name, namespace, labels)
+    /// and admission review request information like the user name or role.
+    /// At least one kind is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<PolicyRulesMatch>,
     /// Mutation is used to modify matching resources.
@@ -95,10 +128,14 @@ pub struct PolicyRules {
     pub mutate: Option<PolicyRulesMutate>,
     /// Name is a label to identify the rule, It must be unique within the policy.
     pub name: String,
-    /// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
+    /// Preconditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of conditions. The declaration can contain nested `any` or `all` statements.
+    /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<PolicyRulesPreconditions>,
-    /// SkipBackgroundRequests bypasses admission requests that are sent by the background controller. The default value is set to "true", it must be set to "false" to apply generate and mutateExisting rules to those requests.
+    /// SkipBackgroundRequests bypasses admission requests that are sent by the background controller.
+    /// The default value is set to "true", it must be set to "false" to apply
+    /// generate and mutateExisting rules to those requests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipBackgroundRequests")]
     pub skip_background_requests: Option<bool>,
     /// Validation is used to validate matching resources.
@@ -112,25 +149,51 @@ pub struct PolicyRules {
 /// MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesCelPreconditions {
-    /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool. CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables: 
-    ///  'object' - The object from the incoming request. The value is null for DELETE requests. 'oldObject' - The existing object. The value is null for CREATE requests. 'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest). 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request. See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the request resource. Documentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/ 
-    ///  Required.
+    /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
+    /// CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:
+    /// 
+    /// 
+    /// 'object' - The object from the incoming request. The value is null for DELETE requests.
+    /// 'oldObject' - The existing object. The value is null for CREATE requests.
+    /// 'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).
+    /// 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.
+    ///   See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz
+    /// 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the
+    ///   request resource.
+    /// Documentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/
+    /// 
+    /// 
+    /// Required.
     pub expression: String,
-    /// Name is an identifier for this match condition, used for strategic merging of MatchConditions, as well as providing an identifier for logging purposes. A good name should be descriptive of the associated expression. Name must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or '123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an optional DNS subdomain prefix and '/' (e.g. 'example.com/MyName') 
-    ///  Required.
+    /// Name is an identifier for this match condition, used for strategic merging of MatchConditions,
+    /// as well as providing an identifier for logging purposes. A good name should be descriptive of
+    /// the associated expression.
+    /// Name must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and
+    /// must start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or
+    /// '123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an
+    /// optional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')
+    /// 
+    /// 
+    /// Required.
     pub name: String,
 }
 
-/// ContextEntry adds variables and data sources to a rule Context. Either a ConfigMap reference or a APILookup must be provided.
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesContext {
-    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
     pub api_call: Option<PolicyRulesContextApiCall>,
     /// ConfigMap is the ConfigMap reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PolicyRulesContextConfigMap>,
-    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<PolicyRulesContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyRulesContextImageRegistry>,
     /// Name is the variable name.
@@ -141,22 +204,35 @@ pub struct PolicyRulesContext {
     pub variable: Option<PolicyRulesContextVariable>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesContextApiCall {
-    /// Data specifies the POST data sent to the server.
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyRulesContextApiCallData>>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the JSON response returned from the server. For example a JMESPath of "items | length(@)" applied to the API server response for the URLPath "/apis/apps/v1/deployments" will return the total count of deployments across all namespaces.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Method is the HTTP request type (GET or POST).
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<PolicyRulesContextApiCallMethod>,
-    /// Service is an API call to a JSON web service
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PolicyRulesContextApiCallService>,
-    /// URLPath is the URL path to be used in the HTTP GET or POST request to the Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments"). The format required is the same format used by the `kubectl get --raw` command. See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls for details.
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
     pub url_path: Option<String>,
 }
@@ -170,7 +246,8 @@ pub struct PolicyRulesContextApiCallData {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyRulesContextApiCallMethod {
     #[serde(rename = "GET")]
@@ -179,13 +256,17 @@ pub enum PolicyRulesContextApiCallMethod {
     Post,
 }
 
-/// Service is an API call to a JSON web service
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesContextApiCallService {
-    /// CABundle is a PEM encoded CA bundle which will be used to validate the server certificate.
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// URL is the JSON web service URL. A typical form is `https://{service}.{namespace}:{port}/{path}`.
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
     pub url: String,
 }
 
@@ -199,16 +280,35 @@ pub struct PolicyRulesContextConfigMap {
     pub namespace: Option<String>,
 }
 
-/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PolicyRulesContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesContextImageRegistry {
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
     pub image_registry_credentials: Option<PolicyRulesContextImageRegistryImageRegistryCredentials>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the ImageData struct returned as a result of processing the image reference.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Reference is image reference to a container image in the registry. Example: ghcr.io/kyverno/kyverno:latest
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
     pub reference: String,
 }
 
@@ -218,10 +318,12 @@ pub struct PolicyRulesContextImageRegistryImageRegistryCredentials {
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
@@ -229,10 +331,12 @@ pub struct PolicyRulesContextImageRegistryImageRegistryCredentials {
 /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesContextVariable {
-    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<BTreeMap<String, serde_json::Value>>,
-    /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
@@ -240,7 +344,9 @@ pub struct PolicyRulesContextVariable {
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
-/// ExcludeResources defines when this policy rule should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.
+/// ExcludeResources defines when this policy rule should not be applied. The exclude
+/// criteria can include resource information (e.g. kind, name, namespace, labels)
+/// and admission review request information like the name or role.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExclude {
     /// All allows specifying resources which will be ANDed
@@ -271,89 +377,128 @@ pub struct PolicyRulesExcludeAll {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAllResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyRulesExcludeAllResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyRulesExcludeAllResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAllResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyRulesExcludeAllResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAllResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAllResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyRulesExcludeAllResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAllResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAllSubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -378,89 +523,128 @@ pub struct PolicyRulesExcludeAny {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAnyResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyRulesExcludeAnyResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyRulesExcludeAnyResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAnyResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyRulesExcludeAnyResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAnyResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAnyResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyRulesExcludeAnyResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAnyResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesExcludeAnySubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -471,13 +655,17 @@ pub struct PolicyRulesGenerate {
     /// APIVersion specifies resource apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Clone specifies the source resource used to populate each generated resource. At most one of Data or Clone can be specified. If neither are provided, the generated resource will be created with default data only.
+    /// Clone specifies the source resource used to populate each generated resource.
+    /// At most one of Data or Clone can be specified. If neither are provided, the generated
+    /// resource will be created with default data only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clone: Option<PolicyRulesGenerateClone>,
     /// CloneList specifies the list of source resource used to populate each generated resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloneList")]
     pub clone_list: Option<PolicyRulesGenerateCloneList>,
-    /// Data provides the resource declaration used to populate each generated resource. At most one of Data or Clone must be specified. If neither are provided, the generated resource will be created with default data only.
+    /// Data provides the resource declaration used to populate each generated resource.
+    /// At most one of Data or Clone must be specified. If neither are provided, the generated
+    /// resource will be created with default data only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<BTreeMap<String, serde_json::Value>>,
     /// Kind specifies resource kind.
@@ -489,7 +677,16 @@ pub struct PolicyRulesGenerate {
     /// Namespace specifies resource namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Synchronize controls if generated resources should be kept in-sync with their source resource. If Synchronize is set to "true" changes to generated resources will be overwritten with resource data from Data or the resource specified in the Clone declaration. Optional. Defaults to "false" if not specified.
+    /// OrphanDownstreamOnPolicyDelete controls whether generated resources should be deleted when the rule that generated
+    /// them is deleted with synchronization enabled. This option is only applicable to generate rules of the data type.
+    /// See https://kyverno.io/docs/writing-policies/generate/#data-examples.
+    /// Defaults to "false" if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orphanDownstreamOnPolicyDelete")]
+    pub orphan_downstream_on_policy_delete: Option<bool>,
+    /// Synchronize controls if generated resources should be kept in-sync with their source resource.
+    /// If Synchronize is set to "true" changes to generated resources will be overwritten with resource
+    /// data from Data or the resource specified in the Clone declaration.
+    /// Optional. Defaults to "false" if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub synchronize: Option<bool>,
     /// UID specifies the resource uid.
@@ -497,7 +694,9 @@ pub struct PolicyRulesGenerate {
     pub uid: Option<String>,
 }
 
-/// Clone specifies the source resource used to populate each generated resource. At most one of Data or Clone can be specified. If neither are provided, the generated resource will be created with default data only.
+/// Clone specifies the source resource used to populate each generated resource.
+/// At most one of Data or Clone can be specified. If neither are provided, the generated
+/// resource will be created with default data only.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesGenerateClone {
     /// Name specifies name of the resource.
@@ -517,53 +716,73 @@ pub struct PolicyRulesGenerateCloneList {
     /// Namespace specifies source resource namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Selector is a label selector. Label keys and values in `matchLabels`. wildcard characters are not supported.
+    /// Selector is a label selector. Label keys and values in `matchLabels`.
+    /// wildcard characters are not supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyRulesGenerateCloneListSelector>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels`. wildcard characters are not supported.
+/// Selector is a label selector. Label keys and values in `matchLabels`.
+/// wildcard characters are not supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesGenerateCloneListSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyRulesGenerateCloneListSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesGenerateCloneListSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesImageExtractors {
-    /// JMESPath is an optional JMESPath expression to apply to the image value. This is useful when the extracted image begins with a prefix like 'docker://'. The 'trim_prefix' function may be used to trim the prefix: trim_prefix(@, 'docker://'). Note - Image digest mutation may not be used when applying a JMESPAth to an image.
+    /// JMESPath is an optional JMESPath expression to apply to the image value.
+    /// This is useful when the extracted image begins with a prefix like 'docker://'.
+    /// The 'trim_prefix' function may be used to trim the prefix: trim_prefix(@, 'docker://').
+    /// Note - Image digest mutation may not be used when applying a JMESPAth to an image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Key is an optional name of the field within 'path' that will be used to uniquely identify an image. Note - this field MUST be unique.
+    /// Key is an optional name of the field within 'path' that will be used to uniquely identify an image.
+    /// Note - this field MUST be unique.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name is the entry the image will be available under 'images.<name>' in the context. If this field is not defined, image entries will appear under 'images.custom'.
+    /// Name is the entry the image will be available under 'images.<name>' in the context.
+    /// If this field is not defined, image entries will appear under 'images.custom'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Path is the path to the object containing the image field in a custom resource. It should be slash-separated. Each slash-separated key must be a valid YAML key or a wildcard '*'. Wildcard keys are expanded in case of arrays or objects.
+    /// Path is the path to the object containing the image field in a custom resource.
+    /// It should be slash-separated. Each slash-separated key must be a valid YAML key or a wildcard '*'.
+    /// Wildcard keys are expanded in case of arrays or objects.
     pub path: String,
-    /// Value is an optional name of the field within 'path' that points to the image URI. This is useful when a custom 'key' is also defined.
+    /// Value is an optional name of the field within 'path' that points to the image URI.
+    /// This is useful when a custom 'key' is also defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// MatchResources defines when this policy rule should be applied. The match criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the user name or role. At least one kind is required.
+/// MatchResources defines when this policy rule should be applied. The match
+/// criteria can include resource information (e.g. kind, name, namespace, labels)
+/// and admission review request information like the user name or role.
+/// At least one kind is required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatch {
     /// All allows specifying resources which will be ANDed
@@ -594,89 +813,128 @@ pub struct PolicyRulesMatchAll {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAllResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyRulesMatchAllResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyRulesMatchAllResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAllResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyRulesMatchAllResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAllResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAllResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyRulesMatchAllResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAllResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAllSubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -701,89 +959,128 @@ pub struct PolicyRulesMatchAny {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAnyResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyRulesMatchAnyResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyRulesMatchAnyResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAnyResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyRulesMatchAnyResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAnyResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAnyResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyRulesMatchAnyResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAnyResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMatchAnySubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -794,10 +1091,13 @@ pub struct PolicyRulesMutate {
     /// ForEach applies mutation rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub foreach: Option<Vec<PolicyRulesMutateForeach>>,
-    /// PatchStrategicMerge is a strategic merge patch used to modify resources. See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/ and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
+    /// PatchStrategicMerge is a strategic merge patch used to modify resources.
+    /// See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
+    /// and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
     pub patch_strategic_merge: Option<BTreeMap<String, serde_json::Value>>,
-    /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources. See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
+    /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources.
+    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
     /// Targets defines the target resources to be mutated.
@@ -814,33 +1114,46 @@ pub struct PolicyRulesMutateForeach {
     /// Foreach declares a nested foreach iterator
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub foreach: Option<BTreeMap<String, serde_json::Value>>,
-    /// List specifies a JMESPath expression that results in one or more elements to which the validation logic is applied.
+    /// List specifies a JMESPath expression that results in one or more elements
+    /// to which the validation logic is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub list: Option<String>,
-    /// Order defines the iteration order on the list. Can be Ascending to iterate from first to last element or Descending to iterate in from last to first element.
+    /// Order defines the iteration order on the list.
+    /// Can be Ascending to iterate from first to last element or Descending to iterate in from last to first element.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub order: Option<PolicyRulesMutateForeachOrder>,
-    /// PatchStrategicMerge is a strategic merge patch used to modify resources. See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/ and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
+    /// PatchStrategicMerge is a strategic merge patch used to modify resources.
+    /// See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
+    /// and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
     pub patch_strategic_merge: Option<BTreeMap<String, serde_json::Value>>,
-    /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources. See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
+    /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources.
+    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
-    /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
+    /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of conditions. The declaration can contain nested `any` or `all` statements.
+    /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<PolicyRulesMutateForeachPreconditions>,
 }
 
-/// ContextEntry adds variables and data sources to a rule Context. Either a ConfigMap reference or a APILookup must be provided.
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateForeachContext {
-    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
     pub api_call: Option<PolicyRulesMutateForeachContextApiCall>,
     /// ConfigMap is the ConfigMap reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PolicyRulesMutateForeachContextConfigMap>,
-    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<PolicyRulesMutateForeachContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyRulesMutateForeachContextImageRegistry>,
     /// Name is the variable name.
@@ -851,22 +1164,35 @@ pub struct PolicyRulesMutateForeachContext {
     pub variable: Option<PolicyRulesMutateForeachContextVariable>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateForeachContextApiCall {
-    /// Data specifies the POST data sent to the server.
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyRulesMutateForeachContextApiCallData>>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the JSON response returned from the server. For example a JMESPath of "items | length(@)" applied to the API server response for the URLPath "/apis/apps/v1/deployments" will return the total count of deployments across all namespaces.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Method is the HTTP request type (GET or POST).
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<PolicyRulesMutateForeachContextApiCallMethod>,
-    /// Service is an API call to a JSON web service
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PolicyRulesMutateForeachContextApiCallService>,
-    /// URLPath is the URL path to be used in the HTTP GET or POST request to the Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments"). The format required is the same format used by the `kubectl get --raw` command. See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls for details.
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
     pub url_path: Option<String>,
 }
@@ -880,7 +1206,8 @@ pub struct PolicyRulesMutateForeachContextApiCallData {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyRulesMutateForeachContextApiCallMethod {
     #[serde(rename = "GET")]
@@ -889,13 +1216,17 @@ pub enum PolicyRulesMutateForeachContextApiCallMethod {
     Post,
 }
 
-/// Service is an API call to a JSON web service
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateForeachContextApiCallService {
-    /// CABundle is a PEM encoded CA bundle which will be used to validate the server certificate.
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// URL is the JSON web service URL. A typical form is `https://{service}.{namespace}:{port}/{path}`.
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
     pub url: String,
 }
 
@@ -909,16 +1240,35 @@ pub struct PolicyRulesMutateForeachContextConfigMap {
     pub namespace: Option<String>,
 }
 
-/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PolicyRulesMutateForeachContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateForeachContextImageRegistry {
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
     pub image_registry_credentials: Option<PolicyRulesMutateForeachContextImageRegistryImageRegistryCredentials>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the ImageData struct returned as a result of processing the image reference.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Reference is image reference to a container image in the registry. Example: ghcr.io/kyverno/kyverno:latest
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
     pub reference: String,
 }
 
@@ -928,10 +1278,12 @@ pub struct PolicyRulesMutateForeachContextImageRegistryImageRegistryCredentials 
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
@@ -939,10 +1291,12 @@ pub struct PolicyRulesMutateForeachContextImageRegistryImageRegistryCredentials 
 /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateForeachContextVariable {
-    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<BTreeMap<String, serde_json::Value>>,
-    /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
@@ -957,13 +1311,21 @@ pub enum PolicyRulesMutateForeachOrder {
     Descending,
 }
 
-/// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
+/// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+/// set of conditions. The declaration can contain nested `any` or `all` statements.
+/// See: https://kyverno.io/docs/writing-policies/preconditions/
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateForeachPreconditions {
-    /// AllConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, all of the conditions need to pass
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub all: Option<Vec<PolicyRulesMutateForeachPreconditionsAll>>,
-    /// AnyConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, at least one of the conditions need to pass
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<Vec<PolicyRulesMutateForeachPreconditionsAny>>,
 }
@@ -977,10 +1339,14 @@ pub struct PolicyRulesMutateForeachPreconditionsAll {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyRulesMutateForeachPreconditionsAllOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -1015,10 +1381,14 @@ pub struct PolicyRulesMutateForeachPreconditionsAny {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyRulesMutateForeachPreconditionsAnyOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -1062,7 +1432,11 @@ pub struct PolicyRulesMutateTargets {
     /// Namespace specifies resource namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. A direct list of conditions (without `any` or `all` statements is supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/preconditions/
+    /// Preconditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of conditions. The declaration can contain nested `any` or `all` statements. A direct list
+    /// of conditions (without `any` or `all` statements is supported for backwards compatibility but
+    /// will be deprecated in the next major release.
+    /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<BTreeMap<String, serde_json::Value>>,
     /// UID specifies the resource uid.
@@ -1070,16 +1444,22 @@ pub struct PolicyRulesMutateTargets {
     pub uid: Option<String>,
 }
 
-/// ContextEntry adds variables and data sources to a rule Context. Either a ConfigMap reference or a APILookup must be provided.
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateTargetsContext {
-    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
     pub api_call: Option<PolicyRulesMutateTargetsContextApiCall>,
     /// ConfigMap is the ConfigMap reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PolicyRulesMutateTargetsContextConfigMap>,
-    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<PolicyRulesMutateTargetsContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyRulesMutateTargetsContextImageRegistry>,
     /// Name is the variable name.
@@ -1090,22 +1470,35 @@ pub struct PolicyRulesMutateTargetsContext {
     pub variable: Option<PolicyRulesMutateTargetsContextVariable>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateTargetsContextApiCall {
-    /// Data specifies the POST data sent to the server.
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyRulesMutateTargetsContextApiCallData>>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the JSON response returned from the server. For example a JMESPath of "items | length(@)" applied to the API server response for the URLPath "/apis/apps/v1/deployments" will return the total count of deployments across all namespaces.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Method is the HTTP request type (GET or POST).
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<PolicyRulesMutateTargetsContextApiCallMethod>,
-    /// Service is an API call to a JSON web service
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PolicyRulesMutateTargetsContextApiCallService>,
-    /// URLPath is the URL path to be used in the HTTP GET or POST request to the Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments"). The format required is the same format used by the `kubectl get --raw` command. See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls for details.
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
     pub url_path: Option<String>,
 }
@@ -1119,7 +1512,8 @@ pub struct PolicyRulesMutateTargetsContextApiCallData {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyRulesMutateTargetsContextApiCallMethod {
     #[serde(rename = "GET")]
@@ -1128,13 +1522,17 @@ pub enum PolicyRulesMutateTargetsContextApiCallMethod {
     Post,
 }
 
-/// Service is an API call to a JSON web service
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateTargetsContextApiCallService {
-    /// CABundle is a PEM encoded CA bundle which will be used to validate the server certificate.
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// URL is the JSON web service URL. A typical form is `https://{service}.{namespace}:{port}/{path}`.
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
     pub url: String,
 }
 
@@ -1148,16 +1546,35 @@ pub struct PolicyRulesMutateTargetsContextConfigMap {
     pub namespace: Option<String>,
 }
 
-/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PolicyRulesMutateTargetsContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateTargetsContextImageRegistry {
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
     pub image_registry_credentials: Option<PolicyRulesMutateTargetsContextImageRegistryImageRegistryCredentials>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the ImageData struct returned as a result of processing the image reference.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Reference is image reference to a container image in the registry. Example: ghcr.io/kyverno/kyverno:latest
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
     pub reference: String,
 }
 
@@ -1167,10 +1584,12 @@ pub struct PolicyRulesMutateTargetsContextImageRegistryImageRegistryCredentials 
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
@@ -1178,10 +1597,12 @@ pub struct PolicyRulesMutateTargetsContextImageRegistryImageRegistryCredentials 
 /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesMutateTargetsContextVariable {
-    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<BTreeMap<String, serde_json::Value>>,
-    /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
@@ -1189,13 +1610,21 @@ pub struct PolicyRulesMutateTargetsContextVariable {
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
-/// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
+/// Preconditions are used to determine if a policy rule should be applied by evaluating a
+/// set of conditions. The declaration can contain nested `any` or `all` statements.
+/// See: https://kyverno.io/docs/writing-policies/preconditions/
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesPreconditions {
-    /// AllConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, all of the conditions need to pass.
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub all: Option<Vec<PolicyRulesPreconditionsAll>>,
-    /// AnyConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, at least one of the conditions need to pass.
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<Vec<PolicyRulesPreconditionsAny>>,
 }
@@ -1208,10 +1637,14 @@ pub struct PolicyRulesPreconditionsAll {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyRulesPreconditionsAllOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -1242,10 +1675,14 @@ pub struct PolicyRulesPreconditionsAny {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyRulesPreconditionsAnyOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -1271,7 +1708,8 @@ pub enum PolicyRulesPreconditionsAnyOperator {
 /// Validation is used to validate matching resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidate {
-    /// AnyPattern specifies list of validation patterns. At least one of the patterns must be satisfied for the validation rule to succeed.
+    /// AnyPattern specifies list of validation patterns. At least one of the patterns
+    /// must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
     pub any_pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// CEL allows validation checks using the Common Expression Language (https://kubernetes.io/docs/reference/using-api/cel/).
@@ -1292,7 +1730,8 @@ pub struct PolicyRulesValidate {
     /// Pattern specifies an overlay-style pattern used to check resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<BTreeMap<String, serde_json::Value>>,
-    /// PodSecurity applies exemptions for Kubernetes Pod Security admission by specifying exclusions for Pod Security Standards controls.
+    /// PodSecurity applies exemptions for Kubernetes Pod Security admission
+    /// by specifying exclusions for Pod Security Standards controls.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<PolicyRulesValidatePodSecurity>,
 }
@@ -1312,7 +1751,9 @@ pub struct PolicyRulesValidateCel {
     /// ParamRef references a parameter resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "paramRef")]
     pub param_ref: Option<PolicyRulesValidateCelParamRef>,
-    /// Variables contain definitions of variables that can be used in composition of other expressions. Each variable is defined as a named CEL expression. The variables defined here will be available under `variables` in other expressions of the policy.
+    /// Variables contain definitions of variables that can be used in composition of other expressions.
+    /// Each variable is defined as a named CEL expression.
+    /// The variables defined here will be available under `variables` in other expressions of the policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<Vec<PolicyRulesValidateCelVariables>>,
 }
@@ -1320,14 +1761,42 @@ pub struct PolicyRulesValidateCel {
 /// AuditAnnotation describes how to produce an audit annotation for an API request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateCelAuditAnnotations {
-    /// key specifies the audit annotation key. The audit annotation keys of a ValidatingAdmissionPolicy must be unique. The key must be a qualified name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length. 
-    ///  The key is combined with the resource name of the ValidatingAdmissionPolicy to construct an audit annotation key: "{ValidatingAdmissionPolicy name}/{key}". 
-    ///  If an admission webhook uses the same resource name as this ValidatingAdmissionPolicy and the same audit annotation key, the annotation key will be identical. In this case, the first annotation written with the key will be included in the audit event and all subsequent annotations with the same key will be discarded. 
-    ///  Required.
+    /// key specifies the audit annotation key. The audit annotation keys of
+    /// a ValidatingAdmissionPolicy must be unique. The key must be a qualified
+    /// name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.
+    /// 
+    /// 
+    /// The key is combined with the resource name of the
+    /// ValidatingAdmissionPolicy to construct an audit annotation key:
+    /// "{ValidatingAdmissionPolicy name}/{key}".
+    /// 
+    /// 
+    /// If an admission webhook uses the same resource name as this ValidatingAdmissionPolicy
+    /// and the same audit annotation key, the annotation key will be identical.
+    /// In this case, the first annotation written with the key will be included
+    /// in the audit event and all subsequent annotations with the same key
+    /// will be discarded.
+    /// 
+    /// 
+    /// Required.
     pub key: String,
-    /// valueExpression represents the expression which is evaluated by CEL to produce an audit annotation value. The expression must evaluate to either a string or null value. If the expression evaluates to a string, the audit annotation is included with the string value. If the expression evaluates to null or empty string the audit annotation will be omitted. The valueExpression may be no longer than 5kb in length. If the result of the valueExpression is more than 10kb in length, it will be truncated to 10kb. 
-    ///  If multiple ValidatingAdmissionPolicyBinding resources match an API request, then the valueExpression will be evaluated for each binding. All unique values produced by the valueExpressions will be joined together in a comma-separated list. 
-    ///  Required.
+    /// valueExpression represents the expression which is evaluated by CEL to
+    /// produce an audit annotation value. The expression must evaluate to either
+    /// a string or null value. If the expression evaluates to a string, the
+    /// audit annotation is included with the string value. If the expression
+    /// evaluates to null or empty string the audit annotation will be omitted.
+    /// The valueExpression may be no longer than 5kb in length.
+    /// If the result of the valueExpression is more than 10kb in length, it
+    /// will be truncated to 10kb.
+    /// 
+    /// 
+    /// If multiple ValidatingAdmissionPolicyBinding resources match an
+    /// API request, then the valueExpression will be evaluated for
+    /// each binding. All unique values produced by the valueExpressions
+    /// will be joined together in a comma-separated list.
+    /// 
+    /// 
+    /// Required.
     #[serde(rename = "valueExpression")]
     pub value_expression: String,
 }
@@ -1335,19 +1804,79 @@ pub struct PolicyRulesValidateCelAuditAnnotations {
 /// Validation specifies the CEL expression which is used to apply the validation.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateCelExpressions {
-    /// Expression represents the expression which will be evaluated by CEL. ref: https://github.com/google/cel-spec CEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables: 
-    ///  - 'object' - The object from the incoming request. The value is null for DELETE requests. - 'oldObject' - The existing object. The value is null for CREATE requests. - 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)). - 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind. - 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources. - 'variables' - Map of composited variables, from its name to its lazily evaluated value. For example, a variable named 'foo' can be accessed as 'variables.foo'. - 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request. See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz - 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the request resource. 
-    ///  The `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the object. No other metadata properties are accessible. 
-    ///  Only property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible. Accessible property names are escaped according to the following rules when accessed in the expression: - '__' escapes to '__underscores__' - '.' escapes to '__dot__' - '-' escapes to '__dash__' - '/' escapes to '__slash__' - Property names that exactly match a CEL RESERVED keyword escape to '__{keyword}__'. The keywords are: "true", "false", "null", "in", "as", "break", "const", "continue", "else", "for", "function", "if", "import", "let", "loop", "package", "namespace", "return". Examples: - Expression accessing a property named "namespace": {"Expression": "object.__namespace__ > 0"} - Expression accessing a property named "x-prop": {"Expression": "object.x__dash__prop > 0"} - Expression accessing a property named "redact__d": {"Expression": "object.redact__underscores__d > 0"} 
-    ///  Equality on arrays with list type of 'set' or 'map' ignores element order, i.e. [1, 2] == [2, 1]. Concatenation on arrays with x-kubernetes-list-type use the semantics of the list type: - 'set': `X + Y` performs a union where the array positions of all elements in `X` are preserved and non-intersecting elements in `Y` are appended, retaining their partial order. - 'map': `X + Y` performs a merge where the array positions of all keys in `X` are preserved but the values are overwritten by values in `Y` when the key sets of `X` and `Y` intersect. Elements in `Y` with non-intersecting keys are appended, retaining their partial order. Required.
+    /// Expression represents the expression which will be evaluated by CEL.
+    /// ref: https://github.com/google/cel-spec
+    /// CEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables:
+    /// 
+    /// 
+    /// - 'object' - The object from the incoming request. The value is null for DELETE requests.
+    /// - 'oldObject' - The existing object. The value is null for CREATE requests.
+    /// - 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)).
+    /// - 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind.
+    /// - 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources.
+    /// - 'variables' - Map of composited variables, from its name to its lazily evaluated value.
+    ///   For example, a variable named 'foo' can be accessed as 'variables.foo'.
+    /// - 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.
+    ///   See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz
+    /// - 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the
+    ///   request resource.
+    /// 
+    /// 
+    /// The `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the
+    /// object. No other metadata properties are accessible.
+    /// 
+    /// 
+    /// Only property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible.
+    /// Accessible property names are escaped according to the following rules when accessed in the expression:
+    /// - '__' escapes to '__underscores__'
+    /// - '.' escapes to '__dot__'
+    /// - '-' escapes to '__dash__'
+    /// - '/' escapes to '__slash__'
+    /// - Property names that exactly match a CEL RESERVED keyword escape to '__{keyword}__'. The keywords are:
+    /// 	  "true", "false", "null", "in", "as", "break", "const", "continue", "else", "for", "function", "if",
+    /// 	  "import", "let", "loop", "package", "namespace", "return".
+    /// Examples:
+    ///   - Expression accessing a property named "namespace": {"Expression": "object.__namespace__ > 0"}
+    ///   - Expression accessing a property named "x-prop": {"Expression": "object.x__dash__prop > 0"}
+    ///   - Expression accessing a property named "redact__d": {"Expression": "object.redact__underscores__d > 0"}
+    /// 
+    /// 
+    /// Equality on arrays with list type of 'set' or 'map' ignores element order, i.e. [1, 2] == [2, 1].
+    /// Concatenation on arrays with x-kubernetes-list-type use the semantics of the list type:
+    ///   - 'set': `X + Y` performs a union where the array positions of all elements in `X` are preserved and
+    ///     non-intersecting elements in `Y` are appended, retaining their partial order.
+    ///   - 'map': `X + Y` performs a merge where the array positions of all keys in `X` are preserved but the values
+    ///     are overwritten by values in `Y` when the key sets of `X` and `Y` intersect. Elements in `Y` with
+    ///     non-intersecting keys are appended, retaining their partial order.
+    /// Required.
     pub expression: String,
-    /// Message represents the message displayed when validation fails. The message is required if the Expression contains line breaks. The message must not contain line breaks. If unset, the message is "failed rule: {Rule}". e.g. "must be a URL with the host matching spec.host" If the Expression contains line breaks. Message is required. The message must not contain line breaks. If unset, the message is "failed Expression: {Expression}".
+    /// Message represents the message displayed when validation fails. The message is required if the Expression contains
+    /// line breaks. The message must not contain line breaks.
+    /// If unset, the message is "failed rule: {Rule}".
+    /// e.g. "must be a URL with the host matching spec.host"
+    /// If the Expression contains line breaks. Message is required.
+    /// The message must not contain line breaks.
+    /// If unset, the message is "failed Expression: {Expression}".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// messageExpression declares a CEL expression that evaluates to the validation failure message that is returned when this rule fails. Since messageExpression is used as a failure message, it must evaluate to a string. If both message and messageExpression are present on a validation, then messageExpression will be used if validation fails. If messageExpression results in a runtime error, the runtime error is logged, and the validation failure message is produced as if the messageExpression field were unset. If messageExpression evaluates to an empty string, a string with only spaces, or a string that contains line breaks, then the validation failure message will also be produced as if the messageExpression field were unset, and the fact that messageExpression produced an empty string/string with only spaces/string with line breaks will be logged. messageExpression has access to all the same variables as the `expression` except for 'authorizer' and 'authorizer.requestResource'. Example: "object.x must be less than max ("+string(params.max)+")"
+    /// messageExpression declares a CEL expression that evaluates to the validation failure message that is returned when this rule fails.
+    /// Since messageExpression is used as a failure message, it must evaluate to a string.
+    /// If both message and messageExpression are present on a validation, then messageExpression will be used if validation fails.
+    /// If messageExpression results in a runtime error, the runtime error is logged, and the validation failure message is produced
+    /// as if the messageExpression field were unset. If messageExpression evaluates to an empty string, a string with only spaces, or a string
+    /// that contains line breaks, then the validation failure message will also be produced as if the messageExpression field were unset, and
+    /// the fact that messageExpression produced an empty string/string with only spaces/string with line breaks will be logged.
+    /// messageExpression has access to all the same variables as the `expression` except for 'authorizer' and 'authorizer.requestResource'.
+    /// Example:
+    /// "object.x must be less than max ("+string(params.max)+")"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageExpression")]
     pub message_expression: Option<String>,
-    /// Reason represents a machine-readable description of why this validation failed. If this is the first validation in the list to fail, this reason, as well as the corresponding HTTP response code, are used in the HTTP response to the client. The currently supported reasons are: "Unauthorized", "Forbidden", "Invalid", "RequestEntityTooLarge". If not set, StatusReasonInvalid is used in the response to the client.
+    /// Reason represents a machine-readable description of why this validation failed.
+    /// If this is the first validation in the list to fail, this reason, as well as the
+    /// corresponding HTTP response code, are used in the
+    /// HTTP response to the client.
+    /// The currently supported reasons are: "Unauthorized", "Forbidden", "Invalid", "RequestEntityTooLarge".
+    /// If not set, StatusReasonInvalid is used in the response to the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
@@ -1355,10 +1884,13 @@ pub struct PolicyRulesValidateCelExpressions {
 /// ParamKind is a tuple of Group Kind and Version.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateCelParamKind {
-    /// APIVersion is the API group version the resources belong to. In format of "group/version". Required.
+    /// APIVersion is the API group version the resources belong to.
+    /// In format of "group/version".
+    /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Kind is the API kind the resources belong to. Required.
+    /// Kind is the API kind the resources belong to.
+    /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
 }
@@ -1366,48 +1898,93 @@ pub struct PolicyRulesValidateCelParamKind {
 /// ParamRef references a parameter resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateCelParamRef {
-    /// `name` is the name of the resource being referenced. 
-    ///  `name` and `selector` are mutually exclusive properties. If one is set, the other must be unset.
+    /// `name` is the name of the resource being referenced.
+    /// 
+    /// 
+    /// `name` and `selector` are mutually exclusive properties. If one is set,
+    /// the other must be unset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// namespace is the namespace of the referenced resource. Allows limiting the search for params to a specific namespace. Applies to both `name` and `selector` fields. 
-    ///  A per-namespace parameter may be used by specifying a namespace-scoped `paramKind` in the policy and leaving this field empty. 
-    ///  - If `paramKind` is cluster-scoped, this field MUST be unset. Setting this field results in a configuration error. 
-    ///  - If `paramKind` is namespace-scoped, the namespace of the object being evaluated for admission will be used when this field is left unset. Take care that if this is left empty the binding must not match any cluster-scoped resources, which will result in an error.
+    /// namespace is the namespace of the referenced resource. Allows limiting
+    /// the search for params to a specific namespace. Applies to both `name` and
+    /// `selector` fields.
+    /// 
+    /// 
+    /// A per-namespace parameter may be used by specifying a namespace-scoped
+    /// `paramKind` in the policy and leaving this field empty.
+    /// 
+    /// 
+    /// - If `paramKind` is cluster-scoped, this field MUST be unset. Setting this
+    /// field results in a configuration error.
+    /// 
+    /// 
+    /// - If `paramKind` is namespace-scoped, the namespace of the object being
+    /// evaluated for admission will be used when this field is left unset. Take
+    /// care that if this is left empty the binding must not match any cluster-scoped
+    /// resources, which will result in an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// `parameterNotFoundAction` controls the behavior of the binding when the resource exists, and name or selector is valid, but there are no parameters matched by the binding. If the value is set to `Allow`, then no matched parameters will be treated as successful validation by the binding. If set to `Deny`, then no matched parameters will be subject to the `failurePolicy` of the policy. 
-    ///  Allowed values are `Allow` or `Deny` Default to `Deny`
+    /// `parameterNotFoundAction` controls the behavior of the binding when the resource
+    /// exists, and name or selector is valid, but there are no parameters
+    /// matched by the binding. If the value is set to `Allow`, then no
+    /// matched parameters will be treated as successful validation by the binding.
+    /// If set to `Deny`, then no matched parameters will be subject to the
+    /// `failurePolicy` of the policy.
+    /// 
+    /// 
+    /// Allowed values are `Allow` or `Deny`
+    /// Default to `Deny`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterNotFoundAction")]
     pub parameter_not_found_action: Option<String>,
-    /// selector can be used to match multiple param objects based on their labels. Supply selector: {} to match all resources of the ParamKind. 
-    ///  If multiple params are found, they are all evaluated with the policy expressions and the results are ANDed together. 
-    ///  One of `name` or `selector` must be set, but `name` and `selector` are mutually exclusive properties. If one is set, the other must be unset.
+    /// selector can be used to match multiple param objects based on their labels.
+    /// Supply selector: {} to match all resources of the ParamKind.
+    /// 
+    /// 
+    /// If multiple params are found, they are all evaluated with the policy expressions
+    /// and the results are ANDed together.
+    /// 
+    /// 
+    /// One of `name` or `selector` must be set, but `name` and `selector` are
+    /// mutually exclusive properties. If one is set, the other must be unset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyRulesValidateCelParamRefSelector>,
 }
 
-/// selector can be used to match multiple param objects based on their labels. Supply selector: {} to match all resources of the ParamKind. 
-///  If multiple params are found, they are all evaluated with the policy expressions and the results are ANDed together. 
-///  One of `name` or `selector` must be set, but `name` and `selector` are mutually exclusive properties. If one is set, the other must be unset.
+/// selector can be used to match multiple param objects based on their labels.
+/// Supply selector: {} to match all resources of the ParamKind.
+/// 
+/// 
+/// If multiple params are found, they are all evaluated with the policy expressions
+/// and the results are ANDed together.
+/// 
+/// 
+/// One of `name` or `selector` must be set, but `name` and `selector` are
+/// mutually exclusive properties. If one is set, the other must be unset.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateCelParamRefSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyRulesValidateCelParamRefSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateCelParamRefSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -1415,27 +1992,38 @@ pub struct PolicyRulesValidateCelParamRefSelectorMatchExpressions {
 /// Variable is the definition of a variable that is used for composition.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateCelVariables {
-    /// Expression is the expression that will be evaluated as the value of the variable. The CEL expression has access to the same identifiers as the CEL expressions in Validation.
+    /// Expression is the expression that will be evaluated as the value of the variable.
+    /// The CEL expression has access to the same identifiers as the CEL expressions in Validation.
     pub expression: String,
-    /// Name is the name of the variable. The name must be a valid CEL identifier and unique among all variables. The variable can be accessed in other expressions through `variables` For example, if name is "foo", the variable will be available as `variables.foo`
+    /// Name is the name of the variable. The name must be a valid CEL identifier and unique among all variables.
+    /// The variable can be accessed in other expressions through `variables`
+    /// For example, if name is "foo", the variable will be available as `variables.foo`
     pub name: String,
 }
 
 /// Deny defines conditions used to pass or fail a validation rule.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateDeny {
-    /// Multiple conditions can be declared under an `any` or `all` statement. See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
+    /// Multiple conditions can be declared under an `any` or `all` statement.
+    /// See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<PolicyRulesValidateDenyConditions>,
 }
 
-/// Multiple conditions can be declared under an `any` or `all` statement. See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
+/// Multiple conditions can be declared under an `any` or `all` statement.
+/// See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateDenyConditions {
-    /// AllConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, all of the conditions need to pass.
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub all: Option<Vec<PolicyRulesValidateDenyConditionsAll>>,
-    /// AnyConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, at least one of the conditions need to pass.
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<Vec<PolicyRulesValidateDenyConditionsAny>>,
 }
@@ -1448,10 +2036,14 @@ pub struct PolicyRulesValidateDenyConditionsAll {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyRulesValidateDenyConditionsAllOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -1482,10 +2074,14 @@ pub struct PolicyRulesValidateDenyConditionsAny {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyRulesValidateDenyConditionsAnyOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -1511,7 +2107,8 @@ pub enum PolicyRulesValidateDenyConditionsAnyOperator {
 /// ForEachValidation applies validate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateForeach {
-    /// AnyPattern specifies list of validation patterns. At least one of the patterns must be satisfied for the validation rule to succeed.
+    /// AnyPattern specifies list of validation patterns. At least one of the patterns
+    /// must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
     pub any_pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// Context defines variables and data sources that can be used during rule execution.
@@ -1520,33 +2117,44 @@ pub struct PolicyRulesValidateForeach {
     /// Deny defines conditions used to pass or fail a validation rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deny: Option<PolicyRulesValidateForeachDeny>,
-    /// ElementScope specifies whether to use the current list element as the scope for validation. Defaults to "true" if not specified. When set to "false", "request.object" is used as the validation scope within the foreach block to allow referencing other elements in the subtree.
+    /// ElementScope specifies whether to use the current list element as the scope for validation. Defaults to "true" if not specified.
+    /// When set to "false", "request.object" is used as the validation scope within the foreach
+    /// block to allow referencing other elements in the subtree.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "elementScope")]
     pub element_scope: Option<bool>,
     /// Foreach declares a nested foreach iterator
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub foreach: Option<BTreeMap<String, serde_json::Value>>,
-    /// List specifies a JMESPath expression that results in one or more elements to which the validation logic is applied.
+    /// List specifies a JMESPath expression that results in one or more elements
+    /// to which the validation logic is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub list: Option<String>,
     /// Pattern specifies an overlay-style pattern used to check resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<BTreeMap<String, serde_json::Value>>,
-    /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
+    /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of conditions. The declaration can contain nested `any` or `all` statements.
+    /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<PolicyRulesValidateForeachPreconditions>,
 }
 
-/// ContextEntry adds variables and data sources to a rule Context. Either a ConfigMap reference or a APILookup must be provided.
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateForeachContext {
-    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
     pub api_call: Option<PolicyRulesValidateForeachContextApiCall>,
     /// ConfigMap is the ConfigMap reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PolicyRulesValidateForeachContextConfigMap>,
-    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<PolicyRulesValidateForeachContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyRulesValidateForeachContextImageRegistry>,
     /// Name is the variable name.
@@ -1557,22 +2165,35 @@ pub struct PolicyRulesValidateForeachContext {
     pub variable: Option<PolicyRulesValidateForeachContextVariable>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateForeachContextApiCall {
-    /// Data specifies the POST data sent to the server.
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyRulesValidateForeachContextApiCallData>>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the JSON response returned from the server. For example a JMESPath of "items | length(@)" applied to the API server response for the URLPath "/apis/apps/v1/deployments" will return the total count of deployments across all namespaces.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Method is the HTTP request type (GET or POST).
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<PolicyRulesValidateForeachContextApiCallMethod>,
-    /// Service is an API call to a JSON web service
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PolicyRulesValidateForeachContextApiCallService>,
-    /// URLPath is the URL path to be used in the HTTP GET or POST request to the Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments"). The format required is the same format used by the `kubectl get --raw` command. See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls for details.
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
     pub url_path: Option<String>,
 }
@@ -1586,7 +2207,8 @@ pub struct PolicyRulesValidateForeachContextApiCallData {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyRulesValidateForeachContextApiCallMethod {
     #[serde(rename = "GET")]
@@ -1595,13 +2217,17 @@ pub enum PolicyRulesValidateForeachContextApiCallMethod {
     Post,
 }
 
-/// Service is an API call to a JSON web service
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateForeachContextApiCallService {
-    /// CABundle is a PEM encoded CA bundle which will be used to validate the server certificate.
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// URL is the JSON web service URL. A typical form is `https://{service}.{namespace}:{port}/{path}`.
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
     pub url: String,
 }
 
@@ -1615,16 +2241,35 @@ pub struct PolicyRulesValidateForeachContextConfigMap {
     pub namespace: Option<String>,
 }
 
-/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PolicyRulesValidateForeachContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateForeachContextImageRegistry {
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
     pub image_registry_credentials: Option<PolicyRulesValidateForeachContextImageRegistryImageRegistryCredentials>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the ImageData struct returned as a result of processing the image reference.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Reference is image reference to a container image in the registry. Example: ghcr.io/kyverno/kyverno:latest
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
     pub reference: String,
 }
 
@@ -1634,10 +2279,12 @@ pub struct PolicyRulesValidateForeachContextImageRegistryImageRegistryCredential
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
@@ -1645,10 +2292,12 @@ pub struct PolicyRulesValidateForeachContextImageRegistryImageRegistryCredential
 /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateForeachContextVariable {
-    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<BTreeMap<String, serde_json::Value>>,
-    /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
@@ -1659,18 +2308,29 @@ pub struct PolicyRulesValidateForeachContextVariable {
 /// Deny defines conditions used to pass or fail a validation rule.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateForeachDeny {
-    /// Multiple conditions can be declared under an `any` or `all` statement. A direct list of conditions (without `any` or `all` statements) is also supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
+    /// Multiple conditions can be declared under an `any` or `all` statement. A direct list
+    /// of conditions (without `any` or `all` statements) is also supported for backwards compatibility
+    /// but will be deprecated in the next major release.
+    /// See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<BTreeMap<String, serde_json::Value>>,
 }
 
-/// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
+/// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+/// set of conditions. The declaration can contain nested `any` or `all` statements.
+/// See: https://kyverno.io/docs/writing-policies/preconditions/
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateForeachPreconditions {
-    /// AllConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, all of the conditions need to pass
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub all: Option<Vec<PolicyRulesValidateForeachPreconditionsAll>>,
-    /// AnyConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, at least one of the conditions need to pass
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<Vec<PolicyRulesValidateForeachPreconditionsAny>>,
 }
@@ -1684,10 +2344,14 @@ pub struct PolicyRulesValidateForeachPreconditionsAll {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyRulesValidateForeachPreconditionsAllOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -1722,10 +2386,14 @@ pub struct PolicyRulesValidateForeachPreconditionsAny {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyRulesValidateForeachPreconditionsAnyOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -1766,24 +2434,30 @@ pub struct PolicyRulesValidateManifests {
     /// Fields which will be ignored while comparing manifests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreFields")]
     pub ignore_fields: Option<Vec<PolicyRulesValidateManifestsIgnoreFields>>,
-    /// Repository is an optional alternate OCI repository to use for resource bundle reference. The repository can be overridden per Attestor or Attestation.
+    /// Repository is an optional alternate OCI repository to use for resource bundle reference.
+    /// The repository can be overridden per Attestor or Attestation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateManifestsAttestors {
-    /// Count specifies the required number of entries that must match. If the count is null, all entries must match (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a value N, then N must be less than or equal to the size of entries, and at least N entries must match.
+    /// Count specifies the required number of entries that must match. If the count is null, all entries must match
+    /// (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a
+    /// value N, then N must be less than or equal to the size of entries, and at least N entries must match.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
-    /// Entries contains the available attestors. An attestor can be a static key, attributes for keyless verification, or a nested attestor declaration.
+    /// Entries contains the available attestors. An attestor can be a static key,
+    /// attributes for keyless verification, or a nested attestor declaration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<PolicyRulesValidateManifestsAttestorsEntries>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateManifestsAttestorsEntries {
-    /// Annotations are used for image verification. Every specified key-value pair must exist and match in the verified payload. The payload may contain other key-value pairs.
+    /// Annotations are used for image verification.
+    /// Every specified key-value pair must exist and match in the verified payload.
+    /// The payload may contain other key-value pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
@@ -1792,13 +2466,15 @@ pub struct PolicyRulesValidateManifestsAttestorsEntries {
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<PolicyRulesValidateManifestsAttestorsEntriesCertificates>,
-    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+    /// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyless: Option<PolicyRulesValidateManifestsAttestorsEntriesKeyless>,
     /// Keys specifies one or more public keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<PolicyRulesValidateManifestsAttestorsEntriesKeys>,
-    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule. If specified Repository will override other OCI image repository locations for this Attestor.
+    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.
+    /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
 }
@@ -1812,54 +2488,70 @@ pub struct PolicyRulesValidateManifestsAttestorsEntriesCertificates {
     /// CertChain is an optional PEM encoded set of certificates used to verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certChain")]
     pub cert_chain: Option<String>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyRulesValidateManifestsAttestorsEntriesCertificatesCtlog>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyRulesValidateManifestsAttestorsEntriesCertificatesRekor>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateManifestsAttestorsEntriesCertificatesCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateManifestsAttestorsEntriesCertificatesRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
-/// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+/// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+/// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateManifestsAttestorsEntriesKeyless {
     /// AdditionalExtensions are certificate-extensions used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalExtensions")]
     pub additional_extensions: Option<BTreeMap<String, String>>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyRulesValidateManifestsAttestorsEntriesKeylessCtlog>,
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyRulesValidateManifestsAttestorsEntriesKeylessRekor>,
-    /// Roots is an optional set of PEM encoded trusted root certificates. If not provided, the system roots are used.
+    /// Roots is an optional set of PEM encoded trusted root certificates.
+    /// If not provided, the system roots are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roots: Option<String>,
     /// Subject is the verified identity used for keyless signing, for example the email address.
@@ -1867,43 +2559,63 @@ pub struct PolicyRulesValidateManifestsAttestorsEntriesKeyless {
     pub subject: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateManifestsAttestorsEntriesKeylessCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateManifestsAttestorsEntriesKeylessRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Keys specifies one or more public keys.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateManifestsAttestorsEntriesKeys {
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyRulesValidateManifestsAttestorsEntriesKeysCtlog>,
-    /// KMS provides the URI to the public key stored in a Key Management System. See: https://github.com/sigstore/cosign/blob/main/KMS.md
+    /// KMS provides the URI to the public key stored in a Key Management System. See:
+    /// https://github.com/sigstore/cosign/blob/main/KMS.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kms: Option<String>,
-    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly specified or can be a variable reference to a key specified in a ConfigMap (see https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>". The named Secret must specify a key `cosign.pub` containing the public key used for verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret). When multiple keys are specified each key is processed as a separate staticKey entry (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
+    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly
+    /// specified or can be a variable reference to a key specified in a ConfigMap (see
+    /// https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret
+    /// elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>".
+    /// The named Secret must specify a key `cosign.pub` containing the public key used for
+    /// verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret).
+    /// When multiple keys are specified each key is processed as a separate staticKey entry
+    /// (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicKeys")]
     pub public_keys: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyRulesValidateManifestsAttestorsEntriesKeysRekor>,
     /// Reference to a Secret resource that contains a public key
@@ -1914,28 +2626,38 @@ pub struct PolicyRulesValidateManifestsAttestorsEntriesKeys {
     pub signature_algorithm: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateManifestsAttestorsEntriesKeysCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidateManifestsAttestorsEntriesKeysRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Reference to a Secret resource that contains a public key
@@ -1978,16 +2700,19 @@ pub struct PolicyRulesValidateManifestsIgnoreFieldsObjects {
     pub version: Option<String>,
 }
 
-/// PodSecurity applies exemptions for Kubernetes Pod Security admission by specifying exclusions for Pod Security Standards controls.
+/// PodSecurity applies exemptions for Kubernetes Pod Security admission
+/// by specifying exclusions for Pod Security Standards controls.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidatePodSecurity {
     /// Exclude specifies the Pod Security Standard controls to be excluded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclude: Option<Vec<PolicyRulesValidatePodSecurityExclude>>,
-    /// Level defines the Pod Security Standard level to be applied to workloads. Allowed values are privileged, baseline, and restricted.
+    /// Level defines the Pod Security Standard level to be applied to workloads.
+    /// Allowed values are privileged, baseline, and restricted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<PolicyRulesValidatePodSecurityLevel>,
-    /// Version defines the Pod Security Standard versions that Kubernetes supports. Allowed values are v1.19, v1.20, v1.21, v1.22, v1.23, v1.24, v1.25, v1.26, latest. Defaults to latest.
+    /// Version defines the Pod Security Standard versions that Kubernetes supports.
+    /// Allowed values are v1.19, v1.20, v1.21, v1.22, v1.23, v1.24, v1.25, v1.26, v1.27, v1.28, v1.29, latest. Defaults to latest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<PolicyRulesValidatePodSecurityVersion>,
 }
@@ -1995,13 +2720,18 @@ pub struct PolicyRulesValidatePodSecurity {
 /// PodSecurityStandard specifies the Pod Security Standard controls to be excluded.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesValidatePodSecurityExclude {
-    /// ControlName specifies the name of the Pod Security Standard control. See: https://kubernetes.io/docs/concepts/security/pod-security-standards/
+    /// ControlName specifies the name of the Pod Security Standard control.
+    /// See: https://kubernetes.io/docs/concepts/security/pod-security-standards/
     #[serde(rename = "controlName")]
     pub control_name: PolicyRulesValidatePodSecurityExcludeControlName,
-    /// Images selects matching containers and applies the container level PSS. Each image is the image name consisting of the registry address, repository, image, and tag. Empty list matches no containers, PSS checks are applied at the pod level only. Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
+    /// Images selects matching containers and applies the container level PSS.
+    /// Each image is the image name consisting of the registry address, repository, image, and tag.
+    /// Empty list matches no containers, PSS checks are applied at the pod level only.
+    /// Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
-    /// RestrictedField selects the field for the given Pod Security Standard control. When not set, all restricted fields for the control are selected.
+    /// RestrictedField selects the field for the given Pod Security Standard control.
+    /// When not set, all restricted fields for the control are selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restrictedField")]
     pub restricted_field: Option<String>,
     /// Values defines the allowed values that can be excluded.
@@ -2039,7 +2769,8 @@ pub enum PolicyRulesValidatePodSecurityExcludeControlName {
     RunningAsNonRootUser,
 }
 
-/// PodSecurity applies exemptions for Kubernetes Pod Security admission by specifying exclusions for Pod Security Standards controls.
+/// PodSecurity applies exemptions for Kubernetes Pod Security admission
+/// by specifying exclusions for Pod Security Standards controls.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyRulesValidatePodSecurityLevel {
     #[serde(rename = "privileged")]
@@ -2050,7 +2781,8 @@ pub enum PolicyRulesValidatePodSecurityLevel {
     Restricted,
 }
 
-/// PodSecurity applies exemptions for Kubernetes Pod Security admission by specifying exclusions for Pod Security Standards controls.
+/// PodSecurity applies exemptions for Kubernetes Pod Security admission
+/// by specifying exclusions for Pod Security Standards controls.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyRulesValidatePodSecurityVersion {
     #[serde(rename = "v1.19")]
@@ -2069,38 +2801,58 @@ pub enum PolicyRulesValidatePodSecurityVersion {
     V125,
     #[serde(rename = "v1.26")]
     V126,
+    #[serde(rename = "v1.27")]
+    V127,
+    #[serde(rename = "v1.28")]
+    V128,
+    #[serde(rename = "v1.29")]
+    V129,
     #[serde(rename = "latest")]
     Latest,
 }
 
-/// ImageVerification validates that images that match the specified pattern are signed with the supplied public key. Once the image is verified it is mutated to include the SHA digest retrieved during the registration.
+/// ImageVerification validates that images that match the specified pattern
+/// are signed with the supplied public key. Once the image is verified it is
+/// mutated to include the SHA digest retrieved during the registration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImages {
-    /// Attestations are optional checks for signed in-toto Statements used to verify the image. See https://github.com/in-toto/attestation. Kyverno fetches signed attestations from the OCI registry and decodes them into a list of Statement declarations.
+    /// Attestations are optional checks for signed in-toto Statements used to verify the image.
+    /// See https://github.com/in-toto/attestation. Kyverno fetches signed attestations from the
+    /// OCI registry and decodes them into a list of Statement declarations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attestations: Option<Vec<PolicyRulesVerifyImagesAttestations>>,
     /// Attestors specified the required attestors (i.e. authorities)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attestors: Option<Vec<PolicyRulesVerifyImagesAttestors>>,
-    /// ImageReferences is a list of matching image reference patterns. At least one pattern in the list must match the image for the rule to apply. Each image reference consists of a registry address (defaults to docker.io), repository, image, and tag (defaults to latest). Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
+    /// ImageReferences is a list of matching image reference patterns. At least one pattern in the
+    /// list must match the image for the rule to apply. Each image reference consists of a registry
+    /// address (defaults to docker.io), repository, image, and tag (defaults to latest).
+    /// Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageReferences")]
     pub image_references: Option<Vec<String>>,
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
     pub image_registry_credentials: Option<PolicyRulesVerifyImagesImageRegistryCredentials>,
-    /// MutateDigest enables replacement of image tags with digests. Defaults to true.
+    /// MutateDigest enables replacement of image tags with digests.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateDigest")]
     pub mutate_digest: Option<bool>,
-    /// Repository is an optional alternate OCI repository to use for image signatures and attestations that match this rule. If specified Repository will override the default OCI image repository configured for the installation. The repository can also be overridden per Attestor or Attestation.
+    /// Repository is an optional alternate OCI repository to use for image signatures and attestations that match this rule.
+    /// If specified Repository will override the default OCI image repository configured for the installation.
+    /// The repository can also be overridden per Attestor or Attestation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
     /// Required validates that images are verified i.e. have matched passed a signature or attestation check.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub required: Option<bool>,
-    /// SkipImageReferences is a list of matching image reference patterns that should be skipped. At least one pattern in the list must match the image for the rule to be skipped. Each image reference consists of a registry address (defaults to docker.io), repository, image, and tag (defaults to latest). Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
+    /// SkipImageReferences is a list of matching image reference patterns that should be skipped.
+    /// At least one pattern in the list must match the image for the rule to be skipped. Each image reference
+    /// consists of a registry address (defaults to docker.io), repository, image, and tag (defaults to latest).
+    /// Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipImageReferences")]
     pub skip_image_references: Option<Vec<String>>,
-    /// Type specifies the method of signature validation. The allowed options are Cosign and Notary. By default Cosign is used if a type is not specified.
+    /// Type specifies the method of signature validation. The allowed options
+    /// are Cosign and Notary. By default Cosign is used if a type is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<PolicyRulesVerifyImagesType>,
     /// UseCache enables caching of image verify responses for this rule
@@ -2111,13 +2863,16 @@ pub struct PolicyRulesVerifyImages {
     pub verify_digest: Option<bool>,
 }
 
-/// Attestation are checks for signed in-toto Statements that are used to verify the image. See https://github.com/in-toto/attestation. Kyverno fetches signed attestations from the OCI registry and decodes them into a list of Statements.
+/// Attestation are checks for signed in-toto Statements that are used to verify the image.
+/// See https://github.com/in-toto/attestation. Kyverno fetches signed attestations from the
+/// OCI registry and decodes them into a list of Statements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestations {
     /// Attestors specify the required attestors (i.e. authorities).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attestors: Option<Vec<PolicyRulesVerifyImagesAttestationsAttestors>>,
-    /// Conditions are used to verify attributes within a Predicate. If no Conditions are specified the attestation check is satisfied as long there are predicates that match the predicate type.
+    /// Conditions are used to verify attributes within a Predicate. If no Conditions are specified
+    /// the attestation check is satisfied as long there are predicates that match the predicate type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<PolicyRulesVerifyImagesAttestationsConditions>>,
     /// Deprecated in favour of 'Type', to be removed soon
@@ -2130,17 +2885,22 @@ pub struct PolicyRulesVerifyImagesAttestations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsAttestors {
-    /// Count specifies the required number of entries that must match. If the count is null, all entries must match (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a value N, then N must be less than or equal to the size of entries, and at least N entries must match.
+    /// Count specifies the required number of entries that must match. If the count is null, all entries must match
+    /// (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a
+    /// value N, then N must be less than or equal to the size of entries, and at least N entries must match.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
-    /// Entries contains the available attestors. An attestor can be a static key, attributes for keyless verification, or a nested attestor declaration.
+    /// Entries contains the available attestors. An attestor can be a static key,
+    /// attributes for keyless verification, or a nested attestor declaration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<PolicyRulesVerifyImagesAttestationsAttestorsEntries>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntries {
-    /// Annotations are used for image verification. Every specified key-value pair must exist and match in the verified payload. The payload may contain other key-value pairs.
+    /// Annotations are used for image verification.
+    /// Every specified key-value pair must exist and match in the verified payload.
+    /// The payload may contain other key-value pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
@@ -2149,13 +2909,15 @@ pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntries {
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesCertificates>,
-    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+    /// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyless: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeyless>,
     /// Keys specifies one or more public keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeys>,
-    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule. If specified Repository will override other OCI image repository locations for this Attestor.
+    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.
+    /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
 }
@@ -2169,54 +2931,70 @@ pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesCertificates {
     /// CertChain is an optional PEM encoded set of certificates used to verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certChain")]
     pub cert_chain: Option<String>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesCertificatesCtlog>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesCertificatesRekor>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesCertificatesCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesCertificatesRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
-/// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+/// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+/// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeyless {
     /// AdditionalExtensions are certificate-extensions used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalExtensions")]
     pub additional_extensions: Option<BTreeMap<String, String>>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeylessCtlog>,
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeylessRekor>,
-    /// Roots is an optional set of PEM encoded trusted root certificates. If not provided, the system roots are used.
+    /// Roots is an optional set of PEM encoded trusted root certificates.
+    /// If not provided, the system roots are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roots: Option<String>,
     /// Subject is the verified identity used for keyless signing, for example the email address.
@@ -2224,43 +3002,63 @@ pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeyless {
     pub subject: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeylessCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeylessRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Keys specifies one or more public keys.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeys {
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeysCtlog>,
-    /// KMS provides the URI to the public key stored in a Key Management System. See: https://github.com/sigstore/cosign/blob/main/KMS.md
+    /// KMS provides the URI to the public key stored in a Key Management System. See:
+    /// https://github.com/sigstore/cosign/blob/main/KMS.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kms: Option<String>,
-    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly specified or can be a variable reference to a key specified in a ConfigMap (see https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>". The named Secret must specify a key `cosign.pub` containing the public key used for verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret). When multiple keys are specified each key is processed as a separate staticKey entry (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
+    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly
+    /// specified or can be a variable reference to a key specified in a ConfigMap (see
+    /// https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret
+    /// elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>".
+    /// The named Secret must specify a key `cosign.pub` containing the public key used for
+    /// verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret).
+    /// When multiple keys are specified each key is processed as a separate staticKey entry
+    /// (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicKeys")]
     pub public_keys: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeysRekor>,
     /// Reference to a Secret resource that contains a public key
@@ -2271,28 +3069,38 @@ pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeys {
     pub signature_algorithm: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeysCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeysRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Reference to a Secret resource that contains a public key
@@ -2304,13 +3112,21 @@ pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeysSecret {
     pub namespace: String,
 }
 
-/// AnyAllConditions consists of conditions wrapped denoting a logical criteria to be fulfilled. AnyConditions get fulfilled when at least one of its sub-conditions passes. AllConditions get fulfilled only when all of its sub-conditions pass.
+/// AnyAllConditions consists of conditions wrapped denoting a logical criteria to be fulfilled.
+/// AnyConditions get fulfilled when at least one of its sub-conditions passes.
+/// AllConditions get fulfilled only when all of its sub-conditions pass.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestationsConditions {
-    /// AllConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, all of the conditions need to pass
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub all: Option<Vec<PolicyRulesVerifyImagesAttestationsConditionsAll>>,
-    /// AnyConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, at least one of the conditions need to pass
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<Vec<PolicyRulesVerifyImagesAttestationsConditionsAny>>,
 }
@@ -2324,10 +3140,14 @@ pub struct PolicyRulesVerifyImagesAttestationsConditionsAll {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyRulesVerifyImagesAttestationsConditionsAllOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -2362,10 +3182,14 @@ pub struct PolicyRulesVerifyImagesAttestationsConditionsAny {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyRulesVerifyImagesAttestationsConditionsAnyOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -2393,17 +3217,22 @@ pub enum PolicyRulesVerifyImagesAttestationsConditionsAnyOperator {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestors {
-    /// Count specifies the required number of entries that must match. If the count is null, all entries must match (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a value N, then N must be less than or equal to the size of entries, and at least N entries must match.
+    /// Count specifies the required number of entries that must match. If the count is null, all entries must match
+    /// (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a
+    /// value N, then N must be less than or equal to the size of entries, and at least N entries must match.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
-    /// Entries contains the available attestors. An attestor can be a static key, attributes for keyless verification, or a nested attestor declaration.
+    /// Entries contains the available attestors. An attestor can be a static key,
+    /// attributes for keyless verification, or a nested attestor declaration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<PolicyRulesVerifyImagesAttestorsEntries>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestorsEntries {
-    /// Annotations are used for image verification. Every specified key-value pair must exist and match in the verified payload. The payload may contain other key-value pairs.
+    /// Annotations are used for image verification.
+    /// Every specified key-value pair must exist and match in the verified payload.
+    /// The payload may contain other key-value pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
@@ -2412,13 +3241,15 @@ pub struct PolicyRulesVerifyImagesAttestorsEntries {
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<PolicyRulesVerifyImagesAttestorsEntriesCertificates>,
-    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+    /// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyless: Option<PolicyRulesVerifyImagesAttestorsEntriesKeyless>,
     /// Keys specifies one or more public keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<PolicyRulesVerifyImagesAttestorsEntriesKeys>,
-    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule. If specified Repository will override other OCI image repository locations for this Attestor.
+    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.
+    /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
 }
@@ -2432,54 +3263,70 @@ pub struct PolicyRulesVerifyImagesAttestorsEntriesCertificates {
     /// CertChain is an optional PEM encoded set of certificates used to verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certChain")]
     pub cert_chain: Option<String>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyRulesVerifyImagesAttestorsEntriesCertificatesCtlog>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyRulesVerifyImagesAttestorsEntriesCertificatesRekor>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestorsEntriesCertificatesCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestorsEntriesCertificatesRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
-/// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+/// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+/// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestorsEntriesKeyless {
     /// AdditionalExtensions are certificate-extensions used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalExtensions")]
     pub additional_extensions: Option<BTreeMap<String, String>>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyRulesVerifyImagesAttestorsEntriesKeylessCtlog>,
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyRulesVerifyImagesAttestorsEntriesKeylessRekor>,
-    /// Roots is an optional set of PEM encoded trusted root certificates. If not provided, the system roots are used.
+    /// Roots is an optional set of PEM encoded trusted root certificates.
+    /// If not provided, the system roots are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roots: Option<String>,
     /// Subject is the verified identity used for keyless signing, for example the email address.
@@ -2487,43 +3334,63 @@ pub struct PolicyRulesVerifyImagesAttestorsEntriesKeyless {
     pub subject: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestorsEntriesKeylessCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestorsEntriesKeylessRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Keys specifies one or more public keys.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestorsEntriesKeys {
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyRulesVerifyImagesAttestorsEntriesKeysCtlog>,
-    /// KMS provides the URI to the public key stored in a Key Management System. See: https://github.com/sigstore/cosign/blob/main/KMS.md
+    /// KMS provides the URI to the public key stored in a Key Management System. See:
+    /// https://github.com/sigstore/cosign/blob/main/KMS.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kms: Option<String>,
-    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly specified or can be a variable reference to a key specified in a ConfigMap (see https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>". The named Secret must specify a key `cosign.pub` containing the public key used for verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret). When multiple keys are specified each key is processed as a separate staticKey entry (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
+    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly
+    /// specified or can be a variable reference to a key specified in a ConfigMap (see
+    /// https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret
+    /// elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>".
+    /// The named Secret must specify a key `cosign.pub` containing the public key used for
+    /// verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret).
+    /// When multiple keys are specified each key is processed as a separate staticKey entry
+    /// (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicKeys")]
     pub public_keys: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyRulesVerifyImagesAttestorsEntriesKeysRekor>,
     /// Reference to a Secret resource that contains a public key
@@ -2534,28 +3401,38 @@ pub struct PolicyRulesVerifyImagesAttestorsEntriesKeys {
     pub signature_algorithm: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestorsEntriesKeysCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRulesVerifyImagesAttestorsEntriesKeysRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Reference to a Secret resource that contains a public key
@@ -2573,15 +3450,19 @@ pub struct PolicyRulesVerifyImagesImageRegistryCredentials {
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
 
-/// ImageVerification validates that images that match the specified pattern are signed with the supplied public key. Once the image is verified it is mutated to include the SHA digest retrieved during the registration.
+/// ImageVerification validates that images that match the specified pattern
+/// are signed with the supplied public key. Once the image is verified it is
+/// mutated to include the SHA digest retrieved during the registration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyRulesVerifyImagesType {
     Cosign,
@@ -2591,8 +3472,14 @@ pub enum PolicyRulesVerifyImagesType {
 /// Spec defines policy behaviors and contains one or more rules.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyValidationFailureAction {
+    #[serde(rename = "audit")]
     Audit,
+    #[serde(rename = "enforce")]
     Enforce,
+    #[serde(rename = "Audit")]
+    AuditX,
+    #[serde(rename = "Enforce")]
+    EnforceX,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2600,7 +3487,9 @@ pub struct PolicyValidationFailureActionOverrides {
     /// ValidationFailureAction defines the policy validation failure action
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PolicyValidationFailureActionOverridesAction>,
-    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    /// A label selector is a label query over a set of resources. The result of matchLabels and
+    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
+    /// label selector matches no objects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyValidationFailureActionOverridesNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2609,31 +3498,87 @@ pub struct PolicyValidationFailureActionOverrides {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyValidationFailureActionOverridesAction {
+    #[serde(rename = "audit")]
     Audit,
+    #[serde(rename = "enforce")]
     Enforce,
+    #[serde(rename = "Audit")]
+    AuditX,
+    #[serde(rename = "Enforce")]
+    EnforceX,
 }
 
-/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyValidationFailureActionOverridesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyValidationFailureActionOverridesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyValidationFailureActionOverridesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// WebhookConfiguration specifies the custom configuration for Kubernetes admission webhookconfiguration.
+/// Requires Kubernetes 1.27 or later.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PolicyWebhookConfiguration {
+    /// MatchCondition configures admission webhook matchConditions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchConditions")]
+    pub match_conditions: Option<Vec<PolicyWebhookConfigurationMatchConditions>>,
+}
+
+/// MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PolicyWebhookConfigurationMatchConditions {
+    /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
+    /// CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:
+    /// 
+    /// 
+    /// 'object' - The object from the incoming request. The value is null for DELETE requests.
+    /// 'oldObject' - The existing object. The value is null for CREATE requests.
+    /// 'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).
+    /// 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.
+    ///   See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz
+    /// 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the
+    ///   request resource.
+    /// Documentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/
+    /// 
+    /// 
+    /// Required.
+    pub expression: String,
+    /// Name is an identifier for this match condition, used for strategic merging of MatchConditions,
+    /// as well as providing an identifier for logging purposes. A good name should be descriptive of
+    /// the associated expression.
+    /// Name must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and
+    /// must start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or
+    /// '123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an
+    /// optional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')
+    /// 
+    /// 
+    /// Required.
+    pub name: String,
 }
 
 /// Status contains policy runtime data.
@@ -2646,7 +3591,8 @@ pub struct PolicyStatus {
     pub conditions: Option<Vec<Condition>>,
     /// Deprecated in favor of Conditions
     pub ready: bool,
-    /// RuleCountStatus contains four variables which describes counts for validate, generate, mutate and verify images rules
+    /// RuleCountStatus contains four variables which describes counts for
+    /// validate, generate, mutate and verify images rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rulecount: Option<PolicyStatusRulecount>,
     /// ValidatingAdmissionPolicy contains status information
@@ -2662,25 +3608,34 @@ pub struct PolicyStatusAutogen {
     pub rules: Option<Vec<PolicyStatusAutogenRules>>,
 }
 
-/// Rule defines a validation, mutation, or generation control for matching resources. Each rules contains a match declaration to select resources, and an optional exclude declaration to specify which resources to exclude.
+/// Rule defines a validation, mutation, or generation control for matching resources.
+/// Each rules contains a match declaration to select resources, and an optional exclude
+/// declaration to specify which resources to exclude.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRules {
-    /// CELPreconditions are used to determine if a policy rule should be applied by evaluating a set of CEL conditions. It can only be used with the validate.cel subrule
+    /// CELPreconditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of CEL conditions. It can only be used with the validate.cel subrule
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "celPreconditions")]
     pub cel_preconditions: Option<Vec<PolicyStatusAutogenRulesCelPreconditions>>,
     /// Context defines variables and data sources that can be used during rule execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<Vec<PolicyStatusAutogenRulesContext>>,
-    /// ExcludeResources defines when this policy rule should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.
+    /// ExcludeResources defines when this policy rule should not be applied. The exclude
+    /// criteria can include resource information (e.g. kind, name, namespace, labels)
+    /// and admission review request information like the name or role.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclude: Option<PolicyStatusAutogenRulesExclude>,
     /// Generation is used to create new resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<PolicyStatusAutogenRulesGenerate>,
-    /// ImageExtractors defines a mapping from kinds to ImageExtractorConfigs. This config is only valid for verifyImages rules.
+    /// ImageExtractors defines a mapping from kinds to ImageExtractorConfigs.
+    /// This config is only valid for verifyImages rules.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageExtractors")]
     pub image_extractors: Option<BTreeMap<String, PolicyStatusAutogenRulesImageExtractors>>,
-    /// MatchResources defines when this policy rule should be applied. The match criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the user name or role. At least one kind is required.
+    /// MatchResources defines when this policy rule should be applied. The match
+    /// criteria can include resource information (e.g. kind, name, namespace, labels)
+    /// and admission review request information like the user name or role.
+    /// At least one kind is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<PolicyStatusAutogenRulesMatch>,
     /// Mutation is used to modify matching resources.
@@ -2688,10 +3643,16 @@ pub struct PolicyStatusAutogenRules {
     pub mutate: Option<PolicyStatusAutogenRulesMutate>,
     /// Name is a label to identify the rule, It must be unique within the policy.
     pub name: String,
-    /// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. A direct list of conditions (without `any` or `all` statements is supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/preconditions/
+    /// Preconditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of conditions. The declaration can contain nested `any` or `all` statements. A direct list
+    /// of conditions (without `any` or `all` statements is supported for backwards compatibility but
+    /// will be deprecated in the next major release.
+    /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<BTreeMap<String, serde_json::Value>>,
-    /// SkipBackgroundRequests bypasses admission requests that are sent by the background controller. The default value is set to "true", it must be set to "false" to apply generate and mutateExisting rules to those requests.
+    /// SkipBackgroundRequests bypasses admission requests that are sent by the background controller.
+    /// The default value is set to "true", it must be set to "false" to apply
+    /// generate and mutateExisting rules to those requests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipBackgroundRequests")]
     pub skip_background_requests: Option<bool>,
     /// Validation is used to validate matching resources.
@@ -2705,25 +3666,51 @@ pub struct PolicyStatusAutogenRules {
 /// MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesCelPreconditions {
-    /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool. CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables: 
-    ///  'object' - The object from the incoming request. The value is null for DELETE requests. 'oldObject' - The existing object. The value is null for CREATE requests. 'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest). 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request. See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the request resource. Documentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/ 
-    ///  Required.
+    /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
+    /// CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:
+    /// 
+    /// 
+    /// 'object' - The object from the incoming request. The value is null for DELETE requests.
+    /// 'oldObject' - The existing object. The value is null for CREATE requests.
+    /// 'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).
+    /// 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.
+    ///   See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz
+    /// 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the
+    ///   request resource.
+    /// Documentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/
+    /// 
+    /// 
+    /// Required.
     pub expression: String,
-    /// Name is an identifier for this match condition, used for strategic merging of MatchConditions, as well as providing an identifier for logging purposes. A good name should be descriptive of the associated expression. Name must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or '123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an optional DNS subdomain prefix and '/' (e.g. 'example.com/MyName') 
-    ///  Required.
+    /// Name is an identifier for this match condition, used for strategic merging of MatchConditions,
+    /// as well as providing an identifier for logging purposes. A good name should be descriptive of
+    /// the associated expression.
+    /// Name must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and
+    /// must start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or
+    /// '123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an
+    /// optional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')
+    /// 
+    /// 
+    /// Required.
     pub name: String,
 }
 
-/// ContextEntry adds variables and data sources to a rule Context. Either a ConfigMap reference or a APILookup must be provided.
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesContext {
-    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
     pub api_call: Option<PolicyStatusAutogenRulesContextApiCall>,
     /// ConfigMap is the ConfigMap reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PolicyStatusAutogenRulesContextConfigMap>,
-    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<PolicyStatusAutogenRulesContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyStatusAutogenRulesContextImageRegistry>,
     /// Name is the variable name.
@@ -2734,22 +3721,35 @@ pub struct PolicyStatusAutogenRulesContext {
     pub variable: Option<PolicyStatusAutogenRulesContextVariable>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesContextApiCall {
-    /// Data specifies the POST data sent to the server.
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyStatusAutogenRulesContextApiCallData>>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the JSON response returned from the server. For example a JMESPath of "items | length(@)" applied to the API server response for the URLPath "/apis/apps/v1/deployments" will return the total count of deployments across all namespaces.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Method is the HTTP request type (GET or POST).
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<PolicyStatusAutogenRulesContextApiCallMethod>,
-    /// Service is an API call to a JSON web service
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PolicyStatusAutogenRulesContextApiCallService>,
-    /// URLPath is the URL path to be used in the HTTP GET or POST request to the Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments"). The format required is the same format used by the `kubectl get --raw` command. See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls for details.
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
     pub url_path: Option<String>,
 }
@@ -2763,7 +3763,8 @@ pub struct PolicyStatusAutogenRulesContextApiCallData {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyStatusAutogenRulesContextApiCallMethod {
     #[serde(rename = "GET")]
@@ -2772,13 +3773,17 @@ pub enum PolicyStatusAutogenRulesContextApiCallMethod {
     Post,
 }
 
-/// Service is an API call to a JSON web service
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesContextApiCallService {
-    /// CABundle is a PEM encoded CA bundle which will be used to validate the server certificate.
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// URL is the JSON web service URL. A typical form is `https://{service}.{namespace}:{port}/{path}`.
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
     pub url: String,
 }
 
@@ -2792,16 +3797,35 @@ pub struct PolicyStatusAutogenRulesContextConfigMap {
     pub namespace: Option<String>,
 }
 
-/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PolicyStatusAutogenRulesContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesContextImageRegistry {
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
     pub image_registry_credentials: Option<PolicyStatusAutogenRulesContextImageRegistryImageRegistryCredentials>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the ImageData struct returned as a result of processing the image reference.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Reference is image reference to a container image in the registry. Example: ghcr.io/kyverno/kyverno:latest
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
     pub reference: String,
 }
 
@@ -2811,10 +3835,12 @@ pub struct PolicyStatusAutogenRulesContextImageRegistryImageRegistryCredentials 
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
@@ -2822,10 +3848,12 @@ pub struct PolicyStatusAutogenRulesContextImageRegistryImageRegistryCredentials 
 /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesContextVariable {
-    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<BTreeMap<String, serde_json::Value>>,
-    /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
@@ -2833,7 +3861,9 @@ pub struct PolicyStatusAutogenRulesContextVariable {
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
-/// ExcludeResources defines when this policy rule should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.
+/// ExcludeResources defines when this policy rule should not be applied. The exclude
+/// criteria can include resource information (e.g. kind, name, namespace, labels)
+/// and admission review request information like the name or role.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExclude {
     /// All allows specifying resources which will be ANDed
@@ -2845,7 +3875,10 @@ pub struct PolicyStatusAutogenRulesExclude {
     /// ClusterRoles is the list of cluster-wide role names for the user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
-    /// ResourceDescription contains information about the resource being created or modified. Requires at least one tag to be specified when under MatchResources. Specifying ResourceDescription directly under match is being deprecated. Please specify under "any" or "all" instead.
+    /// ResourceDescription contains information about the resource being created or modified.
+    /// Requires at least one tag to be specified when under MatchResources.
+    /// Specifying ResourceDescription directly under match is being deprecated.
+    /// Please specify under "any" or "all" instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PolicyStatusAutogenRulesExcludeResources>,
     /// Roles is the list of namespaced role names for the user.
@@ -2876,89 +3909,128 @@ pub struct PolicyStatusAutogenRulesExcludeAll {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAllResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyStatusAutogenRulesExcludeAllResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyStatusAutogenRulesExcludeAllResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAllResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesExcludeAllResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAllResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAllResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesExcludeAllResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAllResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAllSubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -2983,179 +4055,260 @@ pub struct PolicyStatusAutogenRulesExcludeAny {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAnyResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyStatusAutogenRulesExcludeAnyResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyStatusAutogenRulesExcludeAnyResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAnyResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesExcludeAnyResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAnyResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAnyResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesExcludeAnyResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAnyResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeAnySubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// ResourceDescription contains information about the resource being created or modified. Requires at least one tag to be specified when under MatchResources. Specifying ResourceDescription directly under match is being deprecated. Please specify under "any" or "all" instead.
+/// ResourceDescription contains information about the resource being created or modified.
+/// Requires at least one tag to be specified when under MatchResources.
+/// Specifying ResourceDescription directly under match is being deprecated.
+/// Please specify under "any" or "all" instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyStatusAutogenRulesExcludeResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyStatusAutogenRulesExcludeResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesExcludeResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesExcludeResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesExcludeSubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -3166,13 +4319,17 @@ pub struct PolicyStatusAutogenRulesGenerate {
     /// APIVersion specifies resource apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Clone specifies the source resource used to populate each generated resource. At most one of Data or Clone can be specified. If neither are provided, the generated resource will be created with default data only.
+    /// Clone specifies the source resource used to populate each generated resource.
+    /// At most one of Data or Clone can be specified. If neither are provided, the generated
+    /// resource will be created with default data only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clone: Option<PolicyStatusAutogenRulesGenerateClone>,
     /// CloneList specifies the list of source resource used to populate each generated resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloneList")]
     pub clone_list: Option<PolicyStatusAutogenRulesGenerateCloneList>,
-    /// Data provides the resource declaration used to populate each generated resource. At most one of Data or Clone must be specified. If neither are provided, the generated resource will be created with default data only.
+    /// Data provides the resource declaration used to populate each generated resource.
+    /// At most one of Data or Clone must be specified. If neither are provided, the generated
+    /// resource will be created with default data only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<BTreeMap<String, serde_json::Value>>,
     /// Kind specifies resource kind.
@@ -3184,7 +4341,16 @@ pub struct PolicyStatusAutogenRulesGenerate {
     /// Namespace specifies resource namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Synchronize controls if generated resources should be kept in-sync with their source resource. If Synchronize is set to "true" changes to generated resources will be overwritten with resource data from Data or the resource specified in the Clone declaration. Optional. Defaults to "false" if not specified.
+    /// OrphanDownstreamOnPolicyDelete controls whether generated resources should be deleted when the rule that generated
+    /// them is deleted with synchronization enabled. This option is only applicable to generate rules of the data type.
+    /// See https://kyverno.io/docs/writing-policies/generate/#data-examples.
+    /// Defaults to "false" if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orphanDownstreamOnPolicyDelete")]
+    pub orphan_downstream_on_policy_delete: Option<bool>,
+    /// Synchronize controls if generated resources should be kept in-sync with their source resource.
+    /// If Synchronize is set to "true" changes to generated resources will be overwritten with resource
+    /// data from Data or the resource specified in the Clone declaration.
+    /// Optional. Defaults to "false" if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub synchronize: Option<bool>,
     /// UID specifies the resource uid.
@@ -3192,7 +4358,9 @@ pub struct PolicyStatusAutogenRulesGenerate {
     pub uid: Option<String>,
 }
 
-/// Clone specifies the source resource used to populate each generated resource. At most one of Data or Clone can be specified. If neither are provided, the generated resource will be created with default data only.
+/// Clone specifies the source resource used to populate each generated resource.
+/// At most one of Data or Clone can be specified. If neither are provided, the generated
+/// resource will be created with default data only.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesGenerateClone {
     /// Name specifies name of the resource.
@@ -3212,53 +4380,73 @@ pub struct PolicyStatusAutogenRulesGenerateCloneList {
     /// Namespace specifies source resource namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Selector is a label selector. Label keys and values in `matchLabels`. wildcard characters are not supported.
+    /// Selector is a label selector. Label keys and values in `matchLabels`.
+    /// wildcard characters are not supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyStatusAutogenRulesGenerateCloneListSelector>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels`. wildcard characters are not supported.
+/// Selector is a label selector. Label keys and values in `matchLabels`.
+/// wildcard characters are not supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesGenerateCloneListSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesGenerateCloneListSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesGenerateCloneListSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesImageExtractors {
-    /// JMESPath is an optional JMESPath expression to apply to the image value. This is useful when the extracted image begins with a prefix like 'docker://'. The 'trim_prefix' function may be used to trim the prefix: trim_prefix(@, 'docker://'). Note - Image digest mutation may not be used when applying a JMESPAth to an image.
+    /// JMESPath is an optional JMESPath expression to apply to the image value.
+    /// This is useful when the extracted image begins with a prefix like 'docker://'.
+    /// The 'trim_prefix' function may be used to trim the prefix: trim_prefix(@, 'docker://').
+    /// Note - Image digest mutation may not be used when applying a JMESPAth to an image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Key is an optional name of the field within 'path' that will be used to uniquely identify an image. Note - this field MUST be unique.
+    /// Key is an optional name of the field within 'path' that will be used to uniquely identify an image.
+    /// Note - this field MUST be unique.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name is the entry the image will be available under 'images.<name>' in the context. If this field is not defined, image entries will appear under 'images.custom'.
+    /// Name is the entry the image will be available under 'images.<name>' in the context.
+    /// If this field is not defined, image entries will appear under 'images.custom'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Path is the path to the object containing the image field in a custom resource. It should be slash-separated. Each slash-separated key must be a valid YAML key or a wildcard '*'. Wildcard keys are expanded in case of arrays or objects.
+    /// Path is the path to the object containing the image field in a custom resource.
+    /// It should be slash-separated. Each slash-separated key must be a valid YAML key or a wildcard '*'.
+    /// Wildcard keys are expanded in case of arrays or objects.
     pub path: String,
-    /// Value is an optional name of the field within 'path' that points to the image URI. This is useful when a custom 'key' is also defined.
+    /// Value is an optional name of the field within 'path' that points to the image URI.
+    /// This is useful when a custom 'key' is also defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// MatchResources defines when this policy rule should be applied. The match criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the user name or role. At least one kind is required.
+/// MatchResources defines when this policy rule should be applied. The match
+/// criteria can include resource information (e.g. kind, name, namespace, labels)
+/// and admission review request information like the user name or role.
+/// At least one kind is required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatch {
     /// All allows specifying resources which will be ANDed
@@ -3270,7 +4458,10 @@ pub struct PolicyStatusAutogenRulesMatch {
     /// ClusterRoles is the list of cluster-wide role names for the user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
-    /// ResourceDescription contains information about the resource being created or modified. Requires at least one tag to be specified when under MatchResources. Specifying ResourceDescription directly under match is being deprecated. Please specify under "any" or "all" instead.
+    /// ResourceDescription contains information about the resource being created or modified.
+    /// Requires at least one tag to be specified when under MatchResources.
+    /// Specifying ResourceDescription directly under match is being deprecated.
+    /// Please specify under "any" or "all" instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PolicyStatusAutogenRulesMatchResources>,
     /// Roles is the list of namespaced role names for the user.
@@ -3301,89 +4492,128 @@ pub struct PolicyStatusAutogenRulesMatchAll {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAllResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyStatusAutogenRulesMatchAllResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyStatusAutogenRulesMatchAllResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAllResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesMatchAllResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAllResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAllResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesMatchAllResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAllResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAllSubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -3408,179 +4638,260 @@ pub struct PolicyStatusAutogenRulesMatchAny {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAnyResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyStatusAutogenRulesMatchAnyResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyStatusAutogenRulesMatchAnyResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAnyResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesMatchAnyResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAnyResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAnyResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesMatchAnyResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAnyResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchAnySubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// ResourceDescription contains information about the resource being created or modified. Requires at least one tag to be specified when under MatchResources. Specifying ResourceDescription directly under match is being deprecated. Please specify under "any" or "all" instead.
+/// ResourceDescription contains information about the resource being created or modified.
+/// Requires at least one tag to be specified when under MatchResources.
+/// Specifying ResourceDescription directly under match is being deprecated.
+/// Please specify under "any" or "all" instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyStatusAutogenRulesMatchResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyStatusAutogenRulesMatchResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesMatchResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesMatchResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMatchSubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -3591,10 +4902,13 @@ pub struct PolicyStatusAutogenRulesMutate {
     /// ForEach applies mutation rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub foreach: Option<Vec<PolicyStatusAutogenRulesMutateForeach>>,
-    /// PatchStrategicMerge is a strategic merge patch used to modify resources. See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/ and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
+    /// PatchStrategicMerge is a strategic merge patch used to modify resources.
+    /// See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
+    /// and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
     pub patch_strategic_merge: Option<BTreeMap<String, serde_json::Value>>,
-    /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources. See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
+    /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources.
+    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
     /// Targets defines the target resources to be mutated.
@@ -3611,33 +4925,46 @@ pub struct PolicyStatusAutogenRulesMutateForeach {
     /// Foreach declares a nested foreach iterator
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub foreach: Option<BTreeMap<String, serde_json::Value>>,
-    /// List specifies a JMESPath expression that results in one or more elements to which the validation logic is applied.
+    /// List specifies a JMESPath expression that results in one or more elements
+    /// to which the validation logic is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub list: Option<String>,
-    /// Order defines the iteration order on the list. Can be Ascending to iterate from first to last element or Descending to iterate in from last to first element.
+    /// Order defines the iteration order on the list.
+    /// Can be Ascending to iterate from first to last element or Descending to iterate in from last to first element.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub order: Option<PolicyStatusAutogenRulesMutateForeachOrder>,
-    /// PatchStrategicMerge is a strategic merge patch used to modify resources. See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/ and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
+    /// PatchStrategicMerge is a strategic merge patch used to modify resources.
+    /// See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
+    /// and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
     pub patch_strategic_merge: Option<BTreeMap<String, serde_json::Value>>,
-    /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources. See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
+    /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources.
+    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
-    /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
+    /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of conditions. The declaration can contain nested `any` or `all` statements.
+    /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<PolicyStatusAutogenRulesMutateForeachPreconditions>,
 }
 
-/// ContextEntry adds variables and data sources to a rule Context. Either a ConfigMap reference or a APILookup must be provided.
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateForeachContext {
-    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
     pub api_call: Option<PolicyStatusAutogenRulesMutateForeachContextApiCall>,
     /// ConfigMap is the ConfigMap reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PolicyStatusAutogenRulesMutateForeachContextConfigMap>,
-    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<PolicyStatusAutogenRulesMutateForeachContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyStatusAutogenRulesMutateForeachContextImageRegistry>,
     /// Name is the variable name.
@@ -3648,22 +4975,35 @@ pub struct PolicyStatusAutogenRulesMutateForeachContext {
     pub variable: Option<PolicyStatusAutogenRulesMutateForeachContextVariable>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateForeachContextApiCall {
-    /// Data specifies the POST data sent to the server.
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyStatusAutogenRulesMutateForeachContextApiCallData>>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the JSON response returned from the server. For example a JMESPath of "items | length(@)" applied to the API server response for the URLPath "/apis/apps/v1/deployments" will return the total count of deployments across all namespaces.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Method is the HTTP request type (GET or POST).
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<PolicyStatusAutogenRulesMutateForeachContextApiCallMethod>,
-    /// Service is an API call to a JSON web service
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PolicyStatusAutogenRulesMutateForeachContextApiCallService>,
-    /// URLPath is the URL path to be used in the HTTP GET or POST request to the Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments"). The format required is the same format used by the `kubectl get --raw` command. See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls for details.
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
     pub url_path: Option<String>,
 }
@@ -3677,7 +5017,8 @@ pub struct PolicyStatusAutogenRulesMutateForeachContextApiCallData {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyStatusAutogenRulesMutateForeachContextApiCallMethod {
     #[serde(rename = "GET")]
@@ -3686,13 +5027,17 @@ pub enum PolicyStatusAutogenRulesMutateForeachContextApiCallMethod {
     Post,
 }
 
-/// Service is an API call to a JSON web service
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateForeachContextApiCallService {
-    /// CABundle is a PEM encoded CA bundle which will be used to validate the server certificate.
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// URL is the JSON web service URL. A typical form is `https://{service}.{namespace}:{port}/{path}`.
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
     pub url: String,
 }
 
@@ -3706,16 +5051,35 @@ pub struct PolicyStatusAutogenRulesMutateForeachContextConfigMap {
     pub namespace: Option<String>,
 }
 
-/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PolicyStatusAutogenRulesMutateForeachContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateForeachContextImageRegistry {
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
     pub image_registry_credentials: Option<PolicyStatusAutogenRulesMutateForeachContextImageRegistryImageRegistryCredentials>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the ImageData struct returned as a result of processing the image reference.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Reference is image reference to a container image in the registry. Example: ghcr.io/kyverno/kyverno:latest
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
     pub reference: String,
 }
 
@@ -3725,10 +5089,12 @@ pub struct PolicyStatusAutogenRulesMutateForeachContextImageRegistryImageRegistr
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
@@ -3736,10 +5102,12 @@ pub struct PolicyStatusAutogenRulesMutateForeachContextImageRegistryImageRegistr
 /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateForeachContextVariable {
-    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<BTreeMap<String, serde_json::Value>>,
-    /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
@@ -3754,13 +5122,21 @@ pub enum PolicyStatusAutogenRulesMutateForeachOrder {
     Descending,
 }
 
-/// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
+/// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+/// set of conditions. The declaration can contain nested `any` or `all` statements.
+/// See: https://kyverno.io/docs/writing-policies/preconditions/
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateForeachPreconditions {
-    /// AllConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, all of the conditions need to pass
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub all: Option<Vec<PolicyStatusAutogenRulesMutateForeachPreconditionsAll>>,
-    /// AnyConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, at least one of the conditions need to pass
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<Vec<PolicyStatusAutogenRulesMutateForeachPreconditionsAny>>,
 }
@@ -3774,10 +5150,14 @@ pub struct PolicyStatusAutogenRulesMutateForeachPreconditionsAll {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyStatusAutogenRulesMutateForeachPreconditionsAllOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -3812,10 +5192,14 @@ pub struct PolicyStatusAutogenRulesMutateForeachPreconditionsAny {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyStatusAutogenRulesMutateForeachPreconditionsAnyOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -3859,7 +5243,11 @@ pub struct PolicyStatusAutogenRulesMutateTargets {
     /// Namespace specifies resource namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. A direct list of conditions (without `any` or `all` statements is supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/preconditions/
+    /// Preconditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of conditions. The declaration can contain nested `any` or `all` statements. A direct list
+    /// of conditions (without `any` or `all` statements is supported for backwards compatibility but
+    /// will be deprecated in the next major release.
+    /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<BTreeMap<String, serde_json::Value>>,
     /// UID specifies the resource uid.
@@ -3867,16 +5255,22 @@ pub struct PolicyStatusAutogenRulesMutateTargets {
     pub uid: Option<String>,
 }
 
-/// ContextEntry adds variables and data sources to a rule Context. Either a ConfigMap reference or a APILookup must be provided.
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateTargetsContext {
-    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
     pub api_call: Option<PolicyStatusAutogenRulesMutateTargetsContextApiCall>,
     /// ConfigMap is the ConfigMap reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PolicyStatusAutogenRulesMutateTargetsContextConfigMap>,
-    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<PolicyStatusAutogenRulesMutateTargetsContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyStatusAutogenRulesMutateTargetsContextImageRegistry>,
     /// Name is the variable name.
@@ -3887,22 +5281,35 @@ pub struct PolicyStatusAutogenRulesMutateTargetsContext {
     pub variable: Option<PolicyStatusAutogenRulesMutateTargetsContextVariable>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateTargetsContextApiCall {
-    /// Data specifies the POST data sent to the server.
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyStatusAutogenRulesMutateTargetsContextApiCallData>>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the JSON response returned from the server. For example a JMESPath of "items | length(@)" applied to the API server response for the URLPath "/apis/apps/v1/deployments" will return the total count of deployments across all namespaces.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Method is the HTTP request type (GET or POST).
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<PolicyStatusAutogenRulesMutateTargetsContextApiCallMethod>,
-    /// Service is an API call to a JSON web service
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PolicyStatusAutogenRulesMutateTargetsContextApiCallService>,
-    /// URLPath is the URL path to be used in the HTTP GET or POST request to the Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments"). The format required is the same format used by the `kubectl get --raw` command. See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls for details.
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
     pub url_path: Option<String>,
 }
@@ -3916,7 +5323,8 @@ pub struct PolicyStatusAutogenRulesMutateTargetsContextApiCallData {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyStatusAutogenRulesMutateTargetsContextApiCallMethod {
     #[serde(rename = "GET")]
@@ -3925,13 +5333,17 @@ pub enum PolicyStatusAutogenRulesMutateTargetsContextApiCallMethod {
     Post,
 }
 
-/// Service is an API call to a JSON web service
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateTargetsContextApiCallService {
-    /// CABundle is a PEM encoded CA bundle which will be used to validate the server certificate.
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// URL is the JSON web service URL. A typical form is `https://{service}.{namespace}:{port}/{path}`.
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
     pub url: String,
 }
 
@@ -3945,16 +5357,35 @@ pub struct PolicyStatusAutogenRulesMutateTargetsContextConfigMap {
     pub namespace: Option<String>,
 }
 
-/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PolicyStatusAutogenRulesMutateTargetsContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateTargetsContextImageRegistry {
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
     pub image_registry_credentials: Option<PolicyStatusAutogenRulesMutateTargetsContextImageRegistryImageRegistryCredentials>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the ImageData struct returned as a result of processing the image reference.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Reference is image reference to a container image in the registry. Example: ghcr.io/kyverno/kyverno:latest
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
     pub reference: String,
 }
 
@@ -3964,10 +5395,12 @@ pub struct PolicyStatusAutogenRulesMutateTargetsContextImageRegistryImageRegistr
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
@@ -3975,10 +5408,12 @@ pub struct PolicyStatusAutogenRulesMutateTargetsContextImageRegistryImageRegistr
 /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesMutateTargetsContextVariable {
-    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<BTreeMap<String, serde_json::Value>>,
-    /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
@@ -3989,7 +5424,8 @@ pub struct PolicyStatusAutogenRulesMutateTargetsContextVariable {
 /// Validation is used to validate matching resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidate {
-    /// AnyPattern specifies list of validation patterns. At least one of the patterns must be satisfied for the validation rule to succeed.
+    /// AnyPattern specifies list of validation patterns. At least one of the patterns
+    /// must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
     pub any_pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// CEL allows validation checks using the Common Expression Language (https://kubernetes.io/docs/reference/using-api/cel/).
@@ -4010,7 +5446,8 @@ pub struct PolicyStatusAutogenRulesValidate {
     /// Pattern specifies an overlay-style pattern used to check resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<BTreeMap<String, serde_json::Value>>,
-    /// PodSecurity applies exemptions for Kubernetes Pod Security admission by specifying exclusions for Pod Security Standards controls.
+    /// PodSecurity applies exemptions for Kubernetes Pod Security admission
+    /// by specifying exclusions for Pod Security Standards controls.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<PolicyStatusAutogenRulesValidatePodSecurity>,
 }
@@ -4030,7 +5467,9 @@ pub struct PolicyStatusAutogenRulesValidateCel {
     /// ParamRef references a parameter resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "paramRef")]
     pub param_ref: Option<PolicyStatusAutogenRulesValidateCelParamRef>,
-    /// Variables contain definitions of variables that can be used in composition of other expressions. Each variable is defined as a named CEL expression. The variables defined here will be available under `variables` in other expressions of the policy.
+    /// Variables contain definitions of variables that can be used in composition of other expressions.
+    /// Each variable is defined as a named CEL expression.
+    /// The variables defined here will be available under `variables` in other expressions of the policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<Vec<PolicyStatusAutogenRulesValidateCelVariables>>,
 }
@@ -4038,14 +5477,42 @@ pub struct PolicyStatusAutogenRulesValidateCel {
 /// AuditAnnotation describes how to produce an audit annotation for an API request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateCelAuditAnnotations {
-    /// key specifies the audit annotation key. The audit annotation keys of a ValidatingAdmissionPolicy must be unique. The key must be a qualified name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length. 
-    ///  The key is combined with the resource name of the ValidatingAdmissionPolicy to construct an audit annotation key: "{ValidatingAdmissionPolicy name}/{key}". 
-    ///  If an admission webhook uses the same resource name as this ValidatingAdmissionPolicy and the same audit annotation key, the annotation key will be identical. In this case, the first annotation written with the key will be included in the audit event and all subsequent annotations with the same key will be discarded. 
-    ///  Required.
+    /// key specifies the audit annotation key. The audit annotation keys of
+    /// a ValidatingAdmissionPolicy must be unique. The key must be a qualified
+    /// name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.
+    /// 
+    /// 
+    /// The key is combined with the resource name of the
+    /// ValidatingAdmissionPolicy to construct an audit annotation key:
+    /// "{ValidatingAdmissionPolicy name}/{key}".
+    /// 
+    /// 
+    /// If an admission webhook uses the same resource name as this ValidatingAdmissionPolicy
+    /// and the same audit annotation key, the annotation key will be identical.
+    /// In this case, the first annotation written with the key will be included
+    /// in the audit event and all subsequent annotations with the same key
+    /// will be discarded.
+    /// 
+    /// 
+    /// Required.
     pub key: String,
-    /// valueExpression represents the expression which is evaluated by CEL to produce an audit annotation value. The expression must evaluate to either a string or null value. If the expression evaluates to a string, the audit annotation is included with the string value. If the expression evaluates to null or empty string the audit annotation will be omitted. The valueExpression may be no longer than 5kb in length. If the result of the valueExpression is more than 10kb in length, it will be truncated to 10kb. 
-    ///  If multiple ValidatingAdmissionPolicyBinding resources match an API request, then the valueExpression will be evaluated for each binding. All unique values produced by the valueExpressions will be joined together in a comma-separated list. 
-    ///  Required.
+    /// valueExpression represents the expression which is evaluated by CEL to
+    /// produce an audit annotation value. The expression must evaluate to either
+    /// a string or null value. If the expression evaluates to a string, the
+    /// audit annotation is included with the string value. If the expression
+    /// evaluates to null or empty string the audit annotation will be omitted.
+    /// The valueExpression may be no longer than 5kb in length.
+    /// If the result of the valueExpression is more than 10kb in length, it
+    /// will be truncated to 10kb.
+    /// 
+    /// 
+    /// If multiple ValidatingAdmissionPolicyBinding resources match an
+    /// API request, then the valueExpression will be evaluated for
+    /// each binding. All unique values produced by the valueExpressions
+    /// will be joined together in a comma-separated list.
+    /// 
+    /// 
+    /// Required.
     #[serde(rename = "valueExpression")]
     pub value_expression: String,
 }
@@ -4053,19 +5520,79 @@ pub struct PolicyStatusAutogenRulesValidateCelAuditAnnotations {
 /// Validation specifies the CEL expression which is used to apply the validation.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateCelExpressions {
-    /// Expression represents the expression which will be evaluated by CEL. ref: https://github.com/google/cel-spec CEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables: 
-    ///  - 'object' - The object from the incoming request. The value is null for DELETE requests. - 'oldObject' - The existing object. The value is null for CREATE requests. - 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)). - 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind. - 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources. - 'variables' - Map of composited variables, from its name to its lazily evaluated value. For example, a variable named 'foo' can be accessed as 'variables.foo'. - 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request. See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz - 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the request resource. 
-    ///  The `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the object. No other metadata properties are accessible. 
-    ///  Only property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible. Accessible property names are escaped according to the following rules when accessed in the expression: - '__' escapes to '__underscores__' - '.' escapes to '__dot__' - '-' escapes to '__dash__' - '/' escapes to '__slash__' - Property names that exactly match a CEL RESERVED keyword escape to '__{keyword}__'. The keywords are: "true", "false", "null", "in", "as", "break", "const", "continue", "else", "for", "function", "if", "import", "let", "loop", "package", "namespace", "return". Examples: - Expression accessing a property named "namespace": {"Expression": "object.__namespace__ > 0"} - Expression accessing a property named "x-prop": {"Expression": "object.x__dash__prop > 0"} - Expression accessing a property named "redact__d": {"Expression": "object.redact__underscores__d > 0"} 
-    ///  Equality on arrays with list type of 'set' or 'map' ignores element order, i.e. [1, 2] == [2, 1]. Concatenation on arrays with x-kubernetes-list-type use the semantics of the list type: - 'set': `X + Y` performs a union where the array positions of all elements in `X` are preserved and non-intersecting elements in `Y` are appended, retaining their partial order. - 'map': `X + Y` performs a merge where the array positions of all keys in `X` are preserved but the values are overwritten by values in `Y` when the key sets of `X` and `Y` intersect. Elements in `Y` with non-intersecting keys are appended, retaining their partial order. Required.
+    /// Expression represents the expression which will be evaluated by CEL.
+    /// ref: https://github.com/google/cel-spec
+    /// CEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables:
+    /// 
+    /// 
+    /// - 'object' - The object from the incoming request. The value is null for DELETE requests.
+    /// - 'oldObject' - The existing object. The value is null for CREATE requests.
+    /// - 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)).
+    /// - 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind.
+    /// - 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources.
+    /// - 'variables' - Map of composited variables, from its name to its lazily evaluated value.
+    ///   For example, a variable named 'foo' can be accessed as 'variables.foo'.
+    /// - 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.
+    ///   See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz
+    /// - 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the
+    ///   request resource.
+    /// 
+    /// 
+    /// The `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the
+    /// object. No other metadata properties are accessible.
+    /// 
+    /// 
+    /// Only property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible.
+    /// Accessible property names are escaped according to the following rules when accessed in the expression:
+    /// - '__' escapes to '__underscores__'
+    /// - '.' escapes to '__dot__'
+    /// - '-' escapes to '__dash__'
+    /// - '/' escapes to '__slash__'
+    /// - Property names that exactly match a CEL RESERVED keyword escape to '__{keyword}__'. The keywords are:
+    /// 	  "true", "false", "null", "in", "as", "break", "const", "continue", "else", "for", "function", "if",
+    /// 	  "import", "let", "loop", "package", "namespace", "return".
+    /// Examples:
+    ///   - Expression accessing a property named "namespace": {"Expression": "object.__namespace__ > 0"}
+    ///   - Expression accessing a property named "x-prop": {"Expression": "object.x__dash__prop > 0"}
+    ///   - Expression accessing a property named "redact__d": {"Expression": "object.redact__underscores__d > 0"}
+    /// 
+    /// 
+    /// Equality on arrays with list type of 'set' or 'map' ignores element order, i.e. [1, 2] == [2, 1].
+    /// Concatenation on arrays with x-kubernetes-list-type use the semantics of the list type:
+    ///   - 'set': `X + Y` performs a union where the array positions of all elements in `X` are preserved and
+    ///     non-intersecting elements in `Y` are appended, retaining their partial order.
+    ///   - 'map': `X + Y` performs a merge where the array positions of all keys in `X` are preserved but the values
+    ///     are overwritten by values in `Y` when the key sets of `X` and `Y` intersect. Elements in `Y` with
+    ///     non-intersecting keys are appended, retaining their partial order.
+    /// Required.
     pub expression: String,
-    /// Message represents the message displayed when validation fails. The message is required if the Expression contains line breaks. The message must not contain line breaks. If unset, the message is "failed rule: {Rule}". e.g. "must be a URL with the host matching spec.host" If the Expression contains line breaks. Message is required. The message must not contain line breaks. If unset, the message is "failed Expression: {Expression}".
+    /// Message represents the message displayed when validation fails. The message is required if the Expression contains
+    /// line breaks. The message must not contain line breaks.
+    /// If unset, the message is "failed rule: {Rule}".
+    /// e.g. "must be a URL with the host matching spec.host"
+    /// If the Expression contains line breaks. Message is required.
+    /// The message must not contain line breaks.
+    /// If unset, the message is "failed Expression: {Expression}".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// messageExpression declares a CEL expression that evaluates to the validation failure message that is returned when this rule fails. Since messageExpression is used as a failure message, it must evaluate to a string. If both message and messageExpression are present on a validation, then messageExpression will be used if validation fails. If messageExpression results in a runtime error, the runtime error is logged, and the validation failure message is produced as if the messageExpression field were unset. If messageExpression evaluates to an empty string, a string with only spaces, or a string that contains line breaks, then the validation failure message will also be produced as if the messageExpression field were unset, and the fact that messageExpression produced an empty string/string with only spaces/string with line breaks will be logged. messageExpression has access to all the same variables as the `expression` except for 'authorizer' and 'authorizer.requestResource'. Example: "object.x must be less than max ("+string(params.max)+")"
+    /// messageExpression declares a CEL expression that evaluates to the validation failure message that is returned when this rule fails.
+    /// Since messageExpression is used as a failure message, it must evaluate to a string.
+    /// If both message and messageExpression are present on a validation, then messageExpression will be used if validation fails.
+    /// If messageExpression results in a runtime error, the runtime error is logged, and the validation failure message is produced
+    /// as if the messageExpression field were unset. If messageExpression evaluates to an empty string, a string with only spaces, or a string
+    /// that contains line breaks, then the validation failure message will also be produced as if the messageExpression field were unset, and
+    /// the fact that messageExpression produced an empty string/string with only spaces/string with line breaks will be logged.
+    /// messageExpression has access to all the same variables as the `expression` except for 'authorizer' and 'authorizer.requestResource'.
+    /// Example:
+    /// "object.x must be less than max ("+string(params.max)+")"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageExpression")]
     pub message_expression: Option<String>,
-    /// Reason represents a machine-readable description of why this validation failed. If this is the first validation in the list to fail, this reason, as well as the corresponding HTTP response code, are used in the HTTP response to the client. The currently supported reasons are: "Unauthorized", "Forbidden", "Invalid", "RequestEntityTooLarge". If not set, StatusReasonInvalid is used in the response to the client.
+    /// Reason represents a machine-readable description of why this validation failed.
+    /// If this is the first validation in the list to fail, this reason, as well as the
+    /// corresponding HTTP response code, are used in the
+    /// HTTP response to the client.
+    /// The currently supported reasons are: "Unauthorized", "Forbidden", "Invalid", "RequestEntityTooLarge".
+    /// If not set, StatusReasonInvalid is used in the response to the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
@@ -4073,10 +5600,13 @@ pub struct PolicyStatusAutogenRulesValidateCelExpressions {
 /// ParamKind is a tuple of Group Kind and Version.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateCelParamKind {
-    /// APIVersion is the API group version the resources belong to. In format of "group/version". Required.
+    /// APIVersion is the API group version the resources belong to.
+    /// In format of "group/version".
+    /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Kind is the API kind the resources belong to. Required.
+    /// Kind is the API kind the resources belong to.
+    /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
 }
@@ -4084,48 +5614,93 @@ pub struct PolicyStatusAutogenRulesValidateCelParamKind {
 /// ParamRef references a parameter resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateCelParamRef {
-    /// `name` is the name of the resource being referenced. 
-    ///  `name` and `selector` are mutually exclusive properties. If one is set, the other must be unset.
+    /// `name` is the name of the resource being referenced.
+    /// 
+    /// 
+    /// `name` and `selector` are mutually exclusive properties. If one is set,
+    /// the other must be unset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// namespace is the namespace of the referenced resource. Allows limiting the search for params to a specific namespace. Applies to both `name` and `selector` fields. 
-    ///  A per-namespace parameter may be used by specifying a namespace-scoped `paramKind` in the policy and leaving this field empty. 
-    ///  - If `paramKind` is cluster-scoped, this field MUST be unset. Setting this field results in a configuration error. 
-    ///  - If `paramKind` is namespace-scoped, the namespace of the object being evaluated for admission will be used when this field is left unset. Take care that if this is left empty the binding must not match any cluster-scoped resources, which will result in an error.
+    /// namespace is the namespace of the referenced resource. Allows limiting
+    /// the search for params to a specific namespace. Applies to both `name` and
+    /// `selector` fields.
+    /// 
+    /// 
+    /// A per-namespace parameter may be used by specifying a namespace-scoped
+    /// `paramKind` in the policy and leaving this field empty.
+    /// 
+    /// 
+    /// - If `paramKind` is cluster-scoped, this field MUST be unset. Setting this
+    /// field results in a configuration error.
+    /// 
+    /// 
+    /// - If `paramKind` is namespace-scoped, the namespace of the object being
+    /// evaluated for admission will be used when this field is left unset. Take
+    /// care that if this is left empty the binding must not match any cluster-scoped
+    /// resources, which will result in an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// `parameterNotFoundAction` controls the behavior of the binding when the resource exists, and name or selector is valid, but there are no parameters matched by the binding. If the value is set to `Allow`, then no matched parameters will be treated as successful validation by the binding. If set to `Deny`, then no matched parameters will be subject to the `failurePolicy` of the policy. 
-    ///  Allowed values are `Allow` or `Deny` Default to `Deny`
+    /// `parameterNotFoundAction` controls the behavior of the binding when the resource
+    /// exists, and name or selector is valid, but there are no parameters
+    /// matched by the binding. If the value is set to `Allow`, then no
+    /// matched parameters will be treated as successful validation by the binding.
+    /// If set to `Deny`, then no matched parameters will be subject to the
+    /// `failurePolicy` of the policy.
+    /// 
+    /// 
+    /// Allowed values are `Allow` or `Deny`
+    /// Default to `Deny`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterNotFoundAction")]
     pub parameter_not_found_action: Option<String>,
-    /// selector can be used to match multiple param objects based on their labels. Supply selector: {} to match all resources of the ParamKind. 
-    ///  If multiple params are found, they are all evaluated with the policy expressions and the results are ANDed together. 
-    ///  One of `name` or `selector` must be set, but `name` and `selector` are mutually exclusive properties. If one is set, the other must be unset.
+    /// selector can be used to match multiple param objects based on their labels.
+    /// Supply selector: {} to match all resources of the ParamKind.
+    /// 
+    /// 
+    /// If multiple params are found, they are all evaluated with the policy expressions
+    /// and the results are ANDed together.
+    /// 
+    /// 
+    /// One of `name` or `selector` must be set, but `name` and `selector` are
+    /// mutually exclusive properties. If one is set, the other must be unset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PolicyStatusAutogenRulesValidateCelParamRefSelector>,
 }
 
-/// selector can be used to match multiple param objects based on their labels. Supply selector: {} to match all resources of the ParamKind. 
-///  If multiple params are found, they are all evaluated with the policy expressions and the results are ANDed together. 
-///  One of `name` or `selector` must be set, but `name` and `selector` are mutually exclusive properties. If one is set, the other must be unset.
+/// selector can be used to match multiple param objects based on their labels.
+/// Supply selector: {} to match all resources of the ParamKind.
+/// 
+/// 
+/// If multiple params are found, they are all evaluated with the policy expressions
+/// and the results are ANDed together.
+/// 
+/// 
+/// One of `name` or `selector` must be set, but `name` and `selector` are
+/// mutually exclusive properties. If one is set, the other must be unset.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateCelParamRefSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyStatusAutogenRulesValidateCelParamRefSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateCelParamRefSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -4133,16 +5708,22 @@ pub struct PolicyStatusAutogenRulesValidateCelParamRefSelectorMatchExpressions {
 /// Variable is the definition of a variable that is used for composition.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateCelVariables {
-    /// Expression is the expression that will be evaluated as the value of the variable. The CEL expression has access to the same identifiers as the CEL expressions in Validation.
+    /// Expression is the expression that will be evaluated as the value of the variable.
+    /// The CEL expression has access to the same identifiers as the CEL expressions in Validation.
     pub expression: String,
-    /// Name is the name of the variable. The name must be a valid CEL identifier and unique among all variables. The variable can be accessed in other expressions through `variables` For example, if name is "foo", the variable will be available as `variables.foo`
+    /// Name is the name of the variable. The name must be a valid CEL identifier and unique among all variables.
+    /// The variable can be accessed in other expressions through `variables`
+    /// For example, if name is "foo", the variable will be available as `variables.foo`
     pub name: String,
 }
 
 /// Deny defines conditions used to pass or fail a validation rule.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateDeny {
-    /// Multiple conditions can be declared under an `any` or `all` statement. A direct list of conditions (without `any` or `all` statements) is also supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
+    /// Multiple conditions can be declared under an `any` or `all` statement. A direct list
+    /// of conditions (without `any` or `all` statements) is also supported for backwards compatibility
+    /// but will be deprecated in the next major release.
+    /// See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -4150,7 +5731,8 @@ pub struct PolicyStatusAutogenRulesValidateDeny {
 /// ForEachValidation applies validate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateForeach {
-    /// AnyPattern specifies list of validation patterns. At least one of the patterns must be satisfied for the validation rule to succeed.
+    /// AnyPattern specifies list of validation patterns. At least one of the patterns
+    /// must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
     pub any_pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// Context defines variables and data sources that can be used during rule execution.
@@ -4159,33 +5741,44 @@ pub struct PolicyStatusAutogenRulesValidateForeach {
     /// Deny defines conditions used to pass or fail a validation rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deny: Option<PolicyStatusAutogenRulesValidateForeachDeny>,
-    /// ElementScope specifies whether to use the current list element as the scope for validation. Defaults to "true" if not specified. When set to "false", "request.object" is used as the validation scope within the foreach block to allow referencing other elements in the subtree.
+    /// ElementScope specifies whether to use the current list element as the scope for validation. Defaults to "true" if not specified.
+    /// When set to "false", "request.object" is used as the validation scope within the foreach
+    /// block to allow referencing other elements in the subtree.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "elementScope")]
     pub element_scope: Option<bool>,
     /// Foreach declares a nested foreach iterator
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub foreach: Option<BTreeMap<String, serde_json::Value>>,
-    /// List specifies a JMESPath expression that results in one or more elements to which the validation logic is applied.
+    /// List specifies a JMESPath expression that results in one or more elements
+    /// to which the validation logic is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub list: Option<String>,
     /// Pattern specifies an overlay-style pattern used to check resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<BTreeMap<String, serde_json::Value>>,
-    /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
+    /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of conditions. The declaration can contain nested `any` or `all` statements.
+    /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<PolicyStatusAutogenRulesValidateForeachPreconditions>,
 }
 
-/// ContextEntry adds variables and data sources to a rule Context. Either a ConfigMap reference or a APILookup must be provided.
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateForeachContext {
-    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
     pub api_call: Option<PolicyStatusAutogenRulesValidateForeachContextApiCall>,
     /// ConfigMap is the ConfigMap reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PolicyStatusAutogenRulesValidateForeachContextConfigMap>,
-    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<PolicyStatusAutogenRulesValidateForeachContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyStatusAutogenRulesValidateForeachContextImageRegistry>,
     /// Name is the variable name.
@@ -4196,22 +5789,35 @@ pub struct PolicyStatusAutogenRulesValidateForeachContext {
     pub variable: Option<PolicyStatusAutogenRulesValidateForeachContextVariable>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateForeachContextApiCall {
-    /// Data specifies the POST data sent to the server.
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyStatusAutogenRulesValidateForeachContextApiCallData>>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the JSON response returned from the server. For example a JMESPath of "items | length(@)" applied to the API server response for the URLPath "/apis/apps/v1/deployments" will return the total count of deployments across all namespaces.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Method is the HTTP request type (GET or POST).
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<PolicyStatusAutogenRulesValidateForeachContextApiCallMethod>,
-    /// Service is an API call to a JSON web service
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PolicyStatusAutogenRulesValidateForeachContextApiCallService>,
-    /// URLPath is the URL path to be used in the HTTP GET or POST request to the Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments"). The format required is the same format used by the `kubectl get --raw` command. See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls for details.
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
     pub url_path: Option<String>,
 }
@@ -4225,7 +5831,8 @@ pub struct PolicyStatusAutogenRulesValidateForeachContextApiCallData {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyStatusAutogenRulesValidateForeachContextApiCallMethod {
     #[serde(rename = "GET")]
@@ -4234,13 +5841,17 @@ pub enum PolicyStatusAutogenRulesValidateForeachContextApiCallMethod {
     Post,
 }
 
-/// Service is an API call to a JSON web service
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateForeachContextApiCallService {
-    /// CABundle is a PEM encoded CA bundle which will be used to validate the server certificate.
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// URL is the JSON web service URL. A typical form is `https://{service}.{namespace}:{port}/{path}`.
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
     pub url: String,
 }
 
@@ -4254,16 +5865,35 @@ pub struct PolicyStatusAutogenRulesValidateForeachContextConfigMap {
     pub namespace: Option<String>,
 }
 
-/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PolicyStatusAutogenRulesValidateForeachContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateForeachContextImageRegistry {
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
     pub image_registry_credentials: Option<PolicyStatusAutogenRulesValidateForeachContextImageRegistryImageRegistryCredentials>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the ImageData struct returned as a result of processing the image reference.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Reference is image reference to a container image in the registry. Example: ghcr.io/kyverno/kyverno:latest
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
     pub reference: String,
 }
 
@@ -4273,10 +5903,12 @@ pub struct PolicyStatusAutogenRulesValidateForeachContextImageRegistryImageRegis
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
@@ -4284,10 +5916,12 @@ pub struct PolicyStatusAutogenRulesValidateForeachContextImageRegistryImageRegis
 /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateForeachContextVariable {
-    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<BTreeMap<String, serde_json::Value>>,
-    /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
@@ -4298,18 +5932,29 @@ pub struct PolicyStatusAutogenRulesValidateForeachContextVariable {
 /// Deny defines conditions used to pass or fail a validation rule.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateForeachDeny {
-    /// Multiple conditions can be declared under an `any` or `all` statement. A direct list of conditions (without `any` or `all` statements) is also supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
+    /// Multiple conditions can be declared under an `any` or `all` statement. A direct list
+    /// of conditions (without `any` or `all` statements) is also supported for backwards compatibility
+    /// but will be deprecated in the next major release.
+    /// See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<BTreeMap<String, serde_json::Value>>,
 }
 
-/// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
+/// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+/// set of conditions. The declaration can contain nested `any` or `all` statements.
+/// See: https://kyverno.io/docs/writing-policies/preconditions/
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateForeachPreconditions {
-    /// AllConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, all of the conditions need to pass
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub all: Option<Vec<PolicyStatusAutogenRulesValidateForeachPreconditionsAll>>,
-    /// AnyConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, at least one of the conditions need to pass
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<Vec<PolicyStatusAutogenRulesValidateForeachPreconditionsAny>>,
 }
@@ -4323,10 +5968,14 @@ pub struct PolicyStatusAutogenRulesValidateForeachPreconditionsAll {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyStatusAutogenRulesValidateForeachPreconditionsAllOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -4361,10 +6010,14 @@ pub struct PolicyStatusAutogenRulesValidateForeachPreconditionsAny {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyStatusAutogenRulesValidateForeachPreconditionsAnyOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -4405,24 +6058,30 @@ pub struct PolicyStatusAutogenRulesValidateManifests {
     /// Fields which will be ignored while comparing manifests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreFields")]
     pub ignore_fields: Option<Vec<PolicyStatusAutogenRulesValidateManifestsIgnoreFields>>,
-    /// Repository is an optional alternate OCI repository to use for resource bundle reference. The repository can be overridden per Attestor or Attestation.
+    /// Repository is an optional alternate OCI repository to use for resource bundle reference.
+    /// The repository can be overridden per Attestor or Attestation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateManifestsAttestors {
-    /// Count specifies the required number of entries that must match. If the count is null, all entries must match (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a value N, then N must be less than or equal to the size of entries, and at least N entries must match.
+    /// Count specifies the required number of entries that must match. If the count is null, all entries must match
+    /// (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a
+    /// value N, then N must be less than or equal to the size of entries, and at least N entries must match.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
-    /// Entries contains the available attestors. An attestor can be a static key, attributes for keyless verification, or a nested attestor declaration.
+    /// Entries contains the available attestors. An attestor can be a static key,
+    /// attributes for keyless verification, or a nested attestor declaration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<PolicyStatusAutogenRulesValidateManifestsAttestorsEntries>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntries {
-    /// Annotations are used for image verification. Every specified key-value pair must exist and match in the verified payload. The payload may contain other key-value pairs.
+    /// Annotations are used for image verification.
+    /// Every specified key-value pair must exist and match in the verified payload.
+    /// The payload may contain other key-value pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
@@ -4431,13 +6090,15 @@ pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntries {
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesCertificates>,
-    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+    /// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyless: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeyless>,
     /// Keys specifies one or more public keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeys>,
-    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule. If specified Repository will override other OCI image repository locations for this Attestor.
+    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.
+    /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
 }
@@ -4451,54 +6112,70 @@ pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesCertificates
     /// CertChain is an optional PEM encoded set of certificates used to verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certChain")]
     pub cert_chain: Option<String>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesCertificatesCtlog>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesCertificatesRekor>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesCertificatesCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesCertificatesRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
-/// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+/// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+/// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeyless {
     /// AdditionalExtensions are certificate-extensions used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalExtensions")]
     pub additional_extensions: Option<BTreeMap<String, String>>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeylessCtlog>,
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeylessRekor>,
-    /// Roots is an optional set of PEM encoded trusted root certificates. If not provided, the system roots are used.
+    /// Roots is an optional set of PEM encoded trusted root certificates.
+    /// If not provided, the system roots are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roots: Option<String>,
     /// Subject is the verified identity used for keyless signing, for example the email address.
@@ -4506,43 +6183,63 @@ pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeyless {
     pub subject: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeylessCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeylessRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Keys specifies one or more public keys.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeys {
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeysCtlog>,
-    /// KMS provides the URI to the public key stored in a Key Management System. See: https://github.com/sigstore/cosign/blob/main/KMS.md
+    /// KMS provides the URI to the public key stored in a Key Management System. See:
+    /// https://github.com/sigstore/cosign/blob/main/KMS.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kms: Option<String>,
-    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly specified or can be a variable reference to a key specified in a ConfigMap (see https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>". The named Secret must specify a key `cosign.pub` containing the public key used for verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret). When multiple keys are specified each key is processed as a separate staticKey entry (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
+    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly
+    /// specified or can be a variable reference to a key specified in a ConfigMap (see
+    /// https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret
+    /// elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>".
+    /// The named Secret must specify a key `cosign.pub` containing the public key used for
+    /// verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret).
+    /// When multiple keys are specified each key is processed as a separate staticKey entry
+    /// (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicKeys")]
     pub public_keys: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeysRekor>,
     /// Reference to a Secret resource that contains a public key
@@ -4553,28 +6250,38 @@ pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeys {
     pub signature_algorithm: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeysCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeysRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Reference to a Secret resource that contains a public key
@@ -4617,16 +6324,19 @@ pub struct PolicyStatusAutogenRulesValidateManifestsIgnoreFieldsObjects {
     pub version: Option<String>,
 }
 
-/// PodSecurity applies exemptions for Kubernetes Pod Security admission by specifying exclusions for Pod Security Standards controls.
+/// PodSecurity applies exemptions for Kubernetes Pod Security admission
+/// by specifying exclusions for Pod Security Standards controls.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidatePodSecurity {
     /// Exclude specifies the Pod Security Standard controls to be excluded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclude: Option<Vec<PolicyStatusAutogenRulesValidatePodSecurityExclude>>,
-    /// Level defines the Pod Security Standard level to be applied to workloads. Allowed values are privileged, baseline, and restricted.
+    /// Level defines the Pod Security Standard level to be applied to workloads.
+    /// Allowed values are privileged, baseline, and restricted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<PolicyStatusAutogenRulesValidatePodSecurityLevel>,
-    /// Version defines the Pod Security Standard versions that Kubernetes supports. Allowed values are v1.19, v1.20, v1.21, v1.22, v1.23, v1.24, v1.25, v1.26, latest. Defaults to latest.
+    /// Version defines the Pod Security Standard versions that Kubernetes supports.
+    /// Allowed values are v1.19, v1.20, v1.21, v1.22, v1.23, v1.24, v1.25, v1.26, v1.27, v1.28, v1.29, latest. Defaults to latest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<PolicyStatusAutogenRulesValidatePodSecurityVersion>,
 }
@@ -4634,13 +6344,18 @@ pub struct PolicyStatusAutogenRulesValidatePodSecurity {
 /// PodSecurityStandard specifies the Pod Security Standard controls to be excluded.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidatePodSecurityExclude {
-    /// ControlName specifies the name of the Pod Security Standard control. See: https://kubernetes.io/docs/concepts/security/pod-security-standards/
+    /// ControlName specifies the name of the Pod Security Standard control.
+    /// See: https://kubernetes.io/docs/concepts/security/pod-security-standards/
     #[serde(rename = "controlName")]
     pub control_name: PolicyStatusAutogenRulesValidatePodSecurityExcludeControlName,
-    /// Images selects matching containers and applies the container level PSS. Each image is the image name consisting of the registry address, repository, image, and tag. Empty list matches no containers, PSS checks are applied at the pod level only. Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
+    /// Images selects matching containers and applies the container level PSS.
+    /// Each image is the image name consisting of the registry address, repository, image, and tag.
+    /// Empty list matches no containers, PSS checks are applied at the pod level only.
+    /// Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
-    /// RestrictedField selects the field for the given Pod Security Standard control. When not set, all restricted fields for the control are selected.
+    /// RestrictedField selects the field for the given Pod Security Standard control.
+    /// When not set, all restricted fields for the control are selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restrictedField")]
     pub restricted_field: Option<String>,
     /// Values defines the allowed values that can be excluded.
@@ -4678,7 +6393,8 @@ pub enum PolicyStatusAutogenRulesValidatePodSecurityExcludeControlName {
     RunningAsNonRootUser,
 }
 
-/// PodSecurity applies exemptions for Kubernetes Pod Security admission by specifying exclusions for Pod Security Standards controls.
+/// PodSecurity applies exemptions for Kubernetes Pod Security admission
+/// by specifying exclusions for Pod Security Standards controls.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyStatusAutogenRulesValidatePodSecurityLevel {
     #[serde(rename = "privileged")]
@@ -4689,7 +6405,8 @@ pub enum PolicyStatusAutogenRulesValidatePodSecurityLevel {
     Restricted,
 }
 
-/// PodSecurity applies exemptions for Kubernetes Pod Security admission by specifying exclusions for Pod Security Standards controls.
+/// PodSecurity applies exemptions for Kubernetes Pod Security admission
+/// by specifying exclusions for Pod Security Standards controls.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyStatusAutogenRulesValidatePodSecurityVersion {
     #[serde(rename = "v1.19")]
@@ -4708,11 +6425,19 @@ pub enum PolicyStatusAutogenRulesValidatePodSecurityVersion {
     V125,
     #[serde(rename = "v1.26")]
     V126,
+    #[serde(rename = "v1.27")]
+    V127,
+    #[serde(rename = "v1.28")]
+    V128,
+    #[serde(rename = "v1.29")]
+    V129,
     #[serde(rename = "latest")]
     Latest,
 }
 
-/// ImageVerification validates that images that match the specified pattern are signed with the supplied public key. Once the image is verified it is mutated to include the SHA digest retrieved during the registration.
+/// ImageVerification validates that images that match the specified pattern
+/// are signed with the supplied public key. Once the image is verified it is
+/// mutated to include the SHA digest retrieved during the registration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImages {
     /// Deprecated.
@@ -4721,7 +6446,9 @@ pub struct PolicyStatusAutogenRulesVerifyImages {
     /// Deprecated. Use annotations per Attestor instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Attestations are optional checks for signed in-toto Statements used to verify the image. See https://github.com/in-toto/attestation. Kyverno fetches signed attestations from the OCI registry and decodes them into a list of Statement declarations.
+    /// Attestations are optional checks for signed in-toto Statements used to verify the image.
+    /// See https://github.com/in-toto/attestation. Kyverno fetches signed attestations from the
+    /// OCI registry and decodes them into a list of Statement declarations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attestations: Option<Vec<PolicyStatusAutogenRulesVerifyImagesAttestations>>,
     /// Attestors specified the required attestors (i.e. authorities)
@@ -4730,7 +6457,10 @@ pub struct PolicyStatusAutogenRulesVerifyImages {
     /// Deprecated. Use ImageReferences instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// ImageReferences is a list of matching image reference patterns. At least one pattern in the list must match the image for the rule to apply. Each image reference consists of a registry address (defaults to docker.io), repository, image, and tag (defaults to latest). Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
+    /// ImageReferences is a list of matching image reference patterns. At least one pattern in the
+    /// list must match the image for the rule to apply. Each image reference consists of a registry
+    /// address (defaults to docker.io), repository, image, and tag (defaults to latest).
+    /// Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageReferences")]
     pub image_references: Option<Vec<String>>,
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry.
@@ -4742,10 +6472,13 @@ pub struct PolicyStatusAutogenRulesVerifyImages {
     /// Deprecated. Use StaticKeyAttestor instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// MutateDigest enables replacement of image tags with digests. Defaults to true.
+    /// MutateDigest enables replacement of image tags with digests.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateDigest")]
     pub mutate_digest: Option<bool>,
-    /// Repository is an optional alternate OCI repository to use for image signatures and attestations that match this rule. If specified Repository will override the default OCI image repository configured for the installation. The repository can also be overridden per Attestor or Attestation.
+    /// Repository is an optional alternate OCI repository to use for image signatures and attestations that match this rule.
+    /// If specified Repository will override the default OCI image repository configured for the installation.
+    /// The repository can also be overridden per Attestor or Attestation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
     /// Required validates that images are verified i.e. have matched passed a signature or attestation check.
@@ -4754,13 +6487,17 @@ pub struct PolicyStatusAutogenRulesVerifyImages {
     /// Deprecated. Use KeylessAttestor instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roots: Option<String>,
-    /// SkipImageReferences is a list of matching image reference patterns that should be skipped. At least one pattern in the list must match the image for the rule to be skipped. Each image reference consists of a registry address (defaults to docker.io), repository, image, and tag (defaults to latest). Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
+    /// SkipImageReferences is a list of matching image reference patterns that should be skipped.
+    /// At least one pattern in the list must match the image for the rule to be skipped. Each image reference
+    /// consists of a registry address (defaults to docker.io), repository, image, and tag (defaults to latest).
+    /// Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipImageReferences")]
     pub skip_image_references: Option<Vec<String>>,
     /// Deprecated. Use KeylessAttestor instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
-    /// Type specifies the method of signature validation. The allowed options are Cosign and Notary. By default Cosign is used if a type is not specified.
+    /// Type specifies the method of signature validation. The allowed options
+    /// are Cosign and Notary. By default Cosign is used if a type is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<PolicyStatusAutogenRulesVerifyImagesType>,
     /// UseCache enables caching of image verify responses for this rule.
@@ -4771,13 +6508,16 @@ pub struct PolicyStatusAutogenRulesVerifyImages {
     pub verify_digest: Option<bool>,
 }
 
-/// Attestation are checks for signed in-toto Statements that are used to verify the image. See https://github.com/in-toto/attestation. Kyverno fetches signed attestations from the OCI registry and decodes them into a list of Statements.
+/// Attestation are checks for signed in-toto Statements that are used to verify the image.
+/// See https://github.com/in-toto/attestation. Kyverno fetches signed attestations from the
+/// OCI registry and decodes them into a list of Statements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestations {
     /// Attestors specify the required attestors (i.e. authorities).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attestors: Option<Vec<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestors>>,
-    /// Conditions are used to verify attributes within a Predicate. If no Conditions are specified the attestation check is satisfied as long there are predicates that match the predicate type.
+    /// Conditions are used to verify attributes within a Predicate. If no Conditions are specified
+    /// the attestation check is satisfied as long there are predicates that match the predicate type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<PolicyStatusAutogenRulesVerifyImagesAttestationsConditions>>,
     /// Deprecated in favour of 'Type', to be removed soon
@@ -4790,17 +6530,22 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestors {
-    /// Count specifies the required number of entries that must match. If the count is null, all entries must match (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a value N, then N must be less than or equal to the size of entries, and at least N entries must match.
+    /// Count specifies the required number of entries that must match. If the count is null, all entries must match
+    /// (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a
+    /// value N, then N must be less than or equal to the size of entries, and at least N entries must match.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
-    /// Entries contains the available attestors. An attestor can be a static key, attributes for keyless verification, or a nested attestor declaration.
+    /// Entries contains the available attestors. An attestor can be a static key,
+    /// attributes for keyless verification, or a nested attestor declaration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntries>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntries {
-    /// Annotations are used for image verification. Every specified key-value pair must exist and match in the verified payload. The payload may contain other key-value pairs.
+    /// Annotations are used for image verification.
+    /// Every specified key-value pair must exist and match in the verified payload.
+    /// The payload may contain other key-value pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
@@ -4809,13 +6554,15 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntries {
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesCertificates>,
-    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+    /// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyless: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeyless>,
     /// Keys specifies one or more public keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeys>,
-    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule. If specified Repository will override other OCI image repository locations for this Attestor.
+    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.
+    /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
 }
@@ -4829,54 +6576,70 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesCerti
     /// CertChain is an optional PEM encoded set of certificates used to verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certChain")]
     pub cert_chain: Option<String>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesCertificatesCtlog>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesCertificatesRekor>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesCertificatesCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesCertificatesRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
-/// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+/// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+/// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeyless {
     /// AdditionalExtensions are certificate-extensions used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalExtensions")]
     pub additional_extensions: Option<BTreeMap<String, String>>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeylessCtlog>,
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeylessRekor>,
-    /// Roots is an optional set of PEM encoded trusted root certificates. If not provided, the system roots are used.
+    /// Roots is an optional set of PEM encoded trusted root certificates.
+    /// If not provided, the system roots are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roots: Option<String>,
     /// Subject is the verified identity used for keyless signing, for example the email address.
@@ -4884,43 +6647,63 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeyle
     pub subject: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeylessCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeylessRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Keys specifies one or more public keys.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeys {
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeysCtlog>,
-    /// KMS provides the URI to the public key stored in a Key Management System. See: https://github.com/sigstore/cosign/blob/main/KMS.md
+    /// KMS provides the URI to the public key stored in a Key Management System. See:
+    /// https://github.com/sigstore/cosign/blob/main/KMS.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kms: Option<String>,
-    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly specified or can be a variable reference to a key specified in a ConfigMap (see https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>". The named Secret must specify a key `cosign.pub` containing the public key used for verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret). When multiple keys are specified each key is processed as a separate staticKey entry (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
+    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly
+    /// specified or can be a variable reference to a key specified in a ConfigMap (see
+    /// https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret
+    /// elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>".
+    /// The named Secret must specify a key `cosign.pub` containing the public key used for
+    /// verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret).
+    /// When multiple keys are specified each key is processed as a separate staticKey entry
+    /// (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicKeys")]
     pub public_keys: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeysRekor>,
     /// Reference to a Secret resource that contains a public key
@@ -4931,28 +6714,38 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeys 
     pub signature_algorithm: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeysCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeysRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Reference to a Secret resource that contains a public key
@@ -4964,13 +6757,21 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeysS
     pub namespace: String,
 }
 
-/// AnyAllConditions consists of conditions wrapped denoting a logical criteria to be fulfilled. AnyConditions get fulfilled when at least one of its sub-conditions passes. AllConditions get fulfilled only when all of its sub-conditions pass.
+/// AnyAllConditions consists of conditions wrapped denoting a logical criteria to be fulfilled.
+/// AnyConditions get fulfilled when at least one of its sub-conditions passes.
+/// AllConditions get fulfilled only when all of its sub-conditions pass.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsConditions {
-    /// AllConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, all of the conditions need to pass
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub all: Option<Vec<PolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAll>>,
-    /// AnyConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, at least one of the conditions need to pass
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<Vec<PolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAny>>,
 }
@@ -4984,10 +6785,14 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAll {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAllOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -5022,10 +6827,14 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAny {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAnyOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -5053,17 +6862,22 @@ pub enum PolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAnyOperator {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestors {
-    /// Count specifies the required number of entries that must match. If the count is null, all entries must match (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a value N, then N must be less than or equal to the size of entries, and at least N entries must match.
+    /// Count specifies the required number of entries that must match. If the count is null, all entries must match
+    /// (a logical AND). If the count is 1, at least one entry must match (a logical OR). If the count contains a
+    /// value N, then N must be less than or equal to the size of entries, and at least N entries must match.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
-    /// Entries contains the available attestors. An attestor can be a static key, attributes for keyless verification, or a nested attestor declaration.
+    /// Entries contains the available attestors. An attestor can be a static key,
+    /// attributes for keyless verification, or a nested attestor declaration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<PolicyStatusAutogenRulesVerifyImagesAttestorsEntries>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntries {
-    /// Annotations are used for image verification. Every specified key-value pair must exist and match in the verified payload. The payload may contain other key-value pairs.
+    /// Annotations are used for image verification.
+    /// Every specified key-value pair must exist and match in the verified payload.
+    /// The payload may contain other key-value pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
@@ -5072,13 +6886,15 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntries {
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesCertificates>,
-    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+    /// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+    /// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyless: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeyless>,
     /// Keys specifies one or more public keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeys>,
-    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule. If specified Repository will override other OCI image repository locations for this Attestor.
+    /// Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.
+    /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
 }
@@ -5092,54 +6908,70 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesCertificates {
     /// CertChain is an optional PEM encoded set of certificates used to verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certChain")]
     pub cert_chain: Option<String>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesCertificatesCtlog>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesCertificatesRekor>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesCertificatesCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesCertificatesRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
-/// Keyless is a set of attribute used to verify a Sigstore keyless attestor. See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
+/// Keyless is a set of attribute used to verify a Sigstore keyless attestor.
+/// See https://github.com/sigstore/cosign/blob/main/KEYLESS.md.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeyless {
     /// AdditionalExtensions are certificate-extensions used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalExtensions")]
     pub additional_extensions: Option<BTreeMap<String, String>>,
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeylessCtlog>,
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeylessRekor>,
-    /// Roots is an optional set of PEM encoded trusted root certificates. If not provided, the system roots are used.
+    /// Roots is an optional set of PEM encoded trusted root certificates.
+    /// If not provided, the system roots are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roots: Option<String>,
     /// Subject is the verified identity used for keyless signing, for example the email address.
@@ -5147,43 +6979,63 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeyless {
     pub subject: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeylessCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeylessRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Keys specifies one or more public keys.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeys {
-    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+    /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+    /// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ctlog: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeysCtlog>,
-    /// KMS provides the URI to the public key stored in a Key Management System. See: https://github.com/sigstore/cosign/blob/main/KMS.md
+    /// KMS provides the URI to the public key stored in a Key Management System. See:
+    /// https://github.com/sigstore/cosign/blob/main/KMS.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kms: Option<String>,
-    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly specified or can be a variable reference to a key specified in a ConfigMap (see https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>". The named Secret must specify a key `cosign.pub` containing the public key used for verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret). When multiple keys are specified each key is processed as a separate staticKey entry (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
+    /// Keys is a set of X.509 public keys used to verify image signatures. The keys can be directly
+    /// specified or can be a variable reference to a key specified in a ConfigMap (see
+    /// https://kyverno.io/docs/writing-policies/variables/), or reference a standard Kubernetes Secret
+    /// elsewhere in the cluster by specifying it in the format "k8s://<namespace>/<secret_name>".
+    /// The named Secret must specify a key `cosign.pub` containing the public key used for
+    /// verification, (see https://github.com/sigstore/cosign/blob/main/KMS.md#kubernetes-secret).
+    /// When multiple keys are specified each key is processed as a separate staticKey entry
+    /// (.attestors[*].entries.keys) within the set of attestors and the count is applied across the keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicKeys")]
     pub public_keys: Option<String>,
-    /// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+    /// Rekor provides configuration for the Rekor transparency log service. If an empty object
+    /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rekor: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeysRekor>,
     /// Reference to a Secret resource that contains a public key
@@ -5194,28 +7046,38 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeys {
     pub signature_algorithm: Option<String>,
 }
 
-/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
+/// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
+/// Timestamps (SCTs). If the value is unset, the default behavior by Cosign is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeysCtlog {
-    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate timestamp. Default is false. Set to true if this was opted out during signing.
+    /// IgnoreSCT defines whether to use the Signed Certificate Timestamp (SCT) log to check for a certificate
+    /// timestamp. Default is false. Set to true if this was opted out during signing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreSCT")]
     pub ignore_sct: Option<bool>,
     /// PubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
+    /// TSACertChain, if set, is the PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must
+    /// contain the root CA certificate. Optionally may contain intermediate CA certificates, and
+    /// may contain the leaf TSA certificate if not present in the timestamurce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCertChain")]
+    pub tsa_cert_chain: Option<String>,
 }
 
-/// Rekor provides configuration for the Rekor transparency log service. If an empty object is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
+/// Rekor provides configuration for the Rekor transparency log service. If an empty object
+/// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeysRekor {
     /// IgnoreTlog skips transparency log verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTlog")]
     pub ignore_tlog: Option<bool>,
-    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor. If set, this will be used to validate transparency log signatures from a custom Rekor.
+    /// RekorPubKey is an optional PEM-encoded public key to use for a custom Rekor.
+    /// If set, this will be used to validate transparency log signatures from a custom Rekor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     /// URL is the address of the transparency log. Defaults to the public Rekor log instance https://rekor.sigstore.dev.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Reference to a Secret resource that contains a public key
@@ -5233,22 +7095,27 @@ pub struct PolicyStatusAutogenRulesVerifyImagesImageRegistryCredentials {
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
 
-/// ImageVerification validates that images that match the specified pattern are signed with the supplied public key. Once the image is verified it is mutated to include the SHA digest retrieved during the registration.
+/// ImageVerification validates that images that match the specified pattern
+/// are signed with the supplied public key. Once the image is verified it is
+/// mutated to include the SHA digest retrieved during the registration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyStatusAutogenRulesVerifyImagesType {
     Cosign,
     Notary,
 }
 
-/// RuleCountStatus contains four variables which describes counts for validate, generate, mutate and verify images rules
+/// RuleCountStatus contains four variables which describes counts for
+/// validate, generate, mutate and verify images rules
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyStatusRulecount {
     /// Count for generate rules in policy
@@ -5266,7 +7133,8 @@ pub struct PolicyStatusRulecount {
 pub struct PolicyStatusValidatingadmissionpolicy {
     /// Generated indicates whether a validating admission policy is generated from the policy or not
     pub generated: bool,
-    /// Message is a human readable message indicating details about the generation of validating admission policy It is an empty string when validating admission policy is successfully generated.
+    /// Message is a human readable message indicating details about the generation of validating admission policy
+    /// It is an empty string when validating admission policy is successfully generated.
     pub message: String,
 }
 

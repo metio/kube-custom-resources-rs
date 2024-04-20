@@ -31,9 +31,6 @@ pub struct CertificateAuthoritySpec {
     /// and X.500 certificate subject information.
     #[serde(rename = "certificateAuthorityConfiguration")]
     pub certificate_authority_configuration: CertificateAuthorityCertificateAuthorityConfiguration,
-    /// The type of the certificate authority.
-    #[serde(rename = "certificateAuthorityType")]
-    pub certificate_authority_type: String,
     /// Specifies a cryptographic key management compliance standard used for handling
     /// CA keys.
     /// 
@@ -89,6 +86,8 @@ pub struct CertificateAuthoritySpec {
     /// permissions, see Controlling Access Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<CertificateAuthorityTags>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Specifies whether the CA issues general-purpose certificates that typically
     /// require a revocation mechanism, or short-lived certificates that may optionally
     /// omit revocation because they expire quickly. Short-lived certificate validity
@@ -584,6 +583,10 @@ pub struct CertificateAuthorityStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<CertificateAuthorityStatusAckResourceMetadata>,
+    /// The base64 PEM-encoded certificate signing request (CSR) for your private
+    /// CA certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateSigningRequest")]
+    pub certificate_signing_request: Option<String>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
@@ -593,8 +596,6 @@ pub struct CertificateAuthorityStatus {
     /// Date and time at which your private CA was created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdAt")]
     pub created_at: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub csr: Option<String>,
     /// Reason the request to create your private CA failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,

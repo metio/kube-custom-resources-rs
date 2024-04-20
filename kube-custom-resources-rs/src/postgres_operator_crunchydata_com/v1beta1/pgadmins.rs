@@ -48,6 +48,9 @@ pub struct PGAdminSpec {
     /// Tolerations of the PGAdmin pod. More info: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<PGAdminTolerations>>,
+    /// pgAdmin users that are managed via the PGAdmin spec. Users can still be added via the pgAdmin GUI, but those users will not show up here.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub users: Option<Vec<PGAdminUsers>>,
 }
 
 /// Scheduling constraints of the PGAdmin pod. More info: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node
@@ -462,6 +465,9 @@ pub struct PGAdminConfig {
     /// Files allows the user to mount projected volumes into the pgAdmin container so that files can be referenced by pgAdmin as needed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<PGAdminConfigFiles>>,
+    /// Settings for the gunicorn server. More info: https://docs.gunicorn.org/en/latest/settings.html
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gunicorn: Option<BTreeMap<String, serde_json::Value>>,
     /// A Secret containing the value for the LDAP_BIND_PASSWORD setting. More info: https://www.pgadmin.org/docs/pgadmin4/latest/ldap.html
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ldapBindPassword")]
     pub ldap_bind_password: Option<PGAdminConfigLdapBindPassword>,
@@ -788,12 +794,33 @@ pub struct PGAdminTolerations {
     pub value: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PGAdminUsers {
+    /// Role determines whether the user has admin privileges or not. Defaults to User. Valid options are Administrator and User.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<PGAdminUsersRole>,
+    /// The username for User in pgAdmin. Must be unique in the pgAdmin's users list.
+    pub username: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PGAdminUsersRole {
+    Administrator,
+    User,
+}
+
 /// PGAdminStatus defines the observed state of PGAdmin
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PGAdminStatus {
-    /// conditions represent the observations of pgadmin's current state. Known .status.conditions.type are: "PersistentVolumeResizing", "Progressing", "ProxyAvailable"
+    /// conditions represent the observations of pgAdmin's current state. Known .status.conditions.type is: "PersistentVolumeResizing"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// ImageSHA represents the image SHA for the container running pgAdmin.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageSHA")]
+    pub image_sha: Option<String>,
+    /// MajorVersion represents the major version of the running pgAdmin.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "majorVersion")]
+    pub major_version: Option<i64>,
     /// observedGeneration represents the .metadata.generation on which the status was based.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,

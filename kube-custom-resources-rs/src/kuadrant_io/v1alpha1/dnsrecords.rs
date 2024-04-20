@@ -155,5 +155,17 @@ pub struct DNSRecordStatusEndpointsProviderSpecific {
 pub struct DNSRecordStatusHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub probes: Option<Vec<DNSRecordStatusHealthCheckProbes>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DNSRecordStatusHealthCheckProbes {
+    pub host: String,
+    pub id: String,
+    #[serde(rename = "ipAddress")]
+    pub ip_address: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub synced: Option<bool>,
 }
 

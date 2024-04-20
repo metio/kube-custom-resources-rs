@@ -8,7 +8,7 @@ use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
-/// HostFirmwareSettingsSpec defines the desired state of HostFirmwareSettings
+/// HostFirmwareSettingsSpec defines the desired state of HostFirmwareSettings.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "metal3.io", version = "v1alpha1", kind = "HostFirmwareSettings", plural = "hostfirmwaresettings")]
 #[kube(namespaced)]
@@ -19,7 +19,7 @@ pub struct HostFirmwareSettingsSpec {
     pub settings: BTreeMap<String, IntOrString>,
 }
 
-/// HostFirmwareSettingsStatus defines the observed state of HostFirmwareSettings
+/// HostFirmwareSettingsStatus defines the observed state of HostFirmwareSettings.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HostFirmwareSettingsStatus {
     /// Track whether settings stored in the spec are valid based on the schema

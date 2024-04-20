@@ -102,8 +102,8 @@ spec:
                       type: "string"
                     upgradeMode:
                       enum:
-                        - "savepoint"
                         - "last-state"
+                        - "savepoint"
                         - "stateless"
                       type: "string"
                   type: "object"
@@ -292,6 +292,14 @@ spec:
                                                       type: "string"
                                                     type: "object"
                                                 type: "object"
+                                              matchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              mismatchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
                                               namespaceSelector:
                                                 properties:
                                                   matchExpressions:
@@ -346,6 +354,14 @@ spec:
                                                   type: "string"
                                                 type: "object"
                                             type: "object"
+                                          matchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                          mismatchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
                                           namespaceSelector:
                                             properties:
                                               matchExpressions:
@@ -402,6 +418,14 @@ spec:
                                                       type: "string"
                                                     type: "object"
                                                 type: "object"
+                                              matchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              mismatchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
                                               namespaceSelector:
                                                 properties:
                                                   matchExpressions:
@@ -456,6 +480,14 @@ spec:
                                                   type: "string"
                                                 type: "object"
                                             type: "object"
+                                          matchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                          mismatchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
                                           namespaceSelector:
                                             properties:
                                               matchExpressions:
@@ -607,6 +639,11 @@ spec:
                                               scheme:
                                                 type: "string"
                                             type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
+                                            type: "object"
                                           tcpSocket:
                                             properties:
                                               host:
@@ -649,6 +686,11 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                               scheme:
                                                 type: "string"
+                                            type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
                                             type: "object"
                                           tcpSocket:
                                             properties:
@@ -836,6 +878,8 @@ spec:
                                           x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  restartPolicy:
+                                    type: "string"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -1138,6 +1182,11 @@ spec:
                                               scheme:
                                                 type: "string"
                                             type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
+                                            type: "object"
                                           tcpSocket:
                                             properties:
                                               host:
@@ -1180,6 +1229,11 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                               scheme:
                                                 type: "string"
+                                            type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
                                             type: "object"
                                           tcpSocket:
                                             properties:
@@ -1367,6 +1421,8 @@ spec:
                                           x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  restartPolicy:
+                                    type: "string"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -1675,6 +1731,11 @@ spec:
                                               scheme:
                                                 type: "string"
                                             type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
+                                            type: "object"
                                           tcpSocket:
                                             properties:
                                               host:
@@ -1717,6 +1778,11 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                               scheme:
                                                 type: "string"
+                                            type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
                                             type: "object"
                                           tcpSocket:
                                             properties:
@@ -1904,6 +1970,8 @@ spec:
                                           x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  restartPolicy:
+                                    type: "string"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -2500,13 +2568,6 @@ spec:
                                                 type: "object"
                                               resources:
                                                 properties:
-                                                  claims:
-                                                    items:
-                                                      properties:
-                                                        name:
-                                                          type: "string"
-                                                      type: "object"
-                                                    type: "array"
                                                   limits:
                                                     additionalProperties:
                                                       anyOf:
@@ -2543,6 +2604,8 @@ spec:
                                                     type: "object"
                                                 type: "object"
                                               storageClassName:
+                                                type: "string"
+                                              volumeAttributesClassName:
                                                 type: "string"
                                               volumeMode:
                                                 type: "string"
@@ -2700,6 +2763,37 @@ spec:
                                       sources:
                                         items:
                                           properties:
+                                            clusterTrustBundle:
+                                              properties:
+                                                labelSelector:
+                                                  properties:
+                                                    matchExpressions:
+                                                      items:
+                                                        properties:
+                                                          key:
+                                                            type: "string"
+                                                          operator:
+                                                            type: "string"
+                                                          values:
+                                                            items:
+                                                              type: "string"
+                                                            type: "array"
+                                                        type: "object"
+                                                      type: "array"
+                                                    matchLabels:
+                                                      additionalProperties:
+                                                        type: "string"
+                                                      type: "object"
+                                                  type: "object"
+                                                name:
+                                                  type: "string"
+                                                optional:
+                                                  type: "boolean"
+                                                path:
+                                                  type: "string"
+                                                signerName:
+                                                  type: "string"
+                                              type: "object"
                                             configMap:
                                               properties:
                                                 items:
@@ -3143,6 +3237,13 @@ spec:
                               type: "array"
                             hostIP:
                               type: "string"
+                            hostIPs:
+                              items:
+                                properties:
+                                  ip:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                             initContainerStatuses:
                               items:
                                 properties:
@@ -3278,6 +3379,15 @@ spec:
                               type: "string"
                             resize:
                               type: "string"
+                            resourceClaimStatuses:
+                              items:
+                                properties:
+                                  name:
+                                    type: "string"
+                                  resourceClaimName:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                             startTime:
                               type: "string"
                           type: "object"
@@ -3486,6 +3596,14 @@ spec:
                                                   type: "string"
                                                 type: "object"
                                             type: "object"
+                                          matchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                          mismatchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
                                           namespaceSelector:
                                             properties:
                                               matchExpressions:
@@ -3540,6 +3658,14 @@ spec:
                                               type: "string"
                                             type: "object"
                                         type: "object"
+                                      matchLabelKeys:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      mismatchLabelKeys:
+                                        items:
+                                          type: "string"
+                                        type: "array"
                                       namespaceSelector:
                                         properties:
                                           matchExpressions:
@@ -3596,6 +3722,14 @@ spec:
                                                   type: "string"
                                                 type: "object"
                                             type: "object"
+                                          matchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                          mismatchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
                                           namespaceSelector:
                                             properties:
                                               matchExpressions:
@@ -3650,6 +3784,14 @@ spec:
                                               type: "string"
                                             type: "object"
                                         type: "object"
+                                      matchLabelKeys:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      mismatchLabelKeys:
+                                        items:
+                                          type: "string"
+                                        type: "array"
                                       namespaceSelector:
                                         properties:
                                           matchExpressions:
@@ -3801,6 +3943,11 @@ spec:
                                           scheme:
                                             type: "string"
                                         type: "object"
+                                      sleep:
+                                        properties:
+                                          seconds:
+                                            type: "integer"
+                                        type: "object"
                                       tcpSocket:
                                         properties:
                                           host:
@@ -3843,6 +3990,11 @@ spec:
                                             x-kubernetes-int-or-string: true
                                           scheme:
                                             type: "string"
+                                        type: "object"
+                                      sleep:
+                                        properties:
+                                          seconds:
+                                            type: "integer"
                                         type: "object"
                                       tcpSocket:
                                         properties:
@@ -4030,6 +4182,8 @@ spec:
                                       x-kubernetes-int-or-string: true
                                     type: "object"
                                 type: "object"
+                              restartPolicy:
+                                type: "string"
                               securityContext:
                                 properties:
                                   allowPrivilegeEscalation:
@@ -4332,6 +4486,11 @@ spec:
                                           scheme:
                                             type: "string"
                                         type: "object"
+                                      sleep:
+                                        properties:
+                                          seconds:
+                                            type: "integer"
+                                        type: "object"
                                       tcpSocket:
                                         properties:
                                           host:
@@ -4374,6 +4533,11 @@ spec:
                                             x-kubernetes-int-or-string: true
                                           scheme:
                                             type: "string"
+                                        type: "object"
+                                      sleep:
+                                        properties:
+                                          seconds:
+                                            type: "integer"
                                         type: "object"
                                       tcpSocket:
                                         properties:
@@ -4561,6 +4725,8 @@ spec:
                                       x-kubernetes-int-or-string: true
                                     type: "object"
                                 type: "object"
+                              restartPolicy:
+                                type: "string"
                               securityContext:
                                 properties:
                                   allowPrivilegeEscalation:
@@ -4869,6 +5035,11 @@ spec:
                                           scheme:
                                             type: "string"
                                         type: "object"
+                                      sleep:
+                                        properties:
+                                          seconds:
+                                            type: "integer"
+                                        type: "object"
                                       tcpSocket:
                                         properties:
                                           host:
@@ -4911,6 +5082,11 @@ spec:
                                             x-kubernetes-int-or-string: true
                                           scheme:
                                             type: "string"
+                                        type: "object"
+                                      sleep:
+                                        properties:
+                                          seconds:
+                                            type: "integer"
                                         type: "object"
                                       tcpSocket:
                                         properties:
@@ -5098,6 +5274,8 @@ spec:
                                       x-kubernetes-int-or-string: true
                                     type: "object"
                                 type: "object"
+                              restartPolicy:
+                                type: "string"
                               securityContext:
                                 properties:
                                   allowPrivilegeEscalation:
@@ -5694,13 +5872,6 @@ spec:
                                             type: "object"
                                           resources:
                                             properties:
-                                              claims:
-                                                items:
-                                                  properties:
-                                                    name:
-                                                      type: "string"
-                                                  type: "object"
-                                                type: "array"
                                               limits:
                                                 additionalProperties:
                                                   anyOf:
@@ -5737,6 +5908,8 @@ spec:
                                                 type: "object"
                                             type: "object"
                                           storageClassName:
+                                            type: "string"
+                                          volumeAttributesClassName:
                                             type: "string"
                                           volumeMode:
                                             type: "string"
@@ -5894,6 +6067,37 @@ spec:
                                   sources:
                                     items:
                                       properties:
+                                        clusterTrustBundle:
+                                          properties:
+                                            labelSelector:
+                                              properties:
+                                                matchExpressions:
+                                                  items:
+                                                    properties:
+                                                      key:
+                                                        type: "string"
+                                                      operator:
+                                                        type: "string"
+                                                      values:
+                                                        items:
+                                                          type: "string"
+                                                        type: "array"
+                                                    type: "object"
+                                                  type: "array"
+                                                matchLabels:
+                                                  additionalProperties:
+                                                    type: "string"
+                                                  type: "object"
+                                              type: "object"
+                                            name:
+                                              type: "string"
+                                            optional:
+                                              type: "boolean"
+                                            path:
+                                              type: "string"
+                                            signerName:
+                                              type: "string"
+                                          type: "object"
                                         configMap:
                                           properties:
                                             items:
@@ -6337,6 +6541,13 @@ spec:
                           type: "array"
                         hostIP:
                           type: "string"
+                        hostIPs:
+                          items:
+                            properties:
+                              ip:
+                                type: "string"
+                            type: "object"
+                          type: "array"
                         initContainerStatuses:
                           items:
                             properties:
@@ -6472,6 +6683,15 @@ spec:
                           type: "string"
                         resize:
                           type: "string"
+                        resourceClaimStatuses:
+                          items:
+                            properties:
+                              name:
+                                type: "string"
+                              resourceClaimName:
+                                type: "string"
+                            type: "object"
+                          type: "array"
                         startTime:
                           type: "string"
                       type: "object"
@@ -6665,6 +6885,14 @@ spec:
                                                       type: "string"
                                                     type: "object"
                                                 type: "object"
+                                              matchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              mismatchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
                                               namespaceSelector:
                                                 properties:
                                                   matchExpressions:
@@ -6719,6 +6947,14 @@ spec:
                                                   type: "string"
                                                 type: "object"
                                             type: "object"
+                                          matchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                          mismatchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
                                           namespaceSelector:
                                             properties:
                                               matchExpressions:
@@ -6775,6 +7011,14 @@ spec:
                                                       type: "string"
                                                     type: "object"
                                                 type: "object"
+                                              matchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              mismatchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
                                               namespaceSelector:
                                                 properties:
                                                   matchExpressions:
@@ -6829,6 +7073,14 @@ spec:
                                                   type: "string"
                                                 type: "object"
                                             type: "object"
+                                          matchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                          mismatchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
                                           namespaceSelector:
                                             properties:
                                               matchExpressions:
@@ -6980,6 +7232,11 @@ spec:
                                               scheme:
                                                 type: "string"
                                             type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
+                                            type: "object"
                                           tcpSocket:
                                             properties:
                                               host:
@@ -7022,6 +7279,11 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                               scheme:
                                                 type: "string"
+                                            type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
                                             type: "object"
                                           tcpSocket:
                                             properties:
@@ -7209,6 +7471,8 @@ spec:
                                           x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  restartPolicy:
+                                    type: "string"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -7511,6 +7775,11 @@ spec:
                                               scheme:
                                                 type: "string"
                                             type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
+                                            type: "object"
                                           tcpSocket:
                                             properties:
                                               host:
@@ -7553,6 +7822,11 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                               scheme:
                                                 type: "string"
+                                            type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
                                             type: "object"
                                           tcpSocket:
                                             properties:
@@ -7740,6 +8014,8 @@ spec:
                                           x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  restartPolicy:
+                                    type: "string"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -8048,6 +8324,11 @@ spec:
                                               scheme:
                                                 type: "string"
                                             type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
+                                            type: "object"
                                           tcpSocket:
                                             properties:
                                               host:
@@ -8090,6 +8371,11 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                               scheme:
                                                 type: "string"
+                                            type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
                                             type: "object"
                                           tcpSocket:
                                             properties:
@@ -8277,6 +8563,8 @@ spec:
                                           x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  restartPolicy:
+                                    type: "string"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -8873,13 +9161,6 @@ spec:
                                                 type: "object"
                                               resources:
                                                 properties:
-                                                  claims:
-                                                    items:
-                                                      properties:
-                                                        name:
-                                                          type: "string"
-                                                      type: "object"
-                                                    type: "array"
                                                   limits:
                                                     additionalProperties:
                                                       anyOf:
@@ -8916,6 +9197,8 @@ spec:
                                                     type: "object"
                                                 type: "object"
                                               storageClassName:
+                                                type: "string"
+                                              volumeAttributesClassName:
                                                 type: "string"
                                               volumeMode:
                                                 type: "string"
@@ -9073,6 +9356,37 @@ spec:
                                       sources:
                                         items:
                                           properties:
+                                            clusterTrustBundle:
+                                              properties:
+                                                labelSelector:
+                                                  properties:
+                                                    matchExpressions:
+                                                      items:
+                                                        properties:
+                                                          key:
+                                                            type: "string"
+                                                          operator:
+                                                            type: "string"
+                                                          values:
+                                                            items:
+                                                              type: "string"
+                                                            type: "array"
+                                                        type: "object"
+                                                      type: "array"
+                                                    matchLabels:
+                                                      additionalProperties:
+                                                        type: "string"
+                                                      type: "object"
+                                                  type: "object"
+                                                name:
+                                                  type: "string"
+                                                optional:
+                                                  type: "boolean"
+                                                path:
+                                                  type: "string"
+                                                signerName:
+                                                  type: "string"
+                                              type: "object"
                                             configMap:
                                               properties:
                                                 items:
@@ -9516,6 +9830,13 @@ spec:
                               type: "array"
                             hostIP:
                               type: "string"
+                            hostIPs:
+                              items:
+                                properties:
+                                  ip:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                             initContainerStatuses:
                               items:
                                 properties:
@@ -9651,6 +9972,15 @@ spec:
                               type: "string"
                             resize:
                               type: "string"
+                            resourceClaimStatuses:
+                              items:
+                                properties:
+                                  name:
+                                    type: "string"
+                                  resourceClaimName:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                             startTime:
                               type: "string"
                           type: "object"
@@ -9678,11 +10008,11 @@ spec:
                   type: "string"
                 jobManagerDeploymentStatus:
                   enum:
-                    - "READY"
                     - "DEPLOYED_NOT_READY"
                     - "DEPLOYING"
-                    - "MISSING"
                     - "ERROR"
+                    - "MISSING"
+                    - "READY"
                   type: "string"
                 jobStatus:
                   properties:
@@ -9710,8 +10040,8 @@ spec:
                               enum:
                                 - "MANUAL"
                                 - "PERIODIC"
-                                - "UPGRADE"
                                 - "UNKNOWN"
+                                - "UPGRADE"
                               type: "string"
                           type: "object"
                         lastPeriodicCheckpointTimestamp:
@@ -9724,8 +10054,8 @@ spec:
                           enum:
                             - "MANUAL"
                             - "PERIODIC"
-                            - "UPGRADE"
                             - "UNKNOWN"
+                            - "UPGRADE"
                           type: "string"
                       type: "object"
                     jobId:
@@ -9760,8 +10090,8 @@ spec:
                               enum:
                                 - "MANUAL"
                                 - "PERIODIC"
-                                - "UPGRADE"
                                 - "UNKNOWN"
+                                - "UPGRADE"
                               type: "string"
                           type: "object"
                         savepointHistory:
@@ -9783,8 +10113,8 @@ spec:
                                 enum:
                                   - "MANUAL"
                                   - "PERIODIC"
-                                  - "UPGRADE"
                                   - "UNKNOWN"
+                                  - "UPGRADE"
                                 type: "string"
                             type: "object"
                           type: "array"
@@ -9796,8 +10126,8 @@ spec:
                           enum:
                             - "MANUAL"
                             - "PERIODIC"
-                            - "UPGRADE"
                             - "UNKNOWN"
+                            - "UPGRADE"
                           type: "string"
                       type: "object"
                     startTime:
@@ -9810,13 +10140,13 @@ spec:
                 lifecycleState:
                   enum:
                     - "CREATED"
+                    - "DEPLOYED"
+                    - "FAILED"
+                    - "ROLLED_BACK"
+                    - "ROLLING_BACK"
+                    - "STABLE"
                     - "SUSPENDED"
                     - "UPGRADING"
-                    - "DEPLOYED"
-                    - "STABLE"
-                    - "ROLLING_BACK"
-                    - "ROLLED_BACK"
-                    - "FAILED"
                   type: "string"
                 observedGeneration:
                   type: "integer"
@@ -9831,9 +10161,9 @@ spec:
                     state:
                       enum:
                         - "DEPLOYED"
-                        - "UPGRADING"
-                        - "ROLLING_BACK"
                         - "ROLLED_BACK"
+                        - "ROLLING_BACK"
+                        - "UPGRADING"
                       type: "string"
                   type: "object"
                 taskManager:
