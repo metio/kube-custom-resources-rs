@@ -21,6 +21,11 @@ pub struct CiliumLocalRedirectPolicySpec {
     /// RedirectFrontend specifies frontend configuration to redirect traffic from. It can not be empty.
     #[serde(rename = "redirectFrontend")]
     pub redirect_frontend: CiliumLocalRedirectPolicyRedirectFrontend,
+    /// SkipRedirectFromBackend indicates whether traffic matching RedirectFrontend from RedirectBackend should skip redirection, and hence the traffic will be forwarded as-is. 
+    ///  The default is false which means traffic matching RedirectFrontend will get redirected from all pods, including the RedirectBackend(s). 
+    ///  Example: If RedirectFrontend is configured to "169.254.169.254:80" as the traffic that needs to be redirected to backends selected by RedirectBackend, if SkipRedirectFromBackend is set to true, traffic going to "169.254.169.254:80" from such backends will not be redirected back to the backends. Instead, the matched traffic from the backends will be forwarded to the original destination "169.254.169.254:80".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipRedirectFromBackend")]
+    pub skip_redirect_from_backend: Option<bool>,
 }
 
 /// RedirectBackend specifies backend configuration to redirect traffic to. It can not be empty.

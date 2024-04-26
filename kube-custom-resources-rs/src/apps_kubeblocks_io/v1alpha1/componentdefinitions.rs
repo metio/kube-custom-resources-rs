@@ -153,7 +153,7 @@ pub struct ComponentDefinitionSpec {
     pub update_strategy: Option<ComponentDefinitionUpdateStrategy>,
     /// Represents user-defined variables that can be used as environment variables for Pods and Actions, or to render templates of config and script. These variables are placed in front of the environment variables declared in the Pod if used as environment variables. 
     ///  The value of a var can be populated from the following sources: 
-    ///  - ConfigMap: Allows you to select a ConfigMap and a specific key within that ConfigMap to extract the value from. - Secret: Allows you to select a Secret and a specific key within that Secret to extract the value from. - Pod: Retrieves values (including ports) from a selected Pod. - Service: Retrieves values (including address, port, NodePort) from a selected Service. The purpose of ServiceVar is to obtain the address of a ComponentService. - Credential: Retrieves values (including account name, account password) from a SystemAccount variable. - ServiceRef: Retrieves values (including address, port, account name, account password) from a selected ServiceRefDeclaration. The purpose of ServiceRefVar is to obtain the specific address that a ServiceRef is bound to (e.g., a ClusterService of another Cluster). 
+    ///  - ConfigMap: Allows you to select a ConfigMap and a specific key within that ConfigMap to extract the value from. - Secret: Allows you to select a Secret and a specific key within that Secret to extract the value from. - Pod: Retrieves values (including ports) from a selected Pod. - Service: Retrieves values (including address, port, NodePort) from a selected Service. The purpose of ServiceVar is to obtain the address of a ComponentService. - Credential: Retrieves values (including account name, account password) from a SystemAccount variable. - ServiceRef: Retrieves values (including address, port, account name, account password) from a selected ServiceRefDeclaration. The purpose of ServiceRefVar is to obtain the specific address that a ServiceRef is bound to (e.g., a ClusterService of another Cluster). - Component: Retrieves values from a field of a Component. 
     ///  This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vars: Option<Vec<ComponentDefinitionVars>>,
@@ -7651,10 +7651,9 @@ pub struct ComponentDefinitionServices {
     /// Name defines the name of the service. otherwise, it indicates the name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated.
     pub name: String,
     /// Indicates whether to create a corresponding Service for each Pod of the selected Component. When set to true, a set of Services will be automatically generated for each Pod, and the `roleSelector` field will be ignored. 
-    ///  The names of the generated Services will follow the same naming pattern: `$(serviceName)-$(podOrdinal)`. 
-    ///  The podOrdinal is zero-based, meaning it starts from 0 for the first Pod and increments for each subsequent Pod. The total number of generated Services will be equal to the number of replicas specified for the Component. 
+    ///  The names of the generated Services will follow the same suffix naming pattern: `$(serviceName)-$(podOrdinal)`. The total number of generated Services will be equal to the number of replicas specified for the Component. 
     ///  Example usage: 
-    ///  ```yaml name: my-service serviceName: my-service generatePodOrdinalService: true spec: type: NodePort ports: - name: http port: 80 targetPort: 8080 ``` 
+    ///  ```yaml name: my-service serviceName: my-service podService: true disableAutoProvision: true spec: type: NodePort ports: - name: http port: 80 targetPort: 8080 ``` 
     ///  In this example, if the Component has 3 replicas, three Services will be generated: - my-service-0: Points to the first Pod (podOrdinal: 0) - my-service-1: Points to the second Pod (podOrdinal: 1) - my-service-2: Points to the third Pod (podOrdinal: 2) 
     ///  Each generated Service will have the specified spec configuration and will target its respective Pod. 
     ///  This feature is useful when you need to expose each Pod of a Component individually, allowing external access to specific instances of the Component.
@@ -7663,7 +7662,7 @@ pub struct ComponentDefinitionServices {
     /// Extends the above `serviceSpec.selector` by allowing you to specify defined role as selector for the service. When `roleSelector` is set, it adds a label selector "kubeblocks.io/role: {roleSelector}" to the `serviceSpec.selector`. Example usage: 
     ///  roleSelector: "leader" 
     ///  In this example, setting `roleSelector` to "leader" will add a label selector "kubeblocks.io/role: leader" to the `serviceSpec.selector`. This means that the service will select and route traffic to Pods with the label "kubeblocks.io/role" set to "leader". 
-    ///  Note that if `generatePodOrdinalService` sets to true, RoleSelector will be ignored. The `generatePodOrdinalService` flag takes precedence over `roleSelector` and generates a service for each Pod.
+    ///  Note that if `podService` sets to true, RoleSelector will be ignored. The `podService` flag takes precedence over `roleSelector` and generates a service for each Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
     /// ServiceName defines the name of the underlying service object. If not specified, the default service name with different patterns will be used: 
@@ -8697,6 +8696,9 @@ pub struct ComponentDefinitionVars {
 /// Source for the variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComponentDefinitionVarsValueFrom {
+    /// Selects a defined var of a Component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentVarRef")]
+    pub component_var_ref: Option<ComponentDefinitionVarsValueFromComponentVarRef>,
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ComponentDefinitionVarsValueFromConfigMapKeyRef>,
@@ -8715,6 +8717,96 @@ pub struct ComponentDefinitionVarsValueFrom {
     /// Selects a defined var of a Service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVarRef")]
     pub service_var_ref: Option<ComponentDefinitionVarsValueFromServiceVarRef>,
+}
+
+/// Selects a defined var of a Component.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromComponentVarRef {
+    /// CompDef specifies the definition used by the component that the referent object resident in. If not specified, the component itself will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
+    pub comp_def: Option<String>,
+    /// Reference to the name of the Component object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentName")]
+    pub component_name: Option<ComponentDefinitionVarsValueFromComponentVarRefComponentName>,
+    /// Reference to the instanceName list of the component. and the value will be presented in the following format: instanceName1,instanceName2...
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceNames")]
+    pub instance_names: Option<ComponentDefinitionVarsValueFromComponentVarRefInstanceNames>,
+    /// This option defines the behavior when multiple component objects match the specified @CompDef. If not provided, an error will be raised when handling multiple matches.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
+    pub multiple_cluster_object_option: Option<ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOption>,
+    /// Name of the referent object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the object must be defined.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Reference to the replicas of the component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<ComponentDefinitionVarsValueFromComponentVarRefReplicas>,
+}
+
+/// Selects a defined var of a Component.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromComponentVarRefComponentName {
+    Required,
+    Optional,
+}
+
+/// Selects a defined var of a Component.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromComponentVarRefInstanceNames {
+    Required,
+    Optional,
+}
+
+/// This option defines the behavior when multiple component objects match the specified @CompDef. If not provided, an error will be raised when handling multiple matches.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOption {
+    /// Define the options for handling combined variables. Valid only when the strategy is set to "combined".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
+    pub combined_option: Option<ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// Define the strategy for handling multiple cluster objects.
+    pub strategy: ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionStrategy,
+}
+
+/// Define the options for handling combined variables. Valid only when the strategy is set to "combined".
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionCombinedOption {
+    /// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flattenFormat")]
+    pub flatten_format: Option<ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat>,
+    /// If set, the existing variable will be kept, and a new variable will be defined with the specified suffix in pattern: $(var.name)_$(suffix). The new variable will be auto-created and placed behind the existing one. If not set, the existing variable will be reused with the value format defined below.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "newVarSuffix")]
+    pub new_var_suffix: Option<String>,
+    /// The format of the value that the operator will use to compose values from multiple components.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFormat")]
+    pub value_format: Option<String>,
+}
+
+/// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat {
+    /// Pair delimiter.
+    pub delimiter: String,
+    /// Key-value delimiter.
+    #[serde(rename = "keyValueDelimiter")]
+    pub key_value_delimiter: String,
+}
+
+/// This option defines the behavior when multiple component objects match the specified @CompDef. If not provided, an error will be raised when handling multiple matches.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionStrategy {
+    #[serde(rename = "individual")]
+    Individual,
+    #[serde(rename = "combined")]
+    Combined,
+}
+
+/// Selects a defined var of a Component.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromComponentVarRefReplicas {
+    Required,
+    Optional,
 }
 
 /// Selects a key of a ConfigMap.
@@ -9022,6 +9114,10 @@ pub struct ComponentDefinitionVarsValueFromServiceVarRef {
     /// VarOption defines whether a variable is required or optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<ComponentDefinitionVarsValueFromServiceVarRefHost>,
+    /// LoadBalancer represents the LoadBalancer ingress point of the service. 
+    ///  If multiple ingress points are available, the first one will be used automatically, choosing between IP and Hostname.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<ComponentDefinitionVarsValueFromServiceVarRefLoadBalancer>,
     /// This option defines the behavior when multiple component objects match the specified @CompDef. If not provided, an error will be raised when handling multiple matches.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
     pub multiple_cluster_object_option: Option<ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOption>,
@@ -9040,6 +9136,13 @@ pub struct ComponentDefinitionVarsValueFromServiceVarRef {
 /// Selects a defined var of a Service.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ComponentDefinitionVarsValueFromServiceVarRefHost {
+    Required,
+    Optional,
+}
+
+/// Selects a defined var of a Service.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromServiceVarRefLoadBalancer {
     Required,
     Optional,
 }

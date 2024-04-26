@@ -122,6 +122,9 @@ spec:
                     listenAddress:
                       description: "ListenAddress is the IP addresses the Agent HTTP server will listen on. Normally this will just be localhost (`127.0.0.1`), the pod public IP and any container runtime bridge interfaces. Set `listenAddress: *` for making the Agent listen on all network interfaces."
                       type: "string"
+                    minReadySeconds:
+                      description: "The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available"
+                      type: "integer"
                     mode:
                       description: "Set agent mode, possible options are APM, INFRASTRUCTURE or AWS. KUBERNETES should not be used but instead enabled via `kubernetes.deployment.enabled: true`."
                       type: "string"
@@ -787,6 +790,9 @@ spec:
                       properties:
                         enabled:
                           type: "boolean"
+                        minReadySeconds:
+                          description: "The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available"
+                          type: "integer"
                         pod:
                           description: "Override pod resource requirements for the Kubernetes Sensor pods."
                           properties:
@@ -844,6 +850,9 @@ spec:
                       properties:
                         enabled:
                           type: "boolean"
+                        minReadySeconds:
+                          description: "The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available"
+                          type: "integer"
                         pod:
                           description: "Override pod resource requirements for the Kubernetes Sensor pods."
                           properties:

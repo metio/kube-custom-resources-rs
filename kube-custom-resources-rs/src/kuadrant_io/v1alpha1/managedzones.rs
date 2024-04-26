@@ -13,27 +13,29 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "ManagedZoneStatus")]
 #[kube(schema = "disabled")]
 pub struct ManagedZoneSpec {
-    /// Description for this ManagedZone
+    /// description for this ManagedZone
     pub description: String,
+    /// dnsProviderSecretRef reference to a secret containing credentials to access a dns provider.
     #[serde(rename = "dnsProviderSecretRef")]
     pub dns_provider_secret_ref: ManagedZoneDnsProviderSecretRef,
-    /// Domain name of this ManagedZone
+    /// domainName of this ManagedZone
     #[serde(rename = "domainName")]
     pub domain_name: String,
-    /// ID is the provider assigned id of this  zone (i.e. route53.HostedZone.ID).
+    /// id is the provider assigned id of this  zone (i.e. route53.HostedZone.ID).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// Reference to another managed zone that this managed zone belongs to.
+    /// parentManagedZone reference to another managed zone that this managed zone belongs to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentManagedZone")]
     pub parent_managed_zone: Option<ManagedZoneParentManagedZone>,
 }
 
+/// dnsProviderSecretRef reference to a secret containing credentials to access a dns provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagedZoneDnsProviderSecretRef {
     pub name: String,
 }
 
-/// Reference to another managed zone that this managed zone belongs to.
+/// parentManagedZone reference to another managed zone that this managed zone belongs to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagedZoneParentManagedZone {
     /// `name` is the name of the managed zone. Required

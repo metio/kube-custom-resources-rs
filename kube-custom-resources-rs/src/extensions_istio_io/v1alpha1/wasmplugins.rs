@@ -41,7 +41,7 @@ pub struct WasmPluginSpec {
     pub plugin_name: Option<String>,
     /// Determines ordering of `WasmPlugins` in the same `phase`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub priority: Option<i64>,
+    pub priority: Option<i32>,
     /// Criteria used to select the specific set of pods/VMs on which this plugin configuration should be applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<WasmPluginSelector>,

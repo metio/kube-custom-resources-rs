@@ -45,6 +45,9 @@ pub struct PGAdminSpec {
     /// ServerGroups for importing PostgresClusters to pgAdmin. To create a pgAdmin with no selectors, leave this field empty. A pgAdmin created with no `ServerGroups` will not automatically add any servers through discovery. PostgresClusters can still be added manually.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverGroups")]
     pub server_groups: Option<Vec<PGAdminServerGroups>>,
+    /// ServiceName will be used as the name of a ClusterIP service pointing to the pgAdmin pod and port. If the service already exists, PGO will update the service. For more information about services reference the Kubernetes and CrunchyData documentation. https://kubernetes.io/docs/concepts/services-networking/service/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
     /// Tolerations of the PGAdmin pod. More info: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<PGAdminTolerations>>,
@@ -796,11 +799,27 @@ pub struct PGAdminTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PGAdminUsers {
+    /// A reference to the secret that holds the user's password.
+    #[serde(rename = "passwordRef")]
+    pub password_ref: PGAdminUsersPasswordRef,
     /// Role determines whether the user has admin privileges or not. Defaults to User. Valid options are Administrator and User.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<PGAdminUsersRole>,
     /// The username for User in pgAdmin. Must be unique in the pgAdmin's users list.
     pub username: String,
+}
+
+/// A reference to the secret that holds the user's password.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PGAdminUsersPasswordRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

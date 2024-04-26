@@ -574,6 +574,9 @@ pub struct WorkspaceStatus {
     /// Workspace last update timestamp.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateAt")]
     pub update_at: Option<i64>,
+    /// Workspace variables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variables: Option<Vec<WorkspaceStatusVariables>>,
     /// Workspace ID that is managed by the controller.
     #[serde(rename = "workspaceID")]
     pub workspace_id: String,
@@ -608,5 +611,21 @@ pub struct WorkspaceStatusRunStatus {
     /// Current(both active and finished) Terraform Cloud run status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WorkspaceStatusVariables {
+    /// Category of the variable.
+    pub category: String,
+    /// ID of the variable.
+    pub id: String,
+    /// Name of the variable.
+    pub name: String,
+    /// ValueID is a hash of the variable on the CRD end.
+    #[serde(rename = "valueID")]
+    pub value_id: String,
+    /// VersionID is a hash of the variable on the TFC end.
+    #[serde(rename = "versionID")]
+    pub version_id: String,
 }
 

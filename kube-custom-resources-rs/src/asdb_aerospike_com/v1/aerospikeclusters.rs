@@ -5244,6 +5244,9 @@ pub struct AerospikeClusterStatus {
     /// AerospikeNetworkPolicy specifies how clients and tools access the Aerospike cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeNetworkPolicy")]
     pub aerospike_network_policy: Option<AerospikeClusterStatusAerospikeNetworkPolicy>,
+    /// EnableDynamicConfigUpdate enables dynamic config update flow of the operator. If enabled, operator will try to update the Aerospike config dynamically. In case of inconsistent state during dynamic config update, operator falls back to rolling restart.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDynamicConfigUpdate")]
+    pub enable_dynamic_config_update: Option<bool>,
     /// Aerospike server image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,

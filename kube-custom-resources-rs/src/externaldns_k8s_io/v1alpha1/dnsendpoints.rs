@@ -32,7 +32,7 @@ pub struct DNSEndpointEndpoints {
     /// TTL for the record
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordTTL")]
     pub record_ttl: Option<i64>,
-    /// RecordType type of record, e.g. CNAME, A, SRV, TXT etc
+    /// RecordType type of record, e.g. CNAME, A, AAAA, SRV, TXT etc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordType")]
     pub record_type: Option<String>,
     /// Identifier to distinguish multiple records with the same name and type (e.g. Route53 records with routing policies other than 'simple')

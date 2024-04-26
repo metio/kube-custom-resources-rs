@@ -43,7 +43,7 @@ pub struct DeviceProperties {
     /// The desired property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub desired: Option<DevicePropertiesDesired>,
-    /// Required: The device property name to be accessed. It must be unique.
+    /// Required: The device property name to be accessed. It must be unique. Note: If you need to use the built-in stream data processing function, you need to define Name as saveFrame or saveVideo
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// PushMethod represents the protocol used to push data, please ensure that the mapper can access the destination address.
@@ -92,6 +92,8 @@ pub struct DevicePropertiesPushMethodDbMethod {
     /// method configuration for database
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub influxdb2: Option<DevicePropertiesPushMethodDbMethodInfluxdb2>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mysql: Option<DevicePropertiesPushMethodDbMethodMysql>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redis: Option<DevicePropertiesPushMethodDbMethodRedis>,
 }
@@ -151,6 +153,25 @@ pub struct DevicePropertiesPushMethodDbMethodInfluxdb2Influxdb2DataConfig {
     /// the tag of device data
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DevicePropertiesPushMethodDbMethodMysql {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlClientConfig")]
+    pub mysql_client_config: Option<DevicePropertiesPushMethodDbMethodMysqlMysqlClientConfig>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DevicePropertiesPushMethodDbMethodMysqlMysqlClientConfig {
+    /// mysql address,like localhost:3306
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub addr: Option<String>,
+    /// database name
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub database: Option<String>,
+    /// user name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userName")]
+    pub user_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

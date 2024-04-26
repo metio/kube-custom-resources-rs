@@ -113,6 +113,7 @@ spec:
                   enum:
                     - "test"
                     - "testsuite"
+                    - "testworkflow"
                   type: "string"
                 probeSpec:
                   description: "What resource probes should be matched"

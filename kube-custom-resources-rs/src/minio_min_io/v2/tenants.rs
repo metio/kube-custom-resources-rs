@@ -56,6 +56,8 @@ pub struct TenantSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kes: Option<TenantKes>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lifecycle: Option<TenantLifecycle>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub liveness: Option<TenantLiveness>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<TenantLogging>,
@@ -2116,6 +2118,98 @@ pub struct TenantKesTopologySpreadConstraintsLabelSelectorMatchExpressions {
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecycle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
+    pub post_start: Option<TenantLifecyclePostStart>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
+    pub pre_stop: Option<TenantLifecyclePreStop>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePostStart {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<TenantLifecyclePostStartExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<TenantLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<TenantLifecyclePostStartTcpSocket>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePostStartExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePostStartHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<TenantLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePostStartHttpGetHttpHeaders {
+    pub name: String,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePostStartTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePreStop {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<TenantLifecyclePreStopExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<TenantLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<TenantLifecyclePreStopTcpSocket>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePreStopExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePreStopHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<TenantLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePreStopHttpGetHttpHeaders {
+    pub name: String,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePreStopTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

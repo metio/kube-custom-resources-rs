@@ -19,7 +19,7 @@ pub struct GrantSpec {
     /// GrantOption to use in the Grant.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantOption")]
     pub grant_option: Option<bool>,
-    /// Host to use in the Grant.
+    /// Host to use in the Grant. It can be localhost, an IP or '%'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// MariaDBRef is a reference to a MariaDB object.

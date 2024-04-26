@@ -51,9 +51,10 @@ spec:
               description: "ManagedZoneSpec defines the desired state of ManagedZone"
               properties:
                 description:
-                  description: "Description for this ManagedZone"
+                  description: "description for this ManagedZone"
                   type: "string"
                 dnsProviderSecretRef:
+                  description: "dnsProviderSecretRef reference to a secret containing credentials to access a dns provider."
                   properties:
                     name:
                       type: "string"
@@ -61,14 +62,14 @@ spec:
                     - "name"
                   type: "object"
                 domainName:
-                  description: "Domain name of this ManagedZone"
+                  description: "domainName of this ManagedZone"
                   pattern: "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$"
                   type: "string"
                 id:
-                  description: "ID is the provider assigned id of this  zone (i.e. route53.HostedZone.ID)."
+                  description: "id is the provider assigned id of this  zone (i.e. route53.HostedZone.ID)."
                   type: "string"
                 parentManagedZone:
-                  description: "Reference to another managed zone that this managed zone belongs to."
+                  description: "parentManagedZone reference to another managed zone that this managed zone belongs to."
                   properties:
                     name:
                       description: "`name` is the name of the managed zone. Required"

@@ -12,7 +12,7 @@ spec:
       clientConfig:
         service:
           name: "operator-webhook"
-          namespace: "default"
+          namespace: "knative-operator"
           path: "/resource-conversion"
       conversionReviewVersions:
         - "v1beta1"

@@ -74,6 +74,8 @@ spec:
                                 type: "string"
                               portNumber:
                                 description: "The service port for which this cluster was generated."
+                                maximum: 4294967295.0
+                                minimum: 0.0
                                 type: "integer"
                               service:
                                 description: "The fully qualified service name for this cluster."
@@ -101,6 +103,8 @@ spec:
                                     type: "string"
                                   destinationPort:
                                     description: "The destination_port value used by a filter chain's match condition."
+                                    maximum: 4294967295.0
+                                    minimum: 0.0
                                     type: "integer"
                                   filter:
                                     description: "The name of a specific filter to apply the patch to."
@@ -136,6 +140,8 @@ spec:
                                 type: "string"
                               portNumber:
                                 description: "The service port/gateway port to which traffic is being sent/received."
+                                maximum: 4294967295.0
+                                minimum: 0.0
                                 type: "integer"
                             type: "object"
                           proxy:
@@ -164,6 +170,8 @@ spec:
                                 type: "string"
                               portNumber:
                                 description: "The service port number or gateway server port number for which this route configuration was generated."
+                                maximum: 4294967295.0
+                                minimum: 0.0
                                 type: "integer"
                               vhost:
                                 description: "Match a specific virtual host in a route configuration and apply the patch to the virtual host."

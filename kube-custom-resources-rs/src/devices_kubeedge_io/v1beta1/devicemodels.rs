@@ -32,10 +32,10 @@ pub struct DeviceModelProperties {
     pub maximum: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<String>,
-    /// Required: The device property name.
+    /// Required: The device property name. Note: If you need to use the built-in stream data processing function, you need to define Name as saveFrame or saveVideo
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Required: Type of device property, ENUM: INT,FLOAT,DOUBLE,STRING,BOOLEAN,BYTES
+    /// Required: Type of device property, ENUM: INT,FLOAT,DOUBLE,STRING,BOOLEAN,BYTES,STREAM
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<DeviceModelPropertiesType>,
     /// The unit of the property
@@ -65,5 +65,7 @@ pub enum DeviceModelPropertiesType {
     Boolean,
     #[serde(rename = "BYTES")]
     Bytes,
+    #[serde(rename = "STREAM")]
+    Stream,
 }
 

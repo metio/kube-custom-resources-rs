@@ -55,11 +55,15 @@ spec:
                             type: "string"
                           number:
                             description: "A valid non-negative integer port number."
+                            maximum: 4294967295.0
+                            minimum: 0.0
                             type: "integer"
                           protocol:
                             description: "The protocol exposed on the port."
                             type: "string"
                           targetPort:
+                            maximum: 4294967295.0
+                            minimum: 0.0
                             type: "integer"
                         type: "object"
                     required:
@@ -130,6 +134,8 @@ spec:
                               type: "string"
                             probes:
                               description: "Maximum number of keepalive probes to send without response before deciding the connection is dead."
+                              maximum: 4294967295.0
+                              minimum: 0.0
                               type: "integer"
                             time:
                               description: "The time duration a connection needs to be idle before keep-alive probes start being sent."
@@ -215,6 +221,8 @@ spec:
                                     type: "string"
                                   probes:
                                     description: "Maximum number of keepalive probes to send without response before deciding the connection is dead."
+                                    maximum: 4294967295.0
+                                    minimum: 0.0
                                     type: "integer"
                                   time:
                                     description: "The time duration a connection needs to be idle before keep-alive probes start being sent."
@@ -233,11 +241,15 @@ spec:
                             type: "string"
                           number:
                             description: "A valid non-negative integer port number."
+                            maximum: 4294967295.0
+                            minimum: 0.0
                             type: "integer"
                           protocol:
                             description: "The protocol exposed on the port."
                             type: "string"
                           targetPort:
+                            maximum: 4294967295.0
+                            minimum: 0.0
                             type: "integer"
                         type: "object"
                       tls:
@@ -326,6 +338,8 @@ spec:
                           description: "Specifies the port on the host that is being addressed."
                           properties:
                             number:
+                              maximum: 4294967295.0
+                              minimum: 0.0
                               type: "integer"
                           type: "object"
                         subset:

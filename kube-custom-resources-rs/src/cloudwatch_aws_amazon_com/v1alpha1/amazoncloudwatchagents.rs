@@ -134,6 +134,9 @@ pub struct AmazonCloudWatchAgentSpec {
     /// Volumes represents which volumes to use in the underlying collector deployment(s).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<AmazonCloudWatchAgentVolumes>>,
+    /// WorkingDir represents Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image. Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
+    pub working_dir: Option<String>,
 }
 
 /// A single application container that you want to run within a pod.

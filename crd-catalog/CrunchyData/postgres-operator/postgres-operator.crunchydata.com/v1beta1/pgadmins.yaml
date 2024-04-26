@@ -855,6 +855,9 @@ spec:
                       - "postgresClusterSelector"
                     type: "object"
                   type: "array"
+                serviceName:
+                  description: "ServiceName will be used as the name of a ClusterIP service pointing to the pgAdmin pod and port. If the service already exists, PGO will update the service. For more information about services reference the Kubernetes and CrunchyData documentation. https://kubernetes.io/docs/concepts/services-networking/service/"
+                  type: "string"
                 tolerations:
                   description: "Tolerations of the PGAdmin pod. More info: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration"
                   items:
@@ -882,6 +885,21 @@ spec:
                   description: "pgAdmin users that are managed via the PGAdmin spec. Users can still be added via the pgAdmin GUI, but those users will not show up here."
                   items:
                     properties:
+                      passwordRef:
+                        description: "A reference to the secret that holds the user's password."
+                        properties:
+                          key:
+                            description: "The key of the secret to select from.  Must be a valid secret key."
+                            type: "string"
+                          name:
+                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the Secret or its key must be defined"
+                            type: "boolean"
+                        required:
+                          - "key"
+                        type: "object"
                       role:
                         description: "Role determines whether the user has admin privileges or not. Defaults to User. Valid options are Administrator and User."
                         enum:
@@ -892,6 +910,7 @@ spec:
                         description: "The username for User in pgAdmin. Must be unique in the pgAdmin's users list."
                         type: "string"
                     required:
+                      - "passwordRef"
                       - "username"
                     type: "object"
                   type: "array"

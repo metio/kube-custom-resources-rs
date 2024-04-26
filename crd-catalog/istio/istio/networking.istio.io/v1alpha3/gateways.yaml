@@ -60,11 +60,15 @@ spec:
                             type: "string"
                           number:
                             description: "A valid non-negative integer port number."
+                            maximum: 4294967295.0
+                            minimum: 0.0
                             type: "integer"
                           protocol:
                             description: "The protocol exposed on the port."
                             type: "string"
                           targetPort:
+                            maximum: 4294967295.0
+                            minimum: 0.0
                             type: "integer"
                         required:
                           - "number"

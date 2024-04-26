@@ -150,6 +150,9 @@ pub struct InstanaAgentAgent {
     /// ListenAddress is the IP addresses the Agent HTTP server will listen on. Normally this will just be localhost (`127.0.0.1`), the pod public IP and any container runtime bridge interfaces. Set `listenAddress: *` for making the Agent listen on all network interfaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenAddress")]
     pub listen_address: Option<String>,
+    /// The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
+    pub min_ready_seconds: Option<i64>,
     /// Set agent mode, possible options are APM, INFRASTRUCTURE or AWS. KUBERNETES should not be used but instead enabled via `kubernetes.deployment.enabled: true`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
@@ -742,6 +745,9 @@ pub struct InstanaAgentK8sSensor {
 pub struct InstanaAgentK8sSensorDeployment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
+    pub min_ready_seconds: Option<i64>,
     /// Override pod resource requirements for the Kubernetes Sensor pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<InstanaAgentK8sSensorDeploymentPod>,
@@ -797,6 +803,9 @@ pub struct InstanaAgentKubernetes {
 pub struct InstanaAgentKubernetesDeployment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
+    pub min_ready_seconds: Option<i64>,
     /// Override pod resource requirements for the Kubernetes Sensor pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<InstanaAgentKubernetesDeploymentPod>,

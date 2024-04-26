@@ -7,79 +7,89 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
-/// OpsDefinitionSpec defines the desired state of OpsDefinition
+/// OpsDefinitionSpec defines the desired state of OpsDefinition.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "apps.kubeblocks.io", version = "v1alpha1", kind = "OpsDefinition", plural = "opsdefinitions")]
 #[kube(status = "OpsDefinitionStatus")]
 #[kube(schema = "disabled")]
 pub struct OpsDefinitionSpec {
-    /// The actions to be executed in the opsRequest are performed sequentially.
+    /// Specifies a list of OpsAction where each customized action is executed sequentially.
     pub actions: Vec<OpsDefinitionActions>,
-    /// Specifies the types of componentDefinitions supported by the operation. It can reference certain variables of the componentDefinition. If set, any component not meeting these conditions will be intercepted.
+    /// Specifies a list of ComponentDefinition for Components associated with this OpsDefinition. It also includes connection credentials (address and account) for each Component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefinitionRefs")]
     pub component_definition_refs: Option<Vec<OpsDefinitionComponentDefinitionRefs>>,
-    /// Describes the schema used for validation, pruning, and defaulting.
+    /// Specifies the schema for validating the data types and value ranges of parameters in OpsActions before their usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parametersSchema")]
     pub parameters_schema: Option<OpsDefinitionParametersSchema>,
-    /// Specifies the preconditions that must be met to run the actions for the operation. if set, it will check the condition before the component run this operation.
+    /// Specifies the preconditions that must be met to run the actions for the operation. if set, it will check the condition before the Component runs this operation. Example: ```yaml preConditions: - rule: expression: '{{ eq .component.status.phase "Running" }}' message: Component is not in Running status. ```
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preConditions")]
     pub pre_conditions: Option<Vec<OpsDefinitionPreConditions>>,
-    /// Defines the targetPodTemplate to be referenced by the action.
+    /// Specifies a list of TargetPodTemplate, each designed to select a specific Pod and extract selected runtime info from its PodSpec. The extracted information, such as environment variables, volumes and tolerations, are then injected into Jobs or Pods that execute the OpsActions defined in `actions`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodTemplates")]
     pub target_pod_templates: Option<Vec<OpsDefinitionTargetPodTemplates>>,
 }
 
+/// OpsAction specifies a custom action defined in OpsDefinition for execution in a "Custom" OpsRequest. 
+///  OpsAction can be of three types: 
+///  - workload: Creates a Job or Pod to run custom scripts, ideal for isolated or long-running tasks. - exec: Executes commands directly within an existing container using the kubectl exec interface, suitable for immediate, short-lived operations. - resourceModifier: Modifies a K8s object using JSON patches, useful for updating the spec of some resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionActions {
-    /// Represents the exec action. This will call the kubectl exec interface.
+    /// Specifies the configuration for a 'exec' action. It creates a Pod and invokes a 'kubectl exec' to run command inside a specified container with the target Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<OpsDefinitionActionsExec>,
-    /// failurePolicy is the failure policy of the action. valid values Fail and Ignore. - Fail: if the action failed, the opsRequest will be failed. - Ignore: opsRequest will ignore the failure if the action is failed.
+    /// Specifies the failure policy of the OpsAction. Valid values are: 
+    ///  - "Fail": Marks the entire OpsRequest as failed if the action fails. - "Ignore": The OpsRequest continues processing despite the failure of the action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<String>,
-    /// action name.
+    /// Specifies the name of the OpsAction.
     pub name: String,
-    /// Refers to the parameter of the ParametersSchema. The parameter will be used in the action. If it is a 'workload' and 'exec' Action, they will be injected into the corresponding environment variable. If it is a 'resourceModifier' Action, parameter can be referenced using $() in completionProbe.matchExpressions and JsonPatches[*].Value.
+    /// Specifies the parameters for the OpsAction. Their usage varies based on the action type: 
+    ///  - For 'workload' or 'exec' actions, parameters are injected as environment variables. - For 'resourceModifier' actions, parameter can be referenced using $() in fields `resourceModifier.completionProbe.matchExpressions` and `resourceModifier.jsonPatches[*].value`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<String>>,
-    /// Specifies the resource modifier to update the custom resource.
+    /// Specifies the configuration for a 'resourceModifier' action. This action allows for modifications to existing K8s objects. 
+    ///  Note: This feature has not been implemented yet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceModifier")]
     pub resource_modifier: Option<OpsDefinitionActionsResourceModifier>,
-    /// Indicates the workload action and a corresponding workload will be created to execute this action.
+    /// Specifies the configuration for a 'workload' action. This action leads to the creation of a K8s workload, such as a Pod or Job, to execute specified tasks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workload: Option<OpsDefinitionActionsWorkload>,
 }
 
-/// Represents the exec action. This will call the kubectl exec interface.
+/// Specifies the configuration for a 'exec' action. It creates a Pod and invokes a 'kubectl exec' to run command inside a specified container with the target Pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionActionsExec {
-    /// Specifies the number of retries before marking the action as failed.
+    /// Specifies the number of retries allowed before marking the action as failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
-    /// The command to execute.
+    /// The command to be executed via 'kubectl exec --'.
     pub command: Vec<String>,
-    /// The name of the container in the target pod to execute the command. If not set, the first container is used.
+    /// The name of the container in the target pod where the command should be executed. This corresponds to the `-c {containerName}` option in `kubectl exec`. 
+    ///  If not set, the first container is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Refers to the spec.targetPodTemplates. Defines the target pods that need to execute exec actions.
+    /// Specifies a TargetPodTemplate defined in the `opsDefinition.spec.targetPodTemplates`.
     #[serde(rename = "targetPodTemplate")]
     pub target_pod_template: String,
 }
 
-/// Specifies the resource modifier to update the custom resource.
+/// Specifies the configuration for a 'resourceModifier' action. This action allows for modifications to existing K8s objects. 
+///  Note: This feature has not been implemented yet.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionActionsResourceModifier {
-    /// Provides a method to check if the action has been completed.
+    /// Specifies a method to determine if the action has been completed. 
+    ///  Note: This feature has not been implemented yet.
     #[serde(rename = "completionProbe")]
     pub completion_probe: OpsDefinitionActionsResourceModifierCompletionProbe,
-    /// Defines the set of patches that are used to perform updates on the resource object.
+    /// Specifies a list of patches for modifying the object.
     #[serde(rename = "jsonPatches")]
     pub json_patches: Vec<OpsDefinitionActionsResourceModifierJsonPatches>,
-    /// Refers to the Kubernetes objects that are required to be updated.
+    /// Specifies the K8s object that is to be updated.
     pub resource: OpsDefinitionActionsResourceModifierResource,
 }
 
-/// Provides a method to check if the action has been completed.
+/// Specifies a method to determine if the action has been completed. 
+///  Note: This feature has not been implemented yet.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionActionsResourceModifierCompletionProbe {
     /// Specifies the number of seconds to wait after the resource has been patched before initiating completion probes. The default value is 5 seconds, with a minimum value of 1.
@@ -88,10 +98,10 @@ pub struct OpsDefinitionActionsResourceModifierCompletionProbe {
     /// Executes expressions regularly, based on the value of PeriodSeconds, to determine if the action has been completed.
     #[serde(rename = "matchExpressions")]
     pub match_expressions: OpsDefinitionActionsResourceModifierCompletionProbeMatchExpressions,
-    /// Indicates the frequency (in seconds) at which the probe should be performed. The default value is 5 seconds, with a minimum value of 1.
+    /// Specifies the frequency (in seconds) at which the probe should be performed. The default value is 5 seconds, with a minimum value of 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Defines the number of seconds after which the probe times out. The default value is 60 seconds, with a minimum value of 1.
+    /// Specifies the number of seconds after which the probe times out. The default value is 60 seconds, with a minimum value of 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -99,20 +109,20 @@ pub struct OpsDefinitionActionsResourceModifierCompletionProbe {
 /// Executes expressions regularly, based on the value of PeriodSeconds, to determine if the action has been completed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionActionsResourceModifierCompletionProbeMatchExpressions {
-    /// Defines a failure condition for an action using a Go template expression. Should evaluate to either `true` or `false`. The current resource object is parsed into the Go template. for example, you can use '{{ eq .spec.replicas 1 }}'.
+    /// Specifies a failure condition for an action using a Go template expression. Should evaluate to either `true` or `false`. The current resource object is parsed into the Go template. for example, you can use '{{ eq .spec.replicas 1 }}'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failure: Option<String>,
-    /// Defines a success condition for an action using a Go template expression. Should evaluate to either `true` or `false`. The current resource object is parsed into the Go template. for example, using '{{ eq .spec.replicas 1 }}'
+    /// Specifies a success condition for an action using a Go template expression. Should evaluate to either `true` or `false`. The current resource object is parsed into the Go template. for example, using '{{ eq .spec.replicas 1 }}'
     pub success: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionActionsResourceModifierJsonPatches {
-    /// Represents the type of JSON patch operation. It supports the following values: 'add', 'remove', 'replace'.
+    /// Specifies the type of JSON patch operation. It supports the following values: 'add', 'remove', 'replace'.
     pub op: OpsDefinitionActionsResourceModifierJsonPatchesOp,
-    /// Represents the json patch path.
+    /// Specifies the json patch path.
     pub path: String,
-    /// Represents the value to be used in the JSON patch operation.
+    /// Specifies the value to be used in the JSON patch operation.
     pub value: String,
 }
 
@@ -126,10 +136,10 @@ pub enum OpsDefinitionActionsResourceModifierJsonPatchesOp {
     Replace,
 }
 
-/// Refers to the Kubernetes objects that are required to be updated.
+/// Specifies the K8s object that is to be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionActionsResourceModifierResource {
-    /// Defines the group for the resource being referenced. If not specified, the referenced Kind must belong to the core API group. For all third-party types, this is mandatory.
+    /// Specifies the group for the resource being referenced. If not specified, the referenced Kind must belong to the core API group. For all third-party types, this is mandatory.
     #[serde(rename = "apiGroup")]
     pub api_group: String,
     /// Specifies the type of resource being referenced.
@@ -138,24 +148,25 @@ pub struct OpsDefinitionActionsResourceModifierResource {
     pub name: String,
 }
 
-/// Indicates the workload action and a corresponding workload will be created to execute this action.
+/// Specifies the configuration for a 'workload' action. This action leads to the creation of a K8s workload, such as a Pod or Job, to execute specified tasks.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionActionsWorkload {
-    /// Specifies the number of retries before marking the action as failed.
+    /// Specifies the number of retries allowed before marking the action as failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
-    /// Represents the pod spec of the workload.
+    /// Specifies the PodSpec of the 'workload' action.
     #[serde(rename = "podSpec")]
     pub pod_spec: OpsDefinitionActionsWorkloadPodSpec,
-    /// Refers to the spec.targetPodTemplates. This field defines the target pod for the current action.
+    /// Specifies a TargetPodTemplate defined in the `opsDefinition.spec.targetPodTemplates`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodTemplate")]
     pub target_pod_template: Option<String>,
-    /// Defines the workload type of the action. Valid values include "Job" and "Pod". "Job" creates a job to execute the action. "Pod" creates a pod to execute the action. Note that unlike jobs, if a pod is manually deleted, it will not consume backoffLimit times.
+    /// Defines the workload type of the action. Valid values include "Job" and "Pod". 
+    ///  - "Job": Creates a Job to execute the action. - "Pod": Creates a Pod to execute the action. Note: unlike Jobs, manually deleting a Pod does not affect the `backoffLimit`.
     #[serde(rename = "type")]
     pub r#type: OpsDefinitionActionsWorkloadType,
 }
 
-/// Represents the pod spec of the workload.
+/// Specifies the PodSpec of the 'workload' action.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionActionsWorkloadPodSpec {
     /// Optional duration in seconds the pod may be active on the node relative to StartTime before the system will actively try to mark it failed and kill associated containers. Value must be a positive integer.
@@ -4276,7 +4287,7 @@ pub struct OpsDefinitionActionsWorkloadPodSpecVolumesVsphereVolume {
     pub volume_path: String,
 }
 
-/// Indicates the workload action and a corresponding workload will be created to execute this action.
+/// Specifies the configuration for a 'workload' action. This action leads to the creation of a K8s workload, such as a Pod or Job, to execute specified tasks.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsDefinitionActionsWorkloadType {
     Job,
@@ -4285,62 +4296,63 @@ pub enum OpsDefinitionActionsWorkloadType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionComponentDefinitionRefs {
-    /// Represents the account name of the component. If provided, the account username and password will be injected into the job environment variables `KB_ACCOUNT_USERNAME` and `KB_ACCOUNT_PASSWORD`.
+    /// Specifies the account name associated with the Component. If set, the corresponding account username and password are injected into containers' environment variables `KB_ACCOUNT_USERNAME` and `KB_ACCOUNT_PASSWORD`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountName")]
     pub account_name: Option<String>,
-    /// Refers to the name of the component definition. This is a required field with a maximum length of 32 characters.
+    /// Specifies the name of the ComponentDefinition.
     pub name: String,
-    /// References the name of the service. If provided, the service name and ports will be mapped to the job environment variables `KB_COMP_SVC_NAME` and `KB_COMP_SVC_PORT_$(portName)`. Note that the portName will replace the characters '-' with '_' and convert to uppercase.
+    /// Specifies the name of the Service. If set, the service name is injected as the `KB_COMP_SVC_NAME` environment variable in the containers, and each service port is mapped to a corresponding environment variable named `KB_COMP_SVC_PORT_$(portName)`. The `portName` is transformed by replacing '-' with '_' and converting to uppercase.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
-/// Describes the schema used for validation, pruning, and defaulting.
+/// Specifies the schema for validating the data types and value ranges of parameters in OpsActions before their usage.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionParametersSchema {
-    /// Defines the OpenAPI v3 schema used for the parameter schema. The supported property types include: - string - number - integer - array: Note that only items of string type are supported.
+    /// Defines the schema for parameters using the OpenAPI v3. The supported property types include: - string - number - integer - array: Note that only items of string type are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openAPIV3Schema")]
     pub open_apiv3_schema: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionPreConditions {
-    /// Defines the conditions under which the operation can be executed.
+    /// Specifies the conditions that must be met for the operation to execute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rule: Option<OpsDefinitionPreConditionsRule>,
 }
 
-/// Defines the conditions under which the operation can be executed.
+/// Specifies the conditions that must be met for the operation to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionPreConditionsRule {
-    /// Defines how the operation can be executed using a Go template expression. Should return either `true` or `false`. The built-in objects available for use in the expression include: - `params`: These are the input parameters. - `cluster`: This is the referenced cluster object. - `component`: This is the referenced component object.
+    /// Specifies a Go template expression that determines how the operation can be executed. The return value must be either `true` or `false`. Available built-in objects that can be referenced in the expression include: 
+    ///  - `params`: Input parameters. - `cluster`: The referenced Cluster object. - `component`: The referenced Component object.
     pub expression: String,
-    /// Reported if the rule is not matched.
+    /// Specifies the error or status message reported if the `expression` does not evaluate to `true`.
     pub message: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionTargetPodTemplates {
-    /// Represents the template name.
+    /// Specifies the name of the TargetPodTemplate.
     pub name: String,
-    /// Used to identify the target pod.
+    /// Used to select the target Pod from which environment variables and volumes are extracted from its PodSpec.
     #[serde(rename = "podSelector")]
     pub pod_selector: OpsDefinitionTargetPodTemplatesPodSelector,
-    /// Defines the environment variables that need to be referenced from the target component pod, and will be injected into the pod's containers.
+    /// Specifies a list of environment variables to be extracted from a selected Pod, and injected into the containers executing each OpsAction.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vars: Option<Vec<OpsDefinitionTargetPodTemplatesVars>>,
-    /// Specifies the mount points for the volumes defined in the `Volumes` section for the action pod.
+    /// Specifies a list of volumes, along with their respective mount points, that are to be extracted from a selected Pod, and mounted onto the containers executing each OpsAction. This allows the containers to access shared or persistent data necessary for the operation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<OpsDefinitionTargetPodTemplatesVolumeMounts>>,
 }
 
-/// Used to identify the target pod.
+/// Used to select the target Pod from which environment variables and volumes are extracted from its PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionTargetPodTemplatesPodSelector {
-    /// Indicates the desired availability status of the pods to be selected. valid values: - 'Available': selects only available pods and terminates the action if none are found. - 'PreferredAvailable': prioritizes the selection of available pods。 - 'None': there are no requirements for the availability of pods.
+    /// Specifies the pod selection criteria based on their availability: - 'Available': Only selects available pods, and terminates the action if none are found. - 'PreferredAvailable': Prioritizes available pods but considers others if none available. - 'None': No availability requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub availability: Option<OpsDefinitionTargetPodTemplatesPodSelectorAvailability>,
-    /// Specifies the role of the target pod.
+    /// Specifies the role of the target Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
     /// Defines the policy for selecting the target pod when multiple pods match the podSelector. It can be either 'Any' (select any one pod that matches the podSelector) or 'All' (select all pods that match the podSelector).
@@ -4348,7 +4360,7 @@ pub struct OpsDefinitionTargetPodTemplatesPodSelector {
     pub selection_policy: Option<OpsDefinitionTargetPodTemplatesPodSelectorSelectionPolicy>,
 }
 
-/// Used to identify the target pod.
+/// Used to select the target Pod from which environment variables and volumes are extracted from its PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsDefinitionTargetPodTemplatesPodSelectorAvailability {
     Available,
@@ -4356,7 +4368,7 @@ pub enum OpsDefinitionTargetPodTemplatesPodSelectorAvailability {
     None,
 }
 
-/// Used to identify the target pod.
+/// Used to select the target Pod from which environment variables and volumes are extracted from its PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsDefinitionTargetPodTemplatesPodSelectorSelectionPolicy {
     All,
@@ -4365,20 +4377,20 @@ pub enum OpsDefinitionTargetPodTemplatesPodSelectorSelectionPolicy {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionTargetPodTemplatesVars {
-    /// Specifies the name of the variable. This must be a C_IDENTIFIER.
+    /// Specifies the name of the environment variable to be injected into Pods executing OpsActions. It must conform to the C_IDENTIFIER format, which includes only alphanumeric characters and underscores, and cannot begin with a digit.
     pub name: String,
-    /// Defines the source for the variable's value.
+    /// Specifies the source of the environment variable's value.
     #[serde(rename = "valueFrom")]
     pub value_from: OpsDefinitionTargetPodTemplatesVarsValueFrom,
 }
 
-/// Defines the source for the variable's value.
+/// Specifies the source of the environment variable's value.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionTargetPodTemplatesVarsValueFrom {
     /// Specifies a reference to a specific environment variable within a container. Used to specify the source of the variable, which can be either "env" or "envFrom".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envRef")]
     pub env_ref: Option<OpsDefinitionTargetPodTemplatesVarsValueFromEnvRef>,
-    /// Represents the JSONPath of the target pod. This is used to specify the exact location of the data within the JSON structure of the pod.
+    /// Represents the JSONPath expression pointing to the specific data within the JSON structure of the target Pod. It is used to extract precise data locations for operations on the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
 }
@@ -4386,10 +4398,10 @@ pub struct OpsDefinitionTargetPodTemplatesVarsValueFrom {
 /// Specifies a reference to a specific environment variable within a container. Used to specify the source of the variable, which can be either "env" or "envFrom".
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsDefinitionTargetPodTemplatesVarsValueFromEnvRef {
-    /// Specifies the name of the container as defined in the componentDefinition or as injected by the kubeBlocks controller. If not specified, the first container will be used by default.
+    /// Specifies the container name in the target Pod. If not specified, the first container will be used by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Defines the name of the environment variable.
+    /// Defines the name of the environment variable. This name can originate from an 'env' entry or be a data key from an 'envFrom' source.
     #[serde(rename = "envName")]
     pub env_name: String,
 }
@@ -4422,10 +4434,10 @@ pub struct OpsDefinitionStatus {
     /// Provides additional information about the current phase.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Refers to the most recent generation observed for this OpsDefinition.
+    /// Represents the most recent generation observed of this OpsDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Represents the current state of the OpsDefinition. Valid values are ``, `Available`, `Unavailable`. When the state is `Available`, the OpsDefinition is ready and can be used for related objects.
+    /// Represents the current state of the OpsDefinition. Valid values are "", "Available", "Unavailable". When it equals to "Available", the OpsDefinition is ready and can be used in a "Custom" OpsRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<OpsDefinitionStatusPhase>,
 }

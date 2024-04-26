@@ -14,18 +14,19 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "DNSRecordStatus")]
 #[kube(schema = "disabled")]
 pub struct DNSRecordSpec {
+    /// endpoints is a list of endpoints that will be published into the dns provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<DNSRecordEndpoints>>,
     /// HealthCheckSpec configures health checks in the DNS provider. By default this health check will be applied to each unique DNS A Record for the listeners assigned to the target gateway
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<DNSRecordHealthCheck>,
-    /// ManagedZoneReference holds a reference to a ManagedZone
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedZone")]
-    pub managed_zone: Option<DNSRecordManagedZone>,
-    /// OwnerID is a unique string used to identify all endpoints created by this kuadrant
+    /// managedZone is a reference to a ManagedZone instance to which this record will publish its endpoints.
+    #[serde(rename = "managedZone")]
+    pub managed_zone: DNSRecordManagedZone,
+    /// ownerID is a unique string used to identify the owner of this record.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
-    /// rootHost is the single root for all endpoints in a DNSRecord. If rootHost is set, it is expected all defined endpoints are children 	of or equal to this rootHost
+    /// rootHost is the single root for all endpoints in a DNSRecord. If rootHost is set, it is expected all defined endpoints are children of or equal to this rootHost
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootHost")]
     pub root_host: Option<String>,
 }
@@ -78,7 +79,7 @@ pub struct DNSRecordHealthCheck {
     pub protocol: Option<String>,
 }
 
-/// ManagedZoneReference holds a reference to a ManagedZone
+/// managedZone is a reference to a ManagedZone instance to which this record will publish its endpoints.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSRecordManagedZone {
     /// `name` is the name of the managed zone. Required
@@ -161,6 +162,8 @@ pub struct DNSRecordStatusHealthCheck {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSRecordStatusHealthCheckProbes {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     pub host: String,
     pub id: String,
     #[serde(rename = "ipAddress")]

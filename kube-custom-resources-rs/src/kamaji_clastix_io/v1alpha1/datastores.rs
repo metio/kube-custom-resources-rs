@@ -90,6 +90,8 @@ pub enum DataStoreDriver {
     MySql,
     #[serde(rename = "PostgreSQL")]
     PostgreSql,
+    #[serde(rename = "NATS")]
+    Nats,
 }
 
 /// Defines the TLS/SSL configuration required to connect to the data store in a secure way.

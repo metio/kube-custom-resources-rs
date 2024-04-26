@@ -277,6 +277,7 @@ pub struct HelmReleaseChartRef {
 pub enum HelmReleaseChartRefKind {
     #[serde(rename = "OCIRepository")]
     OciRepository,
+    HelmChart,
 }
 
 /// NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any

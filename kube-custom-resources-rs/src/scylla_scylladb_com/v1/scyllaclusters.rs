@@ -151,6 +151,9 @@ pub struct ScyllaClusterAlternatorServingCertificateUserManagedOptions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterBackups {
+    /// cron specifies the task schedule as a cron expression. It supports an extended syntax including @monthly, @weekly, @daily, @midnight, @hourly, @every X[h|m|s].
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cron: Option<String>,
     /// dc is a list of datacenter glob patterns, e.g. 'dc1,!otherdc*' used to specify the DCs to include or exclude from backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dc: Option<Vec<String>>,
@@ -181,6 +184,9 @@ pub struct ScyllaClusterBackups {
     /// startDate specifies the task start date expressed in the RFC3339 format or now[+duration], e.g. now+3d2h10m, valid units are d, h, m, s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDate")]
     pub start_date: Option<String>,
+    /// timezone specifies the timezone of cron field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timezone: Option<String>,
     /// uploadParallel is a list of upload parallelism limits in the format [<dc>:]<limit>. The <dc>: part is optional and allows for specifying different limits in selected datacenters. If The <dc>: part is not set the limit is global (e.g. 'dc1:2,5') the runs are parallel in n nodes (2 in dc1) and n nodes in all the other datacenters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadParallel")]
     pub upload_parallel: Option<Vec<String>>,
@@ -1984,6 +1990,9 @@ pub struct ScyllaClusterReadinessGates {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterRepairs {
+    /// cron specifies the task schedule as a cron expression. It supports an extended syntax including @monthly, @weekly, @daily, @midnight, @hourly, @every X[h|m|s].
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cron: Option<String>,
     /// dc is a list of datacenter glob patterns, e.g. 'dc1', '!otherdc*' used to specify the DCs to include or exclude from backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dc: Option<Vec<String>>,
@@ -2017,6 +2026,9 @@ pub struct ScyllaClusterRepairs {
     /// startDate specifies the task start date expressed in the RFC3339 format or now[+duration], e.g. now+3d2h10m, valid units are d, h, m, s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDate")]
     pub start_date: Option<String>,
+    /// timezone specifies the timezone of cron field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timezone: Option<String>,
 }
 
 /// status is the current status of this scylla cluster.
@@ -2059,6 +2071,9 @@ pub struct ScyllaClusterStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterStatusBackups {
+    /// cron specifies the task schedule as a cron expression. It supports an extended syntax including @monthly, @weekly, @daily, @midnight, @hourly, @every X[h|m|s].
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cron: Option<String>,
     /// dc is a list of datacenter glob patterns, e.g. 'dc1,!otherdc*' used to specify the DCs to include or exclude from backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dc: Option<Vec<String>>,
@@ -2095,6 +2110,9 @@ pub struct ScyllaClusterStatusBackups {
     /// startDate specifies the task start date expressed in the RFC3339 format or now[+duration], e.g. now+3d2h10m, valid units are d, h, m, s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDate")]
     pub start_date: Option<String>,
+    /// timezone specifies the timezone of cron field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timezone: Option<String>,
     /// uploadParallel is a list of upload parallelism limits in the format [<dc>:]<limit>. The <dc>: part is optional and allows for specifying different limits in selected datacenters. If The <dc>: part is not set the limit is global (e.g. 'dc1:2,5') the runs are parallel in n nodes (2 in dc1) and n nodes in all the other datacenters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadParallel")]
     pub upload_parallel: Option<Vec<String>>,
@@ -2142,6 +2160,9 @@ pub struct ScyllaClusterStatusRacksConditions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterStatusRepairs {
+    /// cron specifies the task schedule as a cron expression. It supports an extended syntax including @monthly, @weekly, @daily, @midnight, @hourly, @every X[h|m|s].
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cron: Option<String>,
     /// dc is a list of datacenter glob patterns, e.g. 'dc1', '!otherdc*' used to specify the DCs to include or exclude from backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dc: Option<Vec<String>>,
@@ -2181,6 +2202,9 @@ pub struct ScyllaClusterStatusRepairs {
     /// startDate specifies the task start date expressed in the RFC3339 format or now[+duration], e.g. now+3d2h10m, valid units are d, h, m, s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDate")]
     pub start_date: Option<String>,
+    /// timezone specifies the timezone of cron field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timezone: Option<String>,
 }
 
 /// upgrade reflects state of ongoing upgrade procedure.

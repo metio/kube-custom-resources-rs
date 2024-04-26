@@ -69,6 +69,9 @@ pub struct ElasticsearchSpec {
 /// Auth contains user authentication and authorization security settings for Elasticsearch.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchAuth {
+    /// DisableElasticUser disables the default elastic user that is created by ECK.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableElasticUser")]
+    pub disable_elastic_user: Option<bool>,
     /// FileRealm to propagate to the Elasticsearch cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileRealm")]
     pub file_realm: Option<Vec<ElasticsearchAuthFileRealm>>,

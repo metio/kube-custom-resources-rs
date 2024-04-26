@@ -2,8 +2,8 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/2466"
-    gateway.networking.k8s.io/bundle-version: "v1.0.0"
+    api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/2997"
+    gateway.networking.k8s.io/bundle-version: "v1.1.0-rc1"
     gateway.networking.k8s.io/channel: "experimental"
   name: "httproutes.gateway.networking.k8s.io"
 spec:
@@ -1024,11 +1024,11 @@ spec:
                         description: "Timeouts defines the timeouts that can be configured for an HTTP request.\n\n\nSupport: Extended\n\n\n"
                         properties:
                           backendRequest:
-                            description: "BackendRequest specifies a timeout for an individual request from the gateway\nto a backend. This covers the time from when the request first starts being\nsent from the gateway to when the full response has been received from the backend.\n\n\nAn entire client HTTP transaction with a gateway, covered by the Request timeout,\nmay result in more than one call from the gateway to the destination backend,\nfor example, if automatic retries are supported.\n\n\nBecause the Request timeout encompasses the BackendRequest timeout, the value of\nBackendRequest must be <= the value of Request timeout.\n\n\nSupport: Extended"
+                            description: "BackendRequest specifies a timeout for an individual request from the gateway\nto a backend. This covers the time from when the request first starts being\nsent from the gateway to when the full response has been received from the backend.\n\n\nSetting a timeout to the zero duration (e.g. \"0s\") SHOULD disable the timeout\ncompletely. Implementations that cannot completely disable the timeout MUST\ninstead interpret the zero duration as the longest possible value to which\nthe timeout can be set.\n\n\nAn entire client HTTP transaction with a gateway, covered by the Request timeout,\nmay result in more than one call from the gateway to the destination backend,\nfor example, if automatic retries are supported.\n\n\nBecause the Request timeout encompasses the BackendRequest timeout, the value of\nBackendRequest must be <= the value of Request timeout.\n\n\nSupport: Extended"
                             pattern: "^([0-9]{1,5}(h|m|s|ms)){1,4}$"
                             type: "string"
                           request:
-                            description: "Request specifies the maximum duration for a gateway to respond to an HTTP request.\nIf the gateway has not been able to respond before this deadline is met, the gateway\nMUST return a timeout error.\n\n\nFor example, setting the `rules.timeouts.request` field to the value `10s` in an\n`HTTPRoute` will cause a timeout if a client request is taking longer than 10 seconds\nto complete.\n\n\nThis timeout is intended to cover as close to the whole request-response transaction\nas possible although an implementation MAY choose to start the timeout after the entire\nrequest stream has been received instead of immediately after the transaction is\ninitiated by the client.\n\n\nWhen this field is unspecified, request timeout behavior is implementation-specific.\n\n\nSupport: Extended"
+                            description: "Request specifies the maximum duration for a gateway to respond to an HTTP request.\nIf the gateway has not been able to respond before this deadline is met, the gateway\nMUST return a timeout error.\n\n\nFor example, setting the `rules.timeouts.request` field to the value `10s` in an\n`HTTPRoute` will cause a timeout if a client request is taking longer than 10 seconds\nto complete.\n\n\nSetting a timeout to the zero duration (e.g. \"0s\") SHOULD disable the timeout\ncompletely. Implementations that cannot completely disable the timeout MUST\ninstead interpret the zero duration as the longest possible value to which\nthe timeout can be set.\n\n\nThis timeout is intended to cover as close to the whole request-response transaction\nas possible although an implementation MAY choose to start the timeout after the entire\nrequest stream has been received instead of immediately after the transaction is\ninitiated by the client.\n\n\nWhen this field is unspecified, request timeout behavior is implementation-specific.\n\n\nSupport: Extended"
                             pattern: "^([0-9]{1,5}(h|m|s|ms)){1,4}$"
                             type: "string"
                         type: "object"

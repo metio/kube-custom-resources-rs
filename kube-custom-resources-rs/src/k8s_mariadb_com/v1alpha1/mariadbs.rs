@@ -6795,6 +6795,9 @@ pub struct MariaDBMaxScale {
     /// Enabled is a flag to enable a MaxScale instance to be used with the current MariaDB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// GuiKubernetesService define a template for a Kubernetes Service object to connect to MaxScale's GUI.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "guiKubernetesService")]
+    pub gui_kubernetes_service: Option<MariaDBMaxScaleGuiKubernetesService>,
     /// Image name to be used by the MaxScale instances. The supported format is `<image>:<tag>`.
     /// Only MaxScale official images are supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6802,7 +6805,7 @@ pub struct MariaDBMaxScale {
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBMaxScaleImagePullPolicy>,
-    /// Service defines templates to configure the Kubernetes Service object.
+    /// KubernetesService defines a template for a Kubernetes Service object to connect to MaxScale.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesService")]
     pub kubernetes_service: Option<MariaDBMaxScaleKubernetesService>,
     /// Metrics configures metrics and how to scrape them.
@@ -7305,6 +7308,52 @@ pub struct MariaDBMaxScaleConnectionSecretTemplateMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
+/// GuiKubernetesService define a template for a Kubernetes Service object to connect to MaxScale's GUI.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBMaxScaleGuiKubernetesService {
+    /// AllocateLoadBalancerNodePorts Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
+    pub allocate_load_balancer_node_ports: Option<bool>,
+    /// ExternalTrafficPolicy Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
+    pub external_traffic_policy: Option<String>,
+    /// LoadBalancerIP Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
+    /// LoadBalancerSourceRanges Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
+    pub load_balancer_source_ranges: Option<Vec<String>>,
+    /// Metadata to be added to the Service metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<MariaDBMaxScaleGuiKubernetesServiceMetadata>,
+    /// SessionAffinity Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
+    pub session_affinity: Option<String>,
+    /// Type is the Service type. One of `ClusterIP`, `NodePort` or `LoadBalancer`. If not defined, it defaults to `ClusterIP`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<MariaDBMaxScaleGuiKubernetesServiceType>,
+}
+
+/// Metadata to be added to the Service metadata.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBMaxScaleGuiKubernetesServiceMetadata {
+    /// Annotations to be added to children resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels to be added to children resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// GuiKubernetesService define a template for a Kubernetes Service object to connect to MaxScale's GUI.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MariaDBMaxScaleGuiKubernetesServiceType {
+    #[serde(rename = "ClusterIP")]
+    ClusterIp,
+    NodePort,
+    LoadBalancer,
+}
+
 /// MaxScale is the MaxScale specification that defines the MaxScale resource to be used with the current MariaDB.
 /// When enabling this field, MaxScaleRef is automatically set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -7314,7 +7363,7 @@ pub enum MariaDBMaxScaleImagePullPolicy {
     IfNotPresent,
 }
 
-/// Service defines templates to configure the Kubernetes Service object.
+/// KubernetesService defines a template for a Kubernetes Service object to connect to MaxScale.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBMaxScaleKubernetesService {
     /// AllocateLoadBalancerNodePorts Service field.
@@ -7351,7 +7400,7 @@ pub struct MariaDBMaxScaleKubernetesServiceMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Service defines templates to configure the Kubernetes Service object.
+/// KubernetesService defines a template for a Kubernetes Service object to connect to MaxScale.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MariaDBMaxScaleKubernetesServiceType {
     #[serde(rename = "ClusterIP")]
