@@ -377,8 +377,16 @@ pub struct ConfigConstraintReloadToolsImage {
 /// ToolConfig specifies the settings of an init container that prepare tools for dynamic reload.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadToolsImageToolConfigs {
+    /// Indicates whether the tool image should be used as the container image for a sidecar. This is useful for large tool images, such as those for C++ tools, which may depend on numerous libraries (e.g., *.so files). 
+    ///  If enabled, the tool image is deployed as a sidecar container image. 
+    ///  Examples: ```yaml reloadToolsImage: mountPoint: /kb_tools toolConfigs: - name: kb-tools asContainerImage: true image:  apecloud/oceanbase:4.2.0.0-100010032023083021 ``` 
+    ///  generated containers: ```yaml initContainers: - name: install-config-manager-tool image: apecloud/kubeblocks-tools:${version} command: - cp - /bin/config_render - /opt/tools volumemounts: - name: kb-tools mountpath: /opt/tools 
+    ///  containers: - name: config-manager image: apecloud/oceanbase:4.2.0.0-100010032023083021 imagePullPolicy: IfNotPresent command: - /opt/tools/reloader - --log-level - info - --operator-update-enable - --tcp - "9901" - --config - /opt/config-manager/config-manager.yaml volumemounts: - name: kb-tools mountpath: /opt/tools ```
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "asContainerImage")]
+    pub as_container_image: Option<bool>,
     /// Specifies the command to be executed by the init container.
-    pub command: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
     /// Specifies the tool container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,

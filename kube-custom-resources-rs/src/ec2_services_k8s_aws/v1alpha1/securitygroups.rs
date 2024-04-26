@@ -123,6 +123,9 @@ pub struct SecurityGroupEgressRulesUserIdGroupPairs {
     pub group_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupName")]
     pub group_name: Option<String>,
+    /// Reference field for GroupName
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupRef")]
+    pub group_ref: Option<SecurityGroupEgressRulesUserIdGroupPairsGroupRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peeringStatus")]
     pub peering_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userID")]
@@ -131,6 +134,43 @@ pub struct SecurityGroupEgressRulesUserIdGroupPairs {
     pub vpc_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcPeeringConnectionID")]
     pub vpc_peering_connection_id: Option<String>,
+    /// Reference field for VPCID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcRef")]
+    pub vpc_ref: Option<SecurityGroupEgressRulesUserIdGroupPairsVpcRef>,
+}
+
+/// Reference field for GroupName
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecurityGroupEgressRulesUserIdGroupPairsGroupRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<SecurityGroupEgressRulesUserIdGroupPairsGroupRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecurityGroupEgressRulesUserIdGroupPairsGroupRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Reference field for VPCID
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecurityGroupEgressRulesUserIdGroupPairsVpcRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<SecurityGroupEgressRulesUserIdGroupPairsVpcRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecurityGroupEgressRulesUserIdGroupPairsVpcRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Describes a set of permissions for a security group rule.
@@ -194,6 +234,9 @@ pub struct SecurityGroupIngressRulesUserIdGroupPairs {
     pub group_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupName")]
     pub group_name: Option<String>,
+    /// Reference field for GroupName
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupRef")]
+    pub group_ref: Option<SecurityGroupIngressRulesUserIdGroupPairsGroupRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peeringStatus")]
     pub peering_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userID")]
@@ -202,6 +245,43 @@ pub struct SecurityGroupIngressRulesUserIdGroupPairs {
     pub vpc_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcPeeringConnectionID")]
     pub vpc_peering_connection_id: Option<String>,
+    /// Reference field for VPCID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcRef")]
+    pub vpc_ref: Option<SecurityGroupIngressRulesUserIdGroupPairsVpcRef>,
+}
+
+/// Reference field for GroupName
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecurityGroupIngressRulesUserIdGroupPairsGroupRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<SecurityGroupIngressRulesUserIdGroupPairsGroupRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecurityGroupIngressRulesUserIdGroupPairsGroupRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Reference field for VPCID
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecurityGroupIngressRulesUserIdGroupPairsVpcRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<SecurityGroupIngressRulesUserIdGroupPairsVpcRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecurityGroupIngressRulesUserIdGroupPairsVpcRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Describes a tag.

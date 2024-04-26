@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
 /// EC2NodeClassSpec is the top level specification for the AWS Karpenter Provider.
 /// This will contain configuration necessary to launch instances in AWS.
@@ -197,7 +196,7 @@ pub struct EC2NodeClassBlockDeviceMappingsEbs {
     /// 
     ///    * standard: 1-1,024
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSize")]
-    pub volume_size: Option<IntOrString>,
+    pub volume_size: Option<String>,
     /// VolumeType of the block device.
     /// For more information, see Amazon EBS volume types (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html)
     /// in the Amazon Elastic Compute Cloud User Guide.

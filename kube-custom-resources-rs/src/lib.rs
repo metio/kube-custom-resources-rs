@@ -1403,6 +1403,7 @@ apiVersion `image.toolkit.fluxcd.io/v1beta1`:
 - `ImageRepository`
 
 apiVersion `image.toolkit.fluxcd.io/v1beta2`:
+- `ImageUpdateAutomation`
 - `ImagePolicy`
 - `ImageRepository`
 

@@ -6485,51 +6485,48 @@ pub struct InstanceSetVolumeClaimTemplatesStatus {
 /// Represents the current information about the state machine. This data may be out of date.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstanceSetStatus {
-    /// Total number of available pods (ready for at least minReadySeconds) targeted by this statefulset.
+    /// Total number of available instances (ready for at least minReadySeconds) targeted by this InstanceSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
-    /// collisionCount is the count of hash collisions for the StatefulSet. The StatefulSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
-    pub collision_count: Option<i32>,
-    /// Represents the latest available observations of a statefulset's current state.
+    /// Represents the latest available observations of an instanceset's current state. Known .status.conditions.type are: "InstanceFailure", "InstanceReady"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// When not empty, indicates the version of the InstanceSet used to generate the underlying workload.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentGeneration")]
-    pub current_generation: Option<i64>,
-    /// currentReplicas is the number of Pods created by the StatefulSet controller from the StatefulSet version indicated by currentRevision.
+    /// currentReplicas is the number of instances created by the InstanceSet controller from the InstanceSet version indicated by CurrentRevisions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentReplicas")]
     pub current_replicas: Option<i32>,
-    /// currentRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [0,currentReplicas).
+    /// currentRevision, if not empty, indicates the version of the InstanceSet used to generate instances in the sequence [0,currentReplicas).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentRevision")]
     pub current_revision: Option<String>,
     /// currentRevisions, if not empty, indicates the old version of the InstanceSet used to generate the underlying workload. key is the pod name, value is the revision.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentRevisions")]
     pub current_revisions: Option<BTreeMap<String, String>>,
-    /// Defines the initial number of pods (members) when the cluster is first initialized. This value is set to spec.Replicas at the time of object creation and remains constant thereafter.
-    #[serde(rename = "initReplicas")]
-    pub init_replicas: i32,
+    /// Defines the initial number of instances when the cluster is first initialized. This value is set to spec.Replicas at the time of object creation and remains constant thereafter. Used only when spec.roles set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initReplicas")]
+    pub init_replicas: Option<i32>,
     /// Provides the status of each member in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "membersStatus")]
     pub members_status: Option<Vec<InstanceSetStatusMembersStatus>>,
-    /// observedGeneration is the most recent generation observed for this StatefulSet. It corresponds to the StatefulSet's generation, which is updated on mutation by the API Server.
+    /// observedGeneration is the most recent generation observed for this InstanceSet. It corresponds to the InstanceSet's generation, which is updated on mutation by the API Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Represents the number of pods (members) that have already reached the MembersStatus during the cluster initialization stage. This value remains constant once it equals InitReplicas.
+    /// Represents the number of instances that have already reached the MembersStatus during the cluster initialization stage. This value remains constant once it equals InitReplicas. Used only when spec.roles set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyInitReplicas")]
     pub ready_init_replicas: Option<i32>,
-    /// readyReplicas is the number of pods created for this StatefulSet with a Ready Condition.
+    /// readyReplicas is the number of instances created for this InstanceSet with a Ready Condition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
-    /// replicas is the number of Pods created by the StatefulSet controller.
+    /// Indicates whether it is required for the InstanceSet to have at least one primary instance ready.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyWithoutPrimary")]
+    pub ready_without_primary: Option<bool>,
+    /// replicas is the number of instances created by the InstanceSet controller.
     pub replicas: i32,
-    /// updateRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [replicas-updatedReplicas,replicas)
+    /// updateRevision, if not empty, indicates the version of the InstanceSet used to generate instances in the sequence [replicas-updatedReplicas,replicas)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateRevision")]
     pub update_revision: Option<String>,
     /// updateRevisions, if not empty, indicates the new version of the InstanceSet used to generate the underlying workload. key is the pod name, value is the revision.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateRevisions")]
     pub update_revisions: Option<BTreeMap<String, String>>,
-    /// updatedReplicas is the number of Pods created by the StatefulSet controller from the StatefulSet version indicated by updateRevision.
+    /// updatedReplicas is the number of instances created by the InstanceSet controller from the InstanceSet version indicated by UpdateRevisions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
 }
@@ -6539,12 +6536,6 @@ pub struct InstanceSetStatusMembersStatus {
     /// Represents the name of the pod.
     #[serde(rename = "podName")]
     pub pod_name: String,
-    /// Whether the corresponding Pod is in ready condition.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ready: Option<bool>,
-    /// Indicates whether it is required for the InstanceSet to have at least one primary instance ready.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyWithoutPrimary")]
-    pub ready_without_primary: Option<bool>,
     /// Defines the role of the replica in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<InstanceSetStatusMembersStatusRole>,

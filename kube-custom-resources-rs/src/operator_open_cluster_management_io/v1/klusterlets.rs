@@ -117,6 +117,11 @@ pub struct KlusterletNodePlacementTolerations {
 /// RegistrationConfiguration contains the configuration of registration
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KlusterletRegistrationConfiguration {
+    /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap. 
+    ///  When the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR is set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as "failed". 
+    ///  A failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds. But if the user updates the content of a failed bootstrapkubeconfig, the "failed" mark will be cleared.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapKubeConfigs")]
+    pub bootstrap_kube_configs: Option<KlusterletRegistrationConfigurationBootstrapKubeConfigs>,
     /// clientCertExpirationSeconds represents the seconds of a client certificate to expire. If it is not set or 0, the default duration seconds will be set by the hub cluster. If the value is larger than the max signing duration seconds set on the hub cluster, the max signing duration seconds will be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertExpirationSeconds")]
     pub client_cert_expiration_seconds: Option<i32>,
@@ -132,6 +137,39 @@ pub struct KlusterletRegistrationConfiguration {
     /// KubeAPIQPS indicates the maximum QPS while talking with apiserver of hub cluster from the spoke cluster. If it is set empty, use the default value: 50
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIQPS")]
     pub kube_apiqps: Option<i32>,
+}
+
+/// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap. 
+///  When the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR is set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as "failed". 
+///  A failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds. But if the user updates the content of a failed bootstrapkubeconfig, the "failed" mark will be cleared.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigs {
+    /// LocalSecretsConfig include a list of secrets that contains the kubeconfigs for ordered bootstrap kubeconifigs. The secrets must be in the same namespace where the agent controller runs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localSecretsConfig")]
+    pub local_secrets_config: Option<KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfig>,
+    /// Type specifies the type of priority bootstrap kubeconfigs. By default, it is set to None, representing no priority bootstrap kubeconfigs are set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<KlusterletRegistrationConfigurationBootstrapKubeConfigsType>,
+}
+
+/// LocalSecretsConfig include a list of secrets that contains the kubeconfigs for ordered bootstrap kubeconifigs. The secrets must be in the same namespace where the agent controller runs.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfig {
+    /// HubConnectionTimeoutSeconds is used to set the timeout of connecting to the hub cluster. When agent loses the connection to the hub over the timeout seconds, the agent do a rebootstrap. By default is 10 mins.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubConnectionTimeoutSeconds")]
+    pub hub_connection_timeout_seconds: Option<i32>,
+    /// SecretNames is a list of secret names. The secrets are in the same namespace where the agent controller runs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNames")]
+    pub secret_names: Option<Vec<String>>,
+}
+
+/// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap. 
+///  When the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR is set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as "failed". 
+///  A failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds. But if the user updates the content of a failed bootstrapkubeconfig, the "failed" mark will be cleared.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KlusterletRegistrationConfigurationBootstrapKubeConfigsType {
+    None,
+    LocalSecrets,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

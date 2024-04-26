@@ -233,6 +233,7 @@ spec:
                     type: "object"
                   type: "array"
                 type:
+                  description: "The type of the certificate authority."
                   type: "string"
                 usageMode:
                   description: "Specifies whether the CA issues general-purpose certificates that typically\nrequire a revocation mechanism, or short-lived certificates that may optionally\nomit revocation because they expire quickly. Short-lived certificate validity\nis limited to seven days.\n\n\nThe default value is GENERAL_PURPOSE."

@@ -413,7 +413,7 @@ spec:
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         useAsDefault:
-                          description: "UseAsDefault applies changes from given service definition to the main object Service\nChaning from headless service to clusterIP or loadbalancer may break cross-component communication"
+                          description: "UseAsDefault applies changes from given service definition to the main object Service\nChanging from headless service to clusterIP or loadbalancer may break cross-component communication"
                           type: "boolean"
                       required:
                         - "spec"
@@ -1020,7 +1020,7 @@ spec:
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         useAsDefault:
-                          description: "UseAsDefault applies changes from given service definition to the main object Service\nChaning from headless service to clusterIP or loadbalancer may break cross-component communication"
+                          description: "UseAsDefault applies changes from given service definition to the main object Service\nChanging from headless service to clusterIP or loadbalancer may break cross-component communication"
                           type: "boolean"
                       required:
                         - "spec"
@@ -1830,7 +1830,7 @@ spec:
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         useAsDefault:
-                          description: "UseAsDefault applies changes from given service definition to the main object Service\nChaning from headless service to clusterIP or loadbalancer may break cross-component communication"
+                          description: "UseAsDefault applies changes from given service definition to the main object Service\nChanging from headless service to clusterIP or loadbalancer may break cross-component communication"
                           type: "boolean"
                       required:
                         - "spec"

@@ -42,6 +42,9 @@ pub struct MaxScaleSpec {
     /// EnvFrom represents the references (via ConfigMap and Secrets) to environment variables to be injected in the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<MaxScaleEnvFrom>>,
+    /// GuiKubernetesService defines a template for a Kubernetes Service object to connect to MaxScale's GUI.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "guiKubernetesService")]
+    pub gui_kubernetes_service: Option<MaxScaleGuiKubernetesService>,
     /// Image name to be used by the MaxScale instances. The supported format is `<image>:<tag>`.
     /// Only MaxScale official images are supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -58,7 +61,7 @@ pub struct MaxScaleSpec {
     /// InitContainers to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<MaxScaleInitContainers>>,
-    /// Service defines templates to configure the Kubernetes Service object.
+    /// KubernetesService defines a template for a Kubernetes Service object to connect to MaxScale.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesService")]
     pub kubernetes_service: Option<MaxScaleKubernetesService>,
     /// LivenessProbe to be used in the Container.
@@ -1450,6 +1453,52 @@ pub struct MaxScaleEnvFromSecretRef {
     pub optional: Option<bool>,
 }
 
+/// GuiKubernetesService defines a template for a Kubernetes Service object to connect to MaxScale's GUI.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MaxScaleGuiKubernetesService {
+    /// AllocateLoadBalancerNodePorts Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
+    pub allocate_load_balancer_node_ports: Option<bool>,
+    /// ExternalTrafficPolicy Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
+    pub external_traffic_policy: Option<String>,
+    /// LoadBalancerIP Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
+    /// LoadBalancerSourceRanges Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
+    pub load_balancer_source_ranges: Option<Vec<String>>,
+    /// Metadata to be added to the Service metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<MaxScaleGuiKubernetesServiceMetadata>,
+    /// SessionAffinity Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
+    pub session_affinity: Option<String>,
+    /// Type is the Service type. One of `ClusterIP`, `NodePort` or `LoadBalancer`. If not defined, it defaults to `ClusterIP`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<MaxScaleGuiKubernetesServiceType>,
+}
+
+/// Metadata to be added to the Service metadata.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MaxScaleGuiKubernetesServiceMetadata {
+    /// Annotations to be added to children resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels to be added to children resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// GuiKubernetesService defines a template for a Kubernetes Service object to connect to MaxScale's GUI.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MaxScaleGuiKubernetesServiceType {
+    #[serde(rename = "ClusterIP")]
+    ClusterIp,
+    NodePort,
+    LoadBalancer,
+}
+
 /// MaxScaleSpec defines the desired state of MaxScale.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MaxScaleImagePullPolicy {
@@ -2132,7 +2181,7 @@ pub struct MaxScaleInitContainersVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Service defines templates to configure the Kubernetes Service object.
+/// KubernetesService defines a template for a Kubernetes Service object to connect to MaxScale.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MaxScaleKubernetesService {
     /// AllocateLoadBalancerNodePorts Service field.
@@ -2169,7 +2218,7 @@ pub struct MaxScaleKubernetesServiceMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Service defines templates to configure the Kubernetes Service object.
+/// KubernetesService defines a template for a Kubernetes Service object to connect to MaxScale.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MaxScaleKubernetesServiceType {
     #[serde(rename = "ClusterIP")]

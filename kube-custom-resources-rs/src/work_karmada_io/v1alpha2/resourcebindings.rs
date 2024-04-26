@@ -43,6 +43,10 @@ pub struct ResourceBindingSpec {
     /// RequiredBy represents the list of Bindings that depend on the referencing resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredBy")]
     pub required_by: Option<Vec<ResourceBindingRequiredBy>>,
+    /// RescheduleTriggeredAt is a timestamp representing when the referenced resource is triggered rescheduling. When this field is updated, it means a rescheduling is manually triggered by user, and the expected behavior of this action is to do a complete recalculation without referring to last scheduling results. It works with the status.lastScheduledTime field, and only when this timestamp is later than timestamp in status.lastScheduledTime will the rescheduling actually execute, otherwise, ignored. 
+    ///  It is represented in RFC3339 form (like '2006-01-02T15:04:05Z') and is in UTC.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rescheduleTriggeredAt")]
+    pub reschedule_triggered_at: Option<String>,
     /// Resource represents the Kubernetes resource to be propagated.
     pub resource: ResourceBindingResource,
     /// SchedulerName represents which scheduler to proceed the scheduling. It inherits directly from the associated PropagationPolicy(or ClusterPropagationPolicy).
@@ -585,6 +589,9 @@ pub struct ResourceBindingStatus {
     /// Conditions contain the different condition statuses.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// LastScheduledTime representing the latest timestamp when scheduler successfully finished a scheduling. It is represented in RFC3339 form (like '2006-01-02T15:04:05Z') and is in UTC.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastScheduledTime")]
+    pub last_scheduled_time: Option<String>,
     /// SchedulerObservedGeneration is the generation(.metadata.generation) observed by the scheduler. If SchedulerObservedGeneration is less than the generation in metadata means the scheduler hasn't confirmed the scheduling result or hasn't done the schedule yet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerObservedGeneration")]
     pub scheduler_observed_generation: Option<i64>,

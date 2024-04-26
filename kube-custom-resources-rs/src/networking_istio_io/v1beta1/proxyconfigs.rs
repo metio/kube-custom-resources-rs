@@ -14,7 +14,7 @@ use std::collections::BTreeMap;
 pub struct ProxyConfigSpec {
     /// The number of worker threads to run.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub concurrency: Option<i64>,
+    pub concurrency: Option<i32>,
     /// Additional environment variables for the proxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "environmentVariables")]
     pub environment_variables: Option<BTreeMap<String, String>>,

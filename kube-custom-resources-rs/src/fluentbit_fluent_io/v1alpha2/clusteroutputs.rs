@@ -451,7 +451,7 @@ pub struct ClusterOutputCustomPlugin {
 pub struct ClusterOutputDatadog {
     /// Your Datadog API key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub apikey: Option<String>,
+    pub apikey: Option<ClusterOutputDatadogApikey>,
     /// Compress  the payload in GZIP format. Datadog supports and recommends setting this to gzip.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compress: Option<String>,
@@ -488,6 +488,35 @@ pub struct ClusterOutputDatadog {
     /// TLS controls whether to use end-to-end security communications security protocol. Datadog recommends setting this to on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<bool>,
+}
+
+/// Your Datadog API key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterOutputDatadogApikey {
+    /// ValueSource defines how to find a value's key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ClusterOutputDatadogApikeyValueFrom>,
+}
+
+/// ValueSource defines how to find a value's key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterOutputDatadogApikeyValueFrom {
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputDatadogApikeyValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterOutputDatadogApikeyValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Elasticsearch defines Elasticsearch Output configuration.

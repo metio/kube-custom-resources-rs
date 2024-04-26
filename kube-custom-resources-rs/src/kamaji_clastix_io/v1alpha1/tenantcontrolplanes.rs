@@ -207,6 +207,9 @@ pub struct TenantControlPlaneControlPlaneDeployment {
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// AdditionalMetadata defines which additional metadata, such as labels and annotations, must be attached to the created resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAdditionalMetadata")]
+    pub pod_additional_metadata: Option<TenantControlPlaneControlPlaneDeploymentPodAdditionalMetadata>,
     /// RegistrySettings allows to override the default images for the given Tenant Control Plane instance.
     /// It could be used to point to a different container registry rather than the public one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrySettings")]
@@ -224,6 +227,9 @@ pub struct TenantControlPlaneControlPlaneDeployment {
     /// More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
+    /// ServiceAccountName allows to specify the service account to be mounted to the pods of the Control plane deployment
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
     /// Strategy describes how to replace existing pods with new ones for the given Tenant Control Plane.
     /// Default value is set to Rolling Update, with a blue/green strategy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5158,6 +5164,15 @@ pub struct TenantControlPlaneControlPlaneDeploymentExtraArgs {
     pub kine: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduler: Option<Vec<String>>,
+}
+
+/// AdditionalMetadata defines which additional metadata, such as labels and annotations, must be attached to the created resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TenantControlPlaneControlPlaneDeploymentPodAdditionalMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// RegistrySettings allows to override the default images for the given Tenant Control Plane instance.

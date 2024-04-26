@@ -122,6 +122,8 @@ pub enum TestTriggerExecution {
     Test,
     #[serde(rename = "testsuite")]
     Testsuite,
+    #[serde(rename = "testworkflow")]
+    Testworkflow,
 }
 
 /// What resource probes should be matched

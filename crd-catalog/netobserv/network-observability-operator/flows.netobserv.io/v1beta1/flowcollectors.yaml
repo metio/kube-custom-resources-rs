@@ -183,7 +183,6 @@ spec:
                               description: "Metrics server endpoint configuration for Prometheus scraper"
                               properties:
                                 port:
-                                  default: 9102
                                   description: "The prometheus HTTP port"
                                   format: "int32"
                                   maximum: 65535.0
@@ -1698,7 +1697,6 @@ spec:
                           description: "Metrics server endpoint configuration for Prometheus scraper"
                           properties:
                             port:
-                              default: 9102
                               description: "The prometheus HTTP port"
                               format: "int32"
                               maximum: 65535.0

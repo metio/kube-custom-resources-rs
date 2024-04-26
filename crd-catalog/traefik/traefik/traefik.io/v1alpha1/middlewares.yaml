@@ -118,6 +118,9 @@ spec:
                         - type: "string"
                       description: "RecoveryDuration is the duration for which the circuit breaker will try to recover (as soon as it is in recovering state)."
                       x-kubernetes-int-or-string: true
+                    responseCode:
+                      description: "ResponseCode is the status code that the circuit breaker will return while it is in the open state."
+                      type: "integer"
                   type: "object"
                 compress:
                   description: "Compress holds the compress middleware configuration.\nThis middleware compresses responses before sending them to the client, using gzip compression.\nMore info: https://doc.traefik.io/traefik/v3.0/middlewares/http/compress/"
@@ -452,7 +455,7 @@ spec:
                       type: "object"
                   type: "object"
                 ipAllowList:
-                  description: "IPAllowList holds the IP allowlist middleware configuration.\nThis middleware accepts / refuses requests based on the client IP.\nMore info: https://doc.traefik.io/traefik/v3.0/middlewares/http/ipallowlist/"
+                  description: "IPAllowList holds the IP allowlist middleware configuration.\nThis middleware limits allowed requests based on the client IP.\nMore info: https://doc.traefik.io/traefik/v3.0/middlewares/http/ipallowlist/"
                   properties:
                     ipStrategy:
                       description: "IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP.\nMore info: https://doc.traefik.io/traefik/v3.0/middlewares/http/ipallowlist/#ipstrategy"
@@ -491,7 +494,7 @@ spec:
                           type: "array"
                       type: "object"
                     sourceRange:
-                      description: "SourceRange defines the set of allowed IPs (or ranges of allowed IPs by using CIDR notation)."
+                      description: "SourceRange defines the set of allowed IPs (or ranges of allowed IPs by using CIDR notation). Required."
                       items:
                         type: "string"
                       type: "array"

@@ -86,6 +86,7 @@ pub struct CertificateAuthoritySpec {
     /// permissions, see Controlling Access Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<CertificateAuthorityTags>>,
+    /// The type of the certificate authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
     /// Specifies whether the CA issues general-purpose certificates that typically

@@ -88,6 +88,16 @@ spec:
                               type: "string"
                             groupName:
                               type: "string"
+                            groupRef:
+                              description: "Reference field for GroupName"
+                              properties:
+                                from:
+                                  description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                                  properties:
+                                    name:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
                             peeringStatus:
                               type: "string"
                             userID:
@@ -96,6 +106,16 @@ spec:
                               type: "string"
                             vpcPeeringConnectionID:
                               type: "string"
+                            vpcRef:
+                              description: "Reference field for VPCID"
+                              properties:
+                                from:
+                                  description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                                  properties:
+                                    name:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
                           type: "object"
                         type: "array"
                     type: "object"
@@ -152,6 +172,16 @@ spec:
                               type: "string"
                             groupName:
                               type: "string"
+                            groupRef:
+                              description: "Reference field for GroupName"
+                              properties:
+                                from:
+                                  description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                                  properties:
+                                    name:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
                             peeringStatus:
                               type: "string"
                             userID:
@@ -160,6 +190,16 @@ spec:
                               type: "string"
                             vpcPeeringConnectionID:
                               type: "string"
+                            vpcRef:
+                              description: "Reference field for VPCID"
+                              properties:
+                                from:
+                                  description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                                  properties:
+                                    name:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
                           type: "object"
                         type: "array"
                     type: "object"

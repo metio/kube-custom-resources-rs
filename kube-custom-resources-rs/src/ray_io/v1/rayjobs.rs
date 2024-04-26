@@ -9075,5 +9075,7 @@ pub struct RayJobStatusRayClusterStatusHead {
     pub pod_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceIP")]
     pub service_ip: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
 }
 

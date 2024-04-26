@@ -266,6 +266,10 @@ pub struct VaultDynamicSecretStatus {
     /// StaticCredsMetaData contains the static creds response meta-data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticCredsMetaData")]
     pub static_creds_meta_data: Option<VaultDynamicSecretStatusStaticCredsMetaData>,
+    /// VaultClientMeta contains the status of the Vault client and is used during
+    /// resource reconciliation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultClientMeta")]
+    pub vault_client_meta: Option<VaultDynamicSecretStatusVaultClientMeta>,
 }
 
 /// SecretLease for the Vault secret.
@@ -301,5 +305,18 @@ pub struct VaultDynamicSecretStatusStaticCredsMetaData {
     pub rotation_schedule: Option<String>,
     /// TTL is the seconds remaining before the next rotation.
     pub ttl: i64,
+}
+
+/// VaultClientMeta contains the status of the Vault client and is used during
+/// resource reconciliation.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct VaultDynamicSecretStatusVaultClientMeta {
+    /// CacheKey is the unique key used to identify the client cache.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheKey")]
+    pub cache_key: Option<String>,
+    /// ID is the Vault ID of the authenticated client. The ID should never contain
+    /// any sensitive information.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
 }
 

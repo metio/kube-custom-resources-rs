@@ -63,7 +63,7 @@ spec:
                           - "value"
                         type: "object"
                       name:
-                        description: "Required: The device property name to be accessed. It must be unique."
+                        description: "Required: The device property name to be accessed. It must be unique. Note: If you need to use the built-in stream data processing function, you need to define Name as saveFrame or saveVideo"
                         type: "string"
                       pushMethod:
                         description: "PushMethod represents the protocol used to push data, please ensure that the mapper can access the destination address."
@@ -114,6 +114,21 @@ spec:
                                           type: "string"
                                         description: "the tag of device data"
                                         type: "object"
+                                    type: "object"
+                                type: "object"
+                              mysql:
+                                properties:
+                                  mysqlClientConfig:
+                                    properties:
+                                      addr:
+                                        description: "mysql address,like localhost:3306"
+                                        type: "string"
+                                      database:
+                                        description: "database name"
+                                        type: "string"
+                                      userName:
+                                        description: "user name"
+                                        type: "string"
                                     type: "object"
                                 type: "object"
                               redis:

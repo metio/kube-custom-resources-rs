@@ -207,7 +207,8 @@ pub struct ConfigurationStatusConfigurationStatus {
     pub message: Option<String>,
     /// Specifies the name of the configuration template. It is a required field and must be a string of maximum 63 characters. The name should only contain lowercase alphanumeric characters, hyphens, or periods. It should start and end with an alphanumeric character.
     pub name: String,
-    /// Indicates the current status of the configuration item. This field is optional.
+    /// Indicates the current status of the configuration item. 
+    ///  Possible values include "Creating", "Init", "Running", "Pending", "Merged", "MergeFailed", "FailedAndPause", "Upgrading", "Deleting", "FailedAndRetry", "Finished".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ConfigurationStatusConfigurationStatusPhase>,
     /// Provides detailed information about the execution of the configuration change. This field is optional.
