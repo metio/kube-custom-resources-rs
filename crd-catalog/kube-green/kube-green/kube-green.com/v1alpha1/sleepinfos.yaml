@@ -83,6 +83,9 @@ spec:
                 suspendDeployments:
                   description: "If SuspendDeployments is set to false, on sleep the deployment of the namespace will not be suspended. By default Deployment will be suspended."
                   type: "boolean"
+                suspendStatefulsets:
+                  description: "If SuspendStatefulSets is set to false, on sleep the statefulset of the namespace will not be suspended. By default StatefulSet will be suspended."
+                  type: "boolean"
                 timeZone:
                   description: "Time zone to set the schedule, in IANA time zone identifier.\nIt is not required, default to UTC.\nFor example, for the Italy time zone set Europe/Rome."
                   type: "string"

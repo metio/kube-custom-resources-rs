@@ -1192,7 +1192,7 @@ spec:
                           description: "Endpoint is the S3 API endpoint without scheme."
                           type: "string"
                         prefix:
-                          description: "Prefix allows backups to be placed under a specific prefix in the bucket. A trailing slash '/' is added if not provided."
+                          description: "Prefix indicates a folder/subfolder in the bucket. For example: mariadb/ or mariadb/backups. A trailing slash '/' is added if not provided."
                           type: "string"
                         region:
                           description: "Region is the S3 region name to use."
@@ -2258,7 +2258,7 @@ spec:
                           description: "Interval used to perform health checks."
                           type: "string"
                         retryInterval:
-                          description: "RetryInterval is the intervañ used to perform health check retries."
+                          description: "RetryInterval is the interval used to perform health check retries."
                           type: "string"
                       type: "object"
                     params:
@@ -3590,7 +3590,7 @@ spec:
                         - "image"
                       type: "object"
                     initJob:
-                      description: "InitJob defines metadata to the passed to the initialization Job."
+                      description: "InitJob defines additional properties for the Job used to perform the initialization."
                       properties:
                         affinity:
                           description: "Affinity to be used in the Pod."
@@ -4884,6 +4884,10 @@ spec:
                         adminPasswordSecretKeyRef:
                           description: "AdminPasswordSecretKeyRef is Secret key reference to the admin password to call the admin REST API. It is defaulted if not provided."
                           properties:
+                            generate:
+                              default: false
+                              description: "Generate indicates whether the Secret should be generated if the Secret referenced is not present."
+                              type: "boolean"
                             key:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
@@ -4907,6 +4911,10 @@ spec:
                         clientPasswordSecretKeyRef:
                           description: "ClientPasswordSecretKeyRef is Secret key reference to the password to connect to MaxScale. It is defaulted if not provided."
                           properties:
+                            generate:
+                              default: false
+                              description: "Generate indicates whether the Secret should be generated if the Secret referenced is not present."
+                              type: "boolean"
                             key:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
@@ -4932,6 +4940,10 @@ spec:
                         metricsPasswordSecretKeyRef:
                           description: "MetricsPasswordSecretKeyRef is Secret key reference to the metrics password to call the admib REST API. It is defaulted if metrics are enabled."
                           properties:
+                            generate:
+                              default: false
+                              description: "Generate indicates whether the Secret should be generated if the Secret referenced is not present."
+                              type: "boolean"
                             key:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
@@ -4955,6 +4967,10 @@ spec:
                         monitorPasswordSecretKeyRef:
                           description: "MonitorPasswordSecretKeyRef is Secret key reference to the password used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided."
                           properties:
+                            generate:
+                              default: false
+                              description: "Generate indicates whether the Secret should be generated if the Secret referenced is not present."
+                              type: "boolean"
                             key:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
@@ -4978,6 +4994,10 @@ spec:
                         serverPasswordSecretKeyRef:
                           description: "ServerPasswordSecretKeyRef is Secret key reference to the password used by MaxScale to connect to MariaDB server. It is defaulted if not provided."
                           properties:
+                            generate:
+                              default: false
+                              description: "Generate indicates whether the Secret should be generated if the Secret referenced is not present."
+                              type: "boolean"
                             key:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
@@ -5001,6 +5021,10 @@ spec:
                         syncPasswordSecretKeyRef:
                           description: "SyncPasswordSecretKeyRef is Secret key reference to the password used by MaxScale config to connect to MariaDB server. It is defaulted when HA is enabled."
                           properties:
+                            generate:
+                              default: false
+                              description: "Generate indicates whether the Secret should be generated if the Secret referenced is not present."
+                              type: "boolean"
                             key:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
@@ -5174,7 +5198,7 @@ spec:
                               description: "Interval used to perform health checks."
                               type: "string"
                             retryInterval:
-                              description: "RetryInterval is the intervañ used to perform health check retries."
+                              description: "RetryInterval is the interval used to perform health check retries."
                               type: "string"
                           type: "object"
                         params:
@@ -8630,7 +8654,7 @@ spec:
                       format: "int32"
                       type: "integer"
                     requeueInterval:
-                      description: "RequeueInterval is used to perform requeue reconcilizations."
+                      description: "RequeueInterval is used to perform requeue reconciliations."
                       type: "string"
                     services:
                       description: "Services define how the traffic is forwarded to the MariaDB servers."
@@ -8665,7 +8689,7 @@ spec:
                           params:
                             additionalProperties:
                               type: "string"
-                            description: "Params defines extra parameters to pass to the monitor.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1.\nRouter specific parameter are also suported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration."
+                            description: "Params defines extra parameters to pass to the service.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1.\nRouter specific parameter are also suported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration."
                             type: "object"
                           router:
                             description: "Router is the type of router to use."
@@ -11967,6 +11991,10 @@ spec:
                     passwordSecretKeyRef:
                       description: "PasswordSecretKeyRef is a reference to the password of the monitoring user used by the exporter."
                       properties:
+                        generate:
+                          default: false
+                          description: "Generate indicates whether the Secret should be generated if the Secret referenced is not present."
+                          type: "boolean"
                         key:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
@@ -12027,6 +12055,10 @@ spec:
                 passwordSecretKeyRef:
                   description: "PasswordSecretKeyRef is a reference to the password of the initial user provided via a Secret."
                   properties:
+                    generate:
+                      default: false
+                      description: "Generate indicates whether the Secret should be generated if the Secret referenced is not present."
+                      type: "boolean"
                     key:
                       description: "The key of the secret to select from.  Must be a valid secret key."
                       type: "string"
@@ -12173,7 +12205,7 @@ spec:
                           description: "Interval used to perform health checks."
                           type: "string"
                         retryInterval:
-                          description: "RetryInterval is the intervañ used to perform health check retries."
+                          description: "RetryInterval is the interval used to perform health check retries."
                           type: "string"
                       type: "object"
                     params:
@@ -12421,6 +12453,10 @@ spec:
                         replPasswordSecretKeyRef:
                           description: "ReplPasswordSecretKeyRef provides a reference to the Secret to use as password for the replication user."
                           properties:
+                            generate:
+                              default: false
+                              description: "Generate indicates whether the Secret should be generated if the Secret referenced is not present."
+                              type: "boolean"
                             key:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
@@ -12491,6 +12527,10 @@ spec:
                 rootPasswordSecretKeyRef:
                   description: "RootPasswordSecretKeyRef is a reference to a Secret key containing the root password."
                   properties:
+                    generate:
+                      default: false
+                      description: "Generate indicates whether the Secret should be generated if the Secret referenced is not present."
+                      type: "boolean"
                     key:
                       description: "The key of the secret to select from.  Must be a valid secret key."
                       type: "string"
@@ -12514,7 +12554,7 @@ spec:
                           description: "Interval used to perform health checks."
                           type: "string"
                         retryInterval:
-                          description: "RetryInterval is the intervañ used to perform health check retries."
+                          description: "RetryInterval is the interval used to perform health check retries."
                           type: "string"
                       type: "object"
                     params:

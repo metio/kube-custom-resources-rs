@@ -196,6 +196,8 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
                   nullable: true
                   type: "array"
+                logicalBackupRetention:
+                  type: "string"
                 logicalBackupSchedule:
                   pattern: "^(\\d+|\\*)(/\\d+)?(\\s+(\\d+|\\*)(/\\d+)?){4}$"
                   type: "string"

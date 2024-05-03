@@ -364,6 +364,8 @@ spec:
                   type: "object"
                 persistentSpec:
                   properties:
+                    enablePersistentVolumeResize:
+                      type: "boolean"
                     enabled:
                       type: "boolean"
                     storageClassName:
@@ -7194,6 +7196,13 @@ spec:
                     revocationTime:
                       type: "string"
                     thisUpdate:
+                      type: "string"
+                  type: "object"
+                persistenceStatus:
+                  properties:
+                    status:
+                      type: "string"
+                    succeeded:
                       type: "string"
                   type: "object"
                 redisEnterpriseIPFamily:

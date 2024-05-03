@@ -37,6 +37,8 @@ spec:
         - jsonPath: ".status.conditions[?(@.type==\"Ready\")].message"
           name: "Status"
           type: "string"
+      deprecated: true
+      deprecationWarning: "v1beta2 HelmChart is deprecated, upgrade to v1"
       name: "v1beta2"
       schema:
         openAPIV3Schema:
@@ -74,6 +76,9 @@ spec:
                 chart:
                   description: "Chart is the name or path the Helm chart is available at in the\nSourceRef."
                   type: "string"
+                ignoreMissingValuesFiles:
+                  description: "IgnoreMissingValuesFiles controls whether to silently ignore missing values\nfiles rather than failing."
+                  type: "boolean"
                 interval:
                   description: "Interval at which the HelmChart SourceRef is checked for updates.\nThis interval is approximate and may be subject to jitter to ensure\nefficient use of resources."
                   pattern: "^([0-9]+(\\.[0-9]+)?(ms|s|m|h))+$"
@@ -260,12 +265,17 @@ spec:
                 observedSourceArtifactRevision:
                   description: "ObservedSourceArtifactRevision is the last observed Artifact.Revision\nof the HelmChartSpec.SourceRef."
                   type: "string"
+                observedValuesFiles:
+                  description: "ObservedValuesFiles are the observed value files of the last successful\nreconciliation.\nIt matches the chart in the last successfully reconciled artifact."
+                  items:
+                    type: "string"
+                  type: "array"
                 url:
                   description: "URL is the dynamic fetch link for the latest Artifact.\nIt is provided on a \"best effort\" basis, and using the precise\nBucketStatus.Artifact data is recommended."
                   type: "string"
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}
