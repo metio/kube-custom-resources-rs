@@ -53,6 +53,21 @@ spec:
                       name:
                         description: "Name of the cluster setup step"
                         type: "string"
+                      params:
+                        description: "Helm chart param overrides from the ArgoCD ApplicationSet"
+                        items:
+                          properties:
+                            name:
+                              description: "Name of a helm chart param"
+                              type: "string"
+                            value:
+                              description: "Value of a helm chart param"
+                              type: "string"
+                          required:
+                            - "name"
+                            - "value"
+                          type: "object"
+                        type: "array"
                       schema:
                         description: "Content of helm chart values.schema.json"
                         type: "string"

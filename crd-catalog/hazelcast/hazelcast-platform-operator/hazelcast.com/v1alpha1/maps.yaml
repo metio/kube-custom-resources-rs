@@ -340,6 +340,10 @@ spec:
                   description: "Maximum time in seconds for each entry to stay in the map. If it is not 0, entries that are older than this time and not updated for this time are evicted automatically. It can be updated."
                   format: "int32"
                   type: "integer"
+                userCodeNamespace:
+                  description: "Name of the User Code Namespace applied to this instance"
+                  minLength: 1
+                  type: "string"
               required:
                 - "hazelcastResourceName"
               type: "object"

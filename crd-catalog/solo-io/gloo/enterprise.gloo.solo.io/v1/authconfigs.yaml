@@ -38,10 +38,12 @@ spec:
                               certPath:
                                 type: "string"
                               commitAll:
-                                format: "int32"
+                                maximum: 4294967295.0
+                                minimum: 0.0
                                 type: "integer"
                               commitMaster:
-                                format: "int32"
+                                maximum: 4294967295.0
+                                minimum: 0.0
                                 type: "integer"
                               hostname:
                                 type: "string"
@@ -61,25 +63,31 @@ spec:
                               readModeAp:
                                 properties:
                                   readModeApAll:
-                                    format: "int32"
+                                    maximum: 4294967295.0
+                                    minimum: 0.0
                                     type: "integer"
                                   readModeApOne:
-                                    format: "int32"
+                                    maximum: 4294967295.0
+                                    minimum: 0.0
                                     type: "integer"
                                 type: "object"
                               readModeSc:
                                 properties:
                                   readModeScAllowUnavailable:
-                                    format: "int32"
+                                    maximum: 4294967295.0
+                                    minimum: 0.0
                                     type: "integer"
                                   readModeScLinearize:
-                                    format: "int32"
+                                    maximum: 4294967295.0
+                                    minimum: 0.0
                                     type: "integer"
                                   readModeScReplica:
-                                    format: "int32"
+                                    maximum: 4294967295.0
+                                    minimum: 0.0
                                     type: "integer"
                                   readModeScSession:
-                                    format: "int32"
+                                    maximum: 4294967295.0
+                                    minimum: 0.0
                                     type: "integer"
                                 type: "object"
                               rootCaPath:
@@ -90,16 +98,20 @@ spec:
                                 items:
                                   properties:
                                     curveP256:
-                                      format: "int32"
+                                      maximum: 4294967295.0
+                                      minimum: 0.0
                                       type: "integer"
                                     curveP384:
-                                      format: "int32"
+                                      maximum: 4294967295.0
+                                      minimum: 0.0
                                       type: "integer"
                                     curveP521:
-                                      format: "int32"
+                                      maximum: 4294967295.0
+                                      minimum: 0.0
                                       type: "integer"
                                     x25519:
-                                      format: "int32"
+                                      maximum: 4294967295.0
+                                      minimum: 0.0
                                       type: "integer"
                                   type: "object"
                                 type: "array"
@@ -644,7 +656,8 @@ spec:
                                     maxProperties: 0
                                     type: "object"
                                   maxIdpReqPerPollingInterval:
-                                    format: "int32"
+                                    maximum: 4294967295.0
+                                    minimum: 0.0
                                     type: "integer"
                                   never:
                                     maxProperties: 0

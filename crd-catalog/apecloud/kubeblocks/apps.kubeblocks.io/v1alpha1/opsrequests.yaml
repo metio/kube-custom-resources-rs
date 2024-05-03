@@ -255,7 +255,7 @@ spec:
                       instances:
                         description: "Contains a list of InstanceTemplate objects. Each InstanceTemplate object allows for modifying replica counts or specifying configurations for new instances during scaling. \n The field supports two main use cases: \n - Modifying replica count: Specify the desired replica count for existing instances with a particular configuration using Name and Replicas fields. To modify the replica count, the Name and Replicas fields of the InstanceTemplate object should be provided. Only these fields are used for matching and adjusting replicas; other fields are ignored. The Replicas value overrides any existing count. - Configuring new instances: Define the configuration for new instances added during scaling, including resource requirements, labels, annotations, etc. New instances are created based on the provided InstanceTemplate."
                         items:
-                          description: "InstanceTemplate allows customization of individual replica configurations within a Component, without altering the base component template defined in ClusterComponentSpec. It enables the application of distinct settings to specific instances (replicas), providing flexibility while maintaining a common configuration baseline."
+                          description: "InstanceTemplate allows customization of individual replica configurations in a Component."
                           properties:
                             annotations:
                               additionalProperties:
@@ -347,7 +347,7 @@ spec:
                                 type: "object"
                               type: "array"
                             image:
-                              description: "Specifies an override for the first container's image in the pod."
+                              description: "Specifies an override for the first container's image in the Pod."
                               type: "string"
                             labels:
                               additionalProperties:
@@ -355,7 +355,7 @@ spec:
                               description: "Specifies a map of key-value pairs that will be merged into the Pod's existing labels. Values for existing keys will be overwritten, and new keys will be added."
                               type: "object"
                             name:
-                              description: "Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns."
+                              description: "Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns."
                               maxLength: 54
                               pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                               type: "string"
@@ -369,7 +369,7 @@ spec:
                               type: "object"
                             replicas:
                               default: 1
-                              description: "Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation."
+                              description: "Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the Component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation."
                               format: "int32"
                               minimum: 0.0
                               type: "integer"
@@ -499,7 +499,7 @@ spec:
                                 type: "object"
                               type: "array"
                             volumeMounts:
-                              description: "Defines VolumeMounts to override. Add new or override existing volume mounts of the first container in the pod."
+                              description: "Defines VolumeMounts to override. Add new or override existing volume mounts of the first container in the Pod."
                               items:
                                 description: "VolumeMount describes a mounting of a Volume within a container."
                                 properties:
@@ -1855,7 +1855,7 @@ spec:
                       description: "Specifies the name of the Backup custom resource."
                       type: "string"
                     doReadyRestoreAfterClusterRunning:
-                      description: "If set to true, the recovery process in the PostReady phase will be performed after the cluster is running successfully. otherwise, it will be performed after component is running."
+                      description: "Controls the timing of PostReady actions during the recovery process. \n If false (default), PostReady actions execute when the Component reaches the \"Running\" state. If true, PostReady actions are delayed until the entire Cluster is \"Running,\" ensuring the cluster's overall stability before proceeding. \n This setting is useful for coordinating PostReady operations across the Cluster for optimal cluster conditions."
                       type: "boolean"
                     restoreTimeStr:
                       description: "Specifies the point in time to which the restore should be performed. Supported time formats: \n - RFC3339 format, e.g. \"2023-11-25T18:52:53Z\" - A human-readable date-time format, e.g. \"Jul 25,2023 18:52:53 UTC+0800\""
@@ -2021,7 +2021,7 @@ spec:
                   type: "integer"
                 ttlSecondsBeforeAbort:
                   default: 0
-                  description: "Specifies the maximum number of seconds the OpsRequest will wait for its start conditions to be met before aborting. If set to 0 (default), the start conditions must be met immediately for the OpsRequest to proceed."
+                  description: "Specifies the maximum time in seconds that the OpsRequest will wait for its pre-conditions to be met before it aborts the operation. If set to 0 (default), pre-conditions must be satisfied immediately for the OpsRequest to proceed."
                   format: "int32"
                   type: "integer"
                 type:
@@ -2448,7 +2448,7 @@ spec:
                           instances:
                             description: "Records the InstanceTemplate list of the Component prior to any changes."
                             items:
-                              description: "InstanceTemplate allows customization of individual replica configurations within a Component, without altering the base component template defined in ClusterComponentSpec. It enables the application of distinct settings to specific instances (replicas), providing flexibility while maintaining a common configuration baseline."
+                              description: "InstanceTemplate allows customization of individual replica configurations in a Component."
                               properties:
                                 annotations:
                                   additionalProperties:
@@ -2540,7 +2540,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 image:
-                                  description: "Specifies an override for the first container's image in the pod."
+                                  description: "Specifies an override for the first container's image in the Pod."
                                   type: "string"
                                 labels:
                                   additionalProperties:
@@ -2548,7 +2548,7 @@ spec:
                                   description: "Specifies a map of key-value pairs that will be merged into the Pod's existing labels. Values for existing keys will be overwritten, and new keys will be added."
                                   type: "object"
                                 name:
-                                  description: "Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns."
+                                  description: "Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns."
                                   maxLength: 54
                                   pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                                   type: "string"
@@ -2562,7 +2562,7 @@ spec:
                                   type: "object"
                                 replicas:
                                   default: 1
-                                  description: "Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation."
+                                  description: "Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the Component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation."
                                   format: "int32"
                                   minimum: 0.0
                                   type: "integer"
@@ -2692,7 +2692,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 volumeMounts:
-                                  description: "Defines VolumeMounts to override. Add new or override existing volume mounts of the first container in the pod."
+                                  description: "Defines VolumeMounts to override. Add new or override existing volume mounts of the first container in the Pod."
                                   items:
                                     description: "VolumeMount describes a mounting of a Volume within a container."
                                     properties:
@@ -3728,15 +3728,15 @@ spec:
                                   description: "If ServiceType is LoadBalancer, cloud provider related parameters can be put here. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer."
                                   type: "object"
                                 name:
-                                  description: "References the component service name defined in the `componentDefinition.spec.services[*].name`."
+                                  description: "References the ComponentService name defined in the `componentDefinition.spec.services[*].name`."
                                   maxLength: 25
                                   type: "string"
                                 podService:
-                                  description: "Indicates whether to generate individual services for each pod. If set to true, a separate service will be created for each pod in the cluster."
+                                  description: "Indicates whether to generate individual Services for each Pod. If set to true, a separate Service will be created for each Pod in the Cluster."
                                   type: "boolean"
                                 serviceType:
                                   default: "ClusterIP"
-                                  description: "Determines how the Service is exposed. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`. \n - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. \n Note: although K8s Service type allows the 'ExternalName' type, it is not a valid option for ClusterComponentService. \n For more info, see: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
+                                  description: "Determines how the Service is exposed. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`. \n - `ClusterIP` allocates a Cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the ClusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the ClusterIP. \n Note: although K8s Service type allows the 'ExternalName' type, it is not a valid option for ClusterComponentService. \n For more info, see: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
                                   enum:
                                     - "ClusterIP"
                                     - "NodePort"

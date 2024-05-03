@@ -412,6 +412,9 @@ spec:
                 annotations:
                   description: "Common annotations for both Web and Task deployments."
                   type: "string"
+                api_urlpattern_prefix:
+                  description: "An optional configuration to add a prefix in the API URL path"
+                  type: "string"
                 api_version:
                   description: "apiVersion of the deployment type"
                   type: "string"

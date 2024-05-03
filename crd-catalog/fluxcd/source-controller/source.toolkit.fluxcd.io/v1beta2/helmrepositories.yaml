@@ -28,6 +28,8 @@ spec:
         - jsonPath: ".status.conditions[?(@.type==\"Ready\")].message"
           name: "Status"
           type: "string"
+      deprecated: true
+      deprecationWarning: "v1beta2 HelmRepository is deprecated, upgrade to v1"
       name: "v1beta2"
       schema:
         openAPIV3Schema:
@@ -216,6 +218,6 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

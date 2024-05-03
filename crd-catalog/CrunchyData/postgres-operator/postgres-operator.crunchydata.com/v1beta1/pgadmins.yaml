@@ -496,6 +496,21 @@ spec:
                 config:
                   description: "Configuration settings for the pgAdmin process. Changes to any of these values will be loaded without validation. Be careful, as you may put pgAdmin into an unusable state."
                   properties:
+                    configDatabaseURI:
+                      description: "A Secret containing the value for the CONFIG_DATABASE_URI setting. More info: https://www.pgadmin.org/docs/pgadmin4/latest/external_database.html"
+                      properties:
+                        key:
+                          description: "The key of the secret to select from.  Must be a valid secret key."
+                          type: "string"
+                        name:
+                          description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                          type: "string"
+                        optional:
+                          description: "Specify whether the Secret or its key must be defined"
+                          type: "boolean"
+                      required:
+                        - "key"
+                      type: "object"
                     files:
                       description: "Files allows the user to mount projected volumes into the pgAdmin container so that files can be referenced by pgAdmin as needed."
                       items:
@@ -820,6 +835,9 @@ spec:
                       name:
                         description: "The name for the ServerGroup in pgAdmin. Must be unique in the pgAdmin's ServerGroups since it becomes the ServerGroup name in pgAdmin."
                         type: "string"
+                      postgresClusterName:
+                        description: "PostgresClusterName selects one cluster to add to pgAdmin by name."
+                        type: "string"
                       postgresClusterSelector:
                         description: "PostgresClusterSelector selects clusters to dynamically add to pgAdmin by matching labels. An empty selector like `{}` will select ALL clusters in the namespace."
                         properties:
@@ -852,8 +870,10 @@ spec:
                         type: "object"
                     required:
                       - "name"
-                      - "postgresClusterSelector"
                     type: "object"
+                    x-kubernetes-validations:
+                      - message: "exactly one of \"postgresClusterName\" or \"postgresClusterSelector\" is required"
+                        rule: "[has(self.postgresClusterName),has(self.postgresClusterSelector)].exists_one(x,x)"
                   type: "array"
                 serviceName:
                   description: "ServiceName will be used as the name of a ClusterIP service pointing to the pgAdmin pod and port. If the service already exists, PGO will update the service. For more information about services reference the Kubernetes and CrunchyData documentation. https://kubernetes.io/docs/concepts/services-networking/service/"
