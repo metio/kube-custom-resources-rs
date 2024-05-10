@@ -217,10 +217,12 @@ pub enum VaultDynamicSecretRequestHttpMethod {
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
 /// 
 /// 
-/// Supported resources: Deployment, DaemonSet, StatefulSet
+/// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VaultDynamicSecretRolloutRestartTargets {
+    /// Kind of the resource
     pub kind: VaultDynamicSecretRolloutRestartTargetsKind,
+    /// Name of the resource
     pub name: String,
 }
 
@@ -232,12 +234,14 @@ pub struct VaultDynamicSecretRolloutRestartTargets {
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
 /// 
 /// 
-/// Supported resources: Deployment, DaemonSet, StatefulSet
+/// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VaultDynamicSecretRolloutRestartTargetsKind {
     Deployment,
     DaemonSet,
     StatefulSet,
+    #[serde(rename = "argo.Rollout")]
+    ArgoRollout,
 }
 
 /// VaultDynamicSecretStatus defines the observed state of VaultDynamicSecret

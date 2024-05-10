@@ -151,6 +151,9 @@ pub struct HelmReleaseChartMetadata {
 pub struct HelmReleaseChartSpec {
     /// The name or path the Helm chart is available at in the SourceRef.
     pub chart: String,
+    /// IgnoreMissingValuesFiles controls whether to silently ignore missing values files rather than failing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValuesFiles")]
+    pub ignore_missing_values_files: Option<bool>,
     /// Interval at which to check the v1.Source for updates. Defaults to
     /// 'HelmReleaseSpec.Interval'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1001,6 +1004,10 @@ pub struct HelmReleaseStatus {
     /// ObservedGeneration is the last observed generation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    /// ObservedPostRenderersDigest is the digest for the post-renderers of
+    /// the last successful reconciliation attempt.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedPostRenderersDigest")]
+    pub observed_post_renderers_digest: Option<String>,
     /// StorageNamespace is the namespace of the Helm release storage for the
     /// current release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageNamespace")]
@@ -1020,6 +1027,9 @@ pub struct HelmReleaseStatusHistory {
     /// this field will be used to distinguish between the old and new methods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
+    /// AppVersion is the chart app version of the release object in storage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appVersion")]
+    pub app_version: Option<String>,
     /// ChartName is the chart name of the release object in storage.
     #[serde(rename = "chartName")]
     pub chart_name: String,

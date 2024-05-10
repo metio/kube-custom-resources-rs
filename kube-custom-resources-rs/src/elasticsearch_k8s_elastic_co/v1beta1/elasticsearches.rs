@@ -276,6 +276,14 @@ pub struct ElasticsearchHttpServiceSpec {
     /// sessionAffinityConfig contains the configurations of session affinity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<ElasticsearchHttpServiceSpecSessionAffinityConfig>,
+    /// TrafficDistribution offers a way to express preferences for how traffic is
+    /// distributed to Service endpoints. Implementations can use this field as a
+    /// hint, but are not required to guarantee strict adherence. If the field is
+    /// not set, the implementation will apply its default routing strategy. If set
+    /// to "PreferClose", implementations should prioritize endpoints that are
+    /// topologically close (e.g., same zone).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
+    pub traffic_distribution: Option<String>,
     /// type determines how the Service is exposed. Defaults to ClusterIP. Valid
     /// options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
     /// "ClusterIP" allocates a cluster-internal IP address for load-balancing
@@ -525,7 +533,7 @@ pub struct ElasticsearchNodeSetsPodTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralContainers")]
     pub ephemeral_containers: Option<Vec<ElasticsearchNodeSetsPodTemplateSpecEphemeralContainers>>,
     /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts
-    /// file if specified. This is only valid for non-hostNetwork pods.
+    /// file if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<ElasticsearchNodeSetsPodTemplateSpecHostAliases>>,
     /// Use the host's ipc namespace.
@@ -598,6 +606,7 @@ pub struct ElasticsearchNodeSetsPodTemplateSpec {
     /// - spec.hostPID
     /// - spec.hostIPC
     /// - spec.hostUsers
+    /// - spec.securityContext.appArmorProfile
     /// - spec.securityContext.seLinuxOptions
     /// - spec.securityContext.seccompProfile
     /// - spec.securityContext.fsGroup
@@ -607,6 +616,7 @@ pub struct ElasticsearchNodeSetsPodTemplateSpec {
     /// - spec.securityContext.runAsUser
     /// - spec.securityContext.runAsGroup
     /// - spec.securityContext.supplementalGroups
+    /// - spec.containers[*].securityContext.appArmorProfile
     /// - spec.containers[*].securityContext.seLinuxOptions
     /// - spec.containers[*].securityContext.seccompProfile
     /// - spec.containers[*].securityContext.capabilities
@@ -689,16 +699,13 @@ pub struct ElasticsearchNodeSetsPodTemplateSpec {
     /// 
     /// 
     /// SchedulingGates can only be set at pod creation time, and be removed only afterwards.
-    /// 
-    /// 
-    /// This is a beta feature enabled by the PodSchedulingReadiness feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
     pub scheduling_gates: Option<Vec<ElasticsearchNodeSetsPodTemplateSpecSchedulingGates>>,
     /// SecurityContext holds pod-level security attributes and common container settings.
     /// Optional: Defaults to empty.  See type description for default values of each field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ElasticsearchNodeSetsPodTemplateSpecSecurityContext>,
-    /// DeprecatedServiceAccount is a depreciated alias for ServiceAccountName.
+    /// DeprecatedServiceAccount is a deprecated alias for ServiceAccountName.
     /// Deprecated: Use serviceAccountName instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
@@ -948,23 +955,23 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecAffinityPodAffinityPreferredDurin
     pub label_selector: Option<ElasticsearchNodeSetsPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -1069,23 +1076,23 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecAffinityPodAffinityRequiredDuring
     pub label_selector: Option<ElasticsearchNodeSetsPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -1221,23 +1228,23 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecAffinityPodAntiAffinityPreferredD
     pub label_selector: Option<ElasticsearchNodeSetsPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -1342,23 +1349,23 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecAffinityPodAntiAffinityRequiredDu
     pub label_selector: Option<ElasticsearchNodeSetsPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -2295,6 +2302,11 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<ElasticsearchNodeSetsPodTemplateSpecContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2359,6 +2371,26 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ElasticsearchNodeSetsPodTemplateSpecContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ElasticsearchNodeSetsPodTemplateSpecContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -2594,6 +2626,8 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -2602,6 +2636,28 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -3466,6 +3522,11 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecEphemeralContainersSecurityContex
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<ElasticsearchNodeSetsPodTemplateSpecEphemeralContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -3530,6 +3591,26 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecEphemeralContainersSecurityContex
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ElasticsearchNodeSetsPodTemplateSpecEphemeralContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ElasticsearchNodeSetsPodTemplateSpecEphemeralContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -3759,6 +3840,8 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecEphemeralContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -3767,6 +3850,28 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecEphemeralContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -4648,6 +4753,11 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<ElasticsearchNodeSetsPodTemplateSpecInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -4712,6 +4822,26 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ElasticsearchNodeSetsPodTemplateSpecInitContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ElasticsearchNodeSetsPodTemplateSpecInitContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -4947,6 +5077,8 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -4955,6 +5087,28 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecInitContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -4979,6 +5133,7 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecInitContainersVolumeMounts {
 /// - spec.hostPID
 /// - spec.hostIPC
 /// - spec.hostUsers
+/// - spec.securityContext.appArmorProfile
 /// - spec.securityContext.seLinuxOptions
 /// - spec.securityContext.seccompProfile
 /// - spec.securityContext.fsGroup
@@ -4988,6 +5143,7 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecInitContainersVolumeMounts {
 /// - spec.securityContext.runAsUser
 /// - spec.securityContext.runAsGroup
 /// - spec.securityContext.supplementalGroups
+/// - spec.containers[*].securityContext.appArmorProfile
 /// - spec.containers[*].securityContext.seLinuxOptions
 /// - spec.containers[*].securityContext.seccompProfile
 /// - spec.containers[*].securityContext.capabilities
@@ -5064,6 +5220,10 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecSchedulingGates {
 /// Optional: Defaults to empty.  See type description for default values of each field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsPodTemplateSpecSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<ElasticsearchNodeSetsPodTemplateSpecSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
@@ -5143,6 +5303,25 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ElasticsearchNodeSetsPodTemplateSpecSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ElasticsearchNodeSetsPodTemplateSpecSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -5315,9 +5494,6 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    /// 
-    /// 
-    /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
@@ -5813,7 +5989,7 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecVolumesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsPodTemplateSpecVolumesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ElasticsearchNodeSetsPodTemplateSpecVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -5832,7 +6008,7 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecVolumesDownwardApiItems {
     pub resource_field_ref: Option<ElasticsearchNodeSetsPodTemplateSpecVolumesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsPodTemplateSpecVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -6059,7 +6235,7 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecVolumesEphemeralVolumeClaimTempla
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
@@ -6649,7 +6825,7 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecVolumesProjectedSourcesDownwardAp
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsPodTemplateSpecVolumesProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ElasticsearchNodeSetsPodTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -6668,7 +6844,7 @@ pub struct ElasticsearchNodeSetsPodTemplateSpecVolumesProjectedSourcesDownwardAp
     pub resource_field_ref: Option<ElasticsearchNodeSetsPodTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsPodTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -7118,7 +7294,7 @@ pub struct ElasticsearchNodeSetsVolumeClaimTemplatesSpec {
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
@@ -7322,7 +7498,7 @@ pub struct ElasticsearchNodeSetsVolumeClaimTemplatesStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<BTreeMap<String, IntOrString>>,
     /// conditions is the current Condition of persistent volume claim. If underlying persistent volume is being
-    /// resized then the Condition will be set to 'ResizeStarted'.
+    /// resized then the Condition will be set to 'Resizing'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.

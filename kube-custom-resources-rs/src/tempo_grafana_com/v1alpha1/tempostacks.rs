@@ -96,6 +96,9 @@ pub struct TempoStackHashRingMemberlist {
 /// Images defines the image for each container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TempoStackImages {
+    /// OauthProxy defines the oauth proxy image used to protect the jaegerUI on single tenant.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oauthProxy")]
+    pub oauth_proxy: Option<String>,
     /// Tempo defines the tempo container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tempo: Option<String>,
@@ -895,6 +898,9 @@ pub struct TempoStackTemplateQueryFrontendComponentTolerations {
 /// JaegerQuery defines options specific to the Jaeger Query component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendJaegerQuery {
+    /// Oauth defines the options for the oauth proxy used to protect jaeger UI
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authentication: Option<TempoStackTemplateQueryFrontendJaegerQueryAuthentication>,
     /// Enabled defines if the Jaeger Query component should be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -910,6 +916,17 @@ pub struct TempoStackTemplateQueryFrontendJaegerQuery {
     /// ServicesQueryDuration defines how long the services will be available in the services list
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicesQueryDuration")]
     pub services_query_duration: Option<String>,
+}
+
+/// Oauth defines the options for the oauth proxy used to protect jaeger UI
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoStackTemplateQueryFrontendJaegerQueryAuthentication {
+    /// Defines if the authentication will be enabled for jaeger UI.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// SAR defines the SAR to be used in the oauth-proxy default is "{"namespace": "<tempo_stack_namespace>", "resource": "pods", "verb": "get"}
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sar: Option<String>,
 }
 
 /// Ingress defines the options for the Jaeger Query ingress.

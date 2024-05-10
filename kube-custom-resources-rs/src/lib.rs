@@ -1331,6 +1331,9 @@ apiVersion `helm.sigstore.dev/v1alpha1`:
 
 ## helm_toolkit_fluxcd_io
 
+apiVersion `helm.toolkit.fluxcd.io/v2`:
+- `HelmRelease`
+
 apiVersion `helm.toolkit.fluxcd.io/v2beta1`:
 - `HelmRelease`
 

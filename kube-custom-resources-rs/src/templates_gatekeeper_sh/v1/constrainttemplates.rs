@@ -56,7 +56,8 @@ pub struct ConstraintTemplateCrdSpecValidation {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConstraintTemplateTargets {
-    /// The source code options for the constraint template. "Rego" can only be specified in one place (either here or in the "rego" field)
+    /// The source code options for the constraint template. "Rego" can only
+    /// be specified in one place (either here or in the "rego" field)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<Vec<ConstraintTemplateTargetsCode>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -84,7 +85,8 @@ pub struct ConstraintTemplateStatus {
     pub created: Option<bool>,
 }
 
-/// ByPodStatus defines the observed state of ConstraintTemplate as seen by an individual controller
+/// ByPodStatus defines the observed state of ConstraintTemplate as seen by
+/// an individual controller
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConstraintTemplateStatusByPod {
     #[serde(default, skip_serializing_if = "Option::is_none")]

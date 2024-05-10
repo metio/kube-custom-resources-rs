@@ -113,6 +113,11 @@ pub struct VirtualServiceHttpCorsPolicy {
     /// Specifies how long the results of a preflight request can be cached.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
     pub max_age: Option<String>,
+    /// Indicates whether preflight requests not matching the configured allowed origin shouldn't be forwarded to the upstream.
+    /// 
+    /// Valid Options: FORWARD, IGNORE
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmatchedPreflights")]
+    pub unmatched_preflights: Option<VirtualServiceHttpCorsPolicyUnmatchedPreflights>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -124,6 +129,17 @@ pub struct VirtualServiceHttpCorsPolicyAllowOrigins {
     /// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
+}
+
+/// Cross-Origin Resource Sharing policy (CORS).
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VirtualServiceHttpCorsPolicyUnmatchedPreflights {
+    #[serde(rename = "UNSPECIFIED")]
+    Unspecified,
+    #[serde(rename = "FORWARD")]
+    Forward,
+    #[serde(rename = "IGNORE")]
+    Ignore,
 }
 
 /// Delegate is used to specify the particular VirtualService which can be used to define delegate HTTPRoute.

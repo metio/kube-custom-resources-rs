@@ -43,6 +43,11 @@ spec:
                       - "end-testsuite-failed"
                       - "end-testsuite-aborted"
                       - "end-testsuite-timeout"
+                      - "start-testworkflow"
+                      - "queue-testworkflow"
+                      - "end-testworkflow-success"
+                      - "end-testworkflow-failed"
+                      - "end-testworkflow-aborted"
                     type: "string"
                   type: "array"
                 headers:

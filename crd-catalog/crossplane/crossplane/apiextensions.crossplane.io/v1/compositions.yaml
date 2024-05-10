@@ -194,7 +194,7 @@ spec:
                                   - "Required"
                                 type: "string"
                               mergeOptions:
-                                description: "MergeOptions Specifies merge options on a field path"
+                                description: "MergeOptions Specifies merge options on a field path."
                                 properties:
                                   appendSlice:
                                     description: "Specifies that already existing elements in a merged slice should be preserved"
@@ -472,7 +472,7 @@ spec:
                                     - "Required"
                                   type: "string"
                                 mergeOptions:
-                                  description: "MergeOptions Specifies merge options on a field path"
+                                  description: "MergeOptions Specifies merge options on a field path."
                                   properties:
                                     appendSlice:
                                       description: "Specifies that already existing elements in a merged slice should be preserved"
@@ -842,7 +842,7 @@ spec:
                                     - "Required"
                                   type: "string"
                                 mergeOptions:
-                                  description: "MergeOptions Specifies merge options on a field path"
+                                  description: "MergeOptions Specifies merge options on a field path."
                                   properties:
                                     appendSlice:
                                       description: "Specifies that already existing elements in a merged slice should be preserved"

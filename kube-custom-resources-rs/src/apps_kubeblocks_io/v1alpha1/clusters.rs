@@ -198,6 +198,8 @@ pub struct ClusterComponentSpecs {
     ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentDefRef is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefRef")]
     pub component_def_ref: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configs: Option<Vec<ClusterComponentSpecsConfigs>>,
     /// Specifies which types of logs should be collected for the Component. The log types are defined in the `componentDefinition.spec.logConfigs` field with the LogConfig entries. 
     ///  The elements in the `enabledLogs` array correspond to the names of the LogConfig entries. For example, if the `componentDefinition.spec.logConfigs` defines LogConfig entries with names "slow_query_log" and "error_log", you can enable the collection of these logs by including their names in the `enabledLogs` array: ```yaml enabledLogs: - slow_query_log - error_log ```
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
@@ -325,6 +327,46 @@ pub enum ClusterComponentSpecsAffinityPodAntiAffinity {
 pub enum ClusterComponentSpecsAffinityTenancy {
     SharedNode,
     DedicatedNode,
+}
+
+/// ClusterComponentConfig represents a config with its source bound.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsConfigs {
+    /// ConfigMap source for the config.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ClusterComponentSpecsConfigsConfigMap>,
+    /// The name of the config.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ConfigMap source for the config.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsConfigsConfigMap {
+    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ClusterComponentSpecsConfigsConfigMapItems>>,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsConfigsConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
 }
 
 /// InstanceTemplate allows customization of individual replica configurations in a Component.
@@ -3102,6 +3144,8 @@ pub struct ClusterShardingSpecsTemplate {
     ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentDefRef is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefRef")]
     pub component_def_ref: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configs: Option<Vec<ClusterShardingSpecsTemplateConfigs>>,
     /// Specifies which types of logs should be collected for the Component. The log types are defined in the `componentDefinition.spec.logConfigs` field with the LogConfig entries. 
     ///  The elements in the `enabledLogs` array correspond to the names of the LogConfig entries. For example, if the `componentDefinition.spec.logConfigs` defines LogConfig entries with names "slow_query_log" and "error_log", you can enable the collection of these logs by including their names in the `enabledLogs` array: ```yaml enabledLogs: - slow_query_log - error_log ```
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
@@ -3229,6 +3273,46 @@ pub enum ClusterShardingSpecsTemplateAffinityPodAntiAffinity {
 pub enum ClusterShardingSpecsTemplateAffinityTenancy {
     SharedNode,
     DedicatedNode,
+}
+
+/// ClusterComponentConfig represents a config with its source bound.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateConfigs {
+    /// ConfigMap source for the config.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ClusterShardingSpecsTemplateConfigsConfigMap>,
+    /// The name of the config.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ConfigMap source for the config.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateConfigsConfigMap {
+    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ClusterShardingSpecsTemplateConfigsConfigMapItems>>,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateConfigsConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
 }
 
 /// InstanceTemplate allows customization of individual replica configurations in a Component.

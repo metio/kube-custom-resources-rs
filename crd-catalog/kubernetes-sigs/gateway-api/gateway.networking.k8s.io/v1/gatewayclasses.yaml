@@ -3,7 +3,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/2997"
-    gateway.networking.k8s.io/bundle-version: "v1.1.0-rc2"
+    gateway.networking.k8s.io/bundle-version: "v1.2.0-dev"
     gateway.networking.k8s.io/channel: "experimental"
   name: "gatewayclasses.gateway.networking.k8s.io"
 spec:
@@ -63,7 +63,7 @@ spec:
                   maxLength: 64
                   type: "string"
                 parametersRef:
-                  description: "ParametersRef is a reference to a resource that contains the configuration\nparameters corresponding to the GatewayClass. This is optional if the\ncontroller does not require any additional configuration.\n\n\nParametersRef can reference a standard Kubernetes resource, i.e. ConfigMap,\nor an implementation-specific custom resource. The resource can be\ncluster-scoped or namespace-scoped.\n\n\nIf the referent cannot be found, the GatewayClass's \"InvalidParameters\"\nstatus condition will be true.\n\n\nA Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,\nthe merging behavior is implementation specific.\nIt is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.\n\n\nSupport: Implementation-specific"
+                  description: "ParametersRef is a reference to a resource that contains the configuration\nparameters corresponding to the GatewayClass. This is optional if the\ncontroller does not require any additional configuration.\n\n\nParametersRef can reference a standard Kubernetes resource, i.e. ConfigMap,\nor an implementation-specific custom resource. The resource can be\ncluster-scoped or namespace-scoped.\n\n\nIf the referent cannot be found, refers to an unsupported kind, or when\nthe data within that resource is malformed, the GatewayClass SHOULD be\nrejected with the \"Accepted\" status condition set to \"False\" and an\n\"InvalidParameters\" reason.\n\n\nA Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,\nthe merging behavior is implementation specific.\nIt is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.\n\n\nSupport: Implementation-specific"
                   properties:
                     group:
                       description: "Group is the group of the referent."

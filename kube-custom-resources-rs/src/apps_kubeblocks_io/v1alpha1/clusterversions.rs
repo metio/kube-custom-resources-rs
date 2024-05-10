@@ -92,8 +92,8 @@ pub struct ClusterVersionComponentVersionsConfigSpecs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reRenderResourceTypes")]
     pub re_render_resource_types: Option<Vec<String>>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(rename = "templateRef")]
-    pub template_ref: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
+    pub template_ref: Option<String>,
     /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration template will be mounted to the corresponding volume. Must be a DNS_LABEL name. The volume name must be defined in podSpec.containers[*].volumeMounts.
     #[serde(rename = "volumeName")]
     pub volume_name: String,

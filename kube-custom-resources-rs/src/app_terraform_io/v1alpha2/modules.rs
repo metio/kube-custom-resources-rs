@@ -169,13 +169,13 @@ pub struct ModuleStatusRun {
     /// The configuration version of this run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationVersion")]
     pub configuration_version: Option<String>,
-    /// Current(both active and finished) Terraform Cloud run ID.
+    /// Current(both active and finished) HCP Terraform run ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Run ID of the latest run that could update the outputs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputRunID")]
     pub output_run_id: Option<String>,
-    /// Current(both active and finished) Terraform Cloud run status.
+    /// Current(both active and finished) HCP Terraform run status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }

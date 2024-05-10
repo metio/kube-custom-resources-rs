@@ -6564,7 +6564,7 @@ pub struct AgentPoolAgentDeploymentSpecVolumesVsphereVolume {
     pub volume_path: String,
 }
 
-/// Agent Token is a secret token that a Terraform Cloud Agent is used to connect to the Terraform Cloud Agent Pool.
+/// Agent Token is a secret token that a HCP Terraform Agent is used to connect to the HCP Terraform Agent Pool.
 /// In `spec` only the field `Name` is allowed, the rest are used in `status`.
 /// More infromation:
 ///   - https://developer.hashicorp.com/terraform/cloud-docs/agents
@@ -6595,7 +6595,7 @@ pub struct AgentPoolAutoscaling {
     /// MinReplicas is the minimum number of replicas for the Agent deployment.
     #[serde(rename = "minReplicas")]
     pub min_replicas: i32,
-    /// TargetWorkspaces is a list of Terraform Cloud Workspaces which
+    /// TargetWorkspaces is a list of HCP Terraform Workspaces which
     /// the agent pool should scale up to meet demand. When this field
     /// is ommited the autoscaler will target all workspaces that are
     /// associated with the AgentPool.
@@ -6660,7 +6660,7 @@ pub struct AgentPoolStatus {
     pub observed_generation: i64,
 }
 
-/// Agent Token is a secret token that a Terraform Cloud Agent is used to connect to the Terraform Cloud Agent Pool.
+/// Agent Token is a secret token that a HCP Terraform Agent is used to connect to the HCP Terraform Agent Pool.
 /// In `spec` only the field `Name` is allowed, the rest are used in `status`.
 /// More infromation:
 ///   - https://developer.hashicorp.com/terraform/cloud-docs/agents

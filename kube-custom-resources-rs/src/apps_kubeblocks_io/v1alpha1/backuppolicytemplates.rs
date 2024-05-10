@@ -21,10 +21,9 @@ pub struct BackupPolicyTemplateSpec {
     /// Represents an array of BackupPolicy templates, with each template corresponding to a specified ComponentDefinition or to a group of ComponentDefinitions that are different versions of definitions of the same component.
     #[serde(rename = "backupPolicies")]
     pub backup_policies: Vec<BackupPolicyTemplateBackupPolicies>,
-    /// Specifies the name of a ClusterDefinition. 
-    ///  This is an immutable attribute that cannot be changed after creation.
-    #[serde(rename = "clusterDefinitionRef")]
-    pub cluster_definition_ref: String,
+    /// Specifies the name of a ClusterDefinition. This is an immutable attribute that cannot be changed after creation. And this field is deprecated since v0.9, consider using the ComponentDef instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDefinitionRef")]
+    pub cluster_definition_ref: Option<String>,
     /// Specifies a unique identifier for the BackupPolicyTemplate. 
     ///  This identifier will be used as the suffix of the name of automatically generated BackupPolicy. This prevents unintended overwriting of BackupPolicies due to name conflicts when multiple BackupPolicyTemplates are present. For instance, using "backup-policy" for regular backups and "backup-policy-hscale" for horizontal-scale ops can differentiate the policies.
     #[serde(default, skip_serializing_if = "Option::is_none")]

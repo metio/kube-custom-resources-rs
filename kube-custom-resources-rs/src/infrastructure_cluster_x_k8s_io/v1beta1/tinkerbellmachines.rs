@@ -55,7 +55,7 @@ pub struct TinkerbellMachineSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
     /// TemplateOverride overrides the default Tinkerbell template used by CAPT.
-    /// You can learn more about Tinkerbell templates here: https://docs.tinkerbell.org/templates/
+    /// You can learn more about Tinkerbell templates here: https://tinkerbell.org/docs/concepts/templates/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateOverride")]
     pub template_override: Option<String>,
 }

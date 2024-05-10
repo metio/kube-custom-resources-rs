@@ -34,7 +34,7 @@ spec:
               description: "WorkspaceSpec defines the desired state of Workspace."
               properties:
                 agentPool:
-                  description: "Terraform Cloud Agents allow Terraform Cloud to communicate with isolated, private, or on-premises infrastructure.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/agents"
+                  description: "HCP Terraform Agents allow HCP Terraform to communicate with isolated, private, or on-premises infrastructure.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/agents"
                   properties:
                     id:
                       description: "Agent Pool ID.\nMust match pattern: `^apool-[a-zA-Z0-9]+$`"
@@ -139,7 +139,7 @@ spec:
                     description: "Notifications allow you to send messages to other applications based on run and workspace events.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/notifications"
                     properties:
                       emailAddresses:
-                        description: "The list of email addresses that will receive notification emails.\nIt is only available for Terraform Enterprise users. It is not available in Terraform Cloud."
+                        description: "The list of email addresses that will receive notification emails.\nIt is only available for Terraform Enterprise users. It is not available in HCP Terraform."
                         items:
                           type: "string"
                         minItems: 1
@@ -214,7 +214,7 @@ spec:
                       type: "string"
                   type: "object"
                 remoteStateSharing:
-                  description: "Remote state access between workspaces.\nBy default, new workspaces in Terraform Cloud do not allow other workspaces to access their state.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/state#accessing-state-from-other-workspaces"
+                  description: "Remote state access between workspaces.\nBy default, new workspaces in HCP Terraform do not allow other workspaces to access their state.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/state#accessing-state-from-other-workspaces"
                   properties:
                     allWorkspaces:
                       default: false
@@ -238,9 +238,9 @@ spec:
                       type: "array"
                   type: "object"
                 runTasks:
-                  description: "Run tasks allow Terraform Cloud to interact with external systems at specific points in the Terraform Cloud run lifecycle.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks"
+                  description: "Run tasks allow HCP Terraform to interact with external systems at specific points in the HCP Terraform run lifecycle.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks"
                   items:
-                    description: "Run tasks allow Terraform Cloud to interact with external systems at specific points in the Terraform Cloud run lifecycle.\nOnly one of the fields `ID` or `Name` is allowed.\nAt least one of the fields `ID` or `Name` is mandatory.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks"
+                    description: "Run tasks allow HCP Terraform to interact with external systems at specific points in the HCP Terraform run lifecycle.\nOnly one of the fields `ID` or `Name` is allowed.\nAt least one of the fields `ID` or `Name` is mandatory.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks"
                     properties:
                       enforcementLevel:
                         default: "advisory"
@@ -300,9 +300,9 @@ spec:
                   minItems: 1
                   type: "array"
                 teamAccess:
-                  description: "Terraform Cloud workspaces can only be accessed by users with the correct permissions.\nYou can manage permissions for a workspace on a per-team basis.\nWhen a workspace is created, only the owners team and teams with the \"manage workspaces\" permission can access it,\nwith full admin permissions. These teams' access can't be removed from a workspace.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/access"
+                  description: "HCP Terraform workspaces can only be accessed by users with the correct permissions.\nYou can manage permissions for a workspace on a per-team basis.\nWhen a workspace is created, only the owners team and teams with the \"manage workspaces\" permission can access it,\nwith full admin permissions. These teams' access can't be removed from a workspace.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/access"
                   items:
-                    description: "Terraform Cloud workspaces can only be accessed by users with the correct permissions.\nYou can manage permissions for a workspace on a per-team basis.\nWhen a workspace is created, only the owners team and teams with the \"manage workspaces\" permission can access it,\nwith full admin permissions. These teams' access can't be removed from a workspace.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/access"
+                    description: "HCP Terraform workspaces can only be accessed by users with the correct permissions.\nYou can manage permissions for a workspace on a per-team basis.\nWhen a workspace is created, only the owners team and teams with the \"manage workspaces\" permission can access it,\nwith full admin permissions. These teams' access can't be removed from a workspace.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/access"
                     properties:
                       access:
                         description: "There are two ways to choose which permissions a given team has on a workspace: fixed permission sets, and custom permissions.\nMust be one of the following values: `admin`, `custom`, `plan`, `read`, `write`.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/permissions#workspace-permissions"
@@ -489,10 +489,10 @@ spec:
                   description: "Run status of plan-only/speculative plan that was triggered manually."
                   properties:
                     id:
-                      description: "Latest plan-only/speculative plan Terraform Cloud run ID."
+                      description: "Latest plan-only/speculative plan HCP Terraform run ID."
                       type: "string"
                     status:
-                      description: "Latest plan-only/speculative plan Terraform Cloud run status."
+                      description: "Latest plan-only/speculative plan HCP Terraform run status."
                       type: "string"
                     terraformVersion:
                       description: "The version of Terraform to use for this run."
@@ -506,13 +506,13 @@ spec:
                       description: "The configuration version of this run."
                       type: "string"
                     id:
-                      description: "Current(both active and finished) Terraform Cloud run ID."
+                      description: "Current(both active and finished) HCP Terraform run ID."
                       type: "string"
                     outputRunID:
                       description: "Run ID of the latest run that could update the outputs."
                       type: "string"
                     status:
-                      description: "Current(both active and finished) Terraform Cloud run status."
+                      description: "Current(both active and finished) HCP Terraform run status."
                       type: "string"
                   type: "object"
                 terraformVersion:

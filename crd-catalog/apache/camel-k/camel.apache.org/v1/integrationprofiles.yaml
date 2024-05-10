@@ -431,9 +431,24 @@ spec:
                     container:
                       description: "The configuration of Container trait"
                       properties:
+                        allowPrivilegeEscalation:
+                          description: "Security Context AllowPrivilegeEscalation configuration (default false)."
+                          type: "boolean"
                         auto:
                           description: "To automatically enable the trait"
                           type: "boolean"
+                        capabilitiesAdd:
+                          description: "Security Context Capabilities Add configuration (default none)."
+                          items:
+                            description: "Capability represent POSIX capabilities type"
+                            type: "string"
+                          type: "array"
+                        capabilitiesDrop:
+                          description: "Security Context Capabilities Drop configuration (default ALL)."
+                          items:
+                            description: "Capability represent POSIX capabilities type"
+                            type: "string"
+                          type: "array"
                         configuration:
                           description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."
                           type: "object"
@@ -474,6 +489,19 @@ spec:
                           type: "string"
                         requestMemory:
                           description: "The minimum amount of memory required."
+                          type: "string"
+                        runAsNonRoot:
+                          description: "Security Context RunAsNonRoot configuration (default false)."
+                          type: "boolean"
+                        runAsUser:
+                          description: "Security Context RunAsUser configuration (default none): this value is automatically retrieved in Openshift clusters when not explicitly set."
+                          format: "int64"
+                          type: "integer"
+                        seccompProfileType:
+                          description: "Security Context SeccompProfileType configuration (default RuntimeDefault)."
+                          enum:
+                            - "Unconfined"
+                            - "RuntimeDefault"
                           type: "string"
                         servicePort:
                           description: "To configure under which service port the container port is to be exposed (default `80`)."
@@ -1290,6 +1318,30 @@ spec:
                             - "edge"
                             - "reencrypt"
                             - "passthrough"
+                          type: "string"
+                      type: "object"
+                    security-context:
+                      description: "The configuration of Security Context trait"
+                      properties:
+                        configuration:
+                          description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."
+                          type: "object"
+                          x-kubernetes-preserve-unknown-fields: true
+                        enabled:
+                          description: "Deprecated: no longer in use."
+                          type: "boolean"
+                        runAsNonRoot:
+                          description: "Security Context RunAsNonRoot configuration (default false)."
+                          type: "boolean"
+                        runAsUser:
+                          description: "Security Context RunAsUser configuration (default none): this value is automatically retrieved in Openshift clusters when not explicitly set."
+                          format: "int64"
+                          type: "integer"
+                        seccompProfileType:
+                          description: "Security Context SeccompProfileType configuration (default RuntimeDefault)."
+                          enum:
+                            - "Unconfined"
+                            - "RuntimeDefault"
                           type: "string"
                       type: "object"
                     service:
@@ -1796,9 +1848,24 @@ spec:
                     container:
                       description: "The configuration of Container trait"
                       properties:
+                        allowPrivilegeEscalation:
+                          description: "Security Context AllowPrivilegeEscalation configuration (default false)."
+                          type: "boolean"
                         auto:
                           description: "To automatically enable the trait"
                           type: "boolean"
+                        capabilitiesAdd:
+                          description: "Security Context Capabilities Add configuration (default none)."
+                          items:
+                            description: "Capability represent POSIX capabilities type"
+                            type: "string"
+                          type: "array"
+                        capabilitiesDrop:
+                          description: "Security Context Capabilities Drop configuration (default ALL)."
+                          items:
+                            description: "Capability represent POSIX capabilities type"
+                            type: "string"
+                          type: "array"
                         configuration:
                           description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."
                           type: "object"
@@ -1839,6 +1906,19 @@ spec:
                           type: "string"
                         requestMemory:
                           description: "The minimum amount of memory required."
+                          type: "string"
+                        runAsNonRoot:
+                          description: "Security Context RunAsNonRoot configuration (default false)."
+                          type: "boolean"
+                        runAsUser:
+                          description: "Security Context RunAsUser configuration (default none): this value is automatically retrieved in Openshift clusters when not explicitly set."
+                          format: "int64"
+                          type: "integer"
+                        seccompProfileType:
+                          description: "Security Context SeccompProfileType configuration (default RuntimeDefault)."
+                          enum:
+                            - "Unconfined"
+                            - "RuntimeDefault"
                           type: "string"
                         servicePort:
                           description: "To configure under which service port the container port is to be exposed (default `80`)."
@@ -2655,6 +2735,30 @@ spec:
                             - "edge"
                             - "reencrypt"
                             - "passthrough"
+                          type: "string"
+                      type: "object"
+                    security-context:
+                      description: "The configuration of Security Context trait"
+                      properties:
+                        configuration:
+                          description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."
+                          type: "object"
+                          x-kubernetes-preserve-unknown-fields: true
+                        enabled:
+                          description: "Deprecated: no longer in use."
+                          type: "boolean"
+                        runAsNonRoot:
+                          description: "Security Context RunAsNonRoot configuration (default false)."
+                          type: "boolean"
+                        runAsUser:
+                          description: "Security Context RunAsUser configuration (default none): this value is automatically retrieved in Openshift clusters when not explicitly set."
+                          format: "int64"
+                          type: "integer"
+                        seccompProfileType:
+                          description: "Security Context SeccompProfileType configuration (default RuntimeDefault)."
+                          enum:
+                            - "Unconfined"
+                            - "RuntimeDefault"
                           type: "string"
                       type: "object"
                     service:

@@ -154,8 +154,6 @@ pub enum TriggerAuthenticationAwsSecretManagerPodIdentityIdentityOwner {
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TriggerAuthenticationAwsSecretManagerPodIdentityProvider {
-    #[serde(rename = "azure")]
-    Azure,
     #[serde(rename = "azure-workload")]
     AzureWorkload,
     #[serde(rename = "gcp")]
@@ -164,8 +162,6 @@ pub enum TriggerAuthenticationAwsSecretManagerPodIdentityProvider {
     Aws,
     #[serde(rename = "aws-eks")]
     AwsEks,
-    #[serde(rename = "aws-kiam")]
-    AwsKiam,
     #[serde(rename = "none")]
     None,
 }
@@ -270,8 +266,6 @@ pub enum TriggerAuthenticationAzureKeyVaultPodIdentityIdentityOwner {
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TriggerAuthenticationAzureKeyVaultPodIdentityProvider {
-    #[serde(rename = "azure")]
-    Azure,
     #[serde(rename = "azure-workload")]
     AzureWorkload,
     #[serde(rename = "gcp")]
@@ -280,8 +274,6 @@ pub enum TriggerAuthenticationAzureKeyVaultPodIdentityProvider {
     Aws,
     #[serde(rename = "aws-eks")]
     AwsEks,
-    #[serde(rename = "aws-kiam")]
-    AwsKiam,
     #[serde(rename = "none")]
     None,
 }
@@ -383,8 +375,6 @@ pub enum TriggerAuthenticationGcpSecretManagerPodIdentityIdentityOwner {
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TriggerAuthenticationGcpSecretManagerPodIdentityProvider {
-    #[serde(rename = "azure")]
-    Azure,
     #[serde(rename = "azure-workload")]
     AzureWorkload,
     #[serde(rename = "gcp")]
@@ -393,8 +383,6 @@ pub enum TriggerAuthenticationGcpSecretManagerPodIdentityProvider {
     Aws,
     #[serde(rename = "aws-eks")]
     AwsEks,
-    #[serde(rename = "aws-kiam")]
-    AwsKiam,
     #[serde(rename = "none")]
     None,
 }
@@ -501,8 +489,6 @@ pub enum TriggerAuthenticationPodIdentityIdentityOwner {
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TriggerAuthenticationPodIdentityProvider {
-    #[serde(rename = "azure")]
-    Azure,
     #[serde(rename = "azure-workload")]
     AzureWorkload,
     #[serde(rename = "gcp")]
@@ -511,8 +497,6 @@ pub enum TriggerAuthenticationPodIdentityProvider {
     Aws,
     #[serde(rename = "aws-eks")]
     AwsEks,
-    #[serde(rename = "aws-kiam")]
-    AwsKiam,
     #[serde(rename = "none")]
     None,
 }

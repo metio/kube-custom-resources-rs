@@ -169,10 +169,12 @@ pub struct HCPVaultSecretsAppDestinationTransformationTransformationRefsTemplate
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
 /// 
 /// 
-/// Supported resources: Deployment, DaemonSet, StatefulSet
+/// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HCPVaultSecretsAppRolloutRestartTargets {
+    /// Kind of the resource
     pub kind: HCPVaultSecretsAppRolloutRestartTargetsKind,
+    /// Name of the resource
     pub name: String,
 }
 
@@ -184,12 +186,14 @@ pub struct HCPVaultSecretsAppRolloutRestartTargets {
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
 /// 
 /// 
-/// Supported resources: Deployment, DaemonSet, StatefulSet
+/// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HCPVaultSecretsAppRolloutRestartTargetsKind {
     Deployment,
     DaemonSet,
     StatefulSet,
+    #[serde(rename = "argo.Rollout")]
+    ArgoRollout,
 }
 
 /// HCPVaultSecretsAppStatus defines the observed state of HCPVaultSecretsApp

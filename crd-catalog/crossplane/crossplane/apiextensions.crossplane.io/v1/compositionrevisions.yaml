@@ -197,7 +197,7 @@ spec:
                                   - "Required"
                                 type: "string"
                               mergeOptions:
-                                description: "MergeOptions Specifies merge options on a field path"
+                                description: "MergeOptions Specifies merge options on a field path."
                                 properties:
                                   appendSlice:
                                     description: "Specifies that already existing elements in a merged slice should be preserved"
@@ -475,7 +475,7 @@ spec:
                                     - "Required"
                                   type: "string"
                                 mergeOptions:
-                                  description: "MergeOptions Specifies merge options on a field path"
+                                  description: "MergeOptions Specifies merge options on a field path."
                                   properties:
                                     appendSlice:
                                       description: "Specifies that already existing elements in a merged slice should be preserved"
@@ -842,7 +842,7 @@ spec:
                                     - "Required"
                                   type: "string"
                                 mergeOptions:
-                                  description: "MergeOptions Specifies merge options on a field path"
+                                  description: "MergeOptions Specifies merge options on a field path."
                                   properties:
                                     appendSlice:
                                       description: "Specifies that already existing elements in a merged slice should be preserved"
@@ -1117,6 +1117,10 @@ spec:
                       message:
                         description: "A Message containing details about this condition's last transition from\none status to another, if any."
                         type: "string"
+                      observedGeneration:
+                        description: "ObservedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        type: "integer"
                       reason:
                         description: "A Reason for this condition's last transition from one status to another."
                         type: "string"

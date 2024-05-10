@@ -26,7 +26,18 @@ pub struct JobSetSpec {
     /// finished with status failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<JobSetFailurePolicy>,
-    /// ManagedBy is used to indicate the controller or entity that manages a JobSet
+    /// ManagedBy is used to indicate the controller or entity that manages a JobSet.
+    /// The built-in JobSet controller reconciles JobSets which don't have this
+    /// field at all or the field value is the reserved string
+    /// `jobset.sigs.k8s.io/jobset-controller`, but skips reconciling JobSets
+    /// with a custom value for this field.
+    /// 
+    /// 
+    /// The value must be a valid domain-prefixed path (e.g. acme.io/foo) -
+    /// all characters before the first "/" must be a valid subdomain as defined
+    /// by RFC 1123. All characters trailing the first "/" must be valid HTTP Path
+    /// characters as defined by RFC 3986. The value cannot exceed 63 characters.
+    /// The field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedBy")]
     pub managed_by: Option<String>,
     /// Network defines the networking options for the jobset.

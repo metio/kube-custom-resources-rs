@@ -1581,26 +1581,10 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsResponders {
     pub name: Option<String>,
     /// Type of responder.
     #[serde(rename = "type")]
-    pub r#type: AlertmanagerConfigReceiversOpsgenieConfigsRespondersType,
+    pub r#type: String,
     /// Username of the responder.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
-}
-
-/// OpsGenieConfigResponder defines a responder to an incident.
-/// One of `id`, `name` or `username` has to be defined.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum AlertmanagerConfigReceiversOpsgenieConfigsRespondersType {
-    #[serde(rename = "team")]
-    Team,
-    #[serde(rename = "teams")]
-    Teams,
-    #[serde(rename = "user")]
-    User,
-    #[serde(rename = "escalation")]
-    Escalation,
-    #[serde(rename = "schedule")]
-    Schedule,
 }
 
 /// PagerDutyConfig configures notifications via PagerDuty.

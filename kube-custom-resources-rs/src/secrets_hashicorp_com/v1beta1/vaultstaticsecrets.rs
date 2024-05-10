@@ -186,10 +186,12 @@ pub struct VaultStaticSecretDestinationTransformationTransformationRefsTemplateR
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
 /// 
 /// 
-/// Supported resources: Deployment, DaemonSet, StatefulSet
+/// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VaultStaticSecretRolloutRestartTargets {
+    /// Kind of the resource
     pub kind: VaultStaticSecretRolloutRestartTargetsKind,
+    /// Name of the resource
     pub name: String,
 }
 
@@ -201,12 +203,14 @@ pub struct VaultStaticSecretRolloutRestartTargets {
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
 /// 
 /// 
-/// Supported resources: Deployment, DaemonSet, StatefulSet
+/// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VaultStaticSecretRolloutRestartTargetsKind {
     Deployment,
     DaemonSet,
     StatefulSet,
+    #[serde(rename = "argo.Rollout")]
+    ArgoRollout,
 }
 
 /// VaultStaticSecretSpec defines the desired state of VaultStaticSecret

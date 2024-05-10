@@ -157,6 +157,24 @@ pub struct PerconaPGClusterBackupsPgbackrest {
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestConfiguration {
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+    /// of ClusterTrustBundle objects in an auto-updating file.
+    /// 
+    /// 
+    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+    /// 
+    /// 
+    /// ClusterTrustBundle objects can either be selected by name, or by the
+    /// combination of signer name and a label selector.
+    /// 
+    /// 
+    /// Kubelet performs aggressive normalization of the PEM contents written
+    /// into the pod filesystem.  Esoteric PEM features such as inter-block
+    /// comments and block headers are stripped.  Certificates are deduplicated.
+    /// The ordering of certificates within the file is arbitrary, and Kubelet
+    /// may change the order over time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<PerconaPGClusterBackupsPgbackrestConfigurationClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PerconaPGClusterBackupsPgbackrestConfigurationConfigMap>,
@@ -169,6 +187,83 @@ pub struct PerconaPGClusterBackupsPgbackrestConfiguration {
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<PerconaPGClusterBackupsPgbackrestConfigurationServiceAccountToken>,
+}
+
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+/// of ClusterTrustBundle objects in an auto-updating file.
+/// 
+/// 
+/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+/// 
+/// 
+/// ClusterTrustBundle objects can either be selected by name, or by the
+/// combination of signer name and a label selector.
+/// 
+/// 
+/// Kubelet performs aggressive normalization of the PEM contents written
+/// into the pod filesystem.  Esoteric PEM features such as inter-block
+/// comments and block headers are stripped.  Certificates are deduplicated.
+/// The ordering of certificates within the file is arbitrary, and Kubelet
+/// may change the order over time.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterBackupsPgbackrestConfigurationClusterTrustBundle {
+    /// Select all ClusterTrustBundles that match this label selector.  Only has
+    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+    /// interpreted as "match nothing".  If set but empty, interpreted as "match
+    /// everything".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PerconaPGClusterBackupsPgbackrestConfigurationClusterTrustBundleLabelSelector>,
+    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
+    /// with signerName and labelSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
+    /// aren't available.  If using name, then the named ClusterTrustBundle is
+    /// allowed not to exist.  If using signerName, then the combination of
+    /// signerName and labelSelector is allowed to match zero
+    /// ClusterTrustBundles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Relative path from the volume root to write the bundle.
+    pub path: String,
+    /// Select all ClusterTrustBundles that match this signer name.
+    /// Mutually-exclusive with name.  The contents of all selected
+    /// ClusterTrustBundles will be unified and deduplicated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+/// Select all ClusterTrustBundles that match this label selector.  Only has
+/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+/// interpreted as "match nothing".  If set but empty, interpreted as "match
+/// everything".
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterBackupsPgbackrestConfigurationClusterTrustBundleLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaPGClusterBackupsPgbackrestConfigurationClusterTrustBundleLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterBackupsPgbackrestConfigurationClusterTrustBundleLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// configMap information about the configMap data to project
@@ -224,7 +319,7 @@ pub struct PerconaPGClusterBackupsPgbackrestConfigurationDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestConfigurationDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<PerconaPGClusterBackupsPgbackrestConfigurationDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -243,7 +338,7 @@ pub struct PerconaPGClusterBackupsPgbackrestConfigurationDownwardApiItems {
     pub resource_field_ref: Option<PerconaPGClusterBackupsPgbackrestConfigurationDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestConfigurationDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -556,8 +651,31 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityPreferredDuri
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -581,6 +699,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityPreferredDuri
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -653,8 +772,31 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityPreferredDuri
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -678,6 +820,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityRequiredDurin
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -781,8 +924,31 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityPreferred
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -806,6 +972,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityPreferred
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -878,8 +1045,31 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityPreferred
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -903,6 +1093,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityRequiredD
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1005,6 +1196,10 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsResourcesClaims {
 /// SecurityContext defines the security settings for PGBackRest pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestJobsSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<PerconaPGClusterBackupsPgbackrestJobsSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
@@ -1084,6 +1279,25 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PerconaPGClusterBackupsPgbackrestJobsSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterBackupsPgbackrestJobsSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -1454,8 +1668,31 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityPreferred
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -1479,6 +1716,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityPreferred
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1551,8 +1789,31 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityPreferred
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -1576,6 +1837,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityRequiredD
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1679,8 +1941,31 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityPrefe
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -1704,6 +1989,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityPrefe
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1776,8 +2062,31 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityPrefe
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -1801,6 +2110,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityRequi
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1902,6 +2212,10 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostResourcesClaims {
 /// SecurityContext defines the security settings for PGBackRest pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRepoHostSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<PerconaPGClusterBackupsPgbackrestRepoHostSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
@@ -1981,6 +2295,25 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PerconaPGClusterBackupsPgbackrestRepoHostSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterBackupsPgbackrestRepoHostSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -2239,9 +2572,6 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    /// 
-    /// 
-    /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
@@ -2468,6 +2798,20 @@ pub struct PerconaPGClusterBackupsPgbackrestReposVolumeVolumeClaimSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
@@ -2546,17 +2890,6 @@ pub struct PerconaPGClusterBackupsPgbackrestReposVolumeVolumeClaimSpecDataSource
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestReposVolumeVolumeClaimSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<PerconaPGClusterBackupsPgbackrestReposVolumeVolumeClaimSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2567,15 +2900,6 @@ pub struct PerconaPGClusterBackupsPgbackrestReposVolumeVolumeClaimSpecResources 
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct PerconaPGClusterBackupsPgbackrestReposVolumeVolumeClaimSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -2844,8 +3168,31 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityPreferredD
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -2869,6 +3216,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityPreferredD
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -2941,8 +3289,31 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityPreferredD
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -2966,6 +3337,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityRequiredDu
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3069,8 +3441,31 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityPrefer
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -3094,6 +3489,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityPrefer
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3166,8 +3562,31 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityPrefer
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -3191,6 +3610,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityRequir
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3677,8 +4097,31 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityPreferredDurin
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -3702,6 +4145,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityPreferredDurin
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3774,8 +4218,31 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityPreferredDurin
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -3799,6 +4266,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityRequiredDuring
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3902,8 +4370,31 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityPreferredD
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -3927,6 +4418,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityPreferredD
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3999,8 +4491,31 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityPreferredD
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -4024,6 +4539,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityRequiredDu
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -4090,6 +4606,24 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityRequiredDu
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestConfiguration {
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+    /// of ClusterTrustBundle objects in an auto-updating file.
+    /// 
+    /// 
+    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+    /// 
+    /// 
+    /// ClusterTrustBundle objects can either be selected by name, or by the
+    /// combination of signer name and a label selector.
+    /// 
+    /// 
+    /// Kubelet performs aggressive normalization of the PEM contents written
+    /// into the pod filesystem.  Esoteric PEM features such as inter-block
+    /// comments and block headers are stripped.  Certificates are deduplicated.
+    /// The ordering of certificates within the file is arbitrary, and Kubelet
+    /// may change the order over time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<PerconaPGClusterDataSourcePgbackrestConfigurationClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PerconaPGClusterDataSourcePgbackrestConfigurationConfigMap>,
@@ -4102,6 +4636,83 @@ pub struct PerconaPGClusterDataSourcePgbackrestConfiguration {
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<PerconaPGClusterDataSourcePgbackrestConfigurationServiceAccountToken>,
+}
+
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+/// of ClusterTrustBundle objects in an auto-updating file.
+/// 
+/// 
+/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+/// 
+/// 
+/// ClusterTrustBundle objects can either be selected by name, or by the
+/// combination of signer name and a label selector.
+/// 
+/// 
+/// Kubelet performs aggressive normalization of the PEM contents written
+/// into the pod filesystem.  Esoteric PEM features such as inter-block
+/// comments and block headers are stripped.  Certificates are deduplicated.
+/// The ordering of certificates within the file is arbitrary, and Kubelet
+/// may change the order over time.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterDataSourcePgbackrestConfigurationClusterTrustBundle {
+    /// Select all ClusterTrustBundles that match this label selector.  Only has
+    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+    /// interpreted as "match nothing".  If set but empty, interpreted as "match
+    /// everything".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PerconaPGClusterDataSourcePgbackrestConfigurationClusterTrustBundleLabelSelector>,
+    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
+    /// with signerName and labelSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
+    /// aren't available.  If using name, then the named ClusterTrustBundle is
+    /// allowed not to exist.  If using signerName, then the combination of
+    /// signerName and labelSelector is allowed to match zero
+    /// ClusterTrustBundles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Relative path from the volume root to write the bundle.
+    pub path: String,
+    /// Select all ClusterTrustBundles that match this signer name.
+    /// Mutually-exclusive with name.  The contents of all selected
+    /// ClusterTrustBundles will be unified and deduplicated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+/// Select all ClusterTrustBundles that match this label selector.  Only has
+/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+/// interpreted as "match nothing".  If set but empty, interpreted as "match
+/// everything".
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterDataSourcePgbackrestConfigurationClusterTrustBundleLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaPGClusterDataSourcePgbackrestConfigurationClusterTrustBundleLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterDataSourcePgbackrestConfigurationClusterTrustBundleLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// configMap information about the configMap data to project
@@ -4157,7 +4768,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestConfigurationDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestConfigurationDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<PerconaPGClusterDataSourcePgbackrestConfigurationDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -4176,7 +4787,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestConfigurationDownwardApiItems {
     pub resource_field_ref: Option<PerconaPGClusterDataSourcePgbackrestConfigurationDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestConfigurationDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -4402,6 +5013,20 @@ pub struct PerconaPGClusterDataSourcePgbackrestRepoVolumeVolumeClaimSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
@@ -4480,17 +5105,6 @@ pub struct PerconaPGClusterDataSourcePgbackrestRepoVolumeVolumeClaimSpecDataSour
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestRepoVolumeVolumeClaimSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<PerconaPGClusterDataSourcePgbackrestRepoVolumeVolumeClaimSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4501,15 +5115,6 @@ pub struct PerconaPGClusterDataSourcePgbackrestRepoVolumeVolumeClaimSpecResource
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct PerconaPGClusterDataSourcePgbackrestRepoVolumeVolumeClaimSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -4844,8 +5449,31 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityPreferred
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -4869,6 +5497,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityPreferred
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -4941,8 +5570,31 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityPreferred
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -4966,6 +5618,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityRequiredD
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -5069,8 +5722,31 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityPrefe
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -5094,6 +5770,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityPrefe
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -5166,8 +5843,31 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityPrefe
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -5191,6 +5891,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityRequi
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -5841,8 +6542,31 @@ pub struct PerconaPGClusterInstancesAffinityPodAffinityPreferredDuringScheduling
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterInstancesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -5866,6 +6590,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAffinityPreferredDuringScheduling
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -5938,8 +6663,31 @@ pub struct PerconaPGClusterInstancesAffinityPodAffinityPreferredDuringScheduling
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterInstancesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -5963,6 +6711,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAffinityRequiredDuringSchedulingI
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -6066,8 +6815,31 @@ pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityPreferredDuringSchedu
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterInstancesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -6091,6 +6863,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityPreferredDuringSchedu
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -6163,8 +6936,31 @@ pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityPreferredDuringSchedu
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterInstancesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -6188,6 +6984,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityRequiredDuringSchedul
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -6308,6 +7105,20 @@ pub struct PerconaPGClusterInstancesDataVolumeClaimSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
@@ -6386,17 +7197,6 @@ pub struct PerconaPGClusterInstancesDataVolumeClaimSpecDataSourceRef {
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesDataVolumeClaimSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<PerconaPGClusterInstancesDataVolumeClaimSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6407,15 +7207,6 @@ pub struct PerconaPGClusterInstancesDataVolumeClaimSpecResources {
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct PerconaPGClusterInstancesDataVolumeClaimSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -6786,6 +7577,9 @@ pub struct PerconaPGClusterInstancesInitContainersLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PerconaPGClusterInstancesInitContainersLifecyclePostStartHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<PerconaPGClusterInstancesInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -6838,6 +7632,13 @@ pub struct PerconaPGClusterInstancesInitContainersLifecyclePostStartHttpGetHttpH
     pub value: String,
 }
 
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterInstancesInitContainersLifecyclePostStartSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
+}
+
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
 /// for the backward compatibility. There are no validation of this field and
 /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -6869,6 +7670,9 @@ pub struct PerconaPGClusterInstancesInitContainersLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PerconaPGClusterInstancesInitContainersLifecyclePreStopHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<PerconaPGClusterInstancesInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -6919,6 +7723,13 @@ pub struct PerconaPGClusterInstancesInitContainersLifecyclePreStopHttpGetHttpHea
     pub name: String,
     /// The header field value
     pub value: String,
+}
+
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterInstancesInitContainersLifecyclePreStopSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -7274,6 +8085,11 @@ pub struct PerconaPGClusterInstancesInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<PerconaPGClusterInstancesInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -7338,6 +8154,26 @@ pub struct PerconaPGClusterInstancesInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PerconaPGClusterInstancesInitContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterInstancesInitContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -7573,6 +8409,8 @@ pub struct PerconaPGClusterInstancesInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -7581,6 +8419,28 @@ pub struct PerconaPGClusterInstancesInitContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -7640,6 +8500,10 @@ pub struct PerconaPGClusterInstancesResourcesClaims {
 /// SecurityContext defines the security settings for a PostgreSQL pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<PerconaPGClusterInstancesSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
@@ -7719,6 +8583,25 @@ pub struct PerconaPGClusterInstancesSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PerconaPGClusterInstancesSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterInstancesSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -8139,6 +9022,9 @@ pub struct PerconaPGClusterInstancesSidecarsLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PerconaPGClusterInstancesSidecarsLifecyclePostStartHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<PerconaPGClusterInstancesSidecarsLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -8191,6 +9077,13 @@ pub struct PerconaPGClusterInstancesSidecarsLifecyclePostStartHttpGetHttpHeaders
     pub value: String,
 }
 
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterInstancesSidecarsLifecyclePostStartSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
+}
+
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
 /// for the backward compatibility. There are no validation of this field and
 /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -8222,6 +9115,9 @@ pub struct PerconaPGClusterInstancesSidecarsLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PerconaPGClusterInstancesSidecarsLifecyclePreStopHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<PerconaPGClusterInstancesSidecarsLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -8272,6 +9168,13 @@ pub struct PerconaPGClusterInstancesSidecarsLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     /// The header field value
     pub value: String,
+}
+
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterInstancesSidecarsLifecyclePreStopSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -8627,6 +9530,11 @@ pub struct PerconaPGClusterInstancesSidecarsSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<PerconaPGClusterInstancesSidecarsSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8691,6 +9599,26 @@ pub struct PerconaPGClusterInstancesSidecarsSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PerconaPGClusterInstancesSidecarsSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterInstancesSidecarsSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -8926,6 +9854,8 @@ pub struct PerconaPGClusterInstancesSidecarsVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -8934,6 +9864,28 @@ pub struct PerconaPGClusterInstancesSidecarsVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -9036,9 +9988,6 @@ pub struct PerconaPGClusterInstancesTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    /// 
-    /// 
-    /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
@@ -9139,6 +10088,8 @@ pub struct PerconaPGClusterInstancesVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -9147,6 +10098,28 @@ pub struct PerconaPGClusterInstancesVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -9216,6 +10189,20 @@ pub struct PerconaPGClusterInstancesWalVolumeClaimSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
@@ -9294,17 +10281,6 @@ pub struct PerconaPGClusterInstancesWalVolumeClaimSpecDataSourceRef {
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterInstancesWalVolumeClaimSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<PerconaPGClusterInstancesWalVolumeClaimSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9315,15 +10291,6 @@ pub struct PerconaPGClusterInstancesWalVolumeClaimSpecResources {
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct PerconaPGClusterInstancesWalVolumeClaimSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -9458,6 +10425,11 @@ pub struct PerconaPGClusterPmmContainerSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<PerconaPGClusterPmmContainerSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -9522,6 +10494,26 @@ pub struct PerconaPGClusterPmmContainerSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PerconaPGClusterPmmContainerSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterPmmContainerSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -9933,8 +10925,31 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityPreferredDuringSched
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterProxyPgBouncerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -9958,6 +10973,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityPreferredDuringSched
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -10030,8 +11046,31 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityPreferredDuringSched
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterProxyPgBouncerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -10055,6 +11094,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityRequiredDuringSchedu
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -10158,8 +11198,31 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityPreferredDuringS
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -10183,6 +11246,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityPreferredDuringS
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -10255,8 +11319,31 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityPreferredDuringS
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -10280,6 +11367,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityRequiredDuringSc
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -10378,6 +11466,24 @@ pub struct PerconaPGClusterProxyPgBouncerConfig {
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerConfigFiles {
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+    /// of ClusterTrustBundle objects in an auto-updating file.
+    /// 
+    /// 
+    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+    /// 
+    /// 
+    /// ClusterTrustBundle objects can either be selected by name, or by the
+    /// combination of signer name and a label selector.
+    /// 
+    /// 
+    /// Kubelet performs aggressive normalization of the PEM contents written
+    /// into the pod filesystem.  Esoteric PEM features such as inter-block
+    /// comments and block headers are stripped.  Certificates are deduplicated.
+    /// The ordering of certificates within the file is arbitrary, and Kubelet
+    /// may change the order over time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<PerconaPGClusterProxyPgBouncerConfigFilesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PerconaPGClusterProxyPgBouncerConfigFilesConfigMap>,
@@ -10390,6 +11496,83 @@ pub struct PerconaPGClusterProxyPgBouncerConfigFiles {
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<PerconaPGClusterProxyPgBouncerConfigFilesServiceAccountToken>,
+}
+
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+/// of ClusterTrustBundle objects in an auto-updating file.
+/// 
+/// 
+/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+/// 
+/// 
+/// ClusterTrustBundle objects can either be selected by name, or by the
+/// combination of signer name and a label selector.
+/// 
+/// 
+/// Kubelet performs aggressive normalization of the PEM contents written
+/// into the pod filesystem.  Esoteric PEM features such as inter-block
+/// comments and block headers are stripped.  Certificates are deduplicated.
+/// The ordering of certificates within the file is arbitrary, and Kubelet
+/// may change the order over time.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterProxyPgBouncerConfigFilesClusterTrustBundle {
+    /// Select all ClusterTrustBundles that match this label selector.  Only has
+    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+    /// interpreted as "match nothing".  If set but empty, interpreted as "match
+    /// everything".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PerconaPGClusterProxyPgBouncerConfigFilesClusterTrustBundleLabelSelector>,
+    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
+    /// with signerName and labelSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
+    /// aren't available.  If using name, then the named ClusterTrustBundle is
+    /// allowed not to exist.  If using signerName, then the combination of
+    /// signerName and labelSelector is allowed to match zero
+    /// ClusterTrustBundles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Relative path from the volume root to write the bundle.
+    pub path: String,
+    /// Select all ClusterTrustBundles that match this signer name.
+    /// Mutually-exclusive with name.  The contents of all selected
+    /// ClusterTrustBundles will be unified and deduplicated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+/// Select all ClusterTrustBundles that match this label selector.  Only has
+/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+/// interpreted as "match nothing".  If set but empty, interpreted as "match
+/// everything".
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterProxyPgBouncerConfigFilesClusterTrustBundleLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaPGClusterProxyPgBouncerConfigFilesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterProxyPgBouncerConfigFilesClusterTrustBundleLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// configMap information about the configMap data to project
@@ -10445,7 +11628,7 @@ pub struct PerconaPGClusterProxyPgBouncerConfigFilesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerConfigFilesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<PerconaPGClusterProxyPgBouncerConfigFilesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -10464,7 +11647,7 @@ pub struct PerconaPGClusterProxyPgBouncerConfigFilesDownwardApiItems {
     pub resource_field_ref: Option<PerconaPGClusterProxyPgBouncerConfigFilesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerConfigFilesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -10679,6 +11862,10 @@ pub struct PerconaPGClusterProxyPgBouncerResourcesClaims {
 /// SecurityContext defines the security settings for PGBouncer pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<PerconaPGClusterProxyPgBouncerSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
@@ -10758,6 +11945,25 @@ pub struct PerconaPGClusterProxyPgBouncerSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PerconaPGClusterProxyPgBouncerSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterProxyPgBouncerSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -11178,6 +12384,9 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PerconaPGClusterProxyPgBouncerSidecarsLifecyclePostStartHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<PerconaPGClusterProxyPgBouncerSidecarsLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -11230,6 +12439,13 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsLifecyclePostStartHttpGetHttpHe
     pub value: String,
 }
 
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterProxyPgBouncerSidecarsLifecyclePostStartSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
+}
+
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
 /// for the backward compatibility. There are no validation of this field and
 /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -11261,6 +12477,9 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PerconaPGClusterProxyPgBouncerSidecarsLifecyclePreStopHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<PerconaPGClusterProxyPgBouncerSidecarsLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -11311,6 +12530,13 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsLifecyclePreStopHttpGetHttpHead
     pub name: String,
     /// The header field value
     pub value: String,
+}
+
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterProxyPgBouncerSidecarsLifecyclePreStopSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -11666,6 +12892,11 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<PerconaPGClusterProxyPgBouncerSidecarsSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -11730,6 +12961,26 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PerconaPGClusterProxyPgBouncerSidecarsSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterProxyPgBouncerSidecarsSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -11965,6 +13216,8 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -11973,6 +13226,28 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -12075,9 +13350,6 @@ pub struct PerconaPGClusterProxyPgBouncerTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    /// 
-    /// 
-    /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector

@@ -246,10 +246,12 @@ pub struct VaultPKISecretDestinationTransformationTransformationRefsTemplateRefs
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
 /// 
 /// 
-/// Supported resources: Deployment, DaemonSet, StatefulSet
+/// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VaultPKISecretRolloutRestartTargets {
+    /// Kind of the resource
     pub kind: VaultPKISecretRolloutRestartTargetsKind,
+    /// Name of the resource
     pub name: String,
 }
 
@@ -261,12 +263,14 @@ pub struct VaultPKISecretRolloutRestartTargets {
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
 /// 
 /// 
-/// Supported resources: Deployment, DaemonSet, StatefulSet
+/// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VaultPKISecretRolloutRestartTargetsKind {
     Deployment,
     DaemonSet,
     StatefulSet,
+    #[serde(rename = "argo.Rollout")]
+    ArgoRollout,
 }
 
 /// VaultPKISecretStatus defines the observed state of VaultPKISecret

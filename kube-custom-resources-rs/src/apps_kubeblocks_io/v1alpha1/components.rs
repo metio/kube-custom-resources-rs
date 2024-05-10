@@ -28,7 +28,6 @@ pub struct ComponentSpec {
     /// Specifies the name of the referenced ComponentDefinition.
     #[serde(rename = "compDef")]
     pub comp_def: String,
-    /// Reserved field for future use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<ComponentConfigs>>,
     /// Specifies which types of logs should be collected for the Cluster. The log types are defined in the `componentDefinition.spec.logConfigs` field with the LogConfig entries. 
@@ -145,85 +144,44 @@ pub enum ComponentAffinityTenancy {
     DedicatedNode,
 }
 
+/// ClusterComponentConfig represents a config with its source bound.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentConfigs {
-    /// Specifies the containers to inject the ConfigMap parameters as environment variables. 
-    ///  This is useful when application images accept parameters through environment variables and generate the final configuration file in the startup script based on these variables. 
-    ///  This field allows users to specify a list of container names, and KubeBlocks will inject the environment variables converted from the ConfigMap into these designated containers. This provides a flexible way to pass the configuration items from the ConfigMap to the container without modifying the image. 
-    ///  Deprecated: `asEnvFrom` has been deprecated since 0.9.0 and will be removed in 0.10.0. Use `injectEnvTo` instead.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "asEnvFrom")]
-    pub as_env_from: Option<Vec<String>>,
-    /// Specifies the name of the referenced configuration constraints object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintRef")]
-    pub constraint_ref: Option<String>,
-    /// Deprecated: DefaultMode is deprecated since 0.9.0 and will be removed in 0.10.0 for scripts, auto set 0555 for configs, auto set 0444 Refers to the mode bits used to set permissions on created files by default. 
-    ///  Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. 
-    ///  Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// ConfigMap source for the config.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ComponentConfigsConfigMap>,
+    /// The name of the config.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ConfigMap source for the config.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentConfigsConfigMap {
+    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// Specifies the containers to inject the ConfigMap parameters as environment variables. 
-    ///  This is useful when application images accept parameters through environment variables and generate the final configuration file in the startup script based on these variables. 
-    ///  This field allows users to specify a list of container names, and KubeBlocks will inject the environment variables converted from the ConfigMap into these designated containers. This provides a flexible way to pass the configuration items from the ConfigMap to the container without modifying the image.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "injectEnvTo")]
-    pub inject_env_to: Option<Vec<String>>,
-    /// Specifies the configuration files within the ConfigMap that support dynamic updates. 
-    ///  A configuration template (provided in the form of a ConfigMap) may contain templates for multiple configuration files. Each configuration file corresponds to a key in the ConfigMap. Some of these configuration files may support dynamic modification and reloading without requiring a pod restart. 
-    ///  If empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates, and ConfigConstraint applies to all keys.
+    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub keys: Option<Vec<String>>,
-    /// Specifies the secondary rendered config spec for pod-specific customization. 
-    ///  The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main template's render result to generate the final configuration file. 
-    ///  This field is intended to handle scenarios where different pods within the same Component have varying configurations. It allows for pod-specific customization of the configuration. 
-    ///  Note: This field will be deprecated in future versions, and the functionality will be moved to `cluster.spec.componentSpecs[*].instances[*]`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "legacyRenderedConfigSpec")]
-    pub legacy_rendered_config_spec: Option<ComponentConfigsLegacyRenderedConfigSpec>,
-    /// Specifies the name of the configuration template.
-    pub name: String,
-    /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
+    pub items: Option<Vec<ComponentConfigsConfigMapItems>>,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes. 
-    ///  In some scenarios, the configuration may need to be updated to reflect the changes in resource allocation or cluster topology. Examples: 
-    ///  - Redis: adjust maxmemory after v-scale operation. - MySQL: increase max connections after v-scale operation. - Zookeeper: update zoo.cfg with new node addresses after h-scale operation.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reRenderResourceTypes")]
-    pub re_render_resource_types: Option<Vec<String>>,
-    /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(rename = "templateRef")]
-    pub template_ref: String,
-    /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration template will be mounted to the corresponding volume. Must be a DNS_LABEL name. The volume name must be defined in podSpec.containers[*].volumeMounts.
-    #[serde(rename = "volumeName")]
-    pub volume_name: String,
+    pub name: Option<String>,
+    /// optional specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
-/// Specifies the secondary rendered config spec for pod-specific customization. 
-///  The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main template's render result to generate the final configuration file. 
-///  This field is intended to handle scenarios where different pods within the same Component have varying configurations. It allows for pod-specific customization of the configuration. 
-///  Note: This field will be deprecated in future versions, and the functionality will be moved to `cluster.spec.componentSpecs[*].instances[*]`.
+/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentConfigsLegacyRenderedConfigSpec {
-    /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
+pub struct ComponentConfigsConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Defines the strategy for merging externally imported templates into component templates.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub policy: Option<ComponentConfigsLegacyRenderedConfigSpecPolicy>,
-    /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(rename = "templateRef")]
-    pub template_ref: String,
-}
-
-/// Specifies the secondary rendered config spec for pod-specific customization. 
-///  The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main template's render result to generate the final configuration file. 
-///  This field is intended to handle scenarios where different pods within the same Component have varying configurations. It allows for pod-specific customization of the configuration. 
-///  Note: This field will be deprecated in future versions, and the functionality will be moved to `cluster.spec.componentSpecs[*].instances[*]`.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentConfigsLegacyRenderedConfigSpecPolicy {
-    #[serde(rename = "patch")]
-    Patch,
-    #[serde(rename = "replace")]
-    Replace,
-    #[serde(rename = "none")]
-    None,
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
 }
 
 /// InstanceTemplate allows customization of individual replica configurations in a Component.

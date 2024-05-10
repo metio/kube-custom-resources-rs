@@ -99,15 +99,20 @@ spec:
                   type: "object"
                 ownerID:
                   description: "ownerID is a unique string used to identify the owner of this record."
+                  maxLength: 12
+                  minLength: 6
                   type: "string"
                   x-kubernetes-validations:
                     - message: "OwnerID is immutable"
                       rule: "self == oldSelf"
                 rootHost:
-                  description: "rootHost is the single root for all endpoints in a DNSRecord. If rootHost is set, it is expected all defined endpoints are children of or equal to this rootHost"
+                  description: "rootHost is the single root for all endpoints in a DNSRecord. it is expected all defined endpoints are children of or equal to this rootHost"
+                  minLength: 1
                   type: "string"
               required:
                 - "managedZone"
+                - "ownerID"
+                - "rootHost"
               type: "object"
             status:
               description: "DNSRecordStatus defines the observed state of DNSRecord"

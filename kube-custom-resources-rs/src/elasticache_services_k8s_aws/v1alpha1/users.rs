@@ -26,10 +26,12 @@ pub struct UserSpec {
     /// Indicates a password is not required for this user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noPasswordRequired")]
     pub no_password_required: Option<bool>,
-    /// Passwords used for this user. You can create up to two passwords for each user.
+    /// Passwords used for this user. You can create up to two passwords for each
+    /// user.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub passwords: Option<Vec<UserPasswords>>,
-    /// A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.
+    /// A list of tags to be added to this resource. A tag is a key-value pair. A
+    /// tag key must be accompanied by a tag value, although null is accepted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<UserTags>>,
     /// The ID of the user.
@@ -40,7 +42,8 @@ pub struct UserSpec {
     pub user_name: String,
 }
 
-/// SecretKeyReference combines a k8s corev1.SecretReference with a specific key within the referred-to Secret
+/// SecretKeyReference combines a k8s corev1.SecretReference with a
+/// specific key within the referred-to Secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserPasswords {
     /// Key is the key within the secret
@@ -53,7 +56,12 @@ pub struct UserPasswords {
     pub namespace: Option<String>,
 }
 
-/// A tag that can be added to an ElastiCache cluster or replication group. Tags are composed of a Key/Value pair. You can use tags to categorize and track all your ElastiCache resources, with the exception of global replication group. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. A tag with a null Value is permitted.
+/// A tag that can be added to an ElastiCache cluster or replication group. Tags
+/// are composed of a Key/Value pair. You can use tags to categorize and track
+/// all your ElastiCache resources, with the exception of global replication
+/// group. When you add or remove tags on replication groups, those actions will
+/// be replicated to all nodes in the replication group. A tag with a null Value
+/// is permitted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -65,13 +73,18 @@ pub struct UserTags {
 /// UserStatus defines the observed state of User
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<UserStatusAckResourceMetadata>,
     /// Denotes whether the user requires a password to authenticate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<UserStatusAuthentication>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Access permissions string used for this user.
@@ -91,13 +104,23 @@ pub struct UserStatus {
     pub user_group_i_ds: Option<Vec<String>>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.

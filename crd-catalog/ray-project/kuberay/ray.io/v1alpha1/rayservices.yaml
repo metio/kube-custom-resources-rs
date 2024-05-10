@@ -7306,6 +7306,9 @@ spec:
                         observedGeneration:
                           format: "int64"
                           type: "integer"
+                        readyWorkerReplicas:
+                          format: "int32"
+                          type: "integer"
                         reason:
                           type: "string"
                         state:
@@ -7401,6 +7404,9 @@ spec:
                           type: "integer"
                         observedGeneration:
                           format: "int64"
+                          type: "integer"
+                        readyWorkerReplicas:
+                          format: "int32"
                           type: "integer"
                         reason:
                           type: "string"

@@ -90,7 +90,6 @@ spec:
                                       type: "object"
                                     spec:
                                       description: "Specification of the desired behavior of the pod."
-                                      type: "object"
                                       x-kubernetes-preserve-unknown-fields: true
                                   type: "object"
                               type: "object"
@@ -2147,7 +2146,6 @@ spec:
                                           type: "object"
                                         spec:
                                           description: "Specification of the desired behavior of the pod."
-                                          type: "object"
                                           x-kubernetes-preserve-unknown-fields: true
                                       type: "object"
                                   type: "object"
@@ -2257,7 +2255,6 @@ spec:
                                           type: "object"
                                         spec:
                                           description: "Specification of the desired behavior of the pod."
-                                          type: "object"
                                           x-kubernetes-preserve-unknown-fields: true
                                       type: "object"
                                   type: "object"
@@ -2371,7 +2368,6 @@ spec:
                                           type: "object"
                                         spec:
                                           description: "Specification of the desired behavior of the pod."
-                                          type: "object"
                                           x-kubernetes-preserve-unknown-fields: true
                                       type: "object"
                                   type: "object"
@@ -2481,7 +2477,6 @@ spec:
                                           type: "object"
                                         spec:
                                           description: "Specification of the desired behavior of the pod."
-                                          type: "object"
                                           x-kubernetes-preserve-unknown-fields: true
                                       type: "object"
                                   type: "object"
@@ -2575,7 +2570,6 @@ spec:
                                       type: "object"
                                     spec:
                                       description: "Specification of the desired behavior of the pod."
-                                      type: "object"
                                       x-kubernetes-preserve-unknown-fields: true
                                   type: "object"
                               type: "object"
@@ -2639,7 +2633,6 @@ spec:
                                           type: "object"
                                         spec:
                                           description: "Specification of the desired behavior of the pod."
-                                          type: "object"
                                           x-kubernetes-preserve-unknown-fields: true
                                       type: "object"
                                   type: "object"
@@ -2778,7 +2771,6 @@ spec:
                                       type: "object"
                                     spec:
                                       description: "Specification of the desired behavior of the pod."
-                                      type: "object"
                                       x-kubernetes-preserve-unknown-fields: true
                                   type: "object"
                               type: "object"

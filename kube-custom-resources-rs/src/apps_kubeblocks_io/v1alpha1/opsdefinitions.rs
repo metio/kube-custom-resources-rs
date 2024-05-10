@@ -21,17 +21,17 @@ pub struct OpsDefinitionSpec {
     /// Specifies a list of OpsAction where each customized action is executed sequentially.
     pub actions: Vec<OpsDefinitionActions>,
     /// Specifies a list of ComponentDefinition for Components associated with this OpsDefinition. It also includes connection credentials (address and account) for each Component.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefinitionRefs")]
-    pub component_definition_refs: Option<Vec<OpsDefinitionComponentDefinitionRefs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentInfos")]
+    pub component_infos: Option<Vec<OpsDefinitionComponentInfos>>,
     /// Specifies the schema for validating the data types and value ranges of parameters in OpsActions before their usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parametersSchema")]
     pub parameters_schema: Option<OpsDefinitionParametersSchema>,
+    /// Specifies a list of PodInfoExtractor, each designed to select a specific Pod and extract selected runtime info from its PodSpec. The extracted information, such as environment variables, volumes and tolerations, are then injected into Jobs or Pods that execute the OpsActions defined in `actions`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podInfoExtractors")]
+    pub pod_info_extractors: Option<Vec<OpsDefinitionPodInfoExtractors>>,
     /// Specifies the preconditions that must be met to run the actions for the operation. if set, it will check the condition before the Component runs this operation. Example: ```yaml preConditions: - rule: expression: '{{ eq .component.status.phase "Running" }}' message: Component is not in Running status. ```
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preConditions")]
     pub pre_conditions: Option<Vec<OpsDefinitionPreConditions>>,
-    /// Specifies a list of TargetPodTemplate, each designed to select a specific Pod and extract selected runtime info from its PodSpec. The extracted information, such as environment variables, volumes and tolerations, are then injected into Jobs or Pods that execute the OpsActions defined in `actions`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodTemplates")]
-    pub target_pod_templates: Option<Vec<OpsDefinitionTargetPodTemplates>>,
 }
 
 /// OpsAction specifies a custom action defined in OpsDefinition for execution in a "Custom" OpsRequest. 
@@ -73,9 +73,9 @@ pub struct OpsDefinitionActionsExec {
     ///  If not set, the first container is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Specifies a TargetPodTemplate defined in the `opsDefinition.spec.targetPodTemplates`.
-    #[serde(rename = "targetPodTemplate")]
-    pub target_pod_template: String,
+    /// Specifies a PodInfoExtractor defined in the `opsDefinition.spec.podInfoExtractors`.
+    #[serde(rename = "podInfoExtractorName")]
+    pub pod_info_extractor_name: String,
 }
 
 /// Specifies the configuration for a 'resourceModifier' action. This action allows for modifications to existing K8s objects. 
@@ -159,12 +159,12 @@ pub struct OpsDefinitionActionsWorkload {
     /// Specifies the number of retries allowed before marking the action as failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
+    /// Specifies a PodInfoExtractor defined in the `opsDefinition.spec.podInfoExtractors`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podInfoExtractorName")]
+    pub pod_info_extractor_name: Option<String>,
     /// Specifies the PodSpec of the 'workload' action.
     #[serde(rename = "podSpec")]
     pub pod_spec: OpsDefinitionActionsWorkloadPodSpec,
-    /// Specifies a TargetPodTemplate defined in the `opsDefinition.spec.targetPodTemplates`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodTemplate")]
-    pub target_pod_template: Option<String>,
     /// Defines the workload type of the action. Valid values include "Job" and "Pod". 
     ///  - "Job": Creates a Job to execute the action. - "Pod": Creates a Pod to execute the action. Note: unlike Jobs, manually deleting a Pod does not affect the `backoffLimit`.
     #[serde(rename = "type")]
@@ -4300,12 +4300,13 @@ pub enum OpsDefinitionActionsWorkloadType {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsDefinitionComponentDefinitionRefs {
+pub struct OpsDefinitionComponentInfos {
     /// Specifies the account name associated with the Component. If set, the corresponding account username and password are injected into containers' environment variables `KB_ACCOUNT_USERNAME` and `KB_ACCOUNT_PASSWORD`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountName")]
     pub account_name: Option<String>,
     /// Specifies the name of the ComponentDefinition.
-    pub name: String,
+    #[serde(rename = "componentDefinitionName")]
+    pub component_definition_name: String,
     /// Specifies the name of the Service. If set, the service name is injected as the `KB_COMP_SVC_NAME` environment variable in the containers, and each service port is mapped to a corresponding environment variable named `KB_COMP_SVC_PORT_$(portName)`. The `portName` is transformed by replacing '-' with '_' and converting to uppercase.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
@@ -4320,100 +4321,83 @@ pub struct OpsDefinitionParametersSchema {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsDefinitionPreConditions {
-    /// Specifies the conditions that must be met for the operation to execute.
+pub struct OpsDefinitionPodInfoExtractors {
+    /// Specifies a list of environment variables to be extracted from a selected Pod, and injected into the containers executing each OpsAction.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rule: Option<OpsDefinitionPreConditionsRule>,
-}
-
-/// Specifies the conditions that must be met for the operation to execute.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsDefinitionPreConditionsRule {
-    /// Specifies a Go template expression that determines how the operation can be executed. The return value must be either `true` or `false`. Available built-in objects that can be referenced in the expression include: 
-    ///  - `params`: Input parameters. - `cluster`: The referenced Cluster object. - `component`: The referenced Component object.
-    pub expression: String,
-    /// Specifies the error or status message reported if the `expression` does not evaluate to `true`.
-    pub message: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsDefinitionTargetPodTemplates {
-    /// Specifies the name of the TargetPodTemplate.
+    pub env: Option<Vec<OpsDefinitionPodInfoExtractorsEnv>>,
+    /// Specifies the name of the PodInfoExtractor.
     pub name: String,
     /// Used to select the target Pod from which environment variables and volumes are extracted from its PodSpec.
     #[serde(rename = "podSelector")]
-    pub pod_selector: OpsDefinitionTargetPodTemplatesPodSelector,
-    /// Specifies a list of environment variables to be extracted from a selected Pod, and injected into the containers executing each OpsAction.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub vars: Option<Vec<OpsDefinitionTargetPodTemplatesVars>>,
+    pub pod_selector: OpsDefinitionPodInfoExtractorsPodSelector,
     /// Specifies a list of volumes, along with their respective mount points, that are to be extracted from a selected Pod, and mounted onto the containers executing each OpsAction. This allows the containers to access shared or persistent data necessary for the operation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
-    pub volume_mounts: Option<Vec<OpsDefinitionTargetPodTemplatesVolumeMounts>>,
-}
-
-/// Used to select the target Pod from which environment variables and volumes are extracted from its PodSpec.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsDefinitionTargetPodTemplatesPodSelector {
-    /// Specifies the pod selection criteria based on their availability: - 'Available': Only selects available pods, and terminates the action if none are found. - 'PreferredAvailable': Prioritizes available pods but considers others if none available. - 'None': No availability requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub availability: Option<OpsDefinitionTargetPodTemplatesPodSelectorAvailability>,
-    /// Specifies the role of the target Pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
-    /// Defines the policy for selecting the target pod when multiple pods match the podSelector. It can be either 'Any' (select any one pod that matches the podSelector) or 'All' (select all pods that match the podSelector).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectionPolicy")]
-    pub selection_policy: Option<OpsDefinitionTargetPodTemplatesPodSelectorSelectionPolicy>,
-}
-
-/// Used to select the target Pod from which environment variables and volumes are extracted from its PodSpec.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum OpsDefinitionTargetPodTemplatesPodSelectorAvailability {
-    Available,
-    PreferredAvailable,
-    None,
-}
-
-/// Used to select the target Pod from which environment variables and volumes are extracted from its PodSpec.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum OpsDefinitionTargetPodTemplatesPodSelectorSelectionPolicy {
-    All,
-    Any,
+    pub volume_mounts: Option<Vec<OpsDefinitionPodInfoExtractorsVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsDefinitionTargetPodTemplatesVars {
+pub struct OpsDefinitionPodInfoExtractorsEnv {
     /// Specifies the name of the environment variable to be injected into Pods executing OpsActions. It must conform to the C_IDENTIFIER format, which includes only alphanumeric characters and underscores, and cannot begin with a digit.
     pub name: String,
     /// Specifies the source of the environment variable's value.
     #[serde(rename = "valueFrom")]
-    pub value_from: OpsDefinitionTargetPodTemplatesVarsValueFrom,
+    pub value_from: OpsDefinitionPodInfoExtractorsEnvValueFrom,
 }
 
 /// Specifies the source of the environment variable's value.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsDefinitionTargetPodTemplatesVarsValueFrom {
+pub struct OpsDefinitionPodInfoExtractorsEnvValueFrom {
     /// Specifies a reference to a specific environment variable within a container. Used to specify the source of the variable, which can be either "env" or "envFrom".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envRef")]
-    pub env_ref: Option<OpsDefinitionTargetPodTemplatesVarsValueFromEnvRef>,
+    pub env_ref: Option<OpsDefinitionPodInfoExtractorsEnvValueFromEnvRef>,
     /// Represents the JSONPath expression pointing to the specific data within the JSON structure of the target Pod. It is used to extract precise data locations for operations on the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
+    pub field_path: Option<OpsDefinitionPodInfoExtractorsEnvValueFromFieldPath>,
 }
 
 /// Specifies a reference to a specific environment variable within a container. Used to specify the source of the variable, which can be either "env" or "envFrom".
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsDefinitionTargetPodTemplatesVarsValueFromEnvRef {
-    /// Specifies the container name in the target Pod. If not specified, the first container will be used by default.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
+pub struct OpsDefinitionPodInfoExtractorsEnvValueFromEnvRef {
     /// Defines the name of the environment variable. This name can originate from an 'env' entry or be a data key from an 'envFrom' source.
     #[serde(rename = "envName")]
     pub env_name: String,
+    /// Specifies the container name in the target Pod. If not specified, the first container will be used by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetContainerName")]
+    pub target_container_name: Option<String>,
+}
+
+/// Represents the JSONPath expression pointing to the specific data within the JSON structure of the target Pod. It is used to extract precise data locations for operations on the Pod.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsDefinitionPodInfoExtractorsEnvValueFromFieldPath {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Used to select the target Pod from which environment variables and volumes are extracted from its PodSpec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsDefinitionPodInfoExtractorsPodSelector {
+    /// Defines the policy for selecting the target pod when multiple pods match the podSelector. It can be either 'Any' (select any one pod that matches the podSelector) or 'All' (select all pods that match the podSelector).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiPodSelectionPolicy")]
+    pub multi_pod_selection_policy: Option<OpsDefinitionPodInfoExtractorsPodSelectorMultiPodSelectionPolicy>,
+    /// Specifies the role of the target Pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+}
+
+/// Used to select the target Pod from which environment variables and volumes are extracted from its PodSpec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OpsDefinitionPodInfoExtractorsPodSelectorMultiPodSelectionPolicy {
+    All,
+    Any,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsDefinitionTargetPodTemplatesVolumeMounts {
+pub struct OpsDefinitionPodInfoExtractorsVolumeMounts {
     /// Path within the container at which the volume should be mounted.  Must not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
@@ -4431,6 +4415,23 @@ pub struct OpsDefinitionTargetPodTemplatesVolumeMounts {
     /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsDefinitionPreConditions {
+    /// Specifies the conditions that must be met for the operation to execute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rule: Option<OpsDefinitionPreConditionsRule>,
+}
+
+/// Specifies the conditions that must be met for the operation to execute.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsDefinitionPreConditionsRule {
+    /// Specifies a Go template expression that determines how the operation can be executed. The return value must be either `true` or `false`. Available built-in objects that can be referenced in the expression include: 
+    ///  - `params`: Input parameters. - `cluster`: The referenced Cluster object. - `component`: The referenced Component object.
+    pub expression: String,
+    /// Specifies the error or status message reported if the `expression` does not evaluate to `true`.
+    pub message: String,
 }
 
 /// OpsDefinitionStatus defines the observed state of OpsDefinition

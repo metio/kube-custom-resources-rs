@@ -26,8 +26,9 @@ pub struct DataStoreSpec {
     /// No need for protocol, just bare IP/FQDN and port.
     pub endpoints: Vec<String>,
     /// Defines the TLS/SSL configuration required to connect to the data store in a secure way.
-    #[serde(rename = "tlsConfig")]
-    pub tls_config: DataStoreTlsConfig,
+    /// This value is optional.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<DataStoreTlsConfig>,
 }
 
 /// In case of authentication enabled for the given data store, specifies the username and password pair.
@@ -100,6 +101,7 @@ pub enum DataStoreDriver {
 }
 
 /// Defines the TLS/SSL configuration required to connect to the data store in a secure way.
+/// This value is optional.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataStoreTlsConfig {
     /// Retrieve the Certificate Authority certificate and private key, such as bare content of the file, or a SecretReference.
@@ -107,8 +109,8 @@ pub struct DataStoreTlsConfig {
     #[serde(rename = "certificateAuthority")]
     pub certificate_authority: DataStoreTlsConfigCertificateAuthority,
     /// Specifies the SSL/TLS key and private key pair used to connect to the data store.
-    #[serde(rename = "clientCertificate")]
-    pub client_certificate: DataStoreTlsConfigClientCertificate,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
+    pub client_certificate: Option<DataStoreTlsConfigClientCertificate>,
 }
 
 /// Retrieve the Certificate Authority certificate and private key, such as bare content of the file, or a SecretReference.
