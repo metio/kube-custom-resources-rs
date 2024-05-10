@@ -28,8 +28,7 @@ pub struct ComponentDefinitionSpec {
     /// Specifies the configuration file templates and volume mount parameters used by the Component. It also includes descriptions of the parameters in the ConfigMaps, such as value range limitations. 
     ///  This field specifies a list of templates that will be rendered into Component containers' configuration files. Each template is represented as a ConfigMap and may contain multiple configuration files, with each file being a key in the ConfigMap. 
     ///  The rendered configuration files will be mounted into the Component's containers according to the specified volume mount parameters. 
-    ///  This field is immutable. 
-    ///  TODO: support referencing configs from other components or clusters.
+    ///  This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<ComponentDefinitionConfigs>>,
     /// Provides a brief and concise explanation of the Component's purpose, functionality, and any relevant details. It serves as a quick reference for users to understand the Component's role and characteristics.
@@ -235,8 +234,8 @@ pub struct ComponentDefinitionConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reRenderResourceTypes")]
     pub re_render_resource_types: Option<Vec<String>>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(rename = "templateRef")]
-    pub template_ref: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
+    pub template_ref: Option<String>,
     /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration template will be mounted to the corresponding volume. Must be a DNS_LABEL name. The volume name must be defined in podSpec.containers[*].volumeMounts.
     #[serde(rename = "volumeName")]
     pub volume_name: String,
@@ -7605,8 +7604,8 @@ pub struct ComponentDefinitionScripts {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(rename = "templateRef")]
-    pub template_ref: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
+    pub template_ref: Option<String>,
     /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration template will be mounted to the corresponding volume. Must be a DNS_LABEL name. The volume name must be defined in podSpec.containers[*].volumeMounts.
     #[serde(rename = "volumeName")]
     pub volume_name: String,

@@ -193,6 +193,8 @@ pub struct FunctionCode {
     pub s3_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3ObjectVersion")]
     pub s3_object_version: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sha256: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zipFile")]
     pub zip_file: Option<String>,
 }

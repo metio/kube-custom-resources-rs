@@ -6338,6 +6338,8 @@ pub struct RayServiceStatusActiveServiceStatusRayClusterStatus {
     pub min_worker_replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyWorkerReplicas")]
+    pub ready_worker_replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6410,6 +6412,8 @@ pub struct RayServiceStatusPendingServiceStatusRayClusterStatus {
     pub min_worker_replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyWorkerReplicas")]
+    pub ready_worker_replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

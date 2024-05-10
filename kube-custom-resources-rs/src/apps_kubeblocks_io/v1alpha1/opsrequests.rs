@@ -21,6 +21,9 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct OpsRequestSpec {
     /// Specifies the parameters to backup a Cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub backup: Option<OpsRequestBackup>,
+    /// Deprecated: since v0.9, use backup instead. Specifies the parameters to backup a Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSpec")]
     pub backup_spec: Option<OpsRequestBackupSpec>,
     /// Indicates whether the current operation should be canceled and terminated gracefully if it's in the "Pending", "Creating", or "Running" state. 
@@ -29,11 +32,14 @@ pub struct OpsRequestSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cancel: Option<bool>,
     /// Specifies the name of the Cluster resource that this operation is targeting.
-    #[serde(rename = "clusterRef")]
-    pub cluster_ref: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
+    pub cluster_name: Option<String>,
+    /// Deprecated: since v0.9, use clusterName instead. Specifies the name of the Cluster resource that this operation is targeting.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
+    pub cluster_ref: Option<String>,
     /// Specifies a custom operation defined by OpsDefinition.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customSpec")]
-    pub custom_spec: Option<OpsRequestCustomSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<OpsRequestCustom>,
     /// Lists Expose objects, each specifying a Component and its services to be exposed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expose: Option<Vec<OpsRequestExpose>>,
@@ -45,6 +51,9 @@ pub struct OpsRequestSpec {
     /// Lists HorizontalScaling objects, each specifying scaling requirements for a Component, including desired total replica counts, configurations for new instances, modifications for existing instances, and instance downscaling options.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "horizontalScaling")]
     pub horizontal_scaling: Option<Vec<OpsRequestHorizontalScaling>>,
+    /// Specifies the maximum time in seconds that the OpsRequest will wait for its pre-conditions to be met before it aborts the operation. If set to 0 (default), pre-conditions must be satisfied immediately for the OpsRequest to proceed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preConditionDeadlineSeconds")]
+    pub pre_condition_deadline_seconds: Option<i32>,
     /// Specifies the parameters to rebuild some instances. Rebuilding an instance involves restoring its data from a backup or another database replica. The instances being rebuilt usually serve as standby in the cluster. Hence rebuilding instances is often also referred to as "standby reconstruction".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebuildFrom")]
     pub rebuild_from: Option<Vec<OpsRequestRebuildFrom>>,
@@ -58,10 +67,10 @@ pub struct OpsRequestSpec {
     /// Lists Components to be restarted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restart: Option<Vec<OpsRequestRestart>>,
-    /// Cluster RestoreFrom backup or point in time.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreFrom")]
-    pub restore_from: Option<OpsRequestRestoreFrom>,
     /// Specifies the parameters to restore a Cluster. Note that this restore operation will roll back cluster services.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub restore: Option<OpsRequestRestore>,
+    /// Deprecated: since v0.9, use restore instead. Specifies the parameters to restore a Cluster. Note that this restore operation will roll back cluster services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreSpec")]
     pub restore_spec: Option<OpsRequestRestoreSpec>,
     /// Specifies the image and scripts for executing engine-specific operations such as creating databases or users. It supports limited engines including MySQL, PostgreSQL, Redis, MongoDB. 
@@ -74,9 +83,6 @@ pub struct OpsRequestSpec {
     /// Specifies the duration in seconds that an OpsRequest will remain in the system after successfully completing (when `opsRequest.status.phase` is "Succeed") before automatic deletion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterSucceed")]
     pub ttl_seconds_after_succeed: Option<i32>,
-    /// Specifies the maximum time in seconds that the OpsRequest will wait for its pre-conditions to be met before it aborts the operation. If set to 0 (default), pre-conditions must be satisfied immediately for the OpsRequest to proceed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsBeforeAbort")]
-    pub ttl_seconds_before_abort: Option<i32>,
     /// Specifies the type of this operation. Supported types include "Start", "Stop", "Restart", "Switchover", "VerticalScaling", "HorizontalScaling", "VolumeExpansion", "Reconfiguring", "Upgrade", "Backup", "Restore", "Expose", "DataScript", "RebuildInstance", "Custom". 
     ///  Note: This field is immutable once set.
     #[serde(rename = "type")]
@@ -94,6 +100,40 @@ pub struct OpsRequestSpec {
 }
 
 /// Specifies the parameters to backup a Cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestBackup {
+    /// Specifies the name of BackupMethod. The specified BackupMethod must be defined in the BackupPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupMethod")]
+    pub backup_method: Option<String>,
+    /// Specifies the name of the Backup custom resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupName")]
+    pub backup_name: Option<String>,
+    /// Indicates the name of the BackupPolicy applied to perform this Backup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPolicyName")]
+    pub backup_policy_name: Option<String>,
+    /// Determines whether the backup contents stored in backup repository should be deleted when the Backup custom resource is deleted. Supported values are `Retain` and `Delete`. - `Retain` means that the backup content and its physical snapshot on backup repository are kept. - `Delete` means that the backup content and its physical snapshot on backup repository are deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
+    pub deletion_policy: Option<OpsRequestBackupDeletionPolicy>,
+    /// If the specified BackupMethod is incremental, `parentBackupName` is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentBackupName")]
+    pub parent_backup_name: Option<String>,
+    /// Determines the duration for which the Backup custom resources should be retained. 
+    ///  The controller will automatically remove all Backup objects that are older than the specified RetentionPeriod. For example, RetentionPeriod of `30d` will keep only the Backup objects of last 30 days. Sample duration format: 
+    ///  - years: 2y - months: 6mo - days: 30d - hours: 12h - minutes: 30m 
+    ///  You can also combine the above durations. For example: 30d12h30m. If not set, the Backup objects will be kept forever. 
+    ///  If the `deletionPolicy` is set to 'Delete', then the associated backup data will also be deleted along with the Backup object. Otherwise, only the Backup custom resource will be deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
+    pub retention_period: Option<String>,
+}
+
+/// Specifies the parameters to backup a Cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OpsRequestBackupDeletionPolicy {
+    Delete,
+    Retain,
+}
+
+/// Deprecated: since v0.9, use backup instead. Specifies the parameters to backup a Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestBackupSpec {
     /// Specifies the name of BackupMethod. The specified BackupMethod must be defined in the BackupPolicy.
@@ -120,7 +160,7 @@ pub struct OpsRequestBackupSpec {
     pub retention_period: Option<String>,
 }
 
-/// Specifies the parameters to backup a Cluster.
+/// Deprecated: since v0.9, use backup instead. Specifies the parameters to backup a Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsRequestBackupSpecDeletionPolicy {
     Delete,
@@ -129,35 +169,35 @@ pub enum OpsRequestBackupSpecDeletionPolicy {
 
 /// Specifies a custom operation defined by OpsDefinition.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestCustomSpec {
+pub struct OpsRequestCustom {
     /// Specifies the components and their parameters for executing custom actions as defined in OpsDefinition. Requires at least one component.
-    pub components: Vec<OpsRequestCustomSpecComponents>,
-    /// Specifies the name of the OpsDefinition.
-    #[serde(rename = "opsDefinitionRef")]
-    pub ops_definition_ref: String,
+    pub components: Vec<OpsRequestCustomComponents>,
     /// Specifies the maximum number of components to be operated on concurrently to mitigate performance impact on clusters with multiple components. 
     ///  It accepts an absolute number (e.g., 5) or a percentage of components to execute in parallel (e.g., "10%"). Percentages are rounded up to the nearest whole number of components. For example, if "10%" results in less than one, it rounds up to 1. 
     ///  When unspecified, all components are processed simultaneously by default. 
     ///  Note: This feature is not implemented yet.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub parallelism: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentComponents")]
+    pub max_concurrent_components: Option<IntOrString>,
+    /// Specifies the name of the OpsDefinition.
+    #[serde(rename = "opsDefinitionName")]
+    pub ops_definition_name: String,
     /// Specifies the name of the ServiceAccount to be used for executing the custom operation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestCustomSpecComponents {
+pub struct OpsRequestCustomComponents {
     /// Specifies the name of the Component.
     #[serde(rename = "componentName")]
     pub component_name: String,
     /// Specifies the parameters that match the schema specified in the `opsDefinition.spec.parametersSchema`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub parameters: Option<Vec<OpsRequestCustomSpecComponentsParameters>>,
+    pub parameters: Option<Vec<OpsRequestCustomComponentsParameters>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestCustomSpecComponentsParameters {
+pub struct OpsRequestCustomComponentsParameters {
     /// Specifies the identifier of the parameter as defined in the OpsDefinition.
     pub name: String,
     /// Holds the data associated with the parameter. If the parameter type is an array, the format should be "v1,v2,v3".
@@ -200,6 +240,10 @@ pub struct OpsRequestExposeServices {
     /// Specifies the name of the Service. This name is used to set `clusterService.name`. 
     ///  Note: This field cannot be updated.
     pub name: String,
+    /// Routes service traffic to pods with matching label keys and values. If specified, the service will only be exposed to pods matching the selector. 
+    ///  Note: At least one of 'roleSelector' or 'selector' must be specified. If both are specified, a pod must match both conditions to be selected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
+    pub pod_selector: Option<BTreeMap<String, String>>,
     /// Specifies Port definitions that are to be exposed by a ClusterService. 
     ///  If not specified, the Port definitions from non-NodePort and non-LoadBalancer type ComponentService defined in the ComponentDefinition (`componentDefinition.spec.services`) will be used. If no matching ComponentService is found, the expose operation will fail. 
     ///  More info: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
@@ -209,10 +253,6 @@ pub struct OpsRequestExposeServices {
     ///  Note: At least one of 'roleSelector' or 'selector' must be specified. If both are specified, a pod must match both conditions to be selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
-    /// Routes service traffic to pods with matching label keys and values. If specified, the service will only be exposed to pods matching the selector. 
-    ///  Note: At least one of 'roleSelector' or 'selector' must be specified. If both are specified, a pod must match both conditions to be selected.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<BTreeMap<String, String>>,
     /// Determines how the Service is exposed. Defaults to 'ClusterIP'. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`. 
     ///  - `ClusterIP`: allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. - `NodePort`: builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer`: builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. 
     ///  Note: although K8s Service type allows the 'ExternalName' type, it is not a valid option for the expose operation. 
@@ -1505,18 +1545,27 @@ pub struct OpsRequestRebuildFrom {
     /// Specifies the name of the Component.
     #[serde(rename = "componentName")]
     pub component_name: String,
+    /// Specifies the instances (Pods) that need to be rebuilt, typically operating as standbys.
+    pub instances: Vec<OpsRequestRebuildFromInstances>,
     /// Defines container environment variables for the restore process. merged with the ones specified in the Backup and ActionSet resources. 
     ///  Merge priority: Restore env > Backup env > ActionSet env. 
     ///  Purpose: Some databases require different configurations when being restored as a standby compared to being restored as a primary. For example, when restoring MySQL as a replica, you need to set `skip_slave_start="ON"` for 5.7 or `skip_replica_start="ON"` for 8.0. Allowing environment variables to be passed in makes it more convenient to control these behavioral differences during the restore process.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envForRestore")]
-    pub env_for_restore: Option<Vec<OpsRequestRebuildFromEnvForRestore>>,
-    /// Specifies the instances (Pods) that need to be rebuilt, typically operating as standbys.
-    pub instances: Vec<OpsRequestRebuildFromInstances>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreEnv")]
+    pub restore_env: Option<Vec<OpsRequestRebuildFromRestoreEnv>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestRebuildFromInstances {
+    /// Pod name of the instance.
+    pub name: String,
+    /// The instance will rebuild on the specified node when the instance uses local PersistentVolume as the storage disk. If not set, it will rebuild on a random node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNodeName")]
+    pub target_node_name: Option<String>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRebuildFromEnvForRestore {
+pub struct OpsRequestRebuildFromRestoreEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
@@ -1524,29 +1573,29 @@ pub struct OpsRequestRebuildFromEnvForRestore {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<OpsRequestRebuildFromEnvForRestoreValueFrom>,
+    pub value_from: Option<OpsRequestRebuildFromRestoreEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRebuildFromEnvForRestoreValueFrom {
+pub struct OpsRequestRebuildFromRestoreEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<OpsRequestRebuildFromEnvForRestoreValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<OpsRequestRebuildFromRestoreEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<OpsRequestRebuildFromEnvForRestoreValueFromFieldRef>,
+    pub field_ref: Option<OpsRequestRebuildFromRestoreEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<OpsRequestRebuildFromEnvForRestoreValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<OpsRequestRebuildFromRestoreEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<OpsRequestRebuildFromEnvForRestoreValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<OpsRequestRebuildFromRestoreEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRebuildFromEnvForRestoreValueFromConfigMapKeyRef {
+pub struct OpsRequestRebuildFromRestoreEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -1559,7 +1608,7 @@ pub struct OpsRequestRebuildFromEnvForRestoreValueFromConfigMapKeyRef {
 
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRebuildFromEnvForRestoreValueFromFieldRef {
+pub struct OpsRequestRebuildFromRestoreEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -1570,7 +1619,7 @@ pub struct OpsRequestRebuildFromEnvForRestoreValueFromFieldRef {
 
 /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRebuildFromEnvForRestoreValueFromResourceFieldRef {
+pub struct OpsRequestRebuildFromRestoreEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -1583,7 +1632,7 @@ pub struct OpsRequestRebuildFromEnvForRestoreValueFromResourceFieldRef {
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRebuildFromEnvForRestoreValueFromSecretKeyRef {
+pub struct OpsRequestRebuildFromRestoreEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -1592,15 +1641,6 @@ pub struct OpsRequestRebuildFromEnvForRestoreValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRebuildFromInstances {
-    /// Pod name of the instance.
-    pub name: String,
-    /// The instance will rebuild on the specified node when the instance uses local PersistentVolume as the storage disk. If not set, it will rebuild on a random node.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNodeName")]
-    pub target_node_name: Option<String>,
 }
 
 /// Specifies a component and its configuration updates. 
@@ -1732,58 +1772,35 @@ pub struct OpsRequestRestart {
     pub component_name: String,
 }
 
-/// Cluster RestoreFrom backup or point in time.
+/// Specifies the parameters to restore a Cluster. Note that this restore operation will roll back cluster services.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRestoreFrom {
-    /// Refers to the backup name and component name used for restoration. Supports recovery of multiple Components.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub backup: Option<Vec<OpsRequestRestoreFromBackup>>,
-    /// Refers to the specific point in time for recovery.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pointInTime")]
-    pub point_in_time: Option<OpsRequestRestoreFromPointInTime>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRestoreFromBackup {
-    /// Refers to a reference backup that needs to be restored.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ref")]
-    pub r#ref: Option<OpsRequestRestoreFromBackupRef>,
-}
-
-/// Refers to a reference backup that needs to be restored.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRestoreFromBackupRef {
-    /// Refers to the specific name of the resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Refers to the specific namespace of the resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-/// Refers to the specific point in time for recovery.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRestoreFromPointInTime {
-    /// Refers to a reference source cluster that needs to be restored.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ref")]
-    pub r#ref: Option<OpsRequestRestoreFromPointInTimeRef>,
-    /// Refers to the specific time point for restoration, with UTC as the time zone.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub time: Option<String>,
-}
-
-/// Refers to a reference source cluster that needs to be restored.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct OpsRequestRestoreFromPointInTimeRef {
-    /// Refers to the specific name of the resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Refers to the specific namespace of the resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
+pub struct OpsRequestRestore {
+    /// Specifies the name of the Backup custom resource.
+    #[serde(rename = "backupName")]
+    pub backup_name: String,
+    /// Controls the timing of PostReady actions during the recovery process. 
+    ///  If false (default), PostReady actions execute when the Component reaches the "Running" state. If true, PostReady actions are delayed until the entire Cluster is "Running," ensuring the cluster's overall stability before proceeding. 
+    ///  This setting is useful for coordinating PostReady operations across the Cluster for optimal cluster conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deferPostReadyUntilClusterRunning")]
+    pub defer_post_ready_until_cluster_running: Option<bool>,
+    /// Specifies the point in time to which the restore should be performed. Supported time formats: 
+    ///  - RFC3339 format, e.g. "2023-11-25T18:52:53Z" - A human-readable date-time format, e.g. "Jul 25,2023 18:52:53 UTC+0800"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restorePointInTime")]
+    pub restore_point_in_time: Option<String>,
+    /// Specifies the policy for restoring volume claims of a Component's Pods. It determines whether the volume claims should be restored sequentially (one by one) or in parallel (all at once). Support values: 
+    ///  - "Serial" - "Parallel"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeRestorePolicy")]
+    pub volume_restore_policy: Option<OpsRequestRestoreVolumeRestorePolicy>,
 }
 
 /// Specifies the parameters to restore a Cluster. Note that this restore operation will roll back cluster services.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OpsRequestRestoreVolumeRestorePolicy {
+    Serial,
+    Parallel,
+}
+
+/// Deprecated: since v0.9, use restore instead. Specifies the parameters to restore a Cluster. Note that this restore operation will roll back cluster services.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestRestoreSpec {
     /// Specifies the name of the Backup custom resource.
@@ -1792,19 +1809,19 @@ pub struct OpsRequestRestoreSpec {
     /// Controls the timing of PostReady actions during the recovery process. 
     ///  If false (default), PostReady actions execute when the Component reaches the "Running" state. If true, PostReady actions are delayed until the entire Cluster is "Running," ensuring the cluster's overall stability before proceeding. 
     ///  This setting is useful for coordinating PostReady operations across the Cluster for optimal cluster conditions.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "doReadyRestoreAfterClusterRunning")]
-    pub do_ready_restore_after_cluster_running: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deferPostReadyUntilClusterRunning")]
+    pub defer_post_ready_until_cluster_running: Option<bool>,
     /// Specifies the point in time to which the restore should be performed. Supported time formats: 
     ///  - RFC3339 format, e.g. "2023-11-25T18:52:53Z" - A human-readable date-time format, e.g. "Jul 25,2023 18:52:53 UTC+0800"
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreTimeStr")]
-    pub restore_time_str: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restorePointInTime")]
+    pub restore_point_in_time: Option<String>,
     /// Specifies the policy for restoring volume claims of a Component's Pods. It determines whether the volume claims should be restored sequentially (one by one) or in parallel (all at once). Support values: 
     ///  - "Serial" - "Parallel"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeRestorePolicy")]
     pub volume_restore_policy: Option<OpsRequestRestoreSpecVolumeRestorePolicy>,
 }
 
-/// Specifies the parameters to restore a Cluster. Note that this restore operation will roll back cluster services.
+/// Deprecated: since v0.9, use restore instead. Specifies the parameters to restore a Cluster. Note that this restore operation will roll back cluster services.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsRequestRestoreSpecVolumeRestorePolicy {
     Serial,
@@ -1979,7 +1996,7 @@ pub struct OpsRequestVerticalScaling {
     /// Specifies the name of the Component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// Specifies the instance template that need to vertical scale.
+    /// Specifies the desired compute resources of the instance template that need to vertical scale.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<OpsRequestVerticalScalingInstances>>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -2027,7 +2044,7 @@ pub struct OpsRequestVolumeExpansion {
     /// Specifies the name of the Component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// Specifies the instance template that need to volume expand.
+    /// Specifies the desired storage size of the instance template that need to volume expand.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<OpsRequestVolumeExpansionInstances>>,
     /// Specifies a list of OpsRequestVolumeClaimTemplate objects, defining the volumeClaimTemplates that are used to expand the storage and the desired storage size for each one.

@@ -16,7 +16,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ProviderSpec {
-    /// CABundle is a base64-encoded string that contains the TLS CA bundle in PEM format. It is used to verify the signature of the provider's certificate.
+    /// CABundle is a base64-encoded string that contains the TLS CA bundle in PEM format.
+    /// It is used to verify the signature of the provider's certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
     /// Timeout is the timeout when querying the provider.

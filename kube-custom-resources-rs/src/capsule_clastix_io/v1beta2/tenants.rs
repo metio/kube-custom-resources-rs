@@ -50,22 +50,31 @@ pub struct TenantSpec {
     /// Specifies options for the Pods deployed in the Tenant namespaces, such as additional metadata.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOptions")]
     pub pod_options: Option<TenantPodOptions>,
-    /// Prevent accidental deletion of the Tenant. When enabled, the deletion request will be declined.
+    /// Prevent accidental deletion of the Tenant.
+    /// When enabled, the deletion request will be declined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preventDeletion")]
     pub prevent_deletion: Option<bool>,
-    /// Specifies the allowed priorityClasses assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed PriorityClasses. A default value can be specified, and all the Pod resources created will inherit the declared class. Optional.
+    /// Specifies the allowed priorityClasses assigned to the Tenant.
+    /// Capsule assures that all Pods resources created in the Tenant can use only one of the allowed PriorityClasses.
+    /// A default value can be specified, and all the Pod resources created will inherit the declared class.
+    /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClasses")]
     pub priority_classes: Option<TenantPriorityClasses>,
     /// Specifies a list of ResourceQuota resources assigned to the Tenant. The assigned values are inherited by any namespace created in the Tenant. The Capsule operator aggregates ResourceQuota at Tenant level, so that the hard quota is never crossed for the given Tenant. This permits the Tenant owner to consume resources in the Tenant regardless of the namespace. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceQuotas")]
     pub resource_quotas: Option<TenantResourceQuotas>,
-    /// Specifies the allowed RuntimeClasses assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed RuntimeClasses. Optional.
+    /// Specifies the allowed RuntimeClasses assigned to the Tenant.
+    /// Capsule assures that all Pods resources created in the Tenant can use only one of the allowed RuntimeClasses.
+    /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClasses")]
     pub runtime_classes: Option<TenantRuntimeClasses>,
     /// Specifies options for the Service, such as additional metadata or block of certain type of Services. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceOptions")]
     pub service_options: Option<TenantServiceOptions>,
-    /// Specifies the allowed StorageClasses assigned to the Tenant. Capsule assures that all PersistentVolumeClaim resources created in the Tenant can use only one of the allowed StorageClasses. A default value can be specified, and all the PersistentVolumeClaim resources created will inherit the declared class. Optional.
+    /// Specifies the allowed StorageClasses assigned to the Tenant.
+    /// Capsule assures that all PersistentVolumeClaim resources created in the Tenant can use only one of the allowed StorageClasses.
+    /// A default value can be specified, and all the PersistentVolumeClaim resources created will inherit the declared class.
+    /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClasses")]
     pub storage_classes: Option<TenantStorageClasses>,
 }
@@ -78,17 +87,22 @@ pub struct TenantAdditionalRoleBindings {
     pub subjects: Vec<TenantAdditionalRoleBindingsSubjects>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantAdditionalRoleBindingsSubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -108,22 +122,36 @@ pub struct TenantIngressOptions {
     /// Toggles the ability for Ingress resources created in a Tenant to have a hostname wildcard.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowWildcardHostnames")]
     pub allow_wildcard_hostnames: Option<bool>,
-    /// Specifies the allowed IngressClasses assigned to the Tenant. Capsule assures that all Ingress resources created in the Tenant can use only one of the allowed IngressClasses. A default value can be specified, and all the Ingress resources created will inherit the declared class. Optional.
+    /// Specifies the allowed IngressClasses assigned to the Tenant.
+    /// Capsule assures that all Ingress resources created in the Tenant can use only one of the allowed IngressClasses.
+    /// A default value can be specified, and all the Ingress resources created will inherit the declared class.
+    /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedClasses")]
     pub allowed_classes: Option<TenantIngressOptionsAllowedClasses>,
     /// Specifies the allowed hostnames in Ingresses for the given Tenant. Capsule assures that all Ingress resources created in the Tenant can use only one of the allowed hostnames. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedHostnames")]
     pub allowed_hostnames: Option<TenantIngressOptionsAllowedHostnames>,
-    /// Defines the scope of hostname collision check performed when Tenant Owners create Ingress with allowed hostnames. 
-    ///  - Cluster: disallow the creation of an Ingress if the pair hostname and path is already used across the Namespaces managed by Capsule. 
-    ///  - Tenant: disallow the creation of an Ingress if the pair hostname and path is already used across the Namespaces of the Tenant. 
-    ///  - Namespace: disallow the creation of an Ingress if the pair hostname and path is already used in the Ingress Namespace. 
-    ///  Optional.
+    /// Defines the scope of hostname collision check performed when Tenant Owners create Ingress with allowed hostnames.
+    /// 
+    /// 
+    /// - Cluster: disallow the creation of an Ingress if the pair hostname and path is already used across the Namespaces managed by Capsule.
+    /// 
+    /// 
+    /// - Tenant: disallow the creation of an Ingress if the pair hostname and path is already used across the Namespaces of the Tenant.
+    /// 
+    /// 
+    /// - Namespace: disallow the creation of an Ingress if the pair hostname and path is already used in the Ingress Namespace.
+    /// 
+    /// 
+    /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameCollisionScope")]
     pub hostname_collision_scope: Option<TenantIngressOptionsHostnameCollisionScope>,
 }
 
-/// Specifies the allowed IngressClasses assigned to the Tenant. Capsule assures that all Ingress resources created in the Tenant can use only one of the allowed IngressClasses. A default value can be specified, and all the Ingress resources created will inherit the declared class. Optional.
+/// Specifies the allowed IngressClasses assigned to the Tenant.
+/// Capsule assures that all Ingress resources created in the Tenant can use only one of the allowed IngressClasses.
+/// A default value can be specified, and all the Ingress resources created will inherit the declared class.
+/// Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantIngressOptionsAllowedClasses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -135,19 +163,26 @@ pub struct TenantIngressOptionsAllowedClasses {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantIngressOptionsAllowedClassesMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantIngressOptionsAllowedClassesMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -261,27 +296,63 @@ pub struct TenantNetworkPolicies {
 /// NetworkPolicySpec provides the specification of a NetworkPolicy
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItems {
-    /// egress is a list of egress rules to be applied to the selected pods. Outgoing traffic is allowed if there are no NetworkPolicies selecting the pod (and cluster policy otherwise allows the traffic), OR if the traffic matches at least one egress rule across all of the NetworkPolicy objects whose podSelector matches the pod. If this field is empty then this NetworkPolicy limits all outgoing traffic (and serves solely to ensure that the pods it selects are isolated by default). This field is beta-level in 1.8
+    /// egress is a list of egress rules to be applied to the selected pods. Outgoing traffic
+    /// is allowed if there are no NetworkPolicies selecting the pod (and cluster policy
+    /// otherwise allows the traffic), OR if the traffic matches at least one egress rule
+    /// across all of the NetworkPolicy objects whose podSelector matches the pod. If
+    /// this field is empty then this NetworkPolicy limits all outgoing traffic (and serves
+    /// solely to ensure that the pods it selects are isolated by default).
+    /// This field is beta-level in 1.8
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub egress: Option<Vec<TenantNetworkPoliciesItemsEgress>>,
-    /// ingress is a list of ingress rules to be applied to the selected pods. Traffic is allowed to a pod if there are no NetworkPolicies selecting the pod (and cluster policy otherwise allows the traffic), OR if the traffic source is the pod's local node, OR if the traffic matches at least one ingress rule across all of the NetworkPolicy objects whose podSelector matches the pod. If this field is empty then this NetworkPolicy does not allow any traffic (and serves solely to ensure that the pods it selects are isolated by default)
+    /// ingress is a list of ingress rules to be applied to the selected pods.
+    /// Traffic is allowed to a pod if there are no NetworkPolicies selecting the pod
+    /// (and cluster policy otherwise allows the traffic), OR if the traffic source is
+    /// the pod's local node, OR if the traffic matches at least one ingress rule
+    /// across all of the NetworkPolicy objects whose podSelector matches the pod. If
+    /// this field is empty then this NetworkPolicy does not allow any traffic (and serves
+    /// solely to ensure that the pods it selects are isolated by default)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<Vec<TenantNetworkPoliciesItemsIngress>>,
-    /// podSelector selects the pods to which this NetworkPolicy object applies. The array of ingress rules is applied to any pods selected by this field. Multiple network policies can select the same set of pods. In this case, the ingress rules for each are combined additively. This field is NOT optional and follows standard label selector semantics. An empty podSelector matches all pods in this namespace.
+    /// podSelector selects the pods to which this NetworkPolicy object applies.
+    /// The array of ingress rules is applied to any pods selected by this field.
+    /// Multiple network policies can select the same set of pods. In this case,
+    /// the ingress rules for each are combined additively.
+    /// This field is NOT optional and follows standard label selector semantics.
+    /// An empty podSelector matches all pods in this namespace.
     #[serde(rename = "podSelector")]
     pub pod_selector: TenantNetworkPoliciesItemsPodSelector,
-    /// policyTypes is a list of rule types that the NetworkPolicy relates to. Valid options are ["Ingress"], ["Egress"], or ["Ingress", "Egress"]. If this field is not specified, it will default based on the existence of ingress or egress rules; policies that contain an egress section are assumed to affect egress, and all policies (whether or not they contain an ingress section) are assumed to affect ingress. If you want to write an egress-only policy, you must explicitly specify policyTypes [ "Egress" ]. Likewise, if you want to write a policy that specifies that no egress is allowed, you must specify a policyTypes value that include "Egress" (since such a policy would not include an egress section and would otherwise default to just [ "Ingress" ]). This field is beta-level in 1.8
+    /// policyTypes is a list of rule types that the NetworkPolicy relates to.
+    /// Valid options are ["Ingress"], ["Egress"], or ["Ingress", "Egress"].
+    /// If this field is not specified, it will default based on the existence of ingress or egress rules;
+    /// policies that contain an egress section are assumed to affect egress, and all policies
+    /// (whether or not they contain an ingress section) are assumed to affect ingress.
+    /// If you want to write an egress-only policy, you must explicitly specify policyTypes [ "Egress" ].
+    /// Likewise, if you want to write a policy that specifies that no egress is allowed,
+    /// you must specify a policyTypes value that include "Egress" (since such a policy would not include
+    /// an egress section and would otherwise default to just [ "Ingress" ]).
+    /// This field is beta-level in 1.8
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyTypes")]
     pub policy_types: Option<Vec<String>>,
 }
 
-/// NetworkPolicyEgressRule describes a particular set of traffic that is allowed out of pods matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and to. This type is beta-level in 1.8
+/// NetworkPolicyEgressRule describes a particular set of traffic that is allowed out of pods
+/// matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and to.
+/// This type is beta-level in 1.8
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsEgress {
-    /// ports is a list of destination ports for outgoing traffic. Each item in this list is combined using a logical OR. If this field is empty or missing, this rule matches all ports (traffic not restricted by port). If this field is present and contains at least one item, then this rule allows traffic only if the traffic matches at least one port in the list.
+    /// ports is a list of destination ports for outgoing traffic.
+    /// Each item in this list is combined using a logical OR. If this field is
+    /// empty or missing, this rule matches all ports (traffic not restricted by port).
+    /// If this field is present and contains at least one item, then this rule allows
+    /// traffic only if the traffic matches at least one port in the list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<TenantNetworkPoliciesItemsEgressPorts>>,
-    /// to is a list of destinations for outgoing traffic of pods selected for this rule. Items in this list are combined using a logical OR operation. If this field is empty or missing, this rule matches all destinations (traffic not restricted by destination). If this field is present and contains at least one item, this rule allows traffic only if the traffic matches at least one item in the to list.
+    /// to is a list of destinations for outgoing traffic of pods selected for this rule.
+    /// Items in this list are combined using a logical OR operation. If this field is
+    /// empty or missing, this rule matches all destinations (traffic not restricted by
+    /// destination). If this field is present and contains at least one item, this rule
+    /// allows traffic only if the traffic matches at least one item in the to list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub to: Option<Vec<TenantNetworkPoliciesItemsEgressTo>>,
 }
@@ -289,172 +360,268 @@ pub struct TenantNetworkPoliciesItemsEgress {
 /// NetworkPolicyPort describes a port to allow traffic on
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsEgressPorts {
-    /// endPort indicates that the range of ports from port to endPort if set, inclusive, should be allowed by the policy. This field cannot be defined if the port field is not defined or if the port field is defined as a named (string) port. The endPort must be equal or greater than port.
+    /// endPort indicates that the range of ports from port to endPort if set, inclusive,
+    /// should be allowed by the policy. This field cannot be defined if the port field
+    /// is not defined or if the port field is defined as a named (string) port.
+    /// The endPort must be equal or greater than port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endPort")]
     pub end_port: Option<i32>,
-    /// port represents the port on the given protocol. This can either be a numerical or named port on a pod. If this field is not provided, this matches all port names and numbers. If present, only traffic on the specified protocol AND port will be matched.
+    /// port represents the port on the given protocol. This can either be a numerical or named
+    /// port on a pod. If this field is not provided, this matches all port names and
+    /// numbers.
+    /// If present, only traffic on the specified protocol AND port will be matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<IntOrString>,
-    /// protocol represents the protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this field defaults to TCP.
+    /// protocol represents the protocol (TCP, UDP, or SCTP) which traffic must match.
+    /// If not specified, this field defaults to TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }
 
-/// NetworkPolicyPeer describes a peer to allow traffic to/from. Only certain combinations of fields are allowed
+/// NetworkPolicyPeer describes a peer to allow traffic to/from. Only certain combinations of
+/// fields are allowed
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsEgressTo {
-    /// ipBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
+    /// ipBlock defines policy on a particular IPBlock. If this field is set then
+    /// neither of the other fields can be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
     pub ip_block: Option<TenantNetworkPoliciesItemsEgressToIpBlock>,
-    /// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces. 
-    ///  If podSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the namespaces selected by namespaceSelector. Otherwise it selects all pods in the namespaces selected by namespaceSelector.
+    /// namespaceSelector selects namespaces using cluster-scoped labels. This field follows
+    /// standard label selector semantics; if present but empty, it selects all namespaces.
+    /// 
+    /// 
+    /// If podSelector is also set, then the NetworkPolicyPeer as a whole selects
+    /// the pods matching podSelector in the namespaces selected by namespaceSelector.
+    /// Otherwise it selects all pods in the namespaces selected by namespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantNetworkPoliciesItemsEgressToNamespaceSelector>,
-    /// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods. 
-    ///  If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the pods matching podSelector in the policy's own namespace.
+    /// podSelector is a label selector which selects pods. This field follows standard label
+    /// selector semantics; if present but empty, it selects all pods.
+    /// 
+    /// 
+    /// If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects
+    /// the pods matching podSelector in the Namespaces selected by NamespaceSelector.
+    /// Otherwise it selects the pods matching podSelector in the policy's own namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<TenantNetworkPoliciesItemsEgressToPodSelector>,
 }
 
-/// ipBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
+/// ipBlock defines policy on a particular IPBlock. If this field is set then
+/// neither of the other fields can be.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsEgressToIpBlock {
-    /// cidr is a string representing the IPBlock Valid examples are "192.168.1.0/24" or "2001:db8::/64"
+    /// cidr is a string representing the IPBlock
+    /// Valid examples are "192.168.1.0/24" or "2001:db8::/64"
     pub cidr: String,
-    /// except is a slice of CIDRs that should not be included within an IPBlock Valid examples are "192.168.1.0/24" or "2001:db8::/64" Except values will be rejected if they are outside the cidr range
+    /// except is a slice of CIDRs that should not be included within an IPBlock
+    /// Valid examples are "192.168.1.0/24" or "2001:db8::/64"
+    /// Except values will be rejected if they are outside the cidr range
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
 }
 
-/// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces. 
-///  If podSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the namespaces selected by namespaceSelector. Otherwise it selects all pods in the namespaces selected by namespaceSelector.
+/// namespaceSelector selects namespaces using cluster-scoped labels. This field follows
+/// standard label selector semantics; if present but empty, it selects all namespaces.
+/// 
+/// 
+/// If podSelector is also set, then the NetworkPolicyPeer as a whole selects
+/// the pods matching podSelector in the namespaces selected by namespaceSelector.
+/// Otherwise it selects all pods in the namespaces selected by namespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsEgressToNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantNetworkPoliciesItemsEgressToNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsEgressToNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods. 
-///  If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the pods matching podSelector in the policy's own namespace.
+/// podSelector is a label selector which selects pods. This field follows standard label
+/// selector semantics; if present but empty, it selects all pods.
+/// 
+/// 
+/// If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects
+/// the pods matching podSelector in the Namespaces selected by NamespaceSelector.
+/// Otherwise it selects the pods matching podSelector in the policy's own namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsEgressToPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantNetworkPoliciesItemsEgressToPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsEgressToPodSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// NetworkPolicyIngressRule describes a particular set of traffic that is allowed to the pods matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and from.
+/// NetworkPolicyIngressRule describes a particular set of traffic that is allowed to the pods
+/// matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and from.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsIngress {
-    /// from is a list of sources which should be able to access the pods selected for this rule. Items in this list are combined using a logical OR operation. If this field is empty or missing, this rule matches all sources (traffic not restricted by source). If this field is present and contains at least one item, this rule allows traffic only if the traffic matches at least one item in the from list.
+    /// from is a list of sources which should be able to access the pods selected for this rule.
+    /// Items in this list are combined using a logical OR operation. If this field is
+    /// empty or missing, this rule matches all sources (traffic not restricted by
+    /// source). If this field is present and contains at least one item, this rule
+    /// allows traffic only if the traffic matches at least one item in the from list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<TenantNetworkPoliciesItemsIngressFrom>>,
-    /// ports is a list of ports which should be made accessible on the pods selected for this rule. Each item in this list is combined using a logical OR. If this field is empty or missing, this rule matches all ports (traffic not restricted by port). If this field is present and contains at least one item, then this rule allows traffic only if the traffic matches at least one port in the list.
+    /// ports is a list of ports which should be made accessible on the pods selected for
+    /// this rule. Each item in this list is combined using a logical OR. If this field is
+    /// empty or missing, this rule matches all ports (traffic not restricted by port).
+    /// If this field is present and contains at least one item, then this rule allows
+    /// traffic only if the traffic matches at least one port in the list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<TenantNetworkPoliciesItemsIngressPorts>>,
 }
 
-/// NetworkPolicyPeer describes a peer to allow traffic to/from. Only certain combinations of fields are allowed
+/// NetworkPolicyPeer describes a peer to allow traffic to/from. Only certain combinations of
+/// fields are allowed
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsIngressFrom {
-    /// ipBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
+    /// ipBlock defines policy on a particular IPBlock. If this field is set then
+    /// neither of the other fields can be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
     pub ip_block: Option<TenantNetworkPoliciesItemsIngressFromIpBlock>,
-    /// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces. 
-    ///  If podSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the namespaces selected by namespaceSelector. Otherwise it selects all pods in the namespaces selected by namespaceSelector.
+    /// namespaceSelector selects namespaces using cluster-scoped labels. This field follows
+    /// standard label selector semantics; if present but empty, it selects all namespaces.
+    /// 
+    /// 
+    /// If podSelector is also set, then the NetworkPolicyPeer as a whole selects
+    /// the pods matching podSelector in the namespaces selected by namespaceSelector.
+    /// Otherwise it selects all pods in the namespaces selected by namespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantNetworkPoliciesItemsIngressFromNamespaceSelector>,
-    /// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods. 
-    ///  If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the pods matching podSelector in the policy's own namespace.
+    /// podSelector is a label selector which selects pods. This field follows standard label
+    /// selector semantics; if present but empty, it selects all pods.
+    /// 
+    /// 
+    /// If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects
+    /// the pods matching podSelector in the Namespaces selected by NamespaceSelector.
+    /// Otherwise it selects the pods matching podSelector in the policy's own namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<TenantNetworkPoliciesItemsIngressFromPodSelector>,
 }
 
-/// ipBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
+/// ipBlock defines policy on a particular IPBlock. If this field is set then
+/// neither of the other fields can be.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsIngressFromIpBlock {
-    /// cidr is a string representing the IPBlock Valid examples are "192.168.1.0/24" or "2001:db8::/64"
+    /// cidr is a string representing the IPBlock
+    /// Valid examples are "192.168.1.0/24" or "2001:db8::/64"
     pub cidr: String,
-    /// except is a slice of CIDRs that should not be included within an IPBlock Valid examples are "192.168.1.0/24" or "2001:db8::/64" Except values will be rejected if they are outside the cidr range
+    /// except is a slice of CIDRs that should not be included within an IPBlock
+    /// Valid examples are "192.168.1.0/24" or "2001:db8::/64"
+    /// Except values will be rejected if they are outside the cidr range
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
 }
 
-/// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces. 
-///  If podSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the namespaces selected by namespaceSelector. Otherwise it selects all pods in the namespaces selected by namespaceSelector.
+/// namespaceSelector selects namespaces using cluster-scoped labels. This field follows
+/// standard label selector semantics; if present but empty, it selects all namespaces.
+/// 
+/// 
+/// If podSelector is also set, then the NetworkPolicyPeer as a whole selects
+/// the pods matching podSelector in the namespaces selected by namespaceSelector.
+/// Otherwise it selects all pods in the namespaces selected by namespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsIngressFromNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantNetworkPoliciesItemsIngressFromNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsIngressFromNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods. 
-///  If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the pods matching podSelector in the policy's own namespace.
+/// podSelector is a label selector which selects pods. This field follows standard label
+/// selector semantics; if present but empty, it selects all pods.
+/// 
+/// 
+/// If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects
+/// the pods matching podSelector in the Namespaces selected by NamespaceSelector.
+/// Otherwise it selects the pods matching podSelector in the policy's own namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsIngressFromPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantNetworkPoliciesItemsIngressFromPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsIngressFromPodSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -462,36 +629,55 @@ pub struct TenantNetworkPoliciesItemsIngressFromPodSelectorMatchExpressions {
 /// NetworkPolicyPort describes a port to allow traffic on
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsIngressPorts {
-    /// endPort indicates that the range of ports from port to endPort if set, inclusive, should be allowed by the policy. This field cannot be defined if the port field is not defined or if the port field is defined as a named (string) port. The endPort must be equal or greater than port.
+    /// endPort indicates that the range of ports from port to endPort if set, inclusive,
+    /// should be allowed by the policy. This field cannot be defined if the port field
+    /// is not defined or if the port field is defined as a named (string) port.
+    /// The endPort must be equal or greater than port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endPort")]
     pub end_port: Option<i32>,
-    /// port represents the port on the given protocol. This can either be a numerical or named port on a pod. If this field is not provided, this matches all port names and numbers. If present, only traffic on the specified protocol AND port will be matched.
+    /// port represents the port on the given protocol. This can either be a numerical or named
+    /// port on a pod. If this field is not provided, this matches all port names and
+    /// numbers.
+    /// If present, only traffic on the specified protocol AND port will be matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<IntOrString>,
-    /// protocol represents the protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this field defaults to TCP.
+    /// protocol represents the protocol (TCP, UDP, or SCTP) which traffic must match.
+    /// If not specified, this field defaults to TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }
 
-/// podSelector selects the pods to which this NetworkPolicy object applies. The array of ingress rules is applied to any pods selected by this field. Multiple network policies can select the same set of pods. In this case, the ingress rules for each are combined additively. This field is NOT optional and follows standard label selector semantics. An empty podSelector matches all pods in this namespace.
+/// podSelector selects the pods to which this NetworkPolicy object applies.
+/// The array of ingress rules is applied to any pods selected by this field.
+/// Multiple network policies can select the same set of pods. In this case,
+/// the ingress rules for each are combined additively.
+/// This field is NOT optional and follows standard label selector semantics.
+/// An empty podSelector matches all pods in this namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantNetworkPoliciesItemsPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantNetworkPoliciesItemsPodSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -550,7 +736,10 @@ pub struct TenantPodOptionsAdditionalMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Specifies the allowed priorityClasses assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed PriorityClasses. A default value can be specified, and all the Pod resources created will inherit the declared class. Optional.
+/// Specifies the allowed priorityClasses assigned to the Tenant.
+/// Capsule assures that all Pods resources created in the Tenant can use only one of the allowed PriorityClasses.
+/// A default value can be specified, and all the Pod resources created will inherit the declared class.
+/// Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantPriorityClasses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -562,19 +751,26 @@ pub struct TenantPriorityClasses {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantPriorityClassesMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantPriorityClassesMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -592,18 +788,24 @@ pub struct TenantResourceQuotas {
 /// ResourceQuotaSpec defines the desired hard limits to enforce for Quota.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantResourceQuotasItems {
-    /// hard is the set of desired hard limits for each named resource. More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/
+    /// hard is the set of desired hard limits for each named resource.
+    /// More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hard: Option<BTreeMap<String, IntOrString>>,
-    /// scopeSelector is also a collection of filters like scopes that must match each object tracked by a quota but expressed using ScopeSelectorOperator in combination with possible values. For a resource to match, both scopes AND scopeSelector (if specified in spec), must be matched.
+    /// scopeSelector is also a collection of filters like scopes that must match each object tracked by a quota
+    /// but expressed using ScopeSelectorOperator in combination with possible values.
+    /// For a resource to match, both scopes AND scopeSelector (if specified in spec), must be matched.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeSelector")]
     pub scope_selector: Option<TenantResourceQuotasItemsScopeSelector>,
-    /// A collection of filters that must match each object tracked by a quota. If not specified, the quota matches all objects.
+    /// A collection of filters that must match each object tracked by a quota.
+    /// If not specified, the quota matches all objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
 }
 
-/// scopeSelector is also a collection of filters like scopes that must match each object tracked by a quota but expressed using ScopeSelectorOperator in combination with possible values. For a resource to match, both scopes AND scopeSelector (if specified in spec), must be matched.
+/// scopeSelector is also a collection of filters like scopes that must match each object tracked by a quota
+/// but expressed using ScopeSelectorOperator in combination with possible values.
+/// For a resource to match, both scopes AND scopeSelector (if specified in spec), must be matched.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantResourceQuotasItemsScopeSelector {
     /// A list of scope selector requirements by scope of the resources.
@@ -611,15 +813,20 @@ pub struct TenantResourceQuotasItemsScopeSelector {
     pub match_expressions: Option<Vec<TenantResourceQuotasItemsScopeSelectorMatchExpressions>>,
 }
 
-/// A scoped-resource selector requirement is a selector that contains values, a scope name, and an operator that relates the scope name and values.
+/// A scoped-resource selector requirement is a selector that contains values, a scope name, and an operator
+/// that relates the scope name and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantResourceQuotasItemsScopeSelectorMatchExpressions {
-    /// Represents a scope's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist.
+    /// Represents a scope's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist.
     pub operator: String,
     /// The name of the scope that the selector applies to.
     #[serde(rename = "scopeName")]
     pub scope_name: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -631,7 +838,9 @@ pub enum TenantResourceQuotasScope {
     Namespace,
 }
 
-/// Specifies the allowed RuntimeClasses assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed RuntimeClasses. Optional.
+/// Specifies the allowed RuntimeClasses assigned to the Tenant.
+/// Capsule assures that all Pods resources created in the Tenant can use only one of the allowed RuntimeClasses.
+/// Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantRuntimeClasses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -641,19 +850,26 @@ pub struct TenantRuntimeClasses {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantRuntimeClassesMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantRuntimeClassesMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -725,7 +941,10 @@ pub struct TenantServiceOptionsForbiddenLabels {
     pub denied_regex: Option<String>,
 }
 
-/// Specifies the allowed StorageClasses assigned to the Tenant. Capsule assures that all PersistentVolumeClaim resources created in the Tenant can use only one of the allowed StorageClasses. A default value can be specified, and all the PersistentVolumeClaim resources created will inherit the declared class. Optional.
+/// Specifies the allowed StorageClasses assigned to the Tenant.
+/// Capsule assures that all PersistentVolumeClaim resources created in the Tenant can use only one of the allowed StorageClasses.
+/// A default value can be specified, and all the PersistentVolumeClaim resources created will inherit the declared class.
+/// Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantStorageClasses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -737,19 +956,26 @@ pub struct TenantStorageClasses {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantStorageClassesMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantStorageClassesMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }

@@ -77,7 +77,7 @@ spec:
                     - "name"
                   type: "object"
                 configs:
-                  description: "Specifies the configuration file templates and volume mount parameters used by the Component. It also includes descriptions of the parameters in the ConfigMaps, such as value range limitations. \n This field specifies a list of templates that will be rendered into Component containers' configuration files. Each template is represented as a ConfigMap and may contain multiple configuration files, with each file being a key in the ConfigMap. \n The rendered configuration files will be mounted into the Component's containers according to the specified volume mount parameters. \n This field is immutable. \n TODO: support referencing configs from other components or clusters."
+                  description: "Specifies the configuration file templates and volume mount parameters used by the Component. It also includes descriptions of the parameters in the ConfigMaps, such as value range limitations. \n This field specifies a list of templates that will be rendered into Component containers' configuration files. Each template is represented as a ConfigMap and may contain multiple configuration files, with each file being a key in the ConfigMap. \n The rendered configuration files will be mounted into the Component's containers according to the specified volume mount parameters. \n This field is immutable."
                   items:
                     properties:
                       asEnvFrom:
@@ -166,7 +166,6 @@ spec:
                         type: "string"
                     required:
                       - "name"
-                      - "templateRef"
                       - "volumeName"
                     type: "object"
                   type: "array"
@@ -7095,7 +7094,6 @@ spec:
                         type: "string"
                     required:
                       - "name"
-                      - "templateRef"
                       - "volumeName"
                     type: "object"
                   type: "array"

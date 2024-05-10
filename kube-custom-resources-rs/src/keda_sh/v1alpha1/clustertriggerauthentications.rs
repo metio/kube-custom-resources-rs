@@ -153,8 +153,6 @@ pub enum ClusterTriggerAuthenticationAwsSecretManagerPodIdentityIdentityOwner {
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationAwsSecretManagerPodIdentityProvider {
-    #[serde(rename = "azure")]
-    Azure,
     #[serde(rename = "azure-workload")]
     AzureWorkload,
     #[serde(rename = "gcp")]
@@ -163,8 +161,6 @@ pub enum ClusterTriggerAuthenticationAwsSecretManagerPodIdentityProvider {
     Aws,
     #[serde(rename = "aws-eks")]
     AwsEks,
-    #[serde(rename = "aws-kiam")]
-    AwsKiam,
     #[serde(rename = "none")]
     None,
 }
@@ -269,8 +265,6 @@ pub enum ClusterTriggerAuthenticationAzureKeyVaultPodIdentityIdentityOwner {
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationAzureKeyVaultPodIdentityProvider {
-    #[serde(rename = "azure")]
-    Azure,
     #[serde(rename = "azure-workload")]
     AzureWorkload,
     #[serde(rename = "gcp")]
@@ -279,8 +273,6 @@ pub enum ClusterTriggerAuthenticationAzureKeyVaultPodIdentityProvider {
     Aws,
     #[serde(rename = "aws-eks")]
     AwsEks,
-    #[serde(rename = "aws-kiam")]
-    AwsKiam,
     #[serde(rename = "none")]
     None,
 }
@@ -382,8 +374,6 @@ pub enum ClusterTriggerAuthenticationGcpSecretManagerPodIdentityIdentityOwner {
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationGcpSecretManagerPodIdentityProvider {
-    #[serde(rename = "azure")]
-    Azure,
     #[serde(rename = "azure-workload")]
     AzureWorkload,
     #[serde(rename = "gcp")]
@@ -392,8 +382,6 @@ pub enum ClusterTriggerAuthenticationGcpSecretManagerPodIdentityProvider {
     Aws,
     #[serde(rename = "aws-eks")]
     AwsEks,
-    #[serde(rename = "aws-kiam")]
-    AwsKiam,
     #[serde(rename = "none")]
     None,
 }
@@ -500,8 +488,6 @@ pub enum ClusterTriggerAuthenticationPodIdentityIdentityOwner {
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationPodIdentityProvider {
-    #[serde(rename = "azure")]
-    Azure,
     #[serde(rename = "azure-workload")]
     AzureWorkload,
     #[serde(rename = "gcp")]
@@ -510,8 +496,6 @@ pub enum ClusterTriggerAuthenticationPodIdentityProvider {
     Aws,
     #[serde(rename = "aws-eks")]
     AwsEks,
-    #[serde(rename = "aws-kiam")]
-    AwsKiam,
     #[serde(rename = "none")]
     None,
 }

@@ -25,6 +25,8 @@ spec:
         - jsonPath: ".status.conditions[?(@.type==\"Ready\")].message"
           name: "Status"
           type: "string"
+      deprecated: true
+      deprecationWarning: "v2beta2 HelmRelease is deprecated, upgrade to v2"
       name: "v2beta2"
       schema:
         openAPIV3Schema:
@@ -66,6 +68,9 @@ spec:
                           maxLength: 2048
                           minLength: 1
                           type: "string"
+                        ignoreMissingValuesFiles:
+                          description: "IgnoreMissingValuesFiles controls whether to silently ignore missing values files rather than failing."
+                          type: "boolean"
                         interval:
                           description: "Interval at which to check the v1.Source for updates. Defaults to\n'HelmReleaseSpec.Interval'."
                           pattern: "^([0-9]+(\\.[0-9]+)?(ms|s|m|h))+$"
@@ -721,6 +726,9 @@ spec:
                       apiVersion:
                         description: "APIVersion is the API version of the Snapshot.\nProvisional: when the calculation method of the Digest field is changed,\nthis field will be used to distinguish between the old and new methods."
                         type: "string"
+                      appVersion:
+                        description: "AppVersion is the chart app version of the release object in storage."
+                        type: "string"
                       chartName:
                         description: "ChartName is the chart name of the release object in storage."
                         type: "string"
@@ -836,6 +844,9 @@ spec:
                   description: "ObservedGeneration is the last observed generation."
                   format: "int64"
                   type: "integer"
+                observedPostRenderersDigest:
+                  description: "ObservedPostRenderersDigest is the digest for the post-renderers of\nthe last successful reconciliation attempt."
+                  type: "string"
                 storageNamespace:
                   description: "StorageNamespace is the namespace of the Helm release storage for the\ncurrent release."
                   maxLength: 63
@@ -848,6 +859,6 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

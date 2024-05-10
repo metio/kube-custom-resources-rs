@@ -161,6 +161,9 @@ spec:
                           ip:
                             description: "IP is set for load-balancer ingress points that are IP based\n(typically GCE or OpenStack load-balancers)"
                             type: "string"
+                          ipMode:
+                            description: "IPMode specifies how the load-balancer IP behaves, and may only be specified when the ip field is specified.\nSetting this to \"VIP\" indicates that traffic is delivered to the node with\nthe destination set to the load-balancer's IP and port.\nSetting this to \"Proxy\" indicates that traffic is delivered to the node or pod with\nthe destination set to the node's IP and node port or the pod's IP and port.\nService implementations may use this information to adjust traffic routing."
+                            type: "string"
                           ports:
                             description: "Ports is a list of records of service ports\nIf used, every port defined in the service should have an entry in it"
                             items:

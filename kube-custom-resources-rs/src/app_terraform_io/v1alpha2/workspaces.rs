@@ -17,7 +17,7 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct WorkspaceSpec {
-    /// Terraform Cloud Agents allow Terraform Cloud to communicate with isolated, private, or on-premises infrastructure.
+    /// HCP Terraform Agents allow HCP Terraform to communicate with isolated, private, or on-premises infrastructure.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/agents
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentPool")]
@@ -70,12 +70,12 @@ pub struct WorkspaceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project: Option<WorkspaceProject>,
     /// Remote state access between workspaces.
-    /// By default, new workspaces in Terraform Cloud do not allow other workspaces to access their state.
+    /// By default, new workspaces in HCP Terraform do not allow other workspaces to access their state.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/state#accessing-state-from-other-workspaces
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteStateSharing")]
     pub remote_state_sharing: Option<WorkspaceRemoteStateSharing>,
-    /// Run tasks allow Terraform Cloud to interact with external systems at specific points in the Terraform Cloud run lifecycle.
+    /// Run tasks allow HCP Terraform to interact with external systems at specific points in the HCP Terraform run lifecycle.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runTasks")]
@@ -95,7 +95,7 @@ pub struct WorkspaceSpec {
     /// Tags must be one or more characters; can include letters, numbers, colons, hyphens, and underscores; and must begin and end with a letter or number.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<String>>,
-    /// Terraform Cloud workspaces can only be accessed by users with the correct permissions.
+    /// HCP Terraform workspaces can only be accessed by users with the correct permissions.
     /// You can manage permissions for a workspace on a per-team basis.
     /// When a workspace is created, only the owners team and teams with the "manage workspaces" permission can access it,
     /// with full admin permissions. These teams' access can't be removed from a workspace.
@@ -133,7 +133,7 @@ pub struct WorkspaceSpec {
     pub working_directory: Option<String>,
 }
 
-/// Terraform Cloud Agents allow Terraform Cloud to communicate with isolated, private, or on-premises infrastructure.
+/// HCP Terraform Agents allow HCP Terraform to communicate with isolated, private, or on-premises infrastructure.
 /// More information:
 ///   - https://developer.hashicorp.com/terraform/cloud-docs/agents
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -221,7 +221,7 @@ pub struct WorkspaceEnvironmentVariablesValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkspaceNotifications {
     /// The list of email addresses that will receive notification emails.
-    /// It is only available for Terraform Enterprise users. It is not available in Terraform Cloud.
+    /// It is only available for Terraform Enterprise users. It is not available in HCP Terraform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailAddresses")]
     pub email_addresses: Option<Vec<String>>,
     /// The list of users belonging to the organization that will receive notification emails.
@@ -284,7 +284,7 @@ pub struct WorkspaceProject {
 }
 
 /// Remote state access between workspaces.
-/// By default, new workspaces in Terraform Cloud do not allow other workspaces to access their state.
+/// By default, new workspaces in HCP Terraform do not allow other workspaces to access their state.
 /// More information:
 ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/state#accessing-state-from-other-workspaces
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -314,7 +314,7 @@ pub struct WorkspaceRemoteStateSharingWorkspaces {
     pub name: Option<String>,
 }
 
-/// Run tasks allow Terraform Cloud to interact with external systems at specific points in the Terraform Cloud run lifecycle.
+/// Run tasks allow HCP Terraform to interact with external systems at specific points in the HCP Terraform run lifecycle.
 /// Only one of the fields `ID` or `Name` is allowed.
 /// At least one of the fields `ID` or `Name` is mandatory.
 /// More information:
@@ -371,7 +371,7 @@ pub struct WorkspaceSshKey {
     pub name: Option<String>,
 }
 
-/// Terraform Cloud workspaces can only be accessed by users with the correct permissions.
+/// HCP Terraform workspaces can only be accessed by users with the correct permissions.
 /// You can manage permissions for a workspace on a per-team basis.
 /// When a workspace is created, only the owners team and teams with the "manage workspaces" permission can access it,
 /// with full admin permissions. These teams' access can't be removed from a workspace.
@@ -590,10 +590,10 @@ pub struct WorkspaceStatus {
 /// Run status of plan-only/speculative plan that was triggered manually.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkspaceStatusPlan {
-    /// Latest plan-only/speculative plan Terraform Cloud run ID.
+    /// Latest plan-only/speculative plan HCP Terraform run ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// Latest plan-only/speculative plan Terraform Cloud run status.
+    /// Latest plan-only/speculative plan HCP Terraform run status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// The version of Terraform to use for this run.
@@ -607,13 +607,13 @@ pub struct WorkspaceStatusRunStatus {
     /// The configuration version of this run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationVersion")]
     pub configuration_version: Option<String>,
-    /// Current(both active and finished) Terraform Cloud run ID.
+    /// Current(both active and finished) HCP Terraform run ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Run ID of the latest run that could update the outputs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputRunID")]
     pub output_run_id: Option<String>,
-    /// Current(both active and finished) Terraform Cloud run status.
+    /// Current(both active and finished) HCP Terraform run status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }

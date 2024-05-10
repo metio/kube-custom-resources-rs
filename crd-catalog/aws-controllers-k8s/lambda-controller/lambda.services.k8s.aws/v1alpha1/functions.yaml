@@ -55,6 +55,8 @@ spec:
                       type: "string"
                     s3ObjectVersion:
                       type: "string"
+                    sha256:
+                      type: "string"
                     zipFile:
                       format: "byte"
                       type: "string"

@@ -119,6 +119,13 @@ spec:
                           maxAge:
                             description: "Specifies how long the results of a preflight request can be cached."
                             type: "string"
+                          unmatchedPreflights:
+                            description: "Indicates whether preflight requests not matching the configured allowed origin shouldn't be forwarded to the upstream.\n\nValid Options: FORWARD, IGNORE"
+                            enum:
+                              - "UNSPECIFIED"
+                              - "FORWARD"
+                              - "IGNORE"
+                            type: "string"
                         type: "object"
                       delegate:
                         description: "Delegate is used to specify the particular VirtualService which can be used to define delegate HTTPRoute."

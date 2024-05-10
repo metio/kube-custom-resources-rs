@@ -243,7 +243,6 @@ spec:
                               type: "string"
                           required:
                             - "name"
-                            - "templateRef"
                             - "volumeName"
                           type: "object"
                         type: "array"
@@ -5254,7 +5253,6 @@ spec:
                               type: "string"
                           required:
                             - "name"
-                            - "templateRef"
                             - "volumeName"
                           type: "object"
                         type: "array"

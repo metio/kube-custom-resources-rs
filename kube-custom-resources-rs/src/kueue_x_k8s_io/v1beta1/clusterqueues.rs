@@ -47,6 +47,10 @@ pub struct ClusterQueueSpec {
     /// subdomain in DNS (RFC 1123).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cohort: Option<String>,
+    /// fairSharing defines the properties of the ClusterQueue when participating in fair sharing.
+    /// The values are only relevant if fair sharing is enabled in the Kueue configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fairSharing")]
+    pub fair_sharing: Option<ClusterQueueFairSharing>,
     /// flavorFungibility defines whether a workload should try the next flavor
     /// before borrowing or preempting in the flavor being evaluated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flavorFungibility")]
@@ -130,6 +134,22 @@ pub struct ClusterQueueAdmissionChecksStrategyAdmissionChecks {
     /// If empty, the AdmissionCheck will run for all workloads submitted to the ClusterQueue.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onFlavors")]
     pub on_flavors: Option<Vec<String>>,
+}
+
+/// fairSharing defines the properties of the ClusterQueue when participating in fair sharing.
+/// The values are only relevant if fair sharing is enabled in the Kueue configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterQueueFairSharing {
+    /// weight gives a comparative advantage to this ClusterQueue when competing for unused
+    /// resources in the cohort against other ClusterQueues.
+    /// The share of a ClusterQueue is based on the dominant resource usage above nominal
+    /// quotas for each resource, divided by the weight.
+    /// Admission prioritizes scheduling workloads from ClusterQueues with the lowest share
+    /// and preempting workloads from the ClusterQueues with the highest share.
+    /// A zero weight implies infinite share value, meaning that this ClusterQueue will always
+    /// be at disadvantage against other ClusterQueues.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub weight: Option<IntOrString>,
 }
 
 /// flavorFungibility defines whether a workload should try the next flavor

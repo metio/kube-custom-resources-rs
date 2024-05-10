@@ -86,6 +86,9 @@ spec:
                       type: "object"
                       x-kubernetes-map-type: "atomic"
                   type: "object"
+                paused:
+                  description: "Paused If set to true all actions on the underlaying managed objects are not\ngoing to be performed, except for delete actions."
+                  type: "boolean"
                 replicationFactor:
                   description: "ReplicationFactor defines how many copies of data make among\ndistinct storage nodes"
                   format: "int32"

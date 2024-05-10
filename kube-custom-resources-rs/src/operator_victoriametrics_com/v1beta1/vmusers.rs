@@ -28,6 +28,9 @@ pub struct VMUserSpec {
     /// DisableSecretCreation skips related secret creation for vmuser
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_secret_creation: Option<bool>,
+    /// DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discover_backend_ips: Option<bool>,
     /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.
     /// See https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -83,10 +86,9 @@ pub struct VMUserSpec {
     /// TargetRefs - reference to endpoints, which user may access.
     #[serde(rename = "targetRefs")]
     pub target_refs: Vec<VMUserTargetRefs>,
-    /// TLSInsecureSkipVerify - whether to skip TLS verification when connecting to backend over HTTPS.
-    /// See https://docs.victoriametrics.com/vmauth.html#backend-tls-setup
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tls_insecure_skip_verify: Option<bool>,
+    /// TLSConfig specifies TLSConfig configuration parameters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<VMUserTlsConfig>,
     /// TokenRef allows fetching token from user-created secrets by its name and key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenRef")]
     pub token_ref: Option<VMUserTokenRef>,
@@ -141,11 +143,14 @@ pub struct VMUserTargetRefs {
     /// operator generates access url based on CRD params.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub crd: Option<VMUserTargetRefsCrd>,
+    /// DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discover_backend_ips: Option<bool>,
     /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.
     /// See https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop_src_path_prefix_parts: Option<i64>,
-    /// Headers represent additional http headers, that vmauth uses
+    /// RequestHeaders represent additional http headers, that vmauth uses
     /// in form of ["header_key: header_value"]
     /// multiple values for header key:
     /// ["header_key: value1,value2"]
@@ -174,6 +179,12 @@ pub struct VMUserTargetRefs {
     /// e.g. [429,503]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry_status_codes: Option<Vec<i64>>,
+    /// SrcHeaders is an optional list of headers, which must match request headers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub src_headers: Option<Vec<String>>,
+    /// SrcQueryArgs is an optional list of query args, which must match request URL query args.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub src_query_args: Option<Vec<String>>,
     /// Static - user defined url for traffic forward,
     /// for instance http://vmsingle:8429
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "static")]
@@ -181,7 +192,6 @@ pub struct VMUserTargetRefs {
     /// TargetRefBasicAuth allow an target endpoint to authenticate over basic authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefBasicAuth")]
     pub target_ref_basic_auth: Option<VMUserTargetRefsTargetRefBasicAuth>,
-    /// QueryParams []string `json:"queryParams,omitempty"`
     /// TargetPathSuffix allows to add some suffix to the target path
     /// It allows to hide tenant configuration from user with crd as ref.
     /// it also may contain any url encoded params.
@@ -261,6 +271,132 @@ pub struct VMUserTargetRefsTargetRefBasicAuthPassword {
 /// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserTargetRefsTargetRefBasicAuthUsername {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLSConfig specifies TLSConfig configuration parameters.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTlsConfig {
+    /// Stuct containing the CA cert to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<VMUserTlsConfigCa>,
+    /// Path to the CA cert in the container to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
+    pub ca_file: Option<String>,
+    /// Struct containing the client cert file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<VMUserTlsConfigCert>,
+    /// Path to the client cert file in the container for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Path to the client key file in the container for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
+    pub key_file: Option<String>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<VMUserTlsConfigKeySecret>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Stuct containing the CA cert to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<VMUserTlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<VMUserTlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Struct containing the client cert file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<VMUserTlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<VMUserTlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.

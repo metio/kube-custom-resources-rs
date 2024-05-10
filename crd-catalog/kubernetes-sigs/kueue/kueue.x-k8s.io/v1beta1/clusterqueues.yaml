@@ -82,6 +82,18 @@ spec:
                   maxLength: 253
                   pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                   type: "string"
+                fairSharing:
+                  description: "fairSharing defines the properties of the ClusterQueue when participating in fair sharing.\nThe values are only relevant if fair sharing is enabled in the Kueue configuration."
+                  properties:
+                    weight:
+                      anyOf:
+                        - type: "integer"
+                        - type: "string"
+                      default: 1
+                      description: "weight gives a comparative advantage to this ClusterQueue when competing for unused\nresources in the cohort against other ClusterQueues.\nThe share of a ClusterQueue is based on the dominant resource usage above nominal\nquotas for each resource, divided by the weight.\nAdmission prioritizes scheduling workloads from ClusterQueues with the lowest share\nand preempting workloads from the ClusterQueues with the highest share.\nA zero weight implies infinite share value, meaning that this ClusterQueue will always\nbe at disadvantage against other ClusterQueues."
+                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                      x-kubernetes-int-or-string: true
+                  type: "object"
                 flavorFungibility:
                   default: {}
                   description: "flavorFungibility defines whether a workload should try the next flavor\nbefore borrowing or preempting in the flavor being evaluated."

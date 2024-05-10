@@ -106,7 +106,7 @@ spec:
                   minItems: 1
                   type: "array"
                 tlsConfig:
-                  description: "Defines the TLS/SSL configuration required to connect to the data store in a secure way."
+                  description: "Defines the TLS/SSL configuration required to connect to the data store in a secure way.\nThis value is optional."
                   properties:
                     certificateAuthority:
                       description: "Retrieve the Certificate Authority certificate and private key, such as bare content of the file, or a SecretReference.\nThe key reference is required since etcd authentication is based on certificates, and Kamaji is responsible in creating this."
@@ -215,12 +215,10 @@ spec:
                       type: "object"
                   required:
                     - "certificateAuthority"
-                    - "clientCertificate"
                   type: "object"
               required:
                 - "driver"
                 - "endpoints"
-                - "tlsConfig"
               type: "object"
             status:
               description: "DataStoreStatus defines the observed state of DataStore."

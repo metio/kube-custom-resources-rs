@@ -30,11 +30,11 @@ pub struct DNSRecordSpec {
     #[serde(rename = "managedZone")]
     pub managed_zone: DNSRecordManagedZone,
     /// ownerID is a unique string used to identify the owner of this record.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
-    pub owner_id: Option<String>,
-    /// rootHost is the single root for all endpoints in a DNSRecord. If rootHost is set, it is expected all defined endpoints are children of or equal to this rootHost
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootHost")]
-    pub root_host: Option<String>,
+    #[serde(rename = "ownerID")]
+    pub owner_id: String,
+    /// rootHost is the single root for all endpoints in a DNSRecord. it is expected all defined endpoints are children of or equal to this rootHost
+    #[serde(rename = "rootHost")]
+    pub root_host: String,
 }
 
 /// Endpoint is a high-level way of a connection between a service and an IP
