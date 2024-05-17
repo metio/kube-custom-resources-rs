@@ -572,6 +572,9 @@ pub struct TempoMonolithicIngestionOtlpHttpTls {
 /// JaegerUI defines the Jaeger UI configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TempoMonolithicJaegerui {
+    /// Authentication defines the options for the oauth proxy used to protect jaeger UI
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authentication: Option<TempoMonolithicJaegeruiAuthentication>,
     /// Enabled defines if the Jaeger UI component should be created.
     pub enabled: bool,
     /// Ingress defines the Ingress configuration for the Jaeger UI.
@@ -583,6 +586,43 @@ pub struct TempoMonolithicJaegerui {
     /// Route defines the OpenShift route configuration for the Jaeger UI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<TempoMonolithicJaegeruiRoute>,
+}
+
+/// Authentication defines the options for the oauth proxy used to protect jaeger UI
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicJaegeruiAuthentication {
+    /// Defines if the authentication will be enabled for jaeger UI.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Resources defines the compute resource requirements of the OAuth Proxy container. The OAuth Proxy performs authentication and authorization of incoming requests to Jaeger UI when multi-tenancy is disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<TempoMonolithicJaegeruiAuthenticationResources>,
+    /// SAR defines the SAR to be used in the oauth-proxy default is "{"namespace": "<tempo_stack_namespace>", "resource": "pods", "verb": "get"}
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sar: Option<String>,
+}
+
+/// Resources defines the compute resource requirements of the OAuth Proxy container. The OAuth Proxy performs authentication and authorization of incoming requests to Jaeger UI when multi-tenancy is disabled.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicJaegeruiAuthenticationResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<TempoMonolithicJaegeruiAuthenticationResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicJaegeruiAuthenticationResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// Ingress defines the Ingress configuration for the Jaeger UI.

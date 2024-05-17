@@ -87,7 +87,7 @@ pub struct MariaDBSpec {
     /// NodeSelector to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// PasswordSecretKeyRef is a reference to the password of the initial user provided via a Secret.
+    /// PasswordSecretKeyRef is a Secret reference to the password of the initial user created on bootstrap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: Option<MariaDBPasswordSecretKeyRef>,
     /// PodDisruptionBudget defines the budget for replica availability.
@@ -117,13 +117,13 @@ pub struct MariaDBSpec {
     /// Replicas indicates the number of desired instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Replication configures high availability via replication.
+    /// Replication configures high availability via replication. This feature is still in alpha, use Galera if you are looking for a more production-ready HA.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replication: Option<MariaDBReplication>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBResources>,
-    /// RootEmptyPassword indicates if the root password should be empty.
+    /// RootEmptyPassword indicates if the root password should be empty. Don't use this feature in production, it is only intended for development and test environments.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootEmptyPassword")]
     pub root_empty_password: Option<bool>,
     /// RootPasswordSecretKeyRef is a reference to a Secret key containing the root password.
@@ -159,7 +159,7 @@ pub struct MariaDBSpec {
     /// PodDisruptionBudget defines the update strategy for the StatefulSet object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<MariaDBUpdateStrategy>,
-    /// Username is the username of the user to be created on bootstrap.
+    /// Username is the username of the initial user created on bootstrap.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
     /// VolumeMounts to be used in the Container.
@@ -6804,7 +6804,7 @@ pub struct MariaDBMaxScale {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "guiKubernetesService")]
     pub gui_kubernetes_service: Option<MariaDBMaxScaleGuiKubernetesService>,
     /// Image name to be used by the MaxScale instances. The supported format is `<image>:<tag>`.
-    /// Only MaxScale official images are supported.
+    /// Only MariaDB official images are supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
@@ -17020,7 +17020,7 @@ pub struct MariaDBMyCnfConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// PasswordSecretKeyRef is a reference to the password of the initial user provided via a Secret.
+/// PasswordSecretKeyRef is a Secret reference to the password of the initial user created on bootstrap.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBPasswordSecretKeyRef {
     /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.
@@ -17465,7 +17465,7 @@ pub struct MariaDBReadinessProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// Replication configures high availability via replication.
+/// Replication configures high availability via replication. This feature is still in alpha, use Galera if you are looking for a more production-ready HA.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBReplication {
     /// Enabled is a flag to enable Replication.

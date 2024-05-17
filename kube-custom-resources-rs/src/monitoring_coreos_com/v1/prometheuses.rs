@@ -1575,6 +1575,10 @@ pub struct PrometheusAlerting {
 /// containing Alertmanager IPs to fire alerts against.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAlertingAlertmanagers {
+    /// Relabeling configs applied before sending alerts to a specific Alertmanager.
+    /// It requires Prometheus >= v2.51.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertRelabelings")]
+    pub alert_relabelings: Option<Vec<PrometheusAlertingAlertmanagersAlertRelabelings>>,
     /// Version of the Alertmanager API that Prometheus uses to send alerts.
     /// It can be "v1" or "v2".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
@@ -1612,6 +1616,9 @@ pub struct PrometheusAlertingAlertmanagers {
     pub path_prefix: Option<String>,
     /// Port on which the Alertmanager API is exposed.
     pub port: IntOrString,
+    /// Relabel configuration applied to the discovered Alertmanagers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub relabelings: Option<Vec<PrometheusAlertingAlertmanagersRelabelings>>,
     /// Scheme to use when firing alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
@@ -1630,6 +1637,106 @@ pub struct PrometheusAlertingAlertmanagers {
     /// TLS Config to use for Alertmanager.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<PrometheusAlertingAlertmanagersTlsConfig>,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PrometheusAlertingAlertmanagersAlertRelabelings {
+    /// Action to perform based on the regex matching.
+    /// 
+    /// 
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// 
+    /// 
+    /// Default: "Replace"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<PrometheusAlertingAlertmanagersAlertRelabelingsAction>,
+    /// Modulus to take of the hash of the source label values.
+    /// 
+    /// 
+    /// Only applicable when the action is `HashMod`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub modulus: Option<i64>,
+    /// Regular expression against which the extracted value is matched.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<String>,
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// 
+    /// 
+    /// Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replacement: Option<String>,
+    /// Separator is the string between concatenated SourceLabels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub separator: Option<String>,
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
+    pub source_labels: Option<Vec<String>>,
+    /// Label to which the resulting string is written in a replacement.
+    /// 
+    /// 
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// 
+    /// 
+    /// Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
+    pub target_label: Option<String>,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAlertingAlertmanagersAlertRelabelingsAction {
+    #[serde(rename = "replace")]
+    Replace,
+    #[serde(rename = "Replace")]
+    ReplaceX,
+    #[serde(rename = "keep")]
+    Keep,
+    #[serde(rename = "Keep")]
+    KeepX,
+    #[serde(rename = "drop")]
+    Drop,
+    #[serde(rename = "Drop")]
+    DropX,
+    #[serde(rename = "hashmod")]
+    Hashmod,
+    HashMod,
+    #[serde(rename = "labelmap")]
+    Labelmap,
+    LabelMap,
+    #[serde(rename = "labeldrop")]
+    Labeldrop,
+    LabelDrop,
+    #[serde(rename = "labelkeep")]
+    Labelkeep,
+    LabelKeep,
+    #[serde(rename = "lowercase")]
+    Lowercase,
+    #[serde(rename = "Lowercase")]
+    LowercaseX,
+    #[serde(rename = "uppercase")]
+    Uppercase,
+    #[serde(rename = "Uppercase")]
+    UppercaseX,
+    #[serde(rename = "keepequal")]
+    Keepequal,
+    KeepEqual,
+    #[serde(rename = "dropequal")]
+    Dropequal,
+    DropEqual,
 }
 
 /// Authorization section for Alertmanager.
@@ -1713,6 +1820,106 @@ pub struct PrometheusAlertingAlertmanagersBasicAuthUsername {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PrometheusAlertingAlertmanagersRelabelings {
+    /// Action to perform based on the regex matching.
+    /// 
+    /// 
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// 
+    /// 
+    /// Default: "Replace"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<PrometheusAlertingAlertmanagersRelabelingsAction>,
+    /// Modulus to take of the hash of the source label values.
+    /// 
+    /// 
+    /// Only applicable when the action is `HashMod`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub modulus: Option<i64>,
+    /// Regular expression against which the extracted value is matched.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<String>,
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// 
+    /// 
+    /// Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replacement: Option<String>,
+    /// Separator is the string between concatenated SourceLabels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub separator: Option<String>,
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
+    pub source_labels: Option<Vec<String>>,
+    /// Label to which the resulting string is written in a replacement.
+    /// 
+    /// 
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// 
+    /// 
+    /// Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
+    pub target_label: Option<String>,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAlertingAlertmanagersRelabelingsAction {
+    #[serde(rename = "replace")]
+    Replace,
+    #[serde(rename = "Replace")]
+    ReplaceX,
+    #[serde(rename = "keep")]
+    Keep,
+    #[serde(rename = "Keep")]
+    KeepX,
+    #[serde(rename = "drop")]
+    Drop,
+    #[serde(rename = "Drop")]
+    DropX,
+    #[serde(rename = "hashmod")]
+    Hashmod,
+    HashMod,
+    #[serde(rename = "labelmap")]
+    Labelmap,
+    LabelMap,
+    #[serde(rename = "labeldrop")]
+    Labeldrop,
+    LabelDrop,
+    #[serde(rename = "labelkeep")]
+    Labelkeep,
+    LabelKeep,
+    #[serde(rename = "lowercase")]
+    Lowercase,
+    #[serde(rename = "Lowercase")]
+    LowercaseX,
+    #[serde(rename = "uppercase")]
+    Uppercase,
+    #[serde(rename = "Uppercase")]
+    UppercaseX,
+    #[serde(rename = "keepequal")]
+    Keepequal,
+    KeepEqual,
+    #[serde(rename = "dropequal")]
+    Dropequal,
+    DropEqual,
 }
 
 /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
@@ -5421,16 +5628,24 @@ pub struct PrometheusRemoteWriteAzureAd {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cloud: Option<PrometheusRemoteWriteAzureAdCloud>,
     /// ManagedIdentity defines the Azure User-assigned Managed identity.
-    /// Cannot be set at the same time as `oauth`.
+    /// Cannot be set at the same time as `oauth` or `sdk`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedIdentity")]
     pub managed_identity: Option<PrometheusRemoteWriteAzureAdManagedIdentity>,
     /// OAuth defines the oauth config that is being used to authenticate.
-    /// Cannot be set at the same time as `managedIdentity`.
+    /// Cannot be set at the same time as `managedIdentity` or `sdk`.
     /// 
     /// 
     /// It requires Prometheus >= v2.48.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth: Option<PrometheusRemoteWriteAzureAdOauth>,
+    /// SDK defines the Azure SDK config that is being used to authenticate.
+    /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
+    /// Cannot be set at the same time as `oauth` or `managedIdentity`.
+    /// 
+    /// 
+    /// It requires Prometheus >= 2.52.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sdk: Option<PrometheusRemoteWriteAzureAdSdk>,
 }
 
 /// AzureAD for the URL.
@@ -5448,7 +5663,7 @@ pub enum PrometheusRemoteWriteAzureAdCloud {
 }
 
 /// ManagedIdentity defines the Azure User-assigned Managed identity.
-/// Cannot be set at the same time as `oauth`.
+/// Cannot be set at the same time as `oauth` or `sdk`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusRemoteWriteAzureAdManagedIdentity {
     /// The client id
@@ -5457,7 +5672,7 @@ pub struct PrometheusRemoteWriteAzureAdManagedIdentity {
 }
 
 /// OAuth defines the oauth config that is being used to authenticate.
-/// Cannot be set at the same time as `managedIdentity`.
+/// Cannot be set at the same time as `managedIdentity` or `sdk`.
 /// 
 /// 
 /// It requires Prometheus >= v2.48.0.
@@ -5469,7 +5684,7 @@ pub struct PrometheusRemoteWriteAzureAdOauth {
     /// `clientSecret` specifies a key of a Secret containing the client secret of the Azure Active Directory application that is being used to authenticate.
     #[serde(rename = "clientSecret")]
     pub client_secret: PrometheusRemoteWriteAzureAdOauthClientSecret,
-    /// `tenantID` is the tenant ID of the Azure Active Directory application that is being used to authenticate.
+    /// `tenantId` is the tenant ID of the Azure Active Directory application that is being used to authenticate.
     #[serde(rename = "tenantId")]
     pub tenant_id: String,
 }
@@ -5487,6 +5702,19 @@ pub struct PrometheusRemoteWriteAzureAdOauthClientSecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// SDK defines the Azure SDK config that is being used to authenticate.
+/// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
+/// Cannot be set at the same time as `oauth` or `managedIdentity`.
+/// 
+/// 
+/// It requires Prometheus >= 2.52.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PrometheusRemoteWriteAzureAdSdk {
+    /// `tenantId` is the tenant ID of the azure active directory application that is being used to authenticate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantId")]
+    pub tenant_id: Option<String>,
 }
 
 /// BasicAuth configuration for the URL.
@@ -6097,10 +6325,11 @@ pub struct PrometheusRulesAlert {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusScrapeClasses {
-    /// Default indicates that the scrape applies to all scrape objects that don't configure an explicit scrape class name.
+    /// Default indicates that the scrape applies to all scrape objects that
+    /// don't configure an explicit scrape class name.
     /// 
     /// 
-    /// Only one scrape class can be set as default.
+    /// Only one scrape class can be set as the default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<bool>,
     /// Name of the scrape class.
@@ -6117,7 +6346,12 @@ pub struct PrometheusScrapeClasses {
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<PrometheusScrapeClassesRelabelings>>,
-    /// TLSConfig section for scrapes.
+    /// TLSConfig defines the TLS settings to use for the scrape. When the
+    /// scrape objects define their own CA, certificate and/or key, they take
+    /// precedence over the corresponding scrape class fields.
+    /// 
+    /// 
+    /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<PrometheusScrapeClassesTlsConfig>,
 }
@@ -6222,7 +6456,12 @@ pub enum PrometheusScrapeClassesRelabelingsAction {
     DropEqual,
 }
 
-/// TLSConfig section for scrapes.
+/// TLSConfig defines the TLS settings to use for the scrape. When the
+/// scrape objects define their own CA, certificate and/or key, they take
+/// precedence over the corresponding scrape class fields.
+/// 
+/// 
+/// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusScrapeClassesTlsConfig {
     /// Certificate authority used when verifying server certificates.

@@ -150,7 +150,7 @@ spec:
                     - "spec"
                   type: "object"
                 chartRef:
-                  description: "ChartRef holds a reference to a source controller resource containing the\nHelm chart artifact."
+                  description: "ChartRef holds a reference to a source controller resource containing the\nHelm chart artifact.\n\n\nNote: this field is provisional to the v2 API, and not actively used\nby v2beta2 HelmReleases."
                   properties:
                     apiVersion:
                       description: "APIVersion of the referent."

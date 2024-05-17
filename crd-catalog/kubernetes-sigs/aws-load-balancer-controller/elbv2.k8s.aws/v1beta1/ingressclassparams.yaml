@@ -45,8 +45,8 @@ spec:
             spec:
               description: "IngressClassParamsSpec defines the desired state of IngressClassParams"
               properties:
-                certficateArn:
-                  description: "CertificateARN specifies the ARN of the certificates for all Ingresses that belong to IngressClass with this IngressClassParams."
+                certificateArn:
+                  description: "CertificateArn specifies the ARN of the certificates for all Ingresses that belong to IngressClass with this IngressClassParams."
                   items:
                     type: "string"
                   type: "array"
@@ -69,6 +69,7 @@ spec:
                   enum:
                     - "ipv4"
                     - "dualstack"
+                    - "dualstack-without-public-ipv4"
                   type: "string"
                 loadBalancerAttributes:
                   description: "LoadBalancerAttributes define the custom attributes to LoadBalancers for all Ingress that that belong to IngressClass with this IngressClassParams."

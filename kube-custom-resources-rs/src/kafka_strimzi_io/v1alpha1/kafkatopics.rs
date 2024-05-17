@@ -43,11 +43,40 @@ pub struct KafkaTopicStatus {
     /// The generation of the CRD that was last reconciled by the operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    /// Replication factor change status.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasChange")]
+    pub replicas_change: Option<KafkaTopicStatusReplicasChange>,
     /// The topic's id. For a KafkaTopic with the ready condition, this will change only if the topic gets deleted and recreated with the same name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicId")]
     pub topic_id: Option<String>,
     /// Topic name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicName")]
     pub topic_name: Option<String>,
+}
+
+/// Replication factor change status.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaTopicStatusReplicasChange {
+    /// Message for the user related to the replicas change request. This may contain transient error messages that would disappear on periodic reconciliations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// The session identifier for replicas change requests pertaining to this KafkaTopic resource. This is used by the Topic Operator to track the status of `ongoing` replicas change operations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionId")]
+    pub session_id: Option<String>,
+    /// Current state of the replicas change operation. This can be `pending`, when the change has been requested, or `ongoing`, when the change has been successfully submitted to Cruise Control.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<KafkaTopicStatusReplicasChangeState>,
+    /// The target replicas value requested by the user. This may be different from .spec.replicas when a change is ongoing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetReplicas")]
+    pub target_replicas: Option<i64>,
+}
+
+/// Replication factor change status.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaTopicStatusReplicasChangeState {
+    #[serde(rename = "pending")]
+    Pending,
+    #[serde(rename = "ongoing")]
+    Ongoing,
 }
 

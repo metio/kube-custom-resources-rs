@@ -115,7 +115,7 @@ pub struct KafkaUserAuthorization {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaUserAuthorizationAcls {
-    /// The host from which the action described in the ACL rule is allowed or denied.
+    /// The host from which the action described in the ACL rule is allowed or denied. If not set, it defaults to `*`, allowing or denying the action from any host.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Operation which will be allowed or denied. Supported operations are: Read, Write, Create, Delete, Alter, Describe, ClusterAction, AlterConfigs, DescribeConfigs, IdempotentWrite and All.

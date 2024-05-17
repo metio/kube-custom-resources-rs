@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.6.0"
+    controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "syslogngclusteroutputs.logging.banzaicloud.io"
 spec:
   group: "logging.banzaicloud.io"
@@ -109,6 +109,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -125,6 +126,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     persist_name:
@@ -158,6 +160,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -174,6 +177,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         ca_file:
@@ -191,6 +195,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -207,6 +212,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cert_file:
@@ -224,6 +230,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -240,6 +247,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cipher-suite:
@@ -259,6 +267,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -275,6 +284,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         peer_verify:
@@ -412,6 +422,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -428,6 +439,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     persist_name:
@@ -459,6 +471,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -475,6 +488,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         ca_file:
@@ -492,6 +506,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -508,6 +523,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cert_file:
@@ -525,6 +541,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -541,6 +558,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cipher-suite:
@@ -560,6 +578,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -576,6 +595,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         peer_verify:
@@ -670,6 +690,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -686,6 +707,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         ca_file:
@@ -703,6 +725,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -719,6 +742,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cert_file:
@@ -736,6 +760,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -752,6 +777,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cipher-suite:
@@ -771,6 +797,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -787,6 +814,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         peer_verify:
@@ -818,6 +846,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -834,6 +863,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     transport:
@@ -904,6 +934,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -920,6 +951,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     url:
@@ -937,6 +969,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -953,6 +986,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                   type: "object"
@@ -988,6 +1022,7 @@ spec:
                                       required:
                                         - "key"
                                       type: "object"
+                                      x-kubernetes-map-type: "atomic"
                                   type: "object"
                                 value:
                                   type: "string"
@@ -1004,6 +1039,7 @@ spec:
                                       required:
                                         - "key"
                                       type: "object"
+                                      x-kubernetes-map-type: "atomic"
                                   type: "object"
                               type: "object"
                             cert_file:
@@ -1021,6 +1057,7 @@ spec:
                                       required:
                                         - "key"
                                       type: "object"
+                                      x-kubernetes-map-type: "atomic"
                                   type: "object"
                                 value:
                                   type: "string"
@@ -1037,6 +1074,7 @@ spec:
                                       required:
                                         - "key"
                                       type: "object"
+                                      x-kubernetes-map-type: "atomic"
                                   type: "object"
                               type: "object"
                             key_file:
@@ -1054,6 +1092,7 @@ spec:
                                       required:
                                         - "key"
                                       type: "object"
+                                      x-kubernetes-map-type: "atomic"
                                   type: "object"
                                 value:
                                   type: "string"
@@ -1070,6 +1109,7 @@ spec:
                                       required:
                                         - "key"
                                       type: "object"
+                                      x-kubernetes-map-type: "atomic"
                                   type: "object"
                               type: "object"
                           type: "object"
@@ -1192,6 +1232,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -1208,6 +1249,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     value_pairs:
@@ -1308,6 +1350,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -1324,6 +1367,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     persist_name:
@@ -1361,6 +1405,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -1377,6 +1422,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         ca_file:
@@ -1394,6 +1440,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -1410,6 +1457,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cert_file:
@@ -1427,6 +1475,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -1443,6 +1492,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cipher-suite:
@@ -1462,6 +1512,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -1478,6 +1529,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         peer_verify:
@@ -1520,6 +1572,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -1536,6 +1589,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     batch-bytes:
@@ -1613,6 +1667,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -1629,6 +1684,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     bucket:
@@ -1641,6 +1697,30 @@ spec:
                       type: "boolean"
                     compresslevel:
                       type: "integer"
+                    disk_buffer:
+                      properties:
+                        compaction:
+                          type: "boolean"
+                        dir:
+                          type: "string"
+                        disk_buf_size:
+                          format: "int64"
+                          type: "integer"
+                        mem_buf_length:
+                          format: "int64"
+                          type: "integer"
+                        mem_buf_size:
+                          format: "int64"
+                          type: "integer"
+                        q_out_size:
+                          format: "int64"
+                          type: "integer"
+                        reliable:
+                          type: "boolean"
+                      required:
+                        - "disk_buf_size"
+                        - "reliable"
+                      type: "object"
                     flush_grace_period:
                       type: "integer"
                     log-fifo-size:
@@ -1674,6 +1754,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -1690,6 +1771,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     storage_class:
@@ -1790,6 +1872,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -1806,6 +1889,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     persist_name:
@@ -1843,6 +1927,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -1859,6 +1944,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         ca_file:
@@ -1876,6 +1962,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -1892,6 +1979,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cert_file:
@@ -1909,6 +1997,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -1925,6 +2014,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cipher-suite:
@@ -1944,6 +2034,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -1960,6 +2051,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         peer_verify:
@@ -1991,6 +2083,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -2007,6 +2100,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     url:
@@ -2043,6 +2137,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -2059,6 +2154,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                     deployment:
@@ -2112,6 +2208,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2128,6 +2225,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         ca_file:
@@ -2145,6 +2243,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2161,6 +2260,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cert_file:
@@ -2178,6 +2278,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2194,6 +2295,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cipher-suite:
@@ -2213,6 +2315,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2229,6 +2332,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         peer_verify:
@@ -2260,6 +2364,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                         value:
                           type: "string"
@@ -2276,6 +2381,7 @@ spec:
                               required:
                                 - "key"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                           type: "object"
                       type: "object"
                   type: "object"
@@ -2330,6 +2436,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2346,6 +2453,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         ca_file:
@@ -2363,6 +2471,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2379,6 +2488,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cert_file:
@@ -2396,6 +2506,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2412,6 +2523,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cipher-suite:
@@ -2431,6 +2543,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2447,6 +2560,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         peer_verify:
@@ -2531,6 +2645,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2547,6 +2662,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         ca_file:
@@ -2564,6 +2680,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2580,6 +2697,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cert_file:
@@ -2597,6 +2715,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2613,6 +2732,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         cipher-suite:
@@ -2632,6 +2752,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                             value:
                               type: "string"
@@ -2648,6 +2769,7 @@ spec:
                                   required:
                                     - "key"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               type: "object"
                           type: "object"
                         peer_verify:
@@ -2688,9 +2810,3 @@ spec:
       storage: true
       subresources:
         status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

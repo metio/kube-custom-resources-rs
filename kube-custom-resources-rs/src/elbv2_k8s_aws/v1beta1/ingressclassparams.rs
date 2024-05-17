@@ -17,9 +17,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct IngressClassParamsSpec {
-    /// CertificateARN specifies the ARN of the certificates for all Ingresses that belong to IngressClass with this IngressClassParams.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certficateArn")]
-    pub certficate_arn: Option<Vec<String>>,
+    /// CertificateArn specifies the ARN of the certificates for all Ingresses that belong to IngressClass with this IngressClassParams.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateArn")]
+    pub certificate_arn: Option<Vec<String>>,
     /// Group defines the IngressGroup for all Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<IngressClassParamsGroup>,
@@ -64,6 +64,8 @@ pub enum IngressClassParamsIpAddressType {
     Ipv4,
     #[serde(rename = "dualstack")]
     Dualstack,
+    #[serde(rename = "dualstack-without-public-ipv4")]
+    DualstackWithoutPublicIpv4,
 }
 
 /// Attributes defines custom attributes on resources.

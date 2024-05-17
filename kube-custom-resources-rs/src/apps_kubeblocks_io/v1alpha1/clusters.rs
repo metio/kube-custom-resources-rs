@@ -200,6 +200,12 @@ pub struct ClusterComponentSpecs {
     pub component_def_ref: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<ClusterComponentSpecsConfigs>>,
+    /// Determines whether metrics exporter information is annotated on the Component's headless Service. 
+    ///  If set to true, the following annotations will not be patched into the Service: 
+    ///  - "monitor.kubeblocks.io/path" - "monitor.kubeblocks.io/port" - "monitor.kubeblocks.io/scheme" 
+    ///  These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableExporter")]
+    pub disable_exporter: Option<bool>,
     /// Specifies which types of logs should be collected for the Component. The log types are defined in the `componentDefinition.spec.logConfigs` field with the LogConfig entries. 
     ///  The elements in the `enabledLogs` array correspond to the names of the LogConfig entries. For example, if the `componentDefinition.spec.logConfigs` defines LogConfig entries with names "slow_query_log" and "error_log", you can enable the collection of these logs by including their names in the `enabledLogs` array: ```yaml enabledLogs: - slow_query_log - error_log ```
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
@@ -213,12 +219,12 @@ pub struct ClusterComponentSpecs {
     /// Specifies the configuration for the TLS certificates issuer. It allows defining the issuer name and the reference to the secret containing the TLS certificates and key. The secret should contain the CA certificate, TLS certificate, and private key in the specified keys. Required when TLS is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<ClusterComponentSpecsIssuer>,
-    /// Determines whether metrics exporter information is annotated on the Component's headless Service. 
+    /// Deprecated since v0.9 Determines whether metrics exporter information is annotated on the Component's headless Service. 
     ///  If set to true, the following annotations will be patched into the Service: 
     ///  - "monitor.kubeblocks.io/path" - "monitor.kubeblocks.io/port" - "monitor.kubeblocks.io/scheme" 
     ///  These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorEnabled")]
-    pub monitor_enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub monitor: Option<bool>,
     /// Specifies the Component's name. It's part of the Service DNS name and must comply with the IANA service naming rule. The name is optional when ClusterComponentSpec is used as a template (e.g., in `shardingSpec`), but required otherwise. 
     ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="name is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -256,9 +262,6 @@ pub struct ClusterComponentSpecs {
     /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterComponentSpecsServices>>,
-    /// Defines the sidecar containers that will be attached to the Component's main container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sidecars: Option<Vec<String>>,
     /// Defines the strategy for switchover and failover when workloadType is Replication. 
     ///  Deprecated since v0.9. This field is maintained for backward compatibility and its use is discouraged. Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchPolicy")]
@@ -3146,6 +3149,12 @@ pub struct ClusterShardingSpecsTemplate {
     pub component_def_ref: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<ClusterShardingSpecsTemplateConfigs>>,
+    /// Determines whether metrics exporter information is annotated on the Component's headless Service. 
+    ///  If set to true, the following annotations will not be patched into the Service: 
+    ///  - "monitor.kubeblocks.io/path" - "monitor.kubeblocks.io/port" - "monitor.kubeblocks.io/scheme" 
+    ///  These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableExporter")]
+    pub disable_exporter: Option<bool>,
     /// Specifies which types of logs should be collected for the Component. The log types are defined in the `componentDefinition.spec.logConfigs` field with the LogConfig entries. 
     ///  The elements in the `enabledLogs` array correspond to the names of the LogConfig entries. For example, if the `componentDefinition.spec.logConfigs` defines LogConfig entries with names "slow_query_log" and "error_log", you can enable the collection of these logs by including their names in the `enabledLogs` array: ```yaml enabledLogs: - slow_query_log - error_log ```
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
@@ -3159,12 +3168,12 @@ pub struct ClusterShardingSpecsTemplate {
     /// Specifies the configuration for the TLS certificates issuer. It allows defining the issuer name and the reference to the secret containing the TLS certificates and key. The secret should contain the CA certificate, TLS certificate, and private key in the specified keys. Required when TLS is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<ClusterShardingSpecsTemplateIssuer>,
-    /// Determines whether metrics exporter information is annotated on the Component's headless Service. 
+    /// Deprecated since v0.9 Determines whether metrics exporter information is annotated on the Component's headless Service. 
     ///  If set to true, the following annotations will be patched into the Service: 
     ///  - "monitor.kubeblocks.io/path" - "monitor.kubeblocks.io/port" - "monitor.kubeblocks.io/scheme" 
     ///  These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorEnabled")]
-    pub monitor_enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub monitor: Option<bool>,
     /// Specifies the Component's name. It's part of the Service DNS name and must comply with the IANA service naming rule. The name is optional when ClusterComponentSpec is used as a template (e.g., in `shardingSpec`), but required otherwise. 
     ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="name is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3202,9 +3211,6 @@ pub struct ClusterShardingSpecsTemplate {
     /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterShardingSpecsTemplateServices>>,
-    /// Defines the sidecar containers that will be attached to the Component's main container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sidecars: Option<Vec<String>>,
     /// Defines the strategy for switchover and failover when workloadType is Replication. 
     ///  Deprecated since v0.9. This field is maintained for backward compatibility and its use is discouraged. Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchPolicy")]

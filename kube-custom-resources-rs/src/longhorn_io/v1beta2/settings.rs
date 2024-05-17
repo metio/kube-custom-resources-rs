@@ -7,4 +7,12 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
 }
+use self::prelude::*;
+
+/// SettingStatus defines the observed state of the Longhorn setting
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SettingStatus {
+    /// The setting is applied.
+    pub applied: bool,
+}
 

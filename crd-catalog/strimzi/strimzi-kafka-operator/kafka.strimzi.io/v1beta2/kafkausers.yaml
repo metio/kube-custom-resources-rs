@@ -94,7 +94,7 @@ spec:
                       items:
                         properties:
                           host:
-                            description: "The host from which the action described in the ACL rule is allowed or denied."
+                            description: "The host from which the action described in the ACL rule is allowed or denied. If not set, it defaults to `*`, allowing or denying the action from any host."
                             type: "string"
                           operation:
                             description: "Operation which will be allowed or denied. Supported operations are: Read, Write, Create, Delete, Alter, Describe, ClusterAction, AlterConfigs, DescribeConfigs, IdempotentWrite and All."

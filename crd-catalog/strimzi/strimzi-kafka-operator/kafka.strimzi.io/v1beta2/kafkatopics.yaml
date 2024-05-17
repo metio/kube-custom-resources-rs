@@ -97,6 +97,25 @@ spec:
                 observedGeneration:
                   description: "The generation of the CRD that was last reconciled by the operator."
                   type: "integer"
+                replicasChange:
+                  description: "Replication factor change status."
+                  properties:
+                    message:
+                      description: "Message for the user related to the replicas change request. This may contain transient error messages that would disappear on periodic reconciliations."
+                      type: "string"
+                    sessionId:
+                      description: "The session identifier for replicas change requests pertaining to this KafkaTopic resource. This is used by the Topic Operator to track the status of `ongoing` replicas change operations."
+                      type: "string"
+                    state:
+                      description: "Current state of the replicas change operation. This can be `pending`, when the change has been requested, or `ongoing`, when the change has been successfully submitted to Cruise Control."
+                      enum:
+                        - "pending"
+                        - "ongoing"
+                      type: "string"
+                    targetReplicas:
+                      description: "The target replicas value requested by the user. This may be different from .spec.replicas when a change is ongoing."
+                      type: "integer"
+                  type: "object"
                 topicId:
                   description: "The topic's id. For a KafkaTopic with the ready condition, this will change only if the topic gets deleted and recreated with the same name."
                   type: "string"

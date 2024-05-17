@@ -19,7 +19,7 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct HelmReleaseSpec {
-    /// Chart defines the template of the v1beta2.HelmChart that should be created
+    /// Chart defines the template of the v1.HelmChart that should be created
     /// for this HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub chart: Option<HelmReleaseChart>,
@@ -119,14 +119,14 @@ pub struct HelmReleaseSpec {
     pub values_from: Option<Vec<HelmReleaseValuesFrom>>,
 }
 
-/// Chart defines the template of the v1beta2.HelmChart that should be created
+/// Chart defines the template of the v1.HelmChart that should be created
 /// for this HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChart {
     /// ObjectMeta holds the template for metadata like labels and annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<HelmReleaseChartMetadata>,
-    /// Spec holds the template for the v1beta2.HelmChartSpec for this HelmRelease.
+    /// Spec holds the template for the v1.HelmChartSpec for this HelmRelease.
     pub spec: HelmReleaseChartSpec,
 }
 
@@ -146,7 +146,7 @@ pub struct HelmReleaseChartMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Spec holds the template for the v1beta2.HelmChartSpec for this HelmRelease.
+/// Spec holds the template for the v1.HelmChartSpec for this HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChartSpec {
     /// The name or path the Helm chart is available at in the SourceRef.
@@ -181,13 +181,13 @@ pub struct HelmReleaseChartSpec {
     /// are not verified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verify: Option<HelmReleaseChartSpecVerify>,
-    /// Version semver expression, ignored for charts from v1beta2.GitRepository and
+    /// Version semver expression, ignored for charts from v1.GitRepository and
     /// v1beta2.Bucket sources. Defaults to latest when omitted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// Spec holds the template for the v1beta2.HelmChartSpec for this HelmRelease.
+/// Spec holds the template for the v1.HelmChartSpec for this HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HelmReleaseChartSpecReconcileStrategy {
     ChartVersion,

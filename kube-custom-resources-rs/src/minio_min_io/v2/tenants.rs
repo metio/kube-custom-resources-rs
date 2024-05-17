@@ -2140,6 +2140,8 @@ pub struct TenantLifecyclePostStart {
     pub exec: Option<TenantLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<TenantLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<TenantLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<TenantLifecyclePostStartTcpSocket>,
 }
@@ -2170,6 +2172,11 @@ pub struct TenantLifecyclePostStartHttpGetHttpHeaders {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -2182,6 +2189,8 @@ pub struct TenantLifecyclePreStop {
     pub exec: Option<TenantLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<TenantLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<TenantLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<TenantLifecyclePreStopTcpSocket>,
 }
@@ -2209,6 +2218,11 @@ pub struct TenantLifecyclePreStopHttpGet {
 pub struct TenantLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

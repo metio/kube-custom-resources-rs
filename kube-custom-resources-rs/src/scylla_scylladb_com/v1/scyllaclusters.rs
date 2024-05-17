@@ -171,7 +171,7 @@ pub struct ScyllaClusterBackups {
     /// location is a list of backup locations in the format [<dc>:]<provider>:<name> ex. s3:my-bucket. The <dc>: part is optional and is only needed when different datacenters are being used to upload data to different locations. <name> must be an alphanumeric string and may contain a dash and or a dot, but other characters are forbidden. The only supported storage <provider> at the moment are s3 and gcs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<Vec<String>>,
-    /// name is a unique name of a task.
+    /// name specifies the name of a task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// numRetries indicates how many times a scheduled task will be retried before failing.
@@ -2016,7 +2016,7 @@ pub struct ScyllaClusterRepairs {
     /// keyspace is a list of keyspace/tables glob patterns, e.g. 'keyspace,!keyspace.table_prefix_*' used to include or exclude keyspaces from repair.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyspace: Option<Vec<String>>,
-    /// name is a unique name of a task.
+    /// name specifies the name of a task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// numRetries indicates how many times a scheduled task will be retried before failing.
@@ -2076,49 +2076,49 @@ pub struct ScyllaClusterStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterStatusBackups {
-    /// cron specifies the task schedule as a cron expression. It supports an extended syntax including @monthly, @weekly, @daily, @midnight, @hourly, @every X[h|m|s].
+    /// cron reflects the task schedule as a cron expression.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cron: Option<String>,
-    /// dc is a list of datacenter glob patterns, e.g. 'dc1,!otherdc*' used to specify the DCs to include or exclude from backup.
+    /// dc reflects a list of datacenter glob patterns, e.g. 'dc1,!otherdc*' used to specify the DCs to include or exclude from backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dc: Option<Vec<String>>,
-    /// error holds the backup task error, if any.
+    /// error holds the task error, if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
-    /// id is the identification number of the backup task.
+    /// id reflects identification number of the repair task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// interval represents a task schedule interval e.g. 3d2h10m, valid units are d, h, m, s. Deprecated: please use cron instead.
+    /// interval reflects a task schedule interval.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// keyspace is a list of keyspace/tables glob patterns, e.g. 'keyspace,!keyspace.table_prefix_*' used to include or exclude keyspaces from repair.
+    /// keyspace reflects a list of keyspace/tables glob patterns, e.g. 'keyspace,!keyspace.table_prefix_*' used to include or exclude keyspaces from repair.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyspace: Option<Vec<String>>,
-    /// location is a list of backup locations in the format [<dc>:]<provider>:<name> ex. s3:my-bucket. The <dc>: part is optional and is only needed when different datacenters are being used to upload data to different locations. <name> must be an alphanumeric string and may contain a dash and or a dot, but other characters are forbidden. The only supported storage <provider> at the moment are s3 and gcs.
+    /// location reflects a list of backup locations in the format [<dc>:]<provider>:<name> ex. s3:my-bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<Vec<String>>,
-    /// name is a unique name of a task.
+    /// name reflects the name of a task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// numRetries indicates how many times a scheduled task will be retried before failing.
+    /// numRetries reflects how many times a scheduled task will be retried before failing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numRetries")]
     pub num_retries: Option<i64>,
-    /// rateLimit is a list of megabytes (MiB) per second rate limits expressed in the format [<dc>:]<limit>. The <dc>: part is optional and only needed when different datacenters need different upload limits. Set to 0 for no limit (default 100).
+    /// rateLimit reflects a list of megabytes (MiB) per second rate limits expressed in the format [<dc>:]<limit>.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimit")]
     pub rate_limit: Option<Vec<String>>,
-    /// retention is the number of backups which are to be stored.
+    /// retention reflects the number of backups which are to be stored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<i64>,
-    /// snapshotParallel is a list of snapshot parallelism limits in the format [<dc>:]<limit>. The <dc>: part is optional and allows for specifying different limits in selected datacenters. If The <dc>: part is not set, the limit is global (e.g. 'dc1:2,5') the runs are parallel in n nodes (2 in dc1) and n nodes in all the other datacenters.
+    /// snapshotParallel reflects a list of snapshot parallelism limits in the format [<dc>:]<limit>.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotParallel")]
     pub snapshot_parallel: Option<Vec<String>>,
-    /// startDate specifies the task start date expressed in the RFC3339 format or now[+duration], e.g. now+3d2h10m, valid units are d, h, m, s.
+    /// startDate reflects the task start date expressed in the RFC3339 format
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDate")]
     pub start_date: Option<String>,
-    /// timezone specifies the timezone of cron field.
+    /// timezone reflects the timezone of cron field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
-    /// uploadParallel is a list of upload parallelism limits in the format [<dc>:]<limit>. The <dc>: part is optional and allows for specifying different limits in selected datacenters. If The <dc>: part is not set the limit is global (e.g. 'dc1:2,5') the runs are parallel in n nodes (2 in dc1) and n nodes in all the other datacenters.
+    /// uploadParallel reflects a list of upload parallelism limits in the format [<dc>:]<limit>.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadParallel")]
     pub upload_parallel: Option<Vec<String>>,
 }
@@ -2165,49 +2165,49 @@ pub struct ScyllaClusterStatusRacksConditions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterStatusRepairs {
-    /// cron specifies the task schedule as a cron expression. It supports an extended syntax including @monthly, @weekly, @daily, @midnight, @hourly, @every X[h|m|s].
+    /// cron reflects the task schedule as a cron expression.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cron: Option<String>,
-    /// dc is a list of datacenter glob patterns, e.g. 'dc1', '!otherdc*' used to specify the DCs to include or exclude from backup.
+    /// dc reflects a list of datacenter glob patterns, e.g. 'dc1', '!otherdc*' used to specify the DCs to include or exclude from repair.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dc: Option<Vec<String>>,
-    /// error holds the repair task error, if any.
+    /// error holds the task error, if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
     /// failFast indicates if a repair should be stopped on first error.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failFast")]
     pub fail_fast: Option<bool>,
-    /// host specifies a host to repair. If empty, all hosts are repaired.
+    /// host reflects a host to repair.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// id is the identification number of the repair task.
+    /// id reflects identification number of the repair task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// intensity indicates how many token ranges (per shard) to repair in a single Scylla repair job. By default this is 1. If you set it to 0 the number of token ranges is adjusted to the maximum supported by node (see max_repair_ranges_in_parallel in Scylla logs). Valid values are 0 and integers >= 1. Higher values will result in increased cluster load and slightly faster repairs. Changing the intensity impacts repair granularity if you need to resume it, the higher the value the more work on resume. For Scylla clusters that *do not support row-level repair*, intensity can be a decimal between (0,1). In that case it specifies percent of shards that can be repaired in parallel on a repair master node. For Scylla clusters that are row-level repair enabled, setting intensity below 1 has the same effect as setting intensity 1.
+    /// intensity indicates how many token ranges (per shard) to repair in a single Scylla repair job. By default this is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub intensity: Option<String>,
-    /// interval represents a task schedule interval e.g. 3d2h10m, valid units are d, h, m, s. Deprecated: please use cron instead.
+    /// interval reflects a task schedule interval.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// keyspace is a list of keyspace/tables glob patterns, e.g. 'keyspace,!keyspace.table_prefix_*' used to include or exclude keyspaces from repair.
+    /// keyspace reflects a list of keyspace/tables glob patterns, e.g. 'keyspace,!keyspace.table_prefix_*' used to include or exclude keyspaces from repair.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyspace: Option<Vec<String>>,
-    /// name is a unique name of a task.
+    /// name reflects the name of a task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// numRetries indicates how many times a scheduled task will be retried before failing.
+    /// numRetries reflects how many times a scheduled task will be retried before failing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numRetries")]
     pub num_retries: Option<i64>,
-    /// parallel is the maximum number of Scylla repair jobs that can run at the same time (on different token ranges and replicas). Each node can take part in at most one repair at any given moment. By default the maximum possible parallelism is used. The effective parallelism depends on a keyspace replication factor (RF) and the number of nodes. The formula to calculate it is as follows: number of nodes / RF, ex. for 6 node cluster with RF=3 the maximum parallelism is 2.
+    /// parallel reflects the maximum number of Scylla repair jobs that can run at the same time (on different token ranges and replicas).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallel: Option<i64>,
-    /// smallTableThreshold enable small table optimization for tables of size lower than given threshold. Supported units [B, MiB, GiB, TiB].
+    /// smallTableThreshold reflects whether small table optimization for tables, of size lower than given threshold, are enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "smallTableThreshold")]
     pub small_table_threshold: Option<String>,
-    /// startDate specifies the task start date expressed in the RFC3339 format or now[+duration], e.g. now+3d2h10m, valid units are d, h, m, s.
+    /// startDate reflects the task start date expressed in the RFC3339 format
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDate")]
     pub start_date: Option<String>,
-    /// timezone specifies the timezone of cron field.
+    /// timezone reflects the timezone of cron field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
 }

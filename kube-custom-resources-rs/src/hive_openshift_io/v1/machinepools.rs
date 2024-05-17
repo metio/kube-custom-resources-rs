@@ -101,7 +101,7 @@ pub struct MachinePoolPlatformAws {
     /// SpotMarketOptions allows users to configure instances to be run using AWS Spot instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "spotMarketOptions")]
     pub spot_market_options: Option<MachinePoolPlatformAwsSpotMarketOptions>,
-    /// Subnets is the list of IDs of subnets to which to attach the machines. There must be exactly one subnet for each availability zone used. These subnets may be public or private. As a special case, for consistency with install-config, you may specify exactly one private and one public subnet for each availability zone. In this case, the public subnets will be filtered out and only the private subnets will be used. If empty/omitted, we will look for subnets in each availability zone tagged with Name=<clusterID>-private-<az>.
+    /// Subnets is the list of IDs of subnets to which to attach the machines. There must be exactly one subnet for each availability zone used. These subnets may be public or private. As a special case, for consistency with install-config, you may specify exactly one private and one public subnet for each availability zone. In this case, the public subnets will be filtered out and only the private subnets will be used. If empty/omitted, we will look for subnets in each availability zone tagged with Name=<clusterID>-private-<az> (legacy terraform) or <clusterID>-subnet-private-<az> (CAPA).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<String>>,
     /// InstanceType defines the ec2 instance type. eg. m4-large

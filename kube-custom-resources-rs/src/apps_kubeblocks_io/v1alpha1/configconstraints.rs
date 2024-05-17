@@ -88,7 +88,7 @@ pub struct ConfigConstraintConfigurationSchema {
     pub schema: Option<serde_json::Value>,
 }
 
-/// DownwardAPITriggeredAction defines an action that triggers specific commands in response to changes in Pod labels. For example, a command might be executed when the 'role' label of the Pod is updated.
+/// DownwardAPIChangeTriggeredAction defines an action that triggers specific commands in response to changes in Pod labels. For example, a command might be executed when the 'role' label of the Pod is updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintDownwardApiOptions {
     /// Specifies the command to be triggered when changes are detected in Downward API volume files. It relies on the inotify mechanism in the config-manager sidecar to monitor file changes.

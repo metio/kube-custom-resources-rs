@@ -16,6 +16,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct NginxProxySpec {
+    /// DisableHTTP2 defines if http2 should be disabled for all servers.
+    /// Default is false, meaning http2 will be enabled for all servers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHTTP2")]
+    pub disable_http2: Option<bool>,
     /// Telemetry specifies the OpenTelemetry configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telemetry: Option<NginxProxyTelemetry>,

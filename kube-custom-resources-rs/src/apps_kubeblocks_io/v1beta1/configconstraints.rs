@@ -18,15 +18,12 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct ConfigConstraintSpec {
-    /// Defines a list of parameters including their names, default values, descriptions, types, and constraints (permissible values or the range of valid values).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSchema")]
-    pub config_schema: Option<ConfigConstraintConfigSchema>,
     /// TODO: migrate DownwardAPITriggeredActions to ComponentDefinition.spec.lifecycleActions Specifies a list of actions to execute specified commands based on Pod labels. 
     ///  It utilizes the K8s Downward API to mount label information as a volume into the pod. The 'config-manager' sidecar container watches for changes in the role label and dynamically invoke registered commands (usually execute some SQL statements) when a change is detected. 
     ///  It is designed for scenarios where: 
     ///  - Replicas with different roles have different configurations, such as Redis primary & secondary replicas. - After a role switch (e.g., from secondary to primary), some changes in configuration are needed to reflect the new role.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPITriggeredActions")]
-    pub downward_api_triggered_actions: Option<Vec<ConfigConstraintDownwardApiTriggeredActions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPIChangeTriggeredActions")]
+    pub downward_api_change_triggered_actions: Option<Vec<ConfigConstraintDownwardApiChangeTriggeredActions>>,
     /// List dynamic parameters. Modifications to these parameters trigger a configuration reload without requiring a process restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicParameters")]
     pub dynamic_parameters: Option<Vec<String>>,
@@ -43,6 +40,9 @@ pub struct ConfigConstraintSpec {
     ///  This flag allows for more efficient handling of configuration changes by potentially eliminating an unnecessary reload step.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergeReloadAndRestart")]
     pub merge_reload_and_restart: Option<bool>,
+    /// Defines a list of parameters including their names, default values, descriptions, types, and constraints (permissible values or the range of valid values).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parametersSchema")]
+    pub parameters_schema: Option<ConfigConstraintParametersSchema>,
     /// Specifies the dynamic reload (dynamic reconfiguration) actions supported by the engine. When set, the controller executes the scripts defined in these actions to handle dynamic parameter updates. 
     ///  Dynamic reloading is triggered only if both of the following conditions are met: 
     ///  1. The modified parameters are listed in the `dynamicParameters` field. If `dynamicParameterSelectedPolicy` is set to "all", modifications to `staticParameters` can also trigger a reload. 2. `reloadAction` is set. 
@@ -54,40 +54,19 @@ pub struct ConfigConstraintSpec {
     ///  - false (default): Only modifications to the dynamic parameters listed in `dynamicParameters` will trigger a dynamic reload. - true: Modifications to both dynamic parameters listed in `dynamicParameters` and static parameters listed in `staticParameters` will trigger a dynamic reload. The "all" option is for certain engines that require static parameters to be set via SQL statements before they can take effect on restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadStaticParamsBeforeRestart")]
     pub reload_static_params_before_restart: Option<bool>,
-    /// Used to match labels on the pod to determine whether a dynamic reload should be performed. 
-    ///  In some scenarios, only specific pods (e.g., primary replicas) need to undergo a dynamic reload. The `reloadedPodSelector` allows you to specify label selectors to target the desired pods for the reload process. 
-    ///  If the `reloadedPodSelector` is not specified or is nil, all pods managed by the workload will be considered for the dynamic reload.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadedPodSelector")]
-    pub reloaded_pod_selector: Option<ConfigConstraintReloadedPodSelector>,
     /// List static parameters. Modifications to any of these parameters require a restart of the process to take effect.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticParameters")]
     pub static_parameters: Option<Vec<String>>,
 }
 
-/// Defines a list of parameters including their names, default values, descriptions, types, and constraints (permissible values or the range of valid values).
+/// DownwardAPIChangeTriggeredAction defines an action that triggers specific commands in response to changes in Pod labels. For example, a command might be executed when the 'role' label of the Pod is updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ConfigConstraintConfigSchema {
-    /// Hold a string that contains a script written in CUE language that defines a list of configuration items. Each item is detailed with its name, default value, description, type (e.g. string, integer, float), and constraints (permissible values or the valid range of values). 
-    ///  CUE (Configure, Unify, Execute) is a declarative language designed for defining and validating complex data configurations. It is particularly useful in environments like K8s where complex configurations and validation rules are common. 
-    ///  This script functions as a validator for user-provided configurations, ensuring compliance with the established specifications and constraints.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cue: Option<String>,
-    /// Generated from the 'cue' field and transformed into a JSON format.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaInJSON")]
-    pub schema_in_json: Option<serde_json::Value>,
-    /// Specifies the top-level key in the 'configSchema.cue' that organizes the validation rules for parameters. This key must exist within the CUE script defined in 'configSchema.cue'.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topLevelKey")]
-    pub top_level_key: Option<String>,
-}
-
-/// DownwardAPITriggeredAction defines an action that triggers specific commands in response to changes in Pod labels. For example, a command might be executed when the 'role' label of the Pod is updated.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ConfigConstraintDownwardApiTriggeredActions {
+pub struct ConfigConstraintDownwardApiChangeTriggeredActions {
     /// Specifies the command to be triggered when changes are detected in Downward API volume files. It relies on the inotify mechanism in the config-manager sidecar to monitor file changes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
     /// Represents a list of files under the Downward API volume.
-    pub items: Vec<ConfigConstraintDownwardApiTriggeredActionsItems>,
+    pub items: Vec<ConfigConstraintDownwardApiChangeTriggeredActionsItems>,
     /// Specifies the mount point of the Downward API volume.
     #[serde(rename = "mountPoint")]
     pub mount_point: String,
@@ -95,15 +74,15 @@ pub struct ConfigConstraintDownwardApiTriggeredActions {
     pub name: String,
     /// ScriptConfig object specifies a ConfigMap that contains script files that should be mounted inside the pod. The scripts are mounted as volumes and can be referenced and executed by the DownwardAction to perform specific tasks or configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptConfig")]
-    pub script_config: Option<ConfigConstraintDownwardApiTriggeredActionsScriptConfig>,
+    pub script_config: Option<ConfigConstraintDownwardApiChangeTriggeredActionsScriptConfig>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ConfigConstraintDownwardApiTriggeredActionsItems {
+pub struct ConfigConstraintDownwardApiChangeTriggeredActionsItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ConfigConstraintDownwardApiTriggeredActionsItemsFieldRef>,
+    pub field_ref: Option<ConfigConstraintDownwardApiChangeTriggeredActionsItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
@@ -111,12 +90,12 @@ pub struct ConfigConstraintDownwardApiTriggeredActionsItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ConfigConstraintDownwardApiTriggeredActionsItemsResourceFieldRef>,
+    pub resource_field_ref: Option<ConfigConstraintDownwardApiChangeTriggeredActionsItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ConfigConstraintDownwardApiTriggeredActionsItemsFieldRef {
+pub struct ConfigConstraintDownwardApiChangeTriggeredActionsItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -127,7 +106,7 @@ pub struct ConfigConstraintDownwardApiTriggeredActionsItemsFieldRef {
 
 /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ConfigConstraintDownwardApiTriggeredActionsItemsResourceFieldRef {
+pub struct ConfigConstraintDownwardApiChangeTriggeredActionsItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -140,7 +119,7 @@ pub struct ConfigConstraintDownwardApiTriggeredActionsItemsResourceFieldRef {
 
 /// ScriptConfig object specifies a ConfigMap that contains script files that should be mounted inside the pod. The scripts are mounted as volumes and can be referenced and executed by the DownwardAction to perform specific tasks or configurations.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ConfigConstraintDownwardApiTriggeredActionsScriptConfig {
+pub struct ConfigConstraintDownwardApiChangeTriggeredActionsScriptConfig {
     /// Specifies the namespace for the ConfigMap. If not specified, it defaults to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -197,6 +176,22 @@ pub struct ConfigConstraintFileFormatConfigIniConfig {
     pub section_name: Option<String>,
 }
 
+/// Defines a list of parameters including their names, default values, descriptions, types, and constraints (permissible values or the range of valid values).
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ConfigConstraintParametersSchema {
+    /// Hold a string that contains a script written in CUE language that defines a list of configuration items. Each item is detailed with its name, default value, description, type (e.g. string, integer, float), and constraints (permissible values or the valid range of values). 
+    ///  CUE (Configure, Unify, Execute) is a declarative language designed for defining and validating complex data configurations. It is particularly useful in environments like K8s where complex configurations and validation rules are common. 
+    ///  This script functions as a validator for user-provided configurations, ensuring compliance with the established specifications and constraints.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cue: Option<String>,
+    /// Generated from the 'cue' field and transformed into a JSON format.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaInJSON")]
+    pub schema_in_json: Option<serde_json::Value>,
+    /// Specifies the top-level key in the 'configSchema.cue' that organizes the validation rules for parameters. This key must exist within the CUE script defined in 'configSchema.cue'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topLevelKey")]
+    pub top_level_key: Option<String>,
+}
+
 /// Specifies the dynamic reload (dynamic reconfiguration) actions supported by the engine. When set, the controller executes the scripts defined in these actions to handle dynamic parameter updates. 
 ///  Dynamic reloading is triggered only if both of the following conditions are met: 
 ///  1. The modified parameters are listed in the `dynamicParameters` field. If `dynamicParameterSelectedPolicy` is set to "all", modifications to `staticParameters` can also trigger a reload. 2. `reloadAction` is set. 
@@ -210,6 +205,11 @@ pub struct ConfigConstraintReloadAction {
     /// Allows to execute a custom shell script to reload the process.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shellTrigger")]
     pub shell_trigger: Option<ConfigConstraintReloadActionShellTrigger>,
+    /// Used to match labels on the pod to determine whether a dynamic reload should be performed. 
+    ///  In some scenarios, only specific pods (e.g., primary replicas) need to undergo a dynamic reload. The `reloadedPodSelector` allows you to specify label selectors to target the desired pods for the reload process. 
+    ///  If the `reloadedPodSelector` is not specified or is nil, all pods managed by the workload will be considered for the dynamic reload.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ConfigConstraintReloadActionTargetPodSelector>,
     /// Enables reloading process using a Go template script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tplScriptTrigger")]
     pub tpl_script_trigger: Option<ConfigConstraintReloadActionTplScriptTrigger>,
@@ -298,6 +298,31 @@ pub struct ConfigConstraintReloadActionShellTriggerToolsSetupToolConfigs {
     /// Specifies the name of the init container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// Used to match labels on the pod to determine whether a dynamic reload should be performed. 
+///  In some scenarios, only specific pods (e.g., primary replicas) need to undergo a dynamic reload. The `reloadedPodSelector` allows you to specify label selectors to target the desired pods for the reload process. 
+///  If the `reloadedPodSelector` is not specified or is nil, all pods managed by the workload will be considered for the dynamic reload.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ConfigConstraintReloadActionTargetPodSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ConfigConstraintReloadActionTargetPodSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ConfigConstraintReloadActionTargetPodSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// Enables reloading process using a Go template script.
@@ -390,31 +415,6 @@ pub enum ConfigConstraintReloadActionUnixSignalTriggerSignal {
     Sigpwr,
     #[serde(rename = "SIGSYS")]
     Sigsys,
-}
-
-/// Used to match labels on the pod to determine whether a dynamic reload should be performed. 
-///  In some scenarios, only specific pods (e.g., primary replicas) need to undergo a dynamic reload. The `reloadedPodSelector` allows you to specify label selectors to target the desired pods for the reload process. 
-///  If the `reloadedPodSelector` is not specified or is nil, all pods managed by the workload will be considered for the dynamic reload.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ConfigConstraintReloadedPodSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ConfigConstraintReloadedPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ConfigConstraintReloadedPodSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
 }
 
 /// ConfigConstraintStatus represents the observed state of a ConfigConstraint.

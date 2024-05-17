@@ -208,6 +208,9 @@ spec:
                     enable_readiness_probe:
                       default: false
                       type: "boolean"
+                    enable_secrets_deletion:
+                      default: true
+                      type: "boolean"
                     enable_sidecars:
                       default: true
                       type: "boolean"

@@ -42,7 +42,7 @@ spec:
               description: "HelmReleaseSpec defines the desired state of a Helm release."
               properties:
                 chart:
-                  description: "Chart defines the template of the v1beta2.HelmChart that should be created\nfor this HelmRelease."
+                  description: "Chart defines the template of the v1.HelmChart that should be created\nfor this HelmRelease."
                   properties:
                     metadata:
                       description: "ObjectMeta holds the template for metadata like labels and annotations."
@@ -59,7 +59,7 @@ spec:
                           type: "object"
                       type: "object"
                     spec:
-                      description: "Spec holds the template for the v1beta2.HelmChartSpec for this HelmRelease."
+                      description: "Spec holds the template for the v1.HelmChartSpec for this HelmRelease."
                       properties:
                         chart:
                           description: "The name or path the Helm chart is available at in the SourceRef."
@@ -135,7 +135,7 @@ spec:
                           type: "object"
                         version:
                           default: "*"
-                          description: "Version semver expression, ignored for charts from v1beta2.GitRepository and\nv1beta2.Bucket sources. Defaults to latest when omitted."
+                          description: "Version semver expression, ignored for charts from v1.GitRepository and\nv1beta2.Bucket sources. Defaults to latest when omitted."
                           type: "string"
                       required:
                         - "chart"

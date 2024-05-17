@@ -4448,16 +4448,24 @@ pub struct PrometheusAgentRemoteWriteAzureAd {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cloud: Option<PrometheusAgentRemoteWriteAzureAdCloud>,
     /// ManagedIdentity defines the Azure User-assigned Managed identity.
-    /// Cannot be set at the same time as `oauth`.
+    /// Cannot be set at the same time as `oauth` or `sdk`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedIdentity")]
     pub managed_identity: Option<PrometheusAgentRemoteWriteAzureAdManagedIdentity>,
     /// OAuth defines the oauth config that is being used to authenticate.
-    /// Cannot be set at the same time as `managedIdentity`.
+    /// Cannot be set at the same time as `managedIdentity` or `sdk`.
     /// 
     /// 
     /// It requires Prometheus >= v2.48.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth: Option<PrometheusAgentRemoteWriteAzureAdOauth>,
+    /// SDK defines the Azure SDK config that is being used to authenticate.
+    /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
+    /// Cannot be set at the same time as `oauth` or `managedIdentity`.
+    /// 
+    /// 
+    /// It requires Prometheus >= 2.52.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sdk: Option<PrometheusAgentRemoteWriteAzureAdSdk>,
 }
 
 /// AzureAD for the URL.
@@ -4475,7 +4483,7 @@ pub enum PrometheusAgentRemoteWriteAzureAdCloud {
 }
 
 /// ManagedIdentity defines the Azure User-assigned Managed identity.
-/// Cannot be set at the same time as `oauth`.
+/// Cannot be set at the same time as `oauth` or `sdk`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentRemoteWriteAzureAdManagedIdentity {
     /// The client id
@@ -4484,7 +4492,7 @@ pub struct PrometheusAgentRemoteWriteAzureAdManagedIdentity {
 }
 
 /// OAuth defines the oauth config that is being used to authenticate.
-/// Cannot be set at the same time as `managedIdentity`.
+/// Cannot be set at the same time as `managedIdentity` or `sdk`.
 /// 
 /// 
 /// It requires Prometheus >= v2.48.0.
@@ -4496,7 +4504,7 @@ pub struct PrometheusAgentRemoteWriteAzureAdOauth {
     /// `clientSecret` specifies a key of a Secret containing the client secret of the Azure Active Directory application that is being used to authenticate.
     #[serde(rename = "clientSecret")]
     pub client_secret: PrometheusAgentRemoteWriteAzureAdOauthClientSecret,
-    /// `tenantID` is the tenant ID of the Azure Active Directory application that is being used to authenticate.
+    /// `tenantId` is the tenant ID of the Azure Active Directory application that is being used to authenticate.
     #[serde(rename = "tenantId")]
     pub tenant_id: String,
 }
@@ -4514,6 +4522,19 @@ pub struct PrometheusAgentRemoteWriteAzureAdOauthClientSecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// SDK defines the Azure SDK config that is being used to authenticate.
+/// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
+/// Cannot be set at the same time as `oauth` or `managedIdentity`.
+/// 
+/// 
+/// It requires Prometheus >= 2.52.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PrometheusAgentRemoteWriteAzureAdSdk {
+    /// `tenantId` is the tenant ID of the azure active directory application that is being used to authenticate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantId")]
+    pub tenant_id: Option<String>,
 }
 
 /// BasicAuth configuration for the URL.
@@ -5026,10 +5047,11 @@ pub struct PrometheusAgentResourcesClaims {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentScrapeClasses {
-    /// Default indicates that the scrape applies to all scrape objects that don't configure an explicit scrape class name.
+    /// Default indicates that the scrape applies to all scrape objects that
+    /// don't configure an explicit scrape class name.
     /// 
     /// 
-    /// Only one scrape class can be set as default.
+    /// Only one scrape class can be set as the default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<bool>,
     /// Name of the scrape class.
@@ -5046,7 +5068,12 @@ pub struct PrometheusAgentScrapeClasses {
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<PrometheusAgentScrapeClassesRelabelings>>,
-    /// TLSConfig section for scrapes.
+    /// TLSConfig defines the TLS settings to use for the scrape. When the
+    /// scrape objects define their own CA, certificate and/or key, they take
+    /// precedence over the corresponding scrape class fields.
+    /// 
+    /// 
+    /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<PrometheusAgentScrapeClassesTlsConfig>,
 }
@@ -5151,7 +5178,12 @@ pub enum PrometheusAgentScrapeClassesRelabelingsAction {
     DropEqual,
 }
 
-/// TLSConfig section for scrapes.
+/// TLSConfig defines the TLS settings to use for the scrape. When the
+/// scrape objects define their own CA, certificate and/or key, they take
+/// precedence over the corresponding scrape class fields.
+/// 
+/// 
+/// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentScrapeClassesTlsConfig {
     /// Certificate authority used when verifying server certificates.

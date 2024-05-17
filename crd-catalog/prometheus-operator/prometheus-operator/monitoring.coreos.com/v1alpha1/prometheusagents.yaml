@@ -2898,7 +2898,7 @@ spec:
                               - "AzurePublic"
                             type: "string"
                           managedIdentity:
-                            description: "ManagedIdentity defines the Azure User-assigned Managed identity.\nCannot be set at the same time as `oauth`."
+                            description: "ManagedIdentity defines the Azure User-assigned Managed identity.\nCannot be set at the same time as `oauth` or `sdk`."
                             properties:
                               clientId:
                                 description: "The client id"
@@ -2907,7 +2907,7 @@ spec:
                               - "clientId"
                             type: "object"
                           oauth:
-                            description: "OAuth defines the oauth config that is being used to authenticate.\nCannot be set at the same time as `managedIdentity`.\n\n\nIt requires Prometheus >= v2.48.0."
+                            description: "OAuth defines the oauth config that is being used to authenticate.\nCannot be set at the same time as `managedIdentity` or `sdk`.\n\n\nIt requires Prometheus >= v2.48.0."
                             properties:
                               clientId:
                                 description: "`clientID` is the clientId of the Azure Active Directory application that is being used to authenticate."
@@ -2930,7 +2930,7 @@ spec:
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               tenantId:
-                                description: "`tenantID` is the tenant ID of the Azure Active Directory application that is being used to authenticate."
+                                description: "`tenantId` is the tenant ID of the Azure Active Directory application that is being used to authenticate."
                                 minLength: 1
                                 pattern: "^[0-9a-zA-Z-.]+$"
                                 type: "string"
@@ -2938,6 +2938,14 @@ spec:
                               - "clientId"
                               - "clientSecret"
                               - "tenantId"
+                            type: "object"
+                          sdk:
+                            description: "SDK defines the Azure SDK config that is being used to authenticate.\nSee https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication\nCannot be set at the same time as `oauth` or `managedIdentity`.\n\n\nIt requires Prometheus >= 2.52.0."
+                            properties:
+                              tenantId:
+                                description: "`tenantId` is the tenant ID of the azure active directory application that is being used to authenticate."
+                                pattern: "^[0-9a-zA-Z-.]+$"
+                                type: "string"
                             type: "object"
                         type: "object"
                       basicAuth:
@@ -3401,7 +3409,7 @@ spec:
                   items:
                     properties:
                       default:
-                        description: "Default indicates that the scrape applies to all scrape objects that don't configure an explicit scrape class name.\n\n\nOnly one scrape class can be set as default."
+                        description: "Default indicates that the scrape applies to all scrape objects that\ndon't configure an explicit scrape class name.\n\n\nOnly one scrape class can be set as the default."
                         type: "boolean"
                       name:
                         description: "Name of the scrape class."
@@ -3465,7 +3473,7 @@ spec:
                           type: "object"
                         type: "array"
                       tlsConfig:
-                        description: "TLSConfig section for scrapes."
+                        description: "TLSConfig defines the TLS settings to use for the scrape. When the\nscrape objects define their own CA, certificate and/or key, they take\nprecedence over the corresponding scrape class fields.\n\n\nFor now only the `caFile`, `certFile` and `keyFile` fields are supported."
                         properties:
                           ca:
                             description: "Certificate authority used when verifying server certificates."

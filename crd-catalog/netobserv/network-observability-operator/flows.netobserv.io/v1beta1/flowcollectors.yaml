@@ -77,7 +77,7 @@ spec:
                             type: "string"
                           type: "array"
                         features:
-                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: enable the DNS tracking feature.<br>\n- `FlowRTT` [unsupported (*)]: enable flow latency (RTT) calculations in the eBPF agent during TCP handshakes. This feature better works with `sampling` set to 1.<br>"
+                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: enable the DNS tracking feature.<br>\n- `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>"
                           items:
                             description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency. [Unsupported (*)].<br>"
                             enum:
@@ -177,9 +177,9 @@ spec:
                           description: "`metrics` defines the eBPF agent configuration regarding metrics"
                           properties:
                             disableAlerts:
-                              description: "`disableAlerts` is a list of alerts that should be disabled.\nPossible values are:<br>\n`NetObservDroppedFlows`, which is triggered when eBPF agent hashmap table is full.<br>"
+                              description: "`disableAlerts` is a list of alerts that should be disabled.\nPossible values are:<br>\n`NetObservDroppedFlows`, which is triggered when the eBPF agent is dropping flows, such as when the BPF hashmap is full or the capacity limiter being triggered.<br>"
                               items:
-                                description: "Name of a ebpf agent alert.\nPossible values are:<br>\n- `NetObservDroppedFlows`, which is triggered when eBPF agent hashmap table is full.<br>"
+                                description: "Name of an eBPF agent alert.\nPossible values are:<br>\n`NetObservDroppedFlows`, which is triggered when the eBPF agent is dropping flows, such as when the BPF hashmap is full or the capacity limiter being triggered.<br>"
                                 enum:
                                   - "NetObservDroppedFlows"
                                 type: "string"

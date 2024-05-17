@@ -313,11 +313,21 @@ spec:
                             type: "object"
                           type: "array"
                         limits:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
                           type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
                         requests:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
                           type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
                       type: "object"
                     template:
                       description: "Template to specify how Cruise Control resources, `Deployments` and `Pods`, are generated."
@@ -1143,11 +1153,21 @@ spec:
                                 type: "object"
                               type: "array"
                             limits:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
                               type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
                             requests:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
                               type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
                           type: "object"
                       type: "object"
                   type: "object"
@@ -2051,11 +2071,21 @@ spec:
                                 type: "object"
                               type: "array"
                             limits:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
                               type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
                             requests:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
                               type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
                           type: "object"
                       type: "object"
                     topicOperator:
@@ -2190,11 +2220,21 @@ spec:
                                 type: "object"
                               type: "array"
                             limits:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
                               type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
                             requests:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
                               type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
                           type: "object"
                         startupProbe:
                           description: "Pod startup checking."
@@ -2364,11 +2404,21 @@ spec:
                                 type: "object"
                               type: "array"
                             limits:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
                               type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
                             requests:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
                               type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
                           type: "object"
                         secretPrefix:
                           description: "The prefix that will be added to the KafkaUser name to be used as the Secret name."
@@ -2454,11 +2504,21 @@ spec:
                             type: "object"
                           type: "array"
                         limits:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
                           type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
                         requests:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
                           type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
                       type: "object"
                     template:
                       description: "Template for JmxTrans resources."
@@ -3168,8 +3228,8 @@ spec:
                                 description: "The name of the Secret containing the certificate."
                                 type: "string"
                             required:
-                              - "certificate"
                               - "secretName"
+                              - "certificate"
                             type: "object"
                           type: "array"
                         tokenEndpointUri:
@@ -3393,8 +3453,8 @@ spec:
                                       description: "The name of the Secret containing the certificate."
                                       type: "string"
                                   required:
-                                    - "certificate"
                                     - "secretName"
+                                    - "certificate"
                                   type: "object"
                                 type: "array"
                               tokenEndpointUri:
@@ -3439,6 +3499,11 @@ spec:
                                       type: "string"
                                     description: "Annotations that will be added to the `Ingress`, `Route`, or `Service` resource. You can use this field to configure DNS providers such as External DNS. This field can be used only with `loadbalancer`, `nodeport`, `route`, or `ingress` type listeners."
                                     type: "object"
+                                  externalIPs:
+                                    description: "External IPs associated to the nodeport service. These IPs are used by clients external to the Kubernetes cluster to access the Kafka brokers. This field is helpful when `nodeport` without `externalIP` is not sufficient. For example on bare-metal Kubernetes clusters that do not support Loadbalancer service types. This field can only be used with `nodeport` type listener."
+                                    items:
+                                      type: "string"
+                                    type: "array"
                                   host:
                                     description: "The bootstrap host. This field will be used in the Ingress resource or in the Route resource to specify the desired hostname. This field can be used only with `route` (optional) or `ingress` (required) type listeners."
                                     type: "string"
@@ -3467,9 +3532,9 @@ spec:
                                     description: "The name of the Secret containing the certificate."
                                     type: "string"
                                 required:
-                                  - "certificate"
                                   - "key"
                                   - "secretName"
+                                  - "certificate"
                                 type: "object"
                               brokers:
                                 description: "Per-broker configurations."
@@ -3489,6 +3554,11 @@ spec:
                                     broker:
                                       description: "ID of the kafka broker (broker identifier). Broker IDs start from 0 and correspond to the number of broker replicas."
                                       type: "integer"
+                                    externalIPs:
+                                      description: "External IPs associated to the nodeport service. These IPs are used by clients external to the Kubernetes cluster to access the Kafka brokers. This field is helpful when `nodeport` without `externalIP` is not sufficient. For example on bare-metal Kubernetes clusters that do not support Loadbalancer service types. This field can only be used with `nodeport` type listener."
+                                      items:
+                                        type: "string"
+                                      type: "array"
                                     host:
                                       description: "The broker host. This field will be used in the Ingress resource or in the Route resource to specify the desired hostname. This field can be used only with `route` (optional) or `ingress` (required) type listeners."
                                       type: "string"
@@ -3780,11 +3850,21 @@ spec:
                             type: "object"
                           type: "array"
                         limits:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
                           type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
                         requests:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
                           type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
                       type: "object"
                     storage:
                       description: "Storage configuration (disk). Cannot be updated. This property is required when node pools are not used."
@@ -3799,6 +3879,11 @@ spec:
                           description: "Storage identification number. It is mandatory only for storage volumes defined in a storage of type 'jbod'."
                           minimum: 0.0
                           type: "integer"
+                        kraftMetadata:
+                          description: "Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set."
+                          enum:
+                            - "shared"
+                          type: "string"
                         overrides:
                           description: "Overrides for individual brokers. The `overrides` field allows to specify a different configuration for different brokers."
                           items:
@@ -3841,9 +3926,14 @@ spec:
                                 description: "Specifies if the persistent volume claim has to be deleted when the cluster is un-deployed."
                                 type: "boolean"
                               id:
-                                description: "Storage identification number. It is mandatory only for storage volumes defined in a storage of type 'jbod'."
+                                description: "Storage identification number. Mandatory for storage volumes defined with a `jbod` storage type configuration."
                                 minimum: 0.0
                                 type: "integer"
+                              kraftMetadata:
+                                description: "Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set."
+                                enum:
+                                  - "shared"
+                                type: "string"
                               overrides:
                                 description: "Overrides for individual brokers. The `overrides` field allows to specify a different configuration for different brokers."
                                 items:
@@ -4968,11 +5058,21 @@ spec:
                             type: "object"
                           type: "array"
                         limits:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
                           type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
                         requests:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
                           type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
                       type: "object"
                     showAllOffsets:
                       description: "Whether show the offset/lag for all consumer group, otherwise, only show connected consumer groups."
@@ -5802,11 +5902,21 @@ spec:
                             type: "object"
                           type: "array"
                         limits:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
                           type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
                         requests:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
                           type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
                       type: "object"
                     storage:
                       description: "Storage configuration (disk). Cannot be updated."
@@ -5818,9 +5928,14 @@ spec:
                           description: "Specifies if the persistent volume claim has to be deleted when the cluster is un-deployed."
                           type: "boolean"
                         id:
-                          description: "Storage identification number. It is mandatory only for storage volumes defined in a storage of type 'jbod'."
+                          description: "Storage identification number. Mandatory for storage volumes defined with a `jbod` storage type configuration."
                           minimum: 0.0
                           type: "integer"
+                        kraftMetadata:
+                          description: "Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set."
+                          enum:
+                            - "shared"
+                          type: "string"
                         overrides:
                           description: "Overrides for individual brokers. The `overrides` field allows to specify a different configuration for different brokers."
                           items:

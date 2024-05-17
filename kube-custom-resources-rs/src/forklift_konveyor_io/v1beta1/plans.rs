@@ -31,6 +31,9 @@ pub struct PlanSpec {
     /// Preserve the CPU model and flags the VM runs with in its oVirt cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveClusterCpuModel")]
     pub preserve_cluster_cpu_model: Option<bool>,
+    /// Preserve static IPs of VMs in vSphere (Windows only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveStaticIPs")]
+    pub preserve_static_i_ps: Option<bool>,
     /// Providers.
     pub provider: PlanProvider,
     /// Target namespace.

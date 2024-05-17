@@ -10,7 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// `WorkloadGroup` enables specifying the properties of a single workload for bootstrap and provides a template for `WorkloadEntry`, similar to how `Deployment` specifies properties of workloads via `Pod` templates.
+/// Describes a collection of workload instances. See more details at: https://istio.io/docs/reference/config/networking/workload-group.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "networking.istio.io", version = "v1beta1", kind = "WorkloadGroup", plural = "workloadgroups")]
 #[kube(namespaced)]

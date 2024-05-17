@@ -98,9 +98,6 @@ pub struct CertificateSpec {
     /// 
     /// 
     /// Cannot be set if the `subject` or `commonName` field is set.
-    /// This is an Alpha Feature and is only enabled with the
-    /// `--feature-gates=LiteralCertificateSubject=true` option set on both
-    /// the controller and webhook components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "literalSubject")]
     pub literal_subject: Option<String>,
     /// x.509 certificate NameConstraint extension which MUST NOT be used in a non-CA certificate.

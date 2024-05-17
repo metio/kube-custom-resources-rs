@@ -416,16 +416,11 @@ pub struct ScrapeConfigNomadSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to
-/// proxies during CONNECT requests.
-/// 
-/// 
-/// It requires Prometheus >= v2.43.0.
+/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigNomadSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -589,8 +584,10 @@ pub struct ScrapeConfigAuthorizationCredentials {
 /// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#azure_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigAzureSdConfigs {
-    /// # The authentication method, either OAuth or ManagedIdentity.
+    /// # The authentication method, either `OAuth` or `ManagedIdentity` or `SDK`.
     /// See https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
+    /// SDK authentication method uses environment variables by default.
+    /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationMethod")]
     pub authentication_method: Option<ScrapeConfigAzureSdConfigsAuthenticationMethod>,
     /// Optional client ID. Only required with the OAuth authentication method.
@@ -626,6 +623,8 @@ pub struct ScrapeConfigAzureSdConfigs {
 pub enum ScrapeConfigAzureSdConfigsAuthenticationMethod {
     OAuth,
     ManagedIdentity,
+    #[serde(rename = "SDK")]
+    Sdk,
 }
 
 /// Optional client secret. Only required with the OAuth authentication method.
@@ -941,16 +940,11 @@ pub struct ScrapeConfigConsulSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to
-/// proxies during CONNECT requests.
-/// 
-/// 
-/// It requires Prometheus >= v2.43.0.
+/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -1276,16 +1270,11 @@ pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to
-/// proxies during CONNECT requests.
-/// 
-/// 
-/// It requires Prometheus >= v2.43.0.
+/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDigitalOceanSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -1690,16 +1679,11 @@ pub struct ScrapeConfigDockerSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to
-/// proxies during CONNECT requests.
-/// 
-/// 
-/// It requires Prometheus >= v2.43.0.
+/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -2115,16 +2099,11 @@ pub struct ScrapeConfigEurekaSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to
-/// proxies during CONNECT requests.
-/// 
-/// 
-/// It requires Prometheus >= v2.43.0.
+/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigEurekaSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -2529,16 +2508,11 @@ pub struct ScrapeConfigHetznerSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to
-/// proxies during CONNECT requests.
-/// 
-/// 
-/// It requires Prometheus >= v2.43.0.
+/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHetznerSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -2809,16 +2783,11 @@ pub struct ScrapeConfigHttpSdConfigsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to
-/// proxies during CONNECT requests.
-/// 
-/// 
-/// It requires Prometheus >= v2.43.0.
+/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHttpSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -3207,16 +3176,11 @@ pub struct ScrapeConfigKubernetesSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to
-/// proxies during CONNECT requests.
-/// 
-/// 
-/// It requires Prometheus >= v2.43.0.
+/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -3625,16 +3589,11 @@ pub struct ScrapeConfigKumaSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to
-/// proxies during CONNECT requests.
-/// 
-/// 
-/// It requires Prometheus >= v2.43.0.
+/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKumaSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -4111,16 +4070,11 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to
-/// proxies during CONNECT requests.
-/// 
-/// 
-/// It requires Prometheus >= v2.43.0.
+/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?

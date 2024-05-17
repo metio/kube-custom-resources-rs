@@ -30,6 +30,12 @@ pub struct ComponentSpec {
     pub comp_def: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<ComponentConfigs>>,
+    /// Determines whether metrics exporter information is annotated on the Component's headless Service. 
+    ///  If set to true, the following annotations will not be patched into the Service: 
+    ///  - "monitor.kubeblocks.io/path" - "monitor.kubeblocks.io/port" - "monitor.kubeblocks.io/scheme" 
+    ///  These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableExporter")]
+    pub disable_exporter: Option<bool>,
     /// Specifies which types of logs should be collected for the Cluster. The log types are defined in the `componentDefinition.spec.logConfigs` field with the LogConfig entries. 
     ///  The elements in the `enabledLogs` array correspond to the names of the LogConfig entries. For example, if the `componentDefinition.spec.logConfigs` defines LogConfig entries with names "slow_query_log" and "error_log", you can enable the collection of these logs by including their names in the `enabledLogs` array: ```yaml enabledLogs: - slow_query_log - error_log ```
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
@@ -40,12 +46,6 @@ pub struct ComponentSpec {
     ///  The sum of replicas across all InstanceTemplates should not exceed the total number of Replicas specified for the Component. Any remaining replicas will be generated using the default template and will follow the default naming rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<ComponentInstances>>,
-    /// Determines whether metrics exporter information is annotated on the Component's headless Service. 
-    ///  If set to true, the following annotations will be patched into the Service: 
-    ///  - "monitor.kubeblocks.io/path" - "monitor.kubeblocks.io/port" - "monitor.kubeblocks.io/scheme" 
-    ///  These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorEnabled")]
-    pub monitor_enabled: Option<bool>,
     /// Specifies the names of instances to be transitioned to offline status. 
     ///  Marking an instance as offline results in the following: 
     ///  1. The associated Pod is stopped, and its PersistentVolumeClaim (PVC) is retained for potential future reuse or data recovery, but it is no longer actively used. 2. The ordinal number assigned to this instance is preserved, ensuring it remains unique and avoiding conflicts with new instances. 
@@ -82,9 +82,6 @@ pub struct ComponentSpec {
     /// Overrides Services defined in referenced ComponentDefinition and exposes endpoints that can be accessed by clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ComponentServices>>,
-    /// Defines the sidecar containers that will be attached to the Component's main container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sidecars: Option<Vec<String>>,
     /// Specifies the TLS configuration for the Component, including: 
     ///  - A boolean flag that indicates whether the Component should use Transport Layer Security (TLS) for secure communication. - An optional field that specifies the configuration for the TLS certificates issuer when TLS is enabled. It allows defining the issuer name and the reference to the secret containing the TLS certificates and key. The secret should contain the CA certificate, TLS certificate, and private key in the specified keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]

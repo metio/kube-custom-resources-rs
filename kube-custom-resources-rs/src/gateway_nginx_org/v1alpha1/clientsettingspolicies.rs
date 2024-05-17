@@ -98,12 +98,6 @@ pub struct ClientSettingsPolicyTargetRef {
     pub kind: String,
     /// Name is the name of the target resource.
     pub name: String,
-    /// Namespace is the namespace of the referent. When unspecified, the local
-    /// namespace is inferred. Even when policy targets a resource in a different
-    /// namespace, it MUST only apply to traffic originating from the same
-    /// namespace as the policy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
 /// Status defines the state of the ClientSettingsPolicy.
@@ -231,7 +225,7 @@ pub struct ClientSettingsPolicyStatusAncestorsAncestorRef {
     /// 
     /// 
     /// * Gateway (Gateway conformance profile)
-    /// * Service (Mesh conformance profile, experimental, ClusterIP Services only)
+    /// * Service (Mesh conformance profile, ClusterIP Services only)
     /// 
     /// 
     /// Support for other resources is Implementation-Specific.
@@ -305,23 +299,18 @@ pub struct ClientSettingsPolicyStatusAncestorsAncestorRef {
     /// 
     /// 
     /// Support: Extended
-    /// 
-    /// 
-    /// <gateway:experimental>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SectionName is the name of a section within the target resource. In the
     /// following resources, SectionName is interpreted as the following:
     /// 
     /// 
-    /// * Gateway: Listener Name. When both Port (experimental) and SectionName
+    /// * Gateway: Listener name. When both Port (experimental) and SectionName
     /// are specified, the name and port of the selected listener must match
     /// both specified values.
-    /// * Service: Port Name. When both Port (experimental) and SectionName
+    /// * Service: Port name. When both Port (experimental) and SectionName
     /// are specified, the name and port of the selected listener must match
-    /// both specified values. Note that attaching Routes to Services as Parents
-    /// is part of experimental Mesh support and is not supported for any other
-    /// purpose.
+    /// both specified values.
     /// 
     /// 
     /// Implementations MAY choose to support attaching Routes to other resources.

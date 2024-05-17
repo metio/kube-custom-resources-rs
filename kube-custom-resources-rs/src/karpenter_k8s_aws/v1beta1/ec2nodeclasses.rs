@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -404,6 +405,9 @@ pub struct EC2NodeClassStatus {
     /// cluster under the AMI selectors.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub amis: Option<Vec<EC2NodeClassStatusAmis>>,
+    /// Conditions contains signals for health and readiness
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// InstanceProfile contains the resolved instance profile for the role
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceProfile")]
     pub instance_profile: Option<String>,
@@ -429,16 +433,12 @@ pub struct EC2NodeClassStatusAmis {
     pub requirements: Vec<EC2NodeClassStatusAmisRequirements>,
 }
 
-/// A node selector requirement with min values is a selector that contains values, a key, an operator that relates the key and values
-/// and minValues that represent the requirement to have at least that many values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct EC2NodeClassStatusAmisRequirements {
     /// The label key that the selector applies to.
     pub key: String,
-    /// This field is ALPHA and can be dropped or replaced at any time
-    /// MinValues is the minimum number of unique values required to define the flexibility of the specific requirement.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minValues")]
-    pub min_values: Option<i64>,
     /// Represents a key's relationship to a set of values.
     /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,

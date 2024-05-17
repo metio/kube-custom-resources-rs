@@ -463,6 +463,9 @@ pub struct ChallengeSolverDns01Route53 {
     /// see: https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyIDSecretRef")]
     pub access_key_id_secret_ref: Option<ChallengeSolverDns01Route53AccessKeyIdSecretRef>,
+    /// Auth configures how cert-manager authenticates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth: Option<ChallengeSolverDns01Route53Auth>,
     /// If set, the provider will manage only this zone in Route53 and will not do an lookup using the route53:ListHostedZonesByName api call.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostedZoneID")]
     pub hosted_zone_id: Option<String>,
@@ -495,6 +498,40 @@ pub struct ChallengeSolverDns01Route53AccessKeyIdSecretRef {
     pub key: Option<String>,
     /// Name of the resource being referred to.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    pub name: String,
+}
+
+/// Auth configures how cert-manager authenticates.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ChallengeSolverDns01Route53Auth {
+    /// Kubernetes authenticates with Route53 using AssumeRoleWithWebIdentity
+    /// by passing a bound ServiceAccount token.
+    pub kubernetes: ChallengeSolverDns01Route53AuthKubernetes,
+}
+
+/// Kubernetes authenticates with Route53 using AssumeRoleWithWebIdentity
+/// by passing a bound ServiceAccount token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ChallengeSolverDns01Route53AuthKubernetes {
+    /// A reference to a service account that will be used to request a bound
+    /// token (also known as "projected token"). To use this field, you must
+    /// configure an RBAC rule to let cert-manager request a token.
+    #[serde(rename = "serviceAccountRef")]
+    pub service_account_ref: ChallengeSolverDns01Route53AuthKubernetesServiceAccountRef,
+}
+
+/// A reference to a service account that will be used to request a bound
+/// token (also known as "projected token"). To use this field, you must
+/// configure an RBAC rule to let cert-manager request a token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ChallengeSolverDns01Route53AuthKubernetesServiceAccountRef {
+    /// TokenAudiences is an optional list of audiences to include in the
+    /// token passed to AWS. The default token consisting of the issuer's namespace
+    /// and name is always included.
+    /// If unset the audience defaults to `sts.amazonaws.com`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audiences: Option<Vec<String>>,
+    /// Name of the ServiceAccount used to request a token.
     pub name: String,
 }
 

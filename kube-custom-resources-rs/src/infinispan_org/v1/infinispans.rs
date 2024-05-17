@@ -1451,6 +1451,9 @@ pub struct InfinispanStatusHotRodRollingUpgradeStatus {
 /// The Operand status
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InfinispanStatusOperand {
+    /// Whether the Operand has been deprecated and is subject for removal in a subsequent release
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<bool>,
     /// The Image being used by the Operand currently being reconciled
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,

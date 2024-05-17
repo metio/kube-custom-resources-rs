@@ -2946,7 +2946,7 @@ pub struct CheClusterNetworkingAuth {
     /// Access Token Scope. This field is specific to Che installations made for Kubernetes only and ignored for OpenShift.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthScope")]
     pub o_auth_scope: Option<String>,
-    /// Name of the secret set in the OpenShift `OAuthClient` resource used to set up identity federation on the OpenShift side.
+    /// Name of the secret set in the OpenShift `OAuthClient` resource used to set up identity federation on the OpenShift side. For Kubernetes, this can either be the plain text oAuthSecret value, or the name of a kubernetes secret which contains a key `oAuthSecret` and the value is the secret. NOTE: this secret must exist in the same namespace as the `CheCluster` resource and contain the label `app.kubernetes.io/part-of=che.eclipse.org`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthSecret")]
     pub o_auth_secret: Option<String>,
 }

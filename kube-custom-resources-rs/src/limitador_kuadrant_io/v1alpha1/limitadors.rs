@@ -24,6 +24,8 @@ pub struct LimitadorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<LimitadorAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<Vec<LimitadorLimits>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listener: Option<LimitadorListener>,
@@ -48,6 +50,7 @@ pub struct LimitadorSpec {
     /// Sets the level of verbosity
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verbosity: Option<i64>,
+    /// [Deprecated] Use spec.image instead. Docker tag used as limitador image. The repo is hardcoded to quay.io/kuadrant/limitador
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -619,15 +622,9 @@ pub struct LimitadorStorageRedisCachedOptions {
     /// MaxCached refers to the maximum amount of counters cached [default: 10000]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "max-cached")]
     pub max_cached: Option<i64>,
-    /// Ratio to apply to the TTL from Redis on cached counters [default: 10]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ratio: Option<i64>,
     /// ResponseTimeout defines the timeout for Redis commands in milliseconds [default: 350]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "response-timeout")]
     pub response_timeout: Option<i64>,
-    /// TTL for cached counters in milliseconds [default: 5000]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ttl: Option<i64>,
 }
 
 /// LimitadorSpec defines the desired state of Limitador

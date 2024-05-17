@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
@@ -336,9 +337,9 @@ pub struct KafkaCruiseControlResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KafkaCruiseControlResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1251,9 +1252,9 @@ pub struct KafkaCruiseControlTlsSidecarResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KafkaCruiseControlTlsSidecarResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2279,9 +2280,9 @@ pub struct KafkaEntityOperatorTlsSidecarResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KafkaEntityOperatorTlsSidecarResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2446,9 +2447,9 @@ pub struct KafkaEntityOperatorTopicOperatorResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KafkaEntityOperatorTopicOperatorResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2630,9 +2631,9 @@ pub struct KafkaEntityOperatorUserOperatorResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KafkaEntityOperatorUserOperatorResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2702,9 +2703,9 @@ pub struct KafkaJmxTransResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KafkaJmxTransResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -3854,6 +3855,9 @@ pub struct KafkaKafkaListenersConfigurationBootstrap {
     /// Annotations that will be added to the `Ingress`, `Route`, or `Service` resource. You can use this field to configure DNS providers such as External DNS. This field can be used only with `loadbalancer`, `nodeport`, `route`, or `ingress` type listeners.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// External IPs associated to the nodeport service. These IPs are used by clients external to the Kubernetes cluster to access the Kafka brokers. This field is helpful when `nodeport` without `externalIP` is not sufficient. For example on bare-metal Kubernetes clusters that do not support Loadbalancer service types. This field can only be used with `nodeport` type listener.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
+    pub external_i_ps: Option<Vec<String>>,
     /// The bootstrap host. This field will be used in the Ingress resource or in the Route resource to specify the desired hostname. This field can be used only with `route` (optional) or `ingress` (required) type listeners.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -3893,6 +3897,9 @@ pub struct KafkaKafkaListenersConfigurationBrokers {
     pub annotations: Option<BTreeMap<String, String>>,
     /// ID of the kafka broker (broker identifier). Broker IDs start from 0 and correspond to the number of broker replicas.
     pub broker: i64,
+    /// External IPs associated to the nodeport service. These IPs are used by clients external to the Kubernetes cluster to access the Kafka brokers. This field is helpful when `nodeport` without `externalIP` is not sufficient. For example on bare-metal Kubernetes clusters that do not support Loadbalancer service types. This field can only be used with `nodeport` type listener.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
+    pub external_i_ps: Option<Vec<String>>,
     /// The broker host. This field will be used in the Ingress resource or in the Route resource to specify the desired hostname. This field can be used only with `route` (optional) or `ingress` (required) type listeners.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -4139,9 +4146,9 @@ pub struct KafkaKafkaResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KafkaKafkaResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -4162,6 +4169,9 @@ pub struct KafkaKafkaStorage {
     /// Storage identification number. It is mandatory only for storage volumes defined in a storage of type 'jbod'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<i64>,
+    /// Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kraftMetadata")]
+    pub kraft_metadata: Option<KafkaKafkaStorageKraftMetadata>,
     /// Overrides for individual brokers. The `overrides` field allows to specify a different configuration for different brokers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<KafkaKafkaStorageOverrides>>,
@@ -4180,6 +4190,13 @@ pub struct KafkaKafkaStorage {
     /// List of volumes as Storage objects representing the JBOD disks array.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<KafkaKafkaStorageVolumes>>,
+}
+
+/// Storage configuration (disk). Cannot be updated. This property is required when node pools are not used.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaKafkaStorageKraftMetadata {
+    #[serde(rename = "shared")]
+    Shared,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -4211,9 +4228,12 @@ pub struct KafkaKafkaStorageVolumes {
     /// Specifies if the persistent volume claim has to be deleted when the cluster is un-deployed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteClaim")]
     pub delete_claim: Option<bool>,
-    /// Storage identification number. It is mandatory only for storage volumes defined in a storage of type 'jbod'.
+    /// Storage identification number. Mandatory for storage volumes defined with a `jbod` storage type configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<i64>,
+    /// Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kraftMetadata")]
+    pub kraft_metadata: Option<KafkaKafkaStorageVolumesKraftMetadata>,
     /// Overrides for individual brokers. The `overrides` field allows to specify a different configuration for different brokers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<KafkaKafkaStorageVolumesOverrides>>,
@@ -4229,6 +4249,12 @@ pub struct KafkaKafkaStorageVolumes {
     /// Storage type, must be either 'ephemeral' or 'persistent-claim'.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaStorageVolumesType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaKafkaStorageVolumesKraftMetadata {
+    #[serde(rename = "shared")]
+    Shared,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -5463,9 +5489,9 @@ pub struct KafkaKafkaExporterResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KafkaKafkaExporterResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -6378,9 +6404,9 @@ pub struct KafkaZookeeperResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KafkaZookeeperResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -6398,9 +6424,12 @@ pub struct KafkaZookeeperStorage {
     /// Specifies if the persistent volume claim has to be deleted when the cluster is un-deployed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteClaim")]
     pub delete_claim: Option<bool>,
-    /// Storage identification number. It is mandatory only for storage volumes defined in a storage of type 'jbod'.
+    /// Storage identification number. Mandatory for storage volumes defined with a `jbod` storage type configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<i64>,
+    /// Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kraftMetadata")]
+    pub kraft_metadata: Option<KafkaZookeeperStorageKraftMetadata>,
     /// Overrides for individual brokers. The `overrides` field allows to specify a different configuration for different brokers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<KafkaZookeeperStorageOverrides>>,
@@ -6416,6 +6445,13 @@ pub struct KafkaZookeeperStorage {
     /// Storage type, must be either 'ephemeral' or 'persistent-claim'.
     #[serde(rename = "type")]
     pub r#type: KafkaZookeeperStorageType,
+}
+
+/// Storage configuration (disk). Cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaZookeeperStorageKraftMetadata {
+    #[serde(rename = "shared")]
+    Shared,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
