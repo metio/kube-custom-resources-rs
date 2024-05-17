@@ -21,7 +21,16 @@ use self::prelude::*;
 pub struct HelmReleaseSpec {
     /// Chart defines the template of the v1beta2.HelmChart that should be created
     /// for this HelmRelease.
-    pub chart: HelmReleaseChart,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chart: Option<HelmReleaseChart>,
+    /// ChartRef holds a reference to a source controller resource containing the
+    /// Helm chart artifact.
+    /// 
+    /// 
+    /// Note: this field is provisional to the v2 API, and not actively used
+    /// by v2beta1 HelmReleases.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chartRef")]
+    pub chart_ref: Option<HelmReleaseChartRef>,
     /// DependsOn may contain a meta.NamespacedObjectReference slice with
     /// references to HelmRelease resources that must be ready before this HelmRelease
     /// can be reconciled.
@@ -253,6 +262,40 @@ pub enum HelmReleaseChartSpecVerifyProvider {
 pub struct HelmReleaseChartSpecVerifySecretRef {
     /// Name of the referent.
     pub name: String,
+}
+
+/// ChartRef holds a reference to a source controller resource containing the
+/// Helm chart artifact.
+/// 
+/// 
+/// Note: this field is provisional to the v2 API, and not actively used
+/// by v2beta1 HelmReleases.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HelmReleaseChartRef {
+    /// APIVersion of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Kind of the referent.
+    pub kind: HelmReleaseChartRefKind,
+    /// Name of the referent.
+    pub name: String,
+    /// Namespace of the referent, defaults to the namespace of the Kubernetes
+    /// resource object that contains the reference.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// ChartRef holds a reference to a source controller resource containing the
+/// Helm chart artifact.
+/// 
+/// 
+/// Note: this field is provisional to the v2 API, and not actively used
+/// by v2beta1 HelmReleases.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HelmReleaseChartRefKind {
+    #[serde(rename = "OCIRepository")]
+    OciRepository,
+    HelmChart,
 }
 
 /// NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any

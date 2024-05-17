@@ -17,21 +17,25 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct NumatopologySpec {
-    /// Specifies the cpu topology info Key is cpu id
+    /// Specifies the cpu topology info
+    /// Key is cpu id
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuDetail")]
     pub cpu_detail: Option<BTreeMap<String, NumatopologyCpuDetail>>,
-    /// Specifies the numa info for the resource Key is resource name
+    /// Specifies the numa info for the resource
+    /// Key is resource name
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub numares: Option<BTreeMap<String, NumatopologyNumares>>,
     /// Specifies the policy of the manager
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<BTreeMap<String, String>>,
-    /// Specifies the reserved resource of the node Key is resource name
+    /// Specifies the reserved resource of the node
+    /// Key is resource name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resReserved")]
     pub res_reserved: Option<BTreeMap<String, String>>,
 }
 
-/// Specifies the cpu topology info Key is cpu id
+/// Specifies the cpu topology info
+/// Key is cpu id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NumatopologyCpuDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,7 +46,8 @@ pub struct NumatopologyCpuDetail {
     pub socket: Option<i64>,
 }
 
-/// Specifies the numa info for the resource Key is resource name
+/// Specifies the numa info for the resource
+/// Key is resource name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NumatopologyNumares {
     #[serde(default, skip_serializing_if = "Option::is_none")]

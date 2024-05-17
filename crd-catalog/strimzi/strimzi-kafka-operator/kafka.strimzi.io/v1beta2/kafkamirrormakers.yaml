@@ -102,9 +102,9 @@ spec:
                               description: "The name of the Secret containing the certificate."
                               type: "string"
                           required:
-                            - "certificate"
                             - "key"
                             - "secretName"
+                            - "certificate"
                           type: "object"
                         clientId:
                           description: "OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI."
@@ -153,8 +153,8 @@ spec:
                               description: "The name of the Secret containing the password."
                               type: "string"
                           required:
-                            - "password"
                             - "secretName"
+                            - "password"
                           type: "object"
                         readTimeoutSeconds:
                           description: "The read timeout in seconds when connecting to authorization server. If not set, the effective read timeout is 60 seconds."
@@ -186,8 +186,8 @@ spec:
                                 description: "The name of the Secret containing the certificate."
                                 type: "string"
                             required:
-                              - "certificate"
                               - "secretName"
+                              - "certificate"
                             type: "object"
                           type: "array"
                         tokenEndpointUri:
@@ -239,8 +239,8 @@ spec:
                                 description: "The name of the Secret containing the certificate."
                                 type: "string"
                             required:
-                              - "certificate"
                               - "secretName"
+                              - "certificate"
                             type: "object"
                           type: "array"
                       type: "object"
@@ -408,9 +408,9 @@ spec:
                               description: "The name of the Secret containing the certificate."
                               type: "string"
                           required:
-                            - "certificate"
                             - "key"
                             - "secretName"
+                            - "certificate"
                           type: "object"
                         clientId:
                           description: "OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI."
@@ -459,8 +459,8 @@ spec:
                               description: "The name of the Secret containing the password."
                               type: "string"
                           required:
-                            - "password"
                             - "secretName"
+                            - "password"
                           type: "object"
                         readTimeoutSeconds:
                           description: "The read timeout in seconds when connecting to authorization server. If not set, the effective read timeout is 60 seconds."
@@ -492,8 +492,8 @@ spec:
                                 description: "The name of the Secret containing the certificate."
                                 type: "string"
                             required:
-                              - "certificate"
                               - "secretName"
+                              - "certificate"
                             type: "object"
                           type: "array"
                         tokenEndpointUri:
@@ -535,8 +535,8 @@ spec:
                                 description: "The name of the Secret containing the certificate."
                                 type: "string"
                             required:
-                              - "certificate"
                               - "secretName"
+                              - "certificate"
                             type: "object"
                           type: "array"
                       type: "object"
@@ -582,11 +582,21 @@ spec:
                         type: "object"
                       type: "array"
                     limits:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
                       type: "object"
-                      x-kubernetes-preserve-unknown-fields: true
                     requests:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
                       type: "object"
-                      x-kubernetes-preserve-unknown-fields: true
                   type: "object"
                 template:
                   description: "Template to specify how Kafka MirrorMaker resources, `Deployments` and `Pods`, are generated."

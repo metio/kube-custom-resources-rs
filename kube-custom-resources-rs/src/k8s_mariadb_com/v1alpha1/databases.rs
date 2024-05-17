@@ -22,7 +22,7 @@ pub struct DatabaseSpec {
     /// CharacterSet to use in the Database.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "characterSet")]
     pub character_set: Option<String>,
-    /// CharacterSet to use in the Database.
+    /// Collate to use in the Database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub collate: Option<String>,
     /// MariaDBRef is a reference to a MariaDB object.

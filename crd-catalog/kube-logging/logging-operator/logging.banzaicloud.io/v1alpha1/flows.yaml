@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.6.0"
+    controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "flows.logging.banzaicloud.io"
 spec:
   group: "logging.banzaicloud.io"
@@ -152,6 +152,7 @@ spec:
                                     required:
                                       - "key"
                                     type: "object"
+                                    x-kubernetes-map-type: "atomic"
                                 type: "object"
                               value:
                                 type: "string"
@@ -168,6 +169,7 @@ spec:
                                     required:
                                       - "key"
                                     type: "object"
+                                    x-kubernetes-map-type: "atomic"
                                 type: "object"
                             type: "object"
                           cache_refresh:
@@ -193,6 +195,7 @@ spec:
                                     required:
                                       - "key"
                                     type: "object"
+                                    x-kubernetes-map-type: "atomic"
                                 type: "object"
                               value:
                                 type: "string"
@@ -209,6 +212,7 @@ spec:
                                     required:
                                       - "key"
                                     type: "object"
+                                    x-kubernetes-map-type: "atomic"
                                 type: "object"
                             type: "object"
                           client_key:
@@ -226,6 +230,7 @@ spec:
                                     required:
                                       - "key"
                                     type: "object"
+                                    x-kubernetes-map-type: "atomic"
                                 type: "object"
                               value:
                                 type: "string"
@@ -242,6 +247,7 @@ spec:
                                     required:
                                       - "key"
                                     type: "object"
+                                    x-kubernetes-map-type: "atomic"
                                 type: "object"
                             type: "object"
                           core_api_versions:
@@ -407,6 +413,7 @@ spec:
                                         required:
                                           - "key"
                                         type: "object"
+                                        x-kubernetes-map-type: "atomic"
                                     type: "object"
                                   value:
                                     type: "string"
@@ -423,6 +430,7 @@ spec:
                                         required:
                                           - "key"
                                         type: "object"
+                                        x-kubernetes-map-type: "atomic"
                                     type: "object"
                                 type: "object"
                               delimiter:
@@ -498,6 +506,7 @@ spec:
                                               required:
                                                 - "key"
                                               type: "object"
+                                              x-kubernetes-map-type: "atomic"
                                           type: "object"
                                         value:
                                           type: "string"
@@ -514,6 +523,7 @@ spec:
                                               required:
                                                 - "key"
                                               type: "object"
+                                              x-kubernetes-map-type: "atomic"
                                           type: "object"
                                       type: "object"
                                     estimate_current_event:
@@ -606,6 +616,7 @@ spec:
                                           required:
                                             - "key"
                                           type: "object"
+                                          x-kubernetes-map-type: "atomic"
                                       type: "object"
                                     value:
                                       type: "string"
@@ -622,6 +633,7 @@ spec:
                                           required:
                                             - "key"
                                           type: "object"
+                                          x-kubernetes-map-type: "atomic"
                                       type: "object"
                                   type: "object"
                                 delimiter:
@@ -697,6 +709,7 @@ spec:
                                                 required:
                                                   - "key"
                                                 type: "object"
+                                                x-kubernetes-map-type: "atomic"
                                             type: "object"
                                           value:
                                             type: "string"
@@ -713,6 +726,7 @@ spec:
                                                 required:
                                                   - "key"
                                                 type: "object"
+                                                x-kubernetes-map-type: "atomic"
                                             type: "object"
                                         type: "object"
                                       estimate_current_event:
@@ -1049,9 +1063,3 @@ spec:
       storage: false
       subresources:
         status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

@@ -501,6 +501,8 @@ spec:
                           type: "array"
                       type: "object"
                   type: "object"
+                image:
+                  type: "string"
                 limits:
                   items:
                     description: "RateLimit defines the desired Limitador limit"
@@ -666,14 +668,8 @@ spec:
                             max-cached:
                               description: "MaxCached refers to the maximum amount of counters cached [default: 10000]"
                               type: "integer"
-                            ratio:
-                              description: "Ratio to apply to the TTL from Redis on cached counters [default: 10]"
-                              type: "integer"
                             response-timeout:
                               description: "ResponseTimeout defines the timeout for Redis commands in milliseconds [default: 350]"
-                              type: "integer"
-                            ttl:
-                              description: "TTL for cached counters in milliseconds [default: 5000]"
                               type: "integer"
                           type: "object"
                       type: "object"
@@ -697,6 +693,7 @@ spec:
                   minimum: 1.0
                   type: "integer"
                 version:
+                  description: "[Deprecated] Use spec.image instead. Docker tag used as limitador image. The repo is hardcoded to quay.io/kuadrant/limitador"
                   type: "string"
               type: "object"
               x-kubernetes-validations:

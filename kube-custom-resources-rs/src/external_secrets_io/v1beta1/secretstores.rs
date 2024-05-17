@@ -631,6 +631,9 @@ pub struct SecretStoreProviderAzurekv {
 /// Auth configures how the operator authenticates with Azure. Required for ServicePrincipal auth type. Optional for WorkloadIdentity.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAzurekvAuthSecretRef {
+    /// The Azure ClientCertificate of the service principle used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
+    pub client_certificate: Option<SecretStoreProviderAzurekvAuthSecretRefClientCertificate>,
     /// The Azure clientId of the service principle or managed identity used for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
     pub client_id: Option<SecretStoreProviderAzurekvAuthSecretRefClientId>,
@@ -640,6 +643,22 @@ pub struct SecretStoreProviderAzurekvAuthSecretRef {
     /// The Azure tenantId of the managed identity used for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantId")]
     pub tenant_id: Option<SecretStoreProviderAzurekvAuthSecretRefTenantId>,
+}
+
+/// The Azure ClientCertificate of the service principle used for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SecretStoreProviderAzurekvAuthSecretRefClientCertificate {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The Azure clientId of the service principle or managed identity used for authentication.

@@ -11,7 +11,8 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// Specification of the desired behavior of the queue. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+/// Specification of the desired behavior of the queue.
+/// More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "scheduling.volcano.sh", version = "v1beta1", kind = "Queue", plural = "queues")]
 #[kube(status = "QueueStatus")]
@@ -25,6 +26,9 @@ pub struct QueueSpec {
     /// ResourceList is a set of (resource name, quantity) pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capability: Option<BTreeMap<String, IntOrString>>,
+    /// The amount of resources configured by the user. This part of resource can be shared with other queues and reclaimed back.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deserved: Option<BTreeMap<String, IntOrString>>,
     /// extendCluster indicate the jobs in this Queue will be dispatched to these clusters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extendClusters")]
     pub extend_clusters: Option<Vec<QueueExtendClusters>>,

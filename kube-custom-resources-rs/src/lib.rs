@@ -446,6 +446,11 @@ apiVersion `azure.microsoft.com/v1beta1`:
 apiVersion `b3scale.infra.run/v1`:
 - `BBBFrontend`
 
+## b3scale_io
+
+apiVersion `b3scale.io/v1`:
+- `BBBFrontend`
+
 ## batch_volcano_sh
 
 apiVersion `batch.volcano.sh/v1alpha1`:
@@ -2994,6 +2999,9 @@ apiVersion `storageos.com/v1`:
 apiVersion `sts.min.io/v1alpha1`:
 - `PolicyBinding`
 
+apiVersion `sts.min.io/v1beta1`:
+- `PolicyBinding`
+
 ## stunner_l7mp_io
 
 apiVersion `stunner.l7mp.io/v1`:
@@ -3234,6 +3242,9 @@ apiVersion `workload.codeflare.dev/v1beta1`:
 - `AppWrapper`
 - `SchedulingSpec`
 
+apiVersion `workload.codeflare.dev/v1beta2`:
+- `AppWrapper`
+
 ## workloads_kubeblocks_io
 
 apiVersion `workloads.kubeblocks.io/v1alpha1`:
@@ -3346,6 +3357,8 @@ pub mod awx_ansible_com;
 pub mod azure_microsoft_com;
 #[cfg(feature = "b3scale_infra_run")]
 pub mod b3scale_infra_run;
+#[cfg(feature = "b3scale_io")]
+pub mod b3scale_io;
 #[cfg(feature = "batch_volcano_sh")]
 pub mod batch_volcano_sh;
 #[cfg(feature = "beat_k8s_elastic_co")]

@@ -43,6 +43,10 @@ pub struct ScheduleSpec {
     /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
+    /// PodConfigRef will apply the given template to all job definitions in this Schedule.
+    /// It can be overriden for specific jobs if necessary.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podConfigRef")]
+    pub pod_config_ref: Option<SchedulePodConfigRef>,
     /// PodSecurityContext describes the security context with which actions (such as backups) shall be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<SchedulePodSecurityContext>,
@@ -83,6 +87,12 @@ pub struct ScheduleArchive {
     /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
+    /// PodConfigRef describes the pod spec with wich this action shall be executed.
+    /// It takes precedence over the Resources or PodSecurityContext field.
+    /// It does not allow changing the image or the command of the resulting pod.
+    /// This is for advanced use-cases only. Please only set this if you know what you're doing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podConfigRef")]
+    pub pod_config_ref: Option<ScheduleArchivePodConfigRef>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<ScheduleArchivePodSecurityContext>,
@@ -465,6 +475,19 @@ pub struct ScheduleArchiveBackendVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// PodConfigRef describes the pod spec with wich this action shall be executed.
+/// It takes precedence over the Resources or PodSecurityContext field.
+/// It does not allow changing the image or the command of the resulting pod.
+/// This is for advanced use-cases only. Please only set this if you know what you're doing.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScheduleArchivePodConfigRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// PodSecurityContext describes the security context with which this action shall be executed.
@@ -1292,6 +1315,12 @@ pub struct ScheduleBackup {
     /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
+    /// PodConfigRef describes the pod spec with wich this action shall be executed.
+    /// It takes precedence over the Resources or PodSecurityContext field.
+    /// It does not allow changing the image or the command of the resulting pod.
+    /// This is for advanced use-cases only. Please only set this if you know what you're doing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podConfigRef")]
+    pub pod_config_ref: Option<ScheduleBackupPodConfigRef>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<ScheduleBackupPodSecurityContext>,
@@ -1676,6 +1705,19 @@ pub struct ScheduleBackupBackendVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
+/// PodConfigRef describes the pod spec with wich this action shall be executed.
+/// It takes precedence over the Resources or PodSecurityContext field.
+/// It does not allow changing the image or the command of the resulting pod.
+/// This is for advanced use-cases only. Please only set this if you know what you're doing.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScheduleBackupPodConfigRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// PodSecurityContext describes the security context with which this action shall be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackupPodSecurityContext {
@@ -2034,6 +2076,12 @@ pub struct ScheduleCheck {
     /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
+    /// PodConfigRef describes the pod spec with wich this action shall be executed.
+    /// It takes precedence over the Resources or PodSecurityContext field.
+    /// It does not allow changing the image or the command of the resulting pod.
+    /// This is for advanced use-cases only. Please only set this if you know what you're doing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podConfigRef")]
+    pub pod_config_ref: Option<ScheduleCheckPodConfigRef>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<ScheduleCheckPodSecurityContext>,
@@ -2410,6 +2458,19 @@ pub struct ScheduleCheckBackendVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
+/// PodConfigRef describes the pod spec with wich this action shall be executed.
+/// It takes precedence over the Resources or PodSecurityContext field.
+/// It does not allow changing the image or the command of the resulting pod.
+/// This is for advanced use-cases only. Please only set this if you know what you're doing.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScheduleCheckPodConfigRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// PodSecurityContext describes the security context with which this action shall be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleCheckPodSecurityContext {
@@ -2746,6 +2807,17 @@ pub struct ScheduleCheckVolumesSecretItems {
     pub path: String,
 }
 
+/// PodConfigRef will apply the given template to all job definitions in this Schedule.
+/// It can be overriden for specific jobs if necessary.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SchedulePodConfigRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// PodSecurityContext describes the security context with which actions (such as backups) shall be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePodSecurityContext {
@@ -2932,6 +3004,12 @@ pub struct SchedulePrune {
     /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
+    /// PodConfigRef describes the pod spec with wich this action shall be executed.
+    /// It takes precedence over the Resources or PodSecurityContext field.
+    /// It does not allow changing the image or the command of the resulting pod.
+    /// This is for advanced use-cases only. Please only set this if you know what you're doing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podConfigRef")]
+    pub pod_config_ref: Option<SchedulePrunePodConfigRef>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<SchedulePrunePodSecurityContext>,
@@ -3306,6 +3384,19 @@ pub struct SchedulePruneBackendVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// PodConfigRef describes the pod spec with wich this action shall be executed.
+/// It takes precedence over the Resources or PodSecurityContext field.
+/// It does not allow changing the image or the command of the resulting pod.
+/// This is for advanced use-cases only. Please only set this if you know what you're doing.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SchedulePrunePodConfigRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// PodSecurityContext describes the security context with which this action shall be executed.
@@ -3727,6 +3818,12 @@ pub struct ScheduleRestore {
     /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
+    /// PodConfigRef describes the pod spec with wich this action shall be executed.
+    /// It takes precedence over the Resources or PodSecurityContext field.
+    /// It does not allow changing the image or the command of the resulting pod.
+    /// This is for advanced use-cases only. Please only set this if you know what you're doing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podConfigRef")]
+    pub pod_config_ref: Option<ScheduleRestorePodConfigRef>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<ScheduleRestorePodSecurityContext>,
@@ -4109,6 +4206,19 @@ pub struct ScheduleRestoreBackendVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// PodConfigRef describes the pod spec with wich this action shall be executed.
+/// It takes precedence over the Resources or PodSecurityContext field.
+/// It does not allow changing the image or the command of the resulting pod.
+/// This is for advanced use-cases only. Please only set this if you know what you're doing.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScheduleRestorePodConfigRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// PodSecurityContext describes the security context with which this action shall be executed.

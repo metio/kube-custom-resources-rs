@@ -241,7 +241,7 @@ pub struct OpsRequestExposeServices {
     ///  Note: This field cannot be updated.
     pub name: String,
     /// Routes service traffic to pods with matching label keys and values. If specified, the service will only be exposed to pods matching the selector. 
-    ///  Note: At least one of 'roleSelector' or 'selector' must be specified. If both are specified, a pod must match both conditions to be selected.
+    ///  Note: At least one of 'roleSelector' or 'podSelector' must be specified. If both are specified, a pod must match both conditions to be selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<BTreeMap<String, String>>,
     /// Specifies Port definitions that are to be exposed by a ClusterService. 
@@ -250,7 +250,7 @@ pub struct OpsRequestExposeServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<OpsRequestExposeServicesPorts>>,
     /// Specifies a role to target with the service. If specified, the service will only be exposed to pods with the matching role. 
-    ///  Note: At least one of 'roleSelector' or 'selector' must be specified. If both are specified, a pod must match both conditions to be selected.
+    ///  Note: At least one of 'roleSelector' or 'podSelector' must be specified. If both are specified, a pod must match both conditions to be selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
     /// Determines how the Service is exposed. Defaults to 'ClusterIP'. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`. 
@@ -1979,13 +1979,28 @@ pub enum OpsRequestType {
 ///  Note: This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestUpgrade {
-    /// Specifies the name of the target ClusterVersion for the upgrade. 
-    ///  This field is deprecated since v0.9 because ClusterVersion is deprecated.
-    #[serde(rename = "clusterVersionRef")]
-    pub cluster_version_ref: String,
+    /// Deprecated: since v0.9 because ClusterVersion is deprecated. Specifies the name of the target ClusterVersion for the upgrade.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersionRef")]
+    pub cluster_version_ref: Option<String>,
+    /// Lists components to be upgrade based on desired ComponentDefinition and ServiceVersion. From the perspective of cluster API, the reasonable combinations should be: 1. (comp-def, service-ver) - upgrade to the specified service version and component definition, the user takes the responsibility to ensure that they are compatible. 2. ("", service-ver) - upgrade to the specified service version, let the operator choose the latest compatible component definition. 3. (comp-def, "") - upgrade to the specified component definition, let the operator choose the latest compatible service version. 4. ("", "") - upgrade to the latest service version and component definition, the operator will ensure the compatibility between the selected versions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<OpsRequestUpgradeComponents>>,
 }
 
-/// VerticalScaling refers to the process of adjusting the compute resources (e.g., CPU, memory) allocated to a Component. It defines the parameters required for the operation.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestUpgradeComponents {
+    /// Specifies the name of the ComponentDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefinitionName")]
+    pub component_definition_name: Option<String>,
+    /// Specifies the name of the Component.
+    #[serde(rename = "componentName")]
+    pub component_name: String,
+    /// Specifies the version of the Service expected to be provisioned by this Component. Referring to the ServiceVersion defined by the ComponentDefinition and ComponentVersion. And ServiceVersion in ClusterComponentSpec is optional, when no version is specified, use the latest available version in ComponentVersion.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
+    pub service_version: Option<String>,
+}
+
+/// VerticalScaling refers to the process of adjusting compute resources (e.g., CPU, memory) allocated to a Component. It defines the parameters required for the operation.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestVerticalScaling {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -2253,6 +2268,9 @@ pub struct OpsRequestStatusLastConfigurationComponents {
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<OpsRequestStatusLastConfigurationComponentsClaims>>,
+    /// Records the name of the ComponentDefinition prior to any changes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefinitionName")]
+    pub component_definition_name: Option<String>,
     /// Records the InstanceTemplate list of the Component prior to any changes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstances>>,
@@ -2268,6 +2286,9 @@ pub struct OpsRequestStatusLastConfigurationComponents {
     /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+    /// Records the version of the Service expected to be provisioned by this Component prior to any changes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
+    pub service_version: Option<String>,
     /// Records the ClusterComponentService list of the Component prior to any changes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<OpsRequestStatusLastConfigurationComponentsServices>>,

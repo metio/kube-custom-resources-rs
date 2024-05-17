@@ -118,6 +118,42 @@ pub enum TestTriggerEvent {
     DeploymentEnvUpdate,
     #[serde(rename = "deployment-containers-modified")]
     DeploymentContainersModified,
+    #[serde(rename = "event-start-test")]
+    EventStartTest,
+    #[serde(rename = "event-end-test-success")]
+    EventEndTestSuccess,
+    #[serde(rename = "event-end-test-failed")]
+    EventEndTestFailed,
+    #[serde(rename = "event-end-test-aborted")]
+    EventEndTestAborted,
+    #[serde(rename = "event-end-test-timeout")]
+    EventEndTestTimeout,
+    #[serde(rename = "event-start-testsuite")]
+    EventStartTestsuite,
+    #[serde(rename = "event-end-testsuite-success")]
+    EventEndTestsuiteSuccess,
+    #[serde(rename = "event-end-testsuite-failed")]
+    EventEndTestsuiteFailed,
+    #[serde(rename = "event-end-testsuite-aborted")]
+    EventEndTestsuiteAborted,
+    #[serde(rename = "event-end-testsuite-timeout")]
+    EventEndTestsuiteTimeout,
+    #[serde(rename = "event-queue-testworkflow")]
+    EventQueueTestworkflow,
+    #[serde(rename = "event-start-testworkflow")]
+    EventStartTestworkflow,
+    #[serde(rename = "event-end-testworkflow-success")]
+    EventEndTestworkflowSuccess,
+    #[serde(rename = "event-end-testworkflow-failed")]
+    EventEndTestworkflowFailed,
+    #[serde(rename = "event-end-testworkflow-aborted")]
+    EventEndTestworkflowAborted,
+    #[serde(rename = "event-created")]
+    EventCreated,
+    #[serde(rename = "event-updated")]
+    EventUpdated,
+    #[serde(rename = "event-deleted")]
+    EventDeleted,
 }
 
 /// TestTriggerSpec defines the desired state of TestTrigger

@@ -59,7 +59,7 @@ spec:
                 downwardAPIOptions:
                   description: "Specifies a list of actions to execute specified commands based on Pod labels. \n It utilizes the K8s Downward API to mount label information as a volume into the pod. The 'config-manager' sidecar container watches for changes in the role label and dynamically invoke registered commands (usually execute some SQL statements) when a change is detected. \n It is designed for scenarios where: \n - Replicas with different roles have different configurations, such as Redis primary & secondary replicas. - After a role switch (e.g., from secondary to primary), some changes in configuration are needed to reflect the new role."
                   items:
-                    description: "DownwardAPITriggeredAction defines an action that triggers specific commands in response to changes in Pod labels. For example, a command might be executed when the 'role' label of the Pod is updated."
+                    description: "DownwardAPIChangeTriggeredAction defines an action that triggers specific commands in response to changes in Pod labels. For example, a command might be executed when the 'role' label of the Pod is updated."
                     properties:
                       command:
                         description: "Specifies the command to be triggered when changes are detected in Downward API volume files. It relies on the inotify mechanism in the config-manager sidecar to monitor file changes."

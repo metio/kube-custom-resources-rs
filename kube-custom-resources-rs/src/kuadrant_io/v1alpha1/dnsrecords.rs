@@ -23,7 +23,9 @@ pub struct DNSRecordSpec {
     /// endpoints is a list of endpoints that will be published into the dns provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<DNSRecordEndpoints>>,
-    /// HealthCheckSpec configures health checks in the DNS provider. By default this health check will be applied to each unique DNS A Record for the listeners assigned to the target gateway
+    /// HealthCheckSpec configures health checks in the DNS provider.
+    /// By default this health check will be applied to each unique DNS A Record for
+    /// the listeners assigned to the target gateway
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<DNSRecordHealthCheck>,
     /// managedZone is a reference to a ManagedZone instance to which this record will publish its endpoints.
@@ -32,7 +34,8 @@ pub struct DNSRecordSpec {
     /// ownerID is a unique string used to identify the owner of this record.
     #[serde(rename = "ownerID")]
     pub owner_id: String,
-    /// rootHost is the single root for all endpoints in a DNSRecord. it is expected all defined endpoints are children of or equal to this rootHost
+    /// rootHost is the single root for all endpoints in a DNSRecord.
+    /// it is expected all defined endpoints are children of or equal to this rootHost
     #[serde(rename = "rootHost")]
     pub root_host: String,
 }
@@ -72,7 +75,9 @@ pub struct DNSRecordEndpointsProviderSpecific {
     pub value: Option<String>,
 }
 
-/// HealthCheckSpec configures health checks in the DNS provider. By default this health check will be applied to each unique DNS A Record for the listeners assigned to the target gateway
+/// HealthCheckSpec configures health checks in the DNS provider.
+/// By default this health check will be applied to each unique DNS A Record for
+/// the listeners assigned to the target gateway
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSRecordHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -88,25 +93,40 @@ pub struct DNSRecordHealthCheck {
 /// managedZone is a reference to a ManagedZone instance to which this record will publish its endpoints.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSRecordManagedZone {
-    /// `name` is the name of the managed zone. Required
+    /// `name` is the name of the managed zone.
+    /// Required
     pub name: String,
 }
 
 /// DNSRecordStatus defines the observed state of DNSRecord
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSRecordStatus {
-    /// conditions are any conditions associated with the record in the managed zone. 
-    ///  If publishing the record fails, the "Failed" condition will be set with a reason and message describing the cause of the failure.
+    /// conditions are any conditions associated with the record in the managed zone.
+    /// 
+    /// 
+    /// If publishing the record fails, the "Failed" condition will be set with a
+    /// reason and message describing the cause of the failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// endpoints are the last endpoints that were successfully published by the provider 
-    ///  Provides a simple mechanism to store the current provider records in order to delete any that are no longer present in DNSRecordSpec.Endpoints 
-    ///  Note: This will not be required if/when we switch to using external-dns since when running with a "sync" policy it will clean up unused records automatically.
+    /// endpoints are the last endpoints that were successfully published by the provider
+    /// 
+    /// 
+    /// Provides a simple mechanism to store the current provider records in order to
+    /// delete any that are no longer present in DNSRecordSpec.Endpoints
+    /// 
+    /// 
+    /// Note: This will not be required if/when we switch to using external-dns since when
+    /// running with a "sync" policy it will clean up unused records automatically.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<DNSRecordStatusEndpoints>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<DNSRecordStatusHealthCheck>,
-    /// observedGeneration is the most recently observed generation of the DNSRecord.  When the DNSRecord is updated, the controller updates the corresponding record in each managed zone.  If an update for a particular zone fails, that failure is recorded in the status condition for the zone so that the controller can determine that it needs to retry the update for that specific zone.
+    /// observedGeneration is the most recently observed generation of the
+    /// DNSRecord.  When the DNSRecord is updated, the controller updates the
+    /// corresponding record in each managed zone.  If an update for a
+    /// particular zone fails, that failure is recorded in the status
+    /// condition for the zone so that the controller can determine that it
+    /// needs to retry the update for that specific zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// QueuedAt is a time when DNS record was received for the reconciliation
@@ -118,7 +138,8 @@ pub struct DNSRecordStatus {
     /// ValidFor indicates duration since the last reconciliation we consider data in the record to be valid
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validFor")]
     pub valid_for: Option<String>,
-    /// WriteCounter represent a number of consecutive write attempts on the same generation of the record. It is being reset to 0 when the generation changes or there are no changes to write.
+    /// WriteCounter represent a number of consecutive write attempts on the same generation of the record.
+    /// It is being reset to 0 when the generation changes or there are no changes to write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeCounter")]
     pub write_counter: Option<i64>,
 }

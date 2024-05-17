@@ -37,6 +37,12 @@ pub struct ArchiveSpec {
     /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
+    /// PodConfigRef describes the pod spec with wich this action shall be executed.
+    /// It takes precedence over the Resources or PodSecurityContext field.
+    /// It does not allow changing the image or the command of the resulting pod.
+    /// This is for advanced use-cases only. Please only set this if you know what you're doing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podConfigRef")]
+    pub pod_config_ref: Option<ArchivePodConfigRef>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<ArchivePodSecurityContext>,
@@ -416,6 +422,19 @@ pub struct ArchiveBackendVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// PodConfigRef describes the pod spec with wich this action shall be executed.
+/// It takes precedence over the Resources or PodSecurityContext field.
+/// It does not allow changing the image or the command of the resulting pod.
+/// This is for advanced use-cases only. Please only set this if you know what you're doing.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ArchivePodConfigRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// PodSecurityContext describes the security context with which this action shall be executed.

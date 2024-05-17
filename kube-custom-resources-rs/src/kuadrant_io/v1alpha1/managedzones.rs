@@ -44,14 +44,16 @@ pub struct ManagedZoneDnsProviderSecretRef {
 /// parentManagedZone reference to another managed zone that this managed zone belongs to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagedZoneParentManagedZone {
-    /// `name` is the name of the managed zone. Required
+    /// `name` is the name of the managed zone.
+    /// Required
     pub name: String,
 }
 
 /// ManagedZoneStatus defines the observed state of a Zone
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagedZoneStatus {
-    /// List of status conditions to indicate the status of a ManagedZone. Known condition types are `Ready`.
+    /// List of status conditions to indicate the status of a ManagedZone.
+    /// Known condition types are `Ready`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The ID assigned by this provider for this zone (i.e. route53.HostedZone.ID)

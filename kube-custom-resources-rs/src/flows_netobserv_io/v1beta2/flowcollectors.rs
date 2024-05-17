@@ -102,7 +102,7 @@ pub struct FlowCollectorAgentEbpf {
     /// the kernel debug filesystem, so the eBPF pod has to run as privileged.
     /// If the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>
     /// - `DNSTracking`: enable the DNS tracking feature.<br>
-    /// - `FlowRTT`: enable flow latency (RTT) calculations in the eBPF agent during TCP handshakes. This feature better works with `sampling` set to 1.<br>
+    /// - `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering
@@ -1022,7 +1022,7 @@ pub enum FlowCollectorAgentEbpfLogLevel {
 pub struct FlowCollectorAgentEbpfMetrics {
     /// `disableAlerts` is a list of alerts that should be disabled.
     /// Possible values are:<br>
-    /// `NetObservDroppedFlows`, which is triggered when eBPF agent hashmap table is full.<br>
+    /// `NetObservDroppedFlows`, which is triggered when the eBPF agent is dropping flows, such as when the BPF hashmap is full or the capacity limiter being triggered.<br>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAlerts")]
     pub disable_alerts: Option<Vec<String>>,
     /// Set `enable` to `true` to enable eBPF agent metrics collection.

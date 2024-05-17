@@ -224,6 +224,17 @@ spec:
                           - "mount"
                         type: "object"
                       type: "array"
+                    dns:
+                      description: "The Kiali server pod's DNS configuration. Kubernetes supports different DNS policies and configurations.\nFor further details, consult the Kubernetes documentation - https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/\n"
+                      properties:
+                        config:
+                          description: "DNS configuration that is applied to the DNS policy. See the Kubernetes documentation for the different configuration settings that are supported."
+                          type: "object"
+                          x-kubernetes-preserve-unknown-fields: true
+                        policy:
+                          description: "DNS policy. See the Kubernetes documentation for the different policies that are supported."
+                          type: "string"
+                      type: "object"
                     host_aliases:
                       description: "This is content for the Kubernetes 'hostAliases' setting for the Kiali server.\nThis allows you to modify the Kiali server pod '/etc/hosts' file.\nA typical way to configure this setting is,\n```\nhost_aliases:\n- ip: 192.168.1.100\n  hostnames:\n  - \"foo.local\"\n  - \"bar.local\"\n```\nFor details on the content of this setting, see https://kubernetes.io/docs/tasks/network/customize-hosts-file-for-pods/#adding-additional-entries-with-hostaliases\n"
                       items:

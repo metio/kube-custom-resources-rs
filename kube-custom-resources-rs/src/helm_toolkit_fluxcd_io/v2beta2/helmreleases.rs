@@ -25,6 +25,10 @@ pub struct HelmReleaseSpec {
     pub chart: Option<HelmReleaseChart>,
     /// ChartRef holds a reference to a source controller resource containing the
     /// Helm chart artifact.
+    /// 
+    /// 
+    /// Note: this field is provisional to the v2 API, and not actively used
+    /// by v2beta2 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chartRef")]
     pub chart_ref: Option<HelmReleaseChartRef>,
     /// DependsOn may contain a meta.NamespacedObjectReference slice with
@@ -264,6 +268,10 @@ pub struct HelmReleaseChartSpecVerifySecretRef {
 
 /// ChartRef holds a reference to a source controller resource containing the
 /// Helm chart artifact.
+/// 
+/// 
+/// Note: this field is provisional to the v2 API, and not actively used
+/// by v2beta2 HelmReleases.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChartRef {
     /// APIVersion of the referent.
@@ -281,6 +289,10 @@ pub struct HelmReleaseChartRef {
 
 /// ChartRef holds a reference to a source controller resource containing the
 /// Helm chart artifact.
+/// 
+/// 
+/// Note: this field is provisional to the v2 API, and not actively used
+/// by v2beta2 HelmReleases.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HelmReleaseChartRefKind {
     #[serde(rename = "OCIRepository")]

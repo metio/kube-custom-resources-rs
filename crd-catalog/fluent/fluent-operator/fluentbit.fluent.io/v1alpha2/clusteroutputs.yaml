@@ -688,6 +688,9 @@ spec:
                     sharedKey:
                       description: "A key string known by the remote Fluentd used for authorization."
                       type: "string"
+                    tag:
+                      description: "Overwrite the tag as we transmit. This allows the receiving pipeline start fresh, or to attribute source."
+                      type: "string"
                     timeAsInteger:
                       description: "Set timestamps in integer format, it enable compatibility mode for Fluentd v0.12 series."
                       type: "boolean"

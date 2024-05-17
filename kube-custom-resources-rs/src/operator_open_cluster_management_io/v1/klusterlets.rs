@@ -236,6 +236,9 @@ pub enum KlusterletResourceRequirementType {
 /// WorkConfiguration contains the configuration of work
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KlusterletWorkConfiguration {
+    /// AppliedManifestWorkEvictionGracePeriod is the eviction grace period the work agent will wait before evicting the AppliedManifestWorks, whose corresponding ManifestWorks are missing on the hub cluster, from the managed cluster. If not present, the default value of the work agent will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedManifestWorkEvictionGracePeriod")]
+    pub applied_manifest_work_eviction_grace_period: Option<String>,
     /// FeatureGates represents the list of feature gates for work If it is set empty, default feature gates will be used. If it is set, featuregate/Foo is an example of one item in FeatureGates: 1. If featuregate/Foo does not exist, registration-operator will discard it 2. If featuregate/Foo exists and is false by default. It is now possible to set featuregate/Foo=[false|true] 3. If featuregate/Foo exists and is true by default. If a cluster-admin upgrading from 1 to 2 wants to continue having featuregate/Foo=false, he can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<Vec<KlusterletWorkConfigurationFeatureGates>>,

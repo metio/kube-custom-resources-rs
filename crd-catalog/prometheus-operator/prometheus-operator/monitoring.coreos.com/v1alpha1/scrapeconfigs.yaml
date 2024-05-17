@@ -187,21 +187,23 @@ spec:
                         type: "object"
                       proxyConnectHeader:
                         additionalProperties:
-                          description: "SecretKeySelector selects a key of a Secret."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
+                          items:
+                            description: "SecretKeySelector selects a key of a Secret."
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
                         description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\n\nIt requires Prometheus >= v2.43.0."
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -354,10 +356,11 @@ spec:
                     description: "AzureSDConfig allow retrieving scrape targets from Azure VMs.\nSee https://prometheus.io/docs/prometheus/latest/configuration/configuration/#azure_sd_config"
                     properties:
                       authenticationMethod:
-                        description: "# The authentication method, either OAuth or ManagedIdentity.\nSee https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview"
+                        description: "# The authentication method, either `OAuth` or `ManagedIdentity` or `SDK`.\nSee https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview\nSDK authentication method uses environment variables by default.\nSee https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication"
                         enum:
                           - "OAuth"
                           - "ManagedIdentity"
+                          - "SDK"
                         type: "string"
                       clientID:
                         description: "Optional client ID. Only required with the OAuth authentication method."
@@ -605,21 +608,23 @@ spec:
                         type: "string"
                       proxyConnectHeader:
                         additionalProperties:
-                          description: "SecretKeySelector selects a key of a Secret."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
+                          items:
+                            description: "SecretKeySelector selects a key of a Secret."
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
                         description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\n\nIt requires Prometheus >= v2.43.0."
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -893,21 +898,23 @@ spec:
                         type: "integer"
                       proxyConnectHeader:
                         additionalProperties:
-                          description: "SecretKeySelector selects a key of a Secret."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
+                          items:
+                            description: "SecretKeySelector selects a key of a Secret."
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
                         description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\n\nIt requires Prometheus >= v2.43.0."
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -1228,21 +1235,23 @@ spec:
                         type: "integer"
                       proxyConnectHeader:
                         additionalProperties:
-                          description: "SecretKeySelector selects a key of a Secret."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
+                          items:
+                            description: "SecretKeySelector selects a key of a Secret."
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
                         description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\n\nIt requires Prometheus >= v2.43.0."
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -1579,21 +1588,23 @@ spec:
                         type: "object"
                       proxyConnectHeader:
                         additionalProperties:
-                          description: "SecretKeySelector selects a key of a Secret."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
+                          items:
+                            description: "SecretKeySelector selects a key of a Secret."
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
                         description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\n\nIt requires Prometheus >= v2.43.0."
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -1918,21 +1929,23 @@ spec:
                         type: "integer"
                       proxyConnectHeader:
                         additionalProperties:
-                          description: "SecretKeySelector selects a key of a Secret."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
+                          items:
+                            description: "SecretKeySelector selects a key of a Secret."
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
                         description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\n\nIt requires Prometheus >= v2.43.0."
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -2132,21 +2145,23 @@ spec:
                         type: "string"
                       proxyConnectHeader:
                         additionalProperties:
-                          description: "SecretKeySelector selects a key of a Secret."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
+                          items:
+                            description: "SecretKeySelector selects a key of a Secret."
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
                         description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\n\nIt requires Prometheus >= v2.43.0."
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -2443,21 +2458,23 @@ spec:
                         type: "object"
                       proxyConnectHeader:
                         additionalProperties:
-                          description: "SecretKeySelector selects a key of a Secret."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
+                          items:
+                            description: "SecretKeySelector selects a key of a Secret."
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
                         description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\n\nIt requires Prometheus >= v2.43.0."
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -2774,21 +2791,23 @@ spec:
                         type: "object"
                       proxyConnectHeader:
                         additionalProperties:
-                          description: "SecretKeySelector selects a key of a Secret."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
+                          items:
+                            description: "SecretKeySelector selects a key of a Secret."
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
                         description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\n\nIt requires Prometheus >= v2.43.0."
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -3193,21 +3212,23 @@ spec:
                   x-kubernetes-map-type: "atomic"
                 proxyConnectHeader:
                   additionalProperties:
-                    description: "SecretKeySelector selects a key of a Secret."
-                    properties:
-                      key:
-                        description: "The key of the secret to select from.  Must be a valid secret key."
-                        type: "string"
-                      name:
-                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                        type: "string"
-                      optional:
-                        description: "Specify whether the Secret or its key must be defined"
-                        type: "boolean"
-                    required:
-                      - "key"
-                    type: "object"
-                    x-kubernetes-map-type: "atomic"
+                    items:
+                      description: "SecretKeySelector selects a key of a Secret."
+                      properties:
+                        key:
+                          description: "The key of the secret to select from.  Must be a valid secret key."
+                          type: "string"
+                        name:
+                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          type: "string"
+                        optional:
+                          description: "Specify whether the Secret or its key must be defined"
+                          type: "boolean"
+                      required:
+                        - "key"
+                      type: "object"
+                      x-kubernetes-map-type: "atomic"
+                    type: "array"
                   description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\n\nIt requires Prometheus >= v2.43.0."
                   type: "object"
                   x-kubernetes-map-type: "atomic"

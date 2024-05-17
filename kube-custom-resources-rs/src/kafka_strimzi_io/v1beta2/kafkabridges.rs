@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
@@ -394,9 +395,9 @@ pub struct KafkaBridgeResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KafkaBridgeResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

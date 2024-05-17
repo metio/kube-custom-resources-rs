@@ -872,6 +872,9 @@ pub struct ClusterOutputForward {
     /// A key string known by the remote Fluentd used for authorization.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedKey")]
     pub shared_key: Option<String>,
+    /// Overwrite the tag as we transmit. This allows the receiving pipeline start fresh, or to attribute source.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
     /// Set timestamps in integer format, it enable compatibility mode for Fluentd v0.12 series.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAsInteger")]
     pub time_as_integer: Option<bool>,

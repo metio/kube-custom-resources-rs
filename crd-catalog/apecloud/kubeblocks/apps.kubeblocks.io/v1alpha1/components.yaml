@@ -129,6 +129,9 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                disableExporter:
+                  description: "Determines whether metrics exporter information is annotated on the Component's headless Service. \n If set to true, the following annotations will not be patched into the Service: \n - \"monitor.kubeblocks.io/path\" - \"monitor.kubeblocks.io/port\" - \"monitor.kubeblocks.io/scheme\" \n These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter."
+                  type: "boolean"
                 enabledLogs:
                   description: "Specifies which types of logs should be collected for the Cluster. The log types are defined in the `componentDefinition.spec.logConfigs` field with the LogConfig entries. \n The elements in the `enabledLogs` array correspond to the names of the LogConfig entries. For example, if the `componentDefinition.spec.logConfigs` defines LogConfig entries with names \"slow_query_log\" and \"error_log\", you can enable the collection of these logs by including their names in the `enabledLogs` array: ```yaml enabledLogs: - slow_query_log - error_log ```"
                   items:
@@ -1381,9 +1384,6 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
-                monitorEnabled:
-                  description: "Determines whether metrics exporter information is annotated on the Component's headless Service. \n If set to true, the following annotations will be patched into the Service: \n - \"monitor.kubeblocks.io/path\" - \"monitor.kubeblocks.io/port\" - \"monitor.kubeblocks.io/scheme\" \n These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter."
-                  type: "boolean"
                 offlineInstances:
                   description: "Specifies the names of instances to be transitioned to offline status. \n Marking an instance as offline results in the following: \n 1. The associated Pod is stopped, and its PersistentVolumeClaim (PVC) is retained for potential future reuse or data recovery, but it is no longer actively used. 2. The ordinal number assigned to this instance is preserved, ensuring it remains unique and avoiding conflicts with new instances. \n Setting instances to offline allows for a controlled scale-in process, preserving their data and maintaining ordinal consistency within the Cluster. Note that offline instances and their associated resources, such as PVCs, are not automatically deleted. The administrator must manually manage the cleanup and removal of these resources when they are no longer needed."
                   items:
@@ -2105,6 +2105,8 @@ spec:
                         type: "string"
                       serviceName:
                         description: "ServiceName defines the name of the underlying service object. If not specified, the default service name with different patterns will be used: \n - CLUSTER_NAME: for cluster-level services - CLUSTER_NAME-COMPONENT_NAME: for component-level services \n Only one default service name is allowed. Cannot be updated."
+                        maxLength: 25
+                        pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                         type: "string"
                       spec:
                         description: "Spec defines the behavior of a service. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"
@@ -2229,14 +2231,6 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
-                sidecars:
-                  description: "Defines the sidecar containers that will be attached to the Component's main container."
-                  items:
-                    type: "string"
-                  maxItems: 32
-                  minItems: 1
-                  type: "array"
-                  x-kubernetes-list-type: "set"
                 tlsConfig:
                   description: "Specifies the TLS configuration for the Component, including: \n - A boolean flag that indicates whether the Component should use Transport Layer Security (TLS) for secure communication. - An optional field that specifies the configuration for the TLS certificates issuer when TLS is enabled. It allows defining the issuer name and the reference to the secret containing the TLS certificates and key. The secret should contain the CA certificate, TLS certificate, and private key in the specified keys."
                   properties:
