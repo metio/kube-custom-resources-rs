@@ -10,6 +10,8 @@ spec:
     kind: "ClusterQueue"
     listKind: "ClusterQueueList"
     plural: "clusterqueues"
+    shortNames:
+      - "cq"
     singular: "clusterqueue"
   scope: "Cluster"
   versions:
@@ -132,11 +134,13 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                         required:
                           - "key"
                           - "operator"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     matchLabels:
                       additionalProperties:
                         type: "string"
@@ -336,6 +340,14 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "type"
                   x-kubernetes-list-type: "map"
+                fairSharing:
+                  description: "FairSharing contains the information about the current status of fair sharing."
+                  properties:
+                    weightedShare:
+                      description: "WeightedShare represent the maximum of the ratios of usage above nominal\nquota to the lendable resources in the cohort, among all the resources\nprovided by the ClusterQueue, and divided by the weight.\nIf zero, it means that the usage of the ClusterQueue is below the nominal quota.\nIf the ClusterQueue has a weight of zero, this will return 9223372036854775807,\nthe maximum possible share value."
+                      format: "int64"
+                      type: "integer"
+                  type: "object"
                 flavorsReservation:
                   description: "flavorsReservation are the reserved quotas, by flavor, currently in use by the\nworkloads assigned to this ClusterQueue."
                   items:

@@ -1528,7 +1528,7 @@ spec:
                       type: "object"
                   type: "object"
                 version:
-                  default: "5.4.0"
+                  default: "5.5.0-SNAPSHOT"
                   description: "Version of Hazelcast Platform."
                   type: "string"
               type: "object"

@@ -47,6 +47,23 @@ spec:
                 retentionDays:
                   format: "int64"
                   type: "integer"
+                subscriptionFilters:
+                  items:
+                    properties:
+                      destinationARN:
+                        type: "string"
+                      distribution:
+                        description: "The method used to distribute log data to the destination, which can be either\nrandom or grouped by log stream."
+                        type: "string"
+                      filterName:
+                        type: "string"
+                      filterPattern:
+                        description: "A symbolic description of how CloudWatch Logs should interpret the data in\neach log event. For example, a log event can contain timestamps, IP addresses,\nstrings, and so on. You use the filter pattern to specify what to look for\nin the log event message."
+                        type: "string"
+                      roleARN:
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 tags:
                   additionalProperties:
                     type: "string"

@@ -506,6 +506,28 @@ spec:
                         x-kubernetes-preserve-unknown-fields: true
                     type: "object"
                   type: "array"
+                extra_settings_files:
+                  description: "Extra ConfigMaps or Secrets of settings files to specify for AWX"
+                  properties:
+                    configmaps:
+                      items:
+                        properties:
+                          key:
+                            type: "string"
+                          name:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    secrets:
+                      items:
+                        properties:
+                          key:
+                            type: "string"
+                          name:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                  type: "object"
                 extra_volumes:
                   description: "Specify extra volumes to add to the application pod"
                   type: "string"

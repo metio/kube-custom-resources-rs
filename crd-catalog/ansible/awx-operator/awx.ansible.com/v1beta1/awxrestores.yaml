@@ -108,6 +108,10 @@ spec:
                   default: true
                   description: "Maintain some of the recommended `app.kubernetes.io/*` labels on the resource (self)"
                   type: "boolean"
+                spec_overrides:
+                  description: "Overrides for the AWX spec"
+                  type: "object"
+                  x-kubernetes-preserve-unknown-fields: true
               required:
                 - "deployment_name"
               type: "object"

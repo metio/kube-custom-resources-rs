@@ -5,16 +5,6 @@ metadata:
     controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "appwrappers.workload.codeflare.dev"
 spec:
-  conversion:
-    strategy: "Webhook"
-    webhook:
-      clientConfig:
-        service:
-          name: "webhook-service"
-          namespace: "system"
-          path: "/convert"
-      conversionReviewVersions:
-        - "v1"
   group: "workload.codeflare.dev"
   names:
     kind: "AppWrapper"
@@ -141,6 +131,73 @@ spec:
             status:
               description: "AppWrapperStatus defines the observed state of the appwrapper"
               properties:
+                componentStatus:
+                  description: "ComponentStatus parallels the Components array in the Spec and tracks the actually deployed resources"
+                  items:
+                    description: "AppWrapperComponentStatus tracks the status of a single managed Component"
+                    properties:
+                      apiVersion:
+                        description: "APIVersion is the APIVersion of the Component"
+                        type: "string"
+                      conditions:
+                        description: "Conditions hold the latest available observations of the Component's current state.\n\n\nThe type of the condition could be:\n\n\n- ResourcesDeployed: The component is deployed on the cluster"
+                        items:
+                          description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                          properties:
+                            lastTransitionTime:
+                              description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                              format: "date-time"
+                              type: "string"
+                            message:
+                              description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                              maxLength: 32768
+                              type: "string"
+                            observedGeneration:
+                              description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                              format: "int64"
+                              minimum: 0.0
+                              type: "integer"
+                            reason:
+                              description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                              maxLength: 1024
+                              minLength: 1
+                              pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+                              type: "string"
+                            status:
+                              description: "status of the condition, one of True, False, Unknown."
+                              enum:
+                                - "True"
+                                - "False"
+                                - "Unknown"
+                              type: "string"
+                            type:
+                              description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                              maxLength: 316
+                              pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                              type: "string"
+                          required:
+                            - "lastTransitionTime"
+                            - "message"
+                            - "reason"
+                            - "status"
+                            - "type"
+                          type: "object"
+                        type: "array"
+                        x-kubernetes-list-map-keys:
+                          - "type"
+                        x-kubernetes-list-type: "map"
+                      kind:
+                        description: "Kind is the Kind of the Component"
+                        type: "string"
+                      name:
+                        description: "Name is the name of the Component"
+                        type: "string"
+                    required:
+                      - "apiVersion"
+                      - "kind"
+                      - "name"
+                    type: "object"
+                  type: "array"
                 conditions:
                   description: "Conditions hold the latest available observations of the AppWrapper current state.\n\n\nThe type of the condition could be:\n\n\n- QuotaReserved: The AppWrapper was admitted by Kueue and has quota allocated to it\n- ResourcesDeployed: The contained resources are deployed (or being deployed) on the cluster\n- PodsReady: All pods of the contained resources are in the Ready or Succeeded state\n- Unhealthy: One or more of the contained resources is unhealthy\n- DeletingResources: The contained resources are in the process of being deleted from the cluster"
                   items:

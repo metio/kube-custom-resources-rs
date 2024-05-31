@@ -662,6 +662,9 @@ spec:
                           x-kubernetes-map-type: "atomic"
                         options:
                           properties:
+                            batch-size:
+                              description: "BatchSize defines the size of entries to flush in as single flush [default: 100]"
+                              type: "integer"
                             flush-period:
                               description: "FlushPeriod for counters in milliseconds [default: 1000]"
                               type: "integer"

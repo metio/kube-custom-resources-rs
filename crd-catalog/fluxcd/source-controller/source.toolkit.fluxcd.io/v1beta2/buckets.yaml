@@ -63,6 +63,15 @@ spec:
                 bucketName:
                   description: "BucketName is the name of the object storage bucket."
                   type: "string"
+                certSecretRef:
+                  description: "CertSecretRef can be given the name of a Secret containing\neither or both of\n\n\n- a PEM-encoded client certificate (`tls.crt`) and private\nkey (`tls.key`);\n- a PEM-encoded CA certificate (`ca.crt`)\n\n\nand whichever are supplied, will be used for connecting to the\nbucket. The client cert and key are useful if you are\nauthenticating with a certificate; the CA cert is useful if\nyou are using a self-signed server certificate. The Secret must\nbe of type `Opaque` or `kubernetes.io/tls`.\n\n\nThis field is only supported for the `generic` provider."
+                  properties:
+                    name:
+                      description: "Name of the referent."
+                      type: "string"
+                  required:
+                    - "name"
+                  type: "object"
                 endpoint:
                   description: "Endpoint is the object storage address the BucketName is located at."
                   type: "string"

@@ -52,6 +52,7 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     kind:
                       description: "kind is the serialized kind of the resource. It is normally CamelCase and singular.\nCustom resource instances will use this value as the `kind` attribute in API calls."
                       type: "string"
@@ -66,6 +67,7 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     singular:
                       description: "singular is the singular name of the resource. It must be all lowercase. Defaults to lowercased `kind`."
                       type: "string"
@@ -73,6 +75,9 @@ spec:
                     - "kind"
                     - "plural"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable"
+                      rule: "self == oldSelf"
                 connectionSecretKeys:
                   description: "ConnectionSecretKeys is the list of keys that will be exposed to the end\nuser of the defined kind.\nIf the list is empty, all keys will be published."
                   items:
@@ -123,6 +128,7 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                          x-kubernetes-list-type: "atomic"
                       required:
                         - "conversionReviewVersions"
                       type: "object"
@@ -161,9 +167,15 @@ spec:
                   required:
                     - "name"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable"
+                      rule: "self == oldSelf"
                 group:
                   description: "Group specifies the API group of the defined composite resource.\nComposite resources are served under `/apis/<group>/...`. Must match the\nname of the XRD (in the form `<names.plural>.<group>`)."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable"
+                      rule: "self == oldSelf"
                 metadata:
                   description: "Metadata specifies the desired metadata for the defined composite resource and claim CRD's."
                   properties:
@@ -186,6 +198,7 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     kind:
                       description: "kind is the serialized kind of the resource. It is normally CamelCase and singular.\nCustom resource instances will use this value as the `kind` attribute in API calls."
                       type: "string"
@@ -200,6 +213,7 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     singular:
                       description: "singular is the singular name of the resource. It must be all lowercase. Defaults to lowercased `kind`."
                       type: "string"
@@ -207,6 +221,9 @@ spec:
                     - "kind"
                     - "plural"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable"
+                      rule: "self == oldSelf"
                 versions:
                   description: "Versions is the list of all API versions of the defined composite\nresource. Version names are used to compute the order in which served\nversions are listed in API discovery. If the version string is\n\"kube-like\", it will sort above non \"kube-like\" version strings, which\nare ordered lexicographically. \"Kube-like\" versions start with a \"v\",\nthen are followed by a number (the major version), then optionally the\nstring \"alpha\" or \"beta\" and another number (the minor version). These\nare sorted first by GA > beta > alpha (where GA is a version with no\nsuffix such as beta or alpha), and then by comparing major version, then\nminor version. An example sorted list of versions: v10, v2, v1, v11beta2,\nv10beta3, v3beta1, v12alpha1, v11alpha2, foo1, foo10."
                   items:
