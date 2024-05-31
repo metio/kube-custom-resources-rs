@@ -1904,6 +1904,43 @@ spec:
                         type: "object"
                       type: "array"
                   type: "object"
+                driverIngressOptions:
+                  items:
+                    properties:
+                      ingressAnnotations:
+                        additionalProperties:
+                          type: "string"
+                        type: "object"
+                      ingressTLS:
+                        items:
+                          properties:
+                            hosts:
+                              items:
+                                type: "string"
+                              type: "array"
+                            secretName:
+                              type: "string"
+                          type: "object"
+                        type: "array"
+                      ingressURLFormat:
+                        type: "string"
+                      serviceAnnotations:
+                        additionalProperties:
+                          type: "string"
+                        type: "object"
+                      serviceLabels:
+                        additionalProperties:
+                          type: "string"
+                        type: "object"
+                      servicePort:
+                        format: "int32"
+                        type: "integer"
+                      servicePortName:
+                        type: "string"
+                      serviceType:
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 dynamicAllocation:
                   properties:
                     enabled:

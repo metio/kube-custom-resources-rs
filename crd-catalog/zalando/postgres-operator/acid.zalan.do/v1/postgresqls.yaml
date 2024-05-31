@@ -66,6 +66,8 @@ spec:
                 additionalVolumes:
                   items:
                     properties:
+                      isSubPathExpr:
+                        type: "boolean"
                       mountPath:
                         type: "string"
                       name:
@@ -595,6 +597,8 @@ spec:
                   properties:
                     iops:
                       type: "integer"
+                    isSubPathExpr:
+                      type: "boolean"
                     selector:
                       properties:
                         matchExpressions:

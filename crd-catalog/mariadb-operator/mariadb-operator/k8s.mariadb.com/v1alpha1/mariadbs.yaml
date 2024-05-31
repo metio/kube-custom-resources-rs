@@ -12029,10 +12029,10 @@ spec:
                       type: "string"
                   type: "object"
                 myCnf:
-                  description: "MyCnf allows to specify the my.cnf file mounted by Mariadb."
+                  description: "MyCnf allows to specify the my.cnf file mounted by Mariadb.\nUpdating this field will trigger an update to the Mariadb resource."
                   type: "string"
                 myCnfConfigMapKeyRef:
-                  description: "MyCnfConfigMapKeyRef is a reference to the my.cnf config file provided via a ConfigMap.\nIf not provided, it will be defaulted with reference to a ConfigMap with the contents of the MyCnf field."
+                  description: "MyCnfConfigMapKeyRef is a reference to the my.cnf config file provided via a ConfigMap.\nIf not provided, it will be defaulted with a reference to a ConfigMap containing the MyCnf field.\nIf the referred ConfigMap is labeled with \"k8s.mariadb.com/watch\",\nan update to the Mariadb resource will be triggered when the ConfigMap is updated."
                   properties:
                     key:
                       description: "The key to select."
@@ -13528,10 +13528,10 @@ spec:
                     type: "object"
                   type: "array"
                 updateStrategy:
-                  description: "PodDisruptionBudget defines the update strategy for the StatefulSet object."
+                  description: "UpdateStrategy defines how a MariaDB resource is updated."
                   properties:
                     rollingUpdate:
-                      description: "RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType."
+                      description: "RollingUpdate defines parameters for the RollingUpdate type."
                       properties:
                         maxUnavailable:
                           anyOf:
@@ -13545,7 +13545,12 @@ spec:
                           type: "integer"
                       type: "object"
                     type:
-                      description: "Type indicates the type of the StatefulSetUpdateStrategy.\nDefault is RollingUpdate."
+                      default: "ReplicasFirstPrimaryLast"
+                      description: "Type defines the type of updates. One of `ReplicasFirstPrimaryLast`, `RollingUpdate` or `OnDelete`. If not defined, it defaults to `ReplicasFirstPrimaryLast`."
+                      enum:
+                        - "ReplicasFirstPrimaryLast"
+                        - "RollingUpdate"
+                        - "OnDelete"
                       type: "string"
                   type: "object"
                 username:

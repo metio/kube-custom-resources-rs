@@ -51,6 +51,9 @@ spec:
                   minItems: 1
                   type: "array"
                   x-kubernetes-list-type: "set"
+                deactivateTransactionRecovery:
+                  description: "DeactivateTransactionRecovery disables the process of recovering transactions (false if omitted)"
+                  type: "boolean"
                 disableHTTPRoute:
                   description: "DisableHTTPRoute disables the creation a route to the HTTP port of the application service (false if omitted)"
                   type: "boolean"
@@ -754,12 +757,17 @@ spec:
                         type: "string"
                       podIP:
                         type: "string"
+                      recoveryCounter:
+                        description: "Counts the recovery attempts when there are in-doubt/heuristic transactions"
+                        format: "int32"
+                        type: "integer"
                       state:
                         description: "Represent the state of the Pod, it is used especially during scale down."
                         enum:
                           - "ACTIVE"
                           - "SCALING_DOWN_RECOVERY_INVESTIGATION"
-                          - "SCALING_DOWN_RECOVERY_DIRTY"
+                          - "SCALING_DOWN_RECOVERY_PROCESSING"
+                          - "SCALING_DOWN_RECOVERY_HEURISTICS"
                           - "SCALING_DOWN_CLEAN"
                         type: "string"
                     required:

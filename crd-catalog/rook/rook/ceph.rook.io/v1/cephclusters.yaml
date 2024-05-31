@@ -556,6 +556,18 @@ spec:
                           name:
                             description: "Name is the name of the ceph manager module"
                             type: "string"
+                          settings:
+                            description: "Settings to further configure the module"
+                            properties:
+                              balancerMode:
+                                description: "BalancerMode sets the `balancer` module with different modes like `upmap`, `crush-compact` etc"
+                                enum:
+                                  - ""
+                                  - "crush-compat"
+                                  - "upmap"
+                                  - "upmap-read"
+                                type: "string"
+                            type: "object"
                         type: "object"
                       nullable: true
                       type: "array"
@@ -1754,6 +1766,12 @@ spec:
                   description: "A spec for available storage in the cluster and how it should be used"
                   nullable: true
                   properties:
+                    backfillFullRatio:
+                      description: "BackfillFullRatio is the ratio at which the cluster is too full for backfill. Backfill will be disabled if above this threshold. Default is 0.90."
+                      maximum: 1.0
+                      minimum: 0.0
+                      nullable: true
+                      type: "number"
                     config:
                       additionalProperties:
                         type: "string"
@@ -1788,6 +1806,18 @@ spec:
                     flappingRestartIntervalHours:
                       description: "FlappingRestartIntervalHours defines the time for which the OSD pods, that failed with zero exit code, will sleep before restarting.\nThis is needed for OSD flapping where OSD daemons are marked down more than 5 times in 600 seconds by Ceph.\nPreventing the OSD pods to restart immediately in such scenarios will prevent Rook from marking OSD as `up` and thus\npeering of the PGs mapped to the OSD.\nUser needs to manually restart the OSD pod if they manage to fix the underlying OSD flapping issue before the restart interval.\nThe sleep will be disabled if this interval is set to 0."
                       type: "integer"
+                    fullRatio:
+                      description: "FullRatio is the ratio at which the cluster is considered full and ceph will stop accepting writes. Default is 0.95."
+                      maximum: 1.0
+                      minimum: 0.0
+                      nullable: true
+                      type: "number"
+                    nearFullRatio:
+                      description: "NearFullRatio is the ratio at which the cluster is considered nearly full and will raise a ceph health warning. Default is 0.85."
+                      maximum: 1.0
+                      minimum: 0.0
+                      nullable: true
+                      type: "number"
                     nodes:
                       items:
                         description: "Node is a storage nodes"

@@ -450,6 +450,9 @@ spec:
                           type: "integer"
                       type: "object"
                   type: "object"
+                defaultClusterScopedRoleDisabled:
+                  description: "DefaultClusterScopedRoleDisabled will disable creation of default ClusterRoles for a cluster scoped instance."
+                  type: "boolean"
                 dex:
                   description: "Deprecated field. Support dropped in v1beta1 version. Dex defines the Dex server options for ArgoCD."
                   properties:
@@ -771,6 +774,9 @@ spec:
                 monitoring:
                   description: "Monitoring defines whether workload status monitoring configuration for this instance."
                   properties:
+                    disableMetrics:
+                      description: "DisableMetrics field can be used to enable or disable the collection of Metrics on Openshift"
+                      type: "boolean"
                     enabled:
                       description: "Enabled defines whether workload status monitoring is enabled for this instance or not"
                       type: "boolean"
@@ -4350,6 +4356,9 @@ spec:
                     keycloak:
                       description: "Keycloak contains the configuration for Argo CD keycloak authentication"
                       properties:
+                        host:
+                          description: "Host is the hostname to use for Ingress/Route resources."
+                          type: "string"
                         image:
                           description: "Image is the Keycloak container image."
                           type: "string"

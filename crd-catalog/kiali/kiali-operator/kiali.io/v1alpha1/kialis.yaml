@@ -722,6 +722,10 @@ spec:
                               description: "Username to be used when making requests to the Tracing server with `basic` authentication."
                               type: "string"
                           type: "object"
+                        custom_headers:
+                          description: "A set of name/value settings that will be passed as headers when requests are sent to the Tracing backend."
+                          type: "object"
+                          x-kubernetes-preserve-unknown-fields: true
                         enabled:
                           description: "When true, connections to the Tracing server are enabled. `in_cluster_url` and/or `url` need to be provided."
                           type: "boolean"

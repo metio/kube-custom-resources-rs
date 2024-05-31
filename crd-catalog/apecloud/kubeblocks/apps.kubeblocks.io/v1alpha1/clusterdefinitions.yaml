@@ -148,7 +148,7 @@ spec:
                               pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                               type: "string"
                             defaultMode:
-                              description: "Deprecated: DefaultMode is deprecated since 0.9.0 and will be removed in 0.10.0 for scripts, auto set 0555 for configs, auto set 0444 Refers to the mode bits used to set permissions on created files by default. \n Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. \n Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
+                              description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444). However, certain database engines may require different file permissions. You can specify the desired file permissions here. \n Must be specified as an octal value between 0000 and 0777 (inclusive), or as a decimal value between 0 and 511 (inclusive). YAML supports both octal and decimal values for file permissions. \n Please note that this setting only affects the permissions of the files themselves. Directories within the specified path are not impacted by this setting. It's important to be aware that this setting might conflict with other options that influence the file mode, such as fsGroup. In such cases, the resulting file mode may have additional bits set. Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
                               format: "int32"
                               type: "integer"
                             injectEnvTo:
@@ -5250,7 +5250,7 @@ spec:
                         items:
                           properties:
                             defaultMode:
-                              description: "Deprecated: DefaultMode is deprecated since 0.9.0 and will be removed in 0.10.0 for scripts, auto set 0555 for configs, auto set 0444 Refers to the mode bits used to set permissions on created files by default. \n Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. \n Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
+                              description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444). However, certain database engines may require different file permissions. You can specify the desired file permissions here. \n Must be specified as an octal value between 0000 and 0777 (inclusive), or as a decimal value between 0 and 511 (inclusive). YAML supports both octal and decimal values for file permissions. \n Please note that this setting only affects the permissions of the files themselves. Directories within the specified path are not impacted by this setting. It's important to be aware that this setting might conflict with other options that influence the file mode, such as fsGroup. In such cases, the resulting file mode may have additional bits set. Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
                               format: "int32"
                               type: "integer"
                             name:
@@ -5331,6 +5331,9 @@ spec:
                             name:
                               description: "Specifies the name of the ServiceRefDeclaration."
                               type: "string"
+                            optional:
+                              description: "Specifies whether the service reference can be optional. \n For an optional service-ref, the component can still be created even if the service-ref is not provided."
+                              type: "boolean"
                             serviceRefDeclarationSpecs:
                               description: "Defines a list of constraints and requirements for services that can be bound to this ServiceRefDeclaration upon Cluster creation. Each ServiceRefDeclarationSpec defines a ServiceKind and ServiceVersion, outlining the acceptable service types and versions that are compatible. \n This flexibility allows a ServiceRefDeclaration to be fulfilled by any one of the provided specs. For example, if it requires an OLTP database, specs for both MySQL and PostgreSQL are listed, either MySQL or PostgreSQL services can be used when binding."
                               items:

@@ -56,6 +56,9 @@ spec:
                     - "apiVersion"
                     - "kind"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable"
+                      rule: "self == oldSelf"
                 environment:
                   description: "Environment configures the environment in which resources are rendered.\n\n\nTHIS IS AN ALPHA FIELD. Do not use it in production. It is not honored\nunless the relevant Crossplane feature flag is enabled, and may be\nchanged or removed without notice."
                   properties:

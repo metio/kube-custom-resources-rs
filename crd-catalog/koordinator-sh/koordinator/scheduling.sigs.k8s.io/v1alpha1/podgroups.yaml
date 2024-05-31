@@ -2,8 +2,8 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/scheduler-plugins/pull/50"
-    controller-gen.kubebuilder.io/version: "v0.6.2"
+    api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/scheduler-plugins/pull/52"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "podgroups.scheduling.sigs.k8s.io"
 spec:
   group: "scheduling.sigs.k8s.io"
@@ -11,9 +11,6 @@ spec:
     kind: "PodGroup"
     listKind: "PodGroupList"
     plural: "podgroups"
-    shortNames:
-      - "pg"
-      - "pgs"
     singular: "podgroup"
   scope: "Namespaced"
   versions:
@@ -23,10 +20,10 @@ spec:
           description: "PodGroup is a collection of Pod; used for batch workload."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -34,7 +31,7 @@ spec:
               description: "Specification of the desired behavior of the pod group."
               properties:
                 minMember:
-                  description: "MinMember defines the minimal number of members/tasks to run the pod group; if there's not enough resources to start all tasks, the scheduler will not start anyone."
+                  description: "MinMember defines the minimal number of members/tasks to run the pod group;\nif there's not enough resources to start all tasks, the scheduler\nwill not start anyone."
                   format: "int32"
                   type: "integer"
                 minResources:
@@ -44,7 +41,7 @@ spec:
                       - type: "string"
                     pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                     x-kubernetes-int-or-string: true
-                  description: "MinResources defines the minimal resource of members/tasks to run the pod group; if there's not enough resources to start all tasks, the scheduler will not start anyone."
+                  description: "MinResources defines the minimal resource of members/tasks to run the pod group;\nif there's not enough resources to start all tasks, the scheduler\nwill not start anyone."
                   type: "object"
                 scheduleTimeoutSeconds:
                   description: "ScheduleTimeoutSeconds defines the maximal time of members/tasks to wait before run the pod group;"
@@ -52,14 +49,14 @@ spec:
                   type: "integer"
               type: "object"
             status:
-              description: "Status represents the current information about a pod group. This data may not be up to date."
+              description: "Status represents the current information about a pod group.\nThis data may not be up to date."
               properties:
                 failed:
                   description: "The number of pods which reached phase Failed."
                   format: "int32"
                   type: "integer"
                 occupiedBy:
-                  description: "OccupiedBy marks the workload (e.g., deployment, statefulset) UID that occupy the podgroup. It is empty if not initialized."
+                  description: "OccupiedBy marks the workload (e.g., deployment, statefulset) UID that occupy the podgroup.\nIt is empty if not initialized."
                   type: "string"
                 phase:
                   description: "Current phase of PodGroup."
@@ -84,9 +81,3 @@ spec:
           type: "object"
       served: true
       storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

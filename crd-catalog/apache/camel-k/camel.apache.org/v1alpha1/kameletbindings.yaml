@@ -3803,7 +3803,7 @@ spec:
                               description: "When using `pod` strategy, annotation to use for the builder pod."
                               type: "object"
                             baseImage:
-                              description: "Specify a base image"
+                              description: "Specify a base image. In order to have the application working properly it must be a container image which has a Java JDK installed and ready to use on path (ie `/usr/bin/java`)."
                               type: "string"
                             configuration:
                               description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."
@@ -4176,6 +4176,9 @@ spec:
                               description: "How often to perform the liveness probe."
                               format: "int32"
                               type: "integer"
+                            livenessProbe:
+                              description: "The liveness probe path to use (default provided by the Catalog runtime used)."
+                              type: "string"
                             livenessProbeEnabled:
                               description: "Configures the liveness probe for the integration container (default `false`)."
                               type: "boolean"
@@ -4202,6 +4205,9 @@ spec:
                               description: "How often to perform the readiness probe."
                               format: "int32"
                               type: "integer"
+                            readinessProbe:
+                              description: "The readiness probe path to use (default provided by the Catalog runtime used)."
+                              type: "string"
                             readinessProbeEnabled:
                               description: "Configures the readiness probe for the integration container (default `true`)."
                               type: "boolean"
@@ -4228,6 +4234,9 @@ spec:
                               description: "How often to perform the startup probe."
                               format: "int32"
                               type: "integer"
+                            startupProbe:
+                              description: "The startup probe path to use (default provided by the Catalog runtime used)."
+                              type: "string"
                             startupProbeEnabled:
                               description: "Configures the startup probe for the integration container (default `false`)."
                               type: "boolean"
@@ -4362,13 +4371,16 @@ spec:
                             enabled:
                               description: "Can be used to enable or disable a trait. All traits share this common property."
                               type: "boolean"
+                            jar:
+                              description: "The Jar dependency which will run the application. Leave it empty for managed Integrations."
+                              type: "string"
                             options:
                               description: "A list of JVM options"
                               items:
                                 type: "string"
                               type: "array"
                             printCommand:
-                              description: "Prints the command used the start the JVM in the container logs (default `true`)"
+                              description: "Prints the command used the start the JVM in the container logs (default `true`) Deprecated: no longer in use."
                               type: "boolean"
                           type: "object"
                         kamelets:

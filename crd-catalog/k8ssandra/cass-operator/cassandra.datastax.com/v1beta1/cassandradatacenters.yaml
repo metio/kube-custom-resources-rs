@@ -5341,14 +5341,15 @@ spec:
                   description: "Cassandra server image name. Use of ImageConfig to match ServerVersion is recommended instead of this value.\nThis value will override anything set in the ImageConfig matching the ServerVersion\nMore info: https://kubernetes.io/docs/concepts/containers/images"
                   type: "string"
                 serverType:
-                  description: "Server type: \"cassandra\" or \"dse\""
+                  description: "Server type: \"cassandra\", \"dse\" or \"hcd\""
                   enum:
                     - "cassandra"
                     - "dse"
+                    - "hcd"
                   type: "string"
                 serverVersion:
                   description: "Version string for config builder,\nused to generate Cassandra server configuration"
-                  pattern: "(6\\.8\\.\\d+)|(3\\.11\\.\\d+)|(4\\.\\d+\\.\\d+)|(5\\.\\d+\\.\\d+)|(7\\.\\d+\\.\\d+)"
+                  pattern: "(6\\.[89]\\.\\d+)|(3\\.11\\.\\d+)|(4\\.\\d+\\.\\d+)|(5\\.\\d+\\.\\d+)|(1\\.\\d+\\.\\d+)"
                   type: "string"
                 serviceAccount:
                   description: "Deprecated DeprecatedServiceAccount Use ServiceAccountName instead, which takes precedence. The k8s service account to use for the server pods"

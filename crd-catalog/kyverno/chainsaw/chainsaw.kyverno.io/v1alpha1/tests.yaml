@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "tests.chainsaw.kyverno.io"
 spec:
   group: "chainsaw.kyverno.io"
@@ -186,6 +186,13 @@ spec:
                               type: "object"
                             description: "Clusters holds a registry to clusters to support multi-cluster tests."
                             type: "object"
+                          deletionPropagationPolicy:
+                            description: "DeletionPropagationPolicy decides if a deletion will propagate to the dependents of\nthe object, and how the garbage collector will handle the propagation.\nOverrides the deletion propagation policy set in the Configuration, the Test and the TestStep."
+                            enum:
+                              - "Orphan"
+                              - "Background"
+                              - "Foreground"
+                            type: "string"
                           expect:
                             description: "Expect defines a list of matched checks to validate the operation outcome."
                             items:
@@ -203,8 +210,11 @@ spec:
                                 - "check"
                               type: "object"
                             type: "array"
+                          file:
+                            description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
+                            type: "string"
                           ref:
-                            description: "ObjectReference determines objects to be deleted."
+                            description: "Ref determines objects to be deleted."
                             properties:
                               apiVersion:
                                 description: "API version of the referent."
@@ -233,8 +243,6 @@ spec:
                           timeout:
                             description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                             type: "string"
-                        required:
-                          - "ref"
                         type: "object"
                       describe:
                         description: "Describe determines the resource describe collector to execute."
@@ -269,9 +277,6 @@ spec:
                           namespace:
                             description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                             type: "string"
-                          resource:
-                            description: "Resource name of the referent."
-                            type: "string"
                           selector:
                             description: "Selector defines labels selector."
                             type: "string"
@@ -281,6 +286,9 @@ spec:
                           timeout:
                             description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                             type: "string"
+                        required:
+                          - "apiVersion"
+                          - "kind"
                         type: "object"
                       description:
                         description: "Description contains a description of the operation."
@@ -360,15 +368,15 @@ spec:
                           namespace:
                             description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                             type: "string"
-                          resource:
-                            description: "Resource name of the referent."
-                            type: "string"
                           selector:
                             description: "Selector defines labels selector."
                             type: "string"
                           timeout:
                             description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                             type: "string"
+                        required:
+                          - "apiVersion"
+                          - "kind"
                         type: "object"
                       podLogs:
                         description: "PodLogs determines the pod logs collector to execute."
@@ -578,9 +586,6 @@ spec:
                           namespace:
                             description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                             type: "string"
-                          resource:
-                            description: "Resource name of the referent."
-                            type: "string"
                           selector:
                             description: "Selector defines labels selector."
                             type: "string"
@@ -588,7 +593,9 @@ spec:
                             description: "Timeout for the operation. Specifies how long to wait for the condition to be met before timing out."
                             type: "string"
                         required:
+                          - "apiVersion"
                           - "for"
+                          - "kind"
                         type: "object"
                     type: "object"
                   type: "array"
@@ -615,6 +622,13 @@ spec:
                   type: "boolean"
                 delayBeforeCleanup:
                   description: "DelayBeforeCleanup adds a delay between the time a test ends and the time cleanup starts."
+                  type: "string"
+                deletionPropagationPolicy:
+                  description: "DeletionPropagationPolicy decides if a deletion will propagate to the dependents of\nthe object, and how the garbage collector will handle the propagation.\nOverrides the deletion propagation policy set in the Configuration."
+                  enum:
+                    - "Orphan"
+                    - "Background"
+                    - "Foreground"
                   type: "string"
                 description:
                   description: "Description contains a description of the test."
@@ -797,6 +811,13 @@ spec:
                                     type: "object"
                                   description: "Clusters holds a registry to clusters to support multi-cluster tests."
                                   type: "object"
+                                deletionPropagationPolicy:
+                                  description: "DeletionPropagationPolicy decides if a deletion will propagate to the dependents of\nthe object, and how the garbage collector will handle the propagation.\nOverrides the deletion propagation policy set in the Configuration, the Test and the TestStep."
+                                  enum:
+                                    - "Orphan"
+                                    - "Background"
+                                    - "Foreground"
+                                  type: "string"
                                 expect:
                                   description: "Expect defines a list of matched checks to validate the operation outcome."
                                   items:
@@ -814,8 +835,11 @@ spec:
                                       - "check"
                                     type: "object"
                                   type: "array"
+                                file:
+                                  description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
+                                  type: "string"
                                 ref:
-                                  description: "ObjectReference determines objects to be deleted."
+                                  description: "Ref determines objects to be deleted."
                                   properties:
                                     apiVersion:
                                       description: "API version of the referent."
@@ -844,8 +868,6 @@ spec:
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                                   type: "string"
-                              required:
-                                - "ref"
                               type: "object"
                             describe:
                               description: "Describe determines the resource describe collector to execute."
@@ -880,9 +902,6 @@ spec:
                                 namespace:
                                   description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
-                                resource:
-                                  description: "Resource name of the referent."
-                                  type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
                                   type: "string"
@@ -892,6 +911,9 @@ spec:
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                                   type: "string"
+                              required:
+                                - "apiVersion"
+                                - "kind"
                               type: "object"
                             description:
                               description: "Description contains a description of the operation."
@@ -971,15 +993,15 @@ spec:
                                 namespace:
                                   description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
-                                resource:
-                                  description: "Resource name of the referent."
-                                  type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
                                   type: "string"
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                                   type: "string"
+                              required:
+                                - "apiVersion"
+                                - "kind"
                               type: "object"
                             podLogs:
                               description: "PodLogs determines the pod logs collector to execute."
@@ -1189,8 +1211,558 @@ spec:
                                 namespace:
                                   description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
-                                resource:
-                                  description: "Resource name of the referent."
+                                selector:
+                                  description: "Selector defines labels selector."
+                                  type: "string"
+                                timeout:
+                                  description: "Timeout for the operation. Specifies how long to wait for the condition to be met before timing out."
+                                  type: "string"
+                              required:
+                                - "apiVersion"
+                                - "for"
+                                - "kind"
+                              type: "object"
+                          type: "object"
+                        type: "array"
+                      cleanup:
+                        description: "Cleanup defines what will be executed after the test is terminated."
+                        items:
+                          description: "Finally defines actions to be executed at the end of a test."
+                          properties:
+                            command:
+                              description: "Command defines a command to run."
+                              properties:
+                                args:
+                                  description: "Args is the command arguments."
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                bindings:
+                                  description: "Bindings defines additional binding key/values."
+                                  items:
+                                    description: "Binding represents a key/value set as a binding in an executing test."
+                                    properties:
+                                      name:
+                                        description: "Name the name of the binding."
+                                        pattern: "^(?:\\w+|\\(.+\\))$"
+                                        type: "string"
+                                      value:
+                                        description: "Value value of the binding."
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    required:
+                                      - "name"
+                                      - "value"
+                                    type: "object"
+                                  type: "array"
+                                check:
+                                  description: "Check is an assertion tree to validate the operation outcome."
+                                  type: "object"
+                                  x-kubernetes-preserve-unknown-fields: true
+                                cluster:
+                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  type: "string"
+                                clusters:
+                                  additionalProperties:
+                                    description: "Cluster defines cluster config and context."
+                                    properties:
+                                      context:
+                                        description: "Context is the name of the context to use."
+                                        type: "string"
+                                      kubeconfig:
+                                        description: "Kubeconfig is the path to the referenced file."
+                                        type: "string"
+                                    required:
+                                      - "kubeconfig"
+                                    type: "object"
+                                  description: "Clusters holds a registry to clusters to support multi-cluster tests."
+                                  type: "object"
+                                entrypoint:
+                                  description: "Entrypoint is the command entry point to run."
+                                  type: "string"
+                                env:
+                                  description: "Env defines additional environment variables."
+                                  items:
+                                    description: "Binding represents a key/value set as a binding in an executing test."
+                                    properties:
+                                      name:
+                                        description: "Name the name of the binding."
+                                        pattern: "^(?:\\w+|\\(.+\\))$"
+                                        type: "string"
+                                      value:
+                                        description: "Value value of the binding."
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    required:
+                                      - "name"
+                                      - "value"
+                                    type: "object"
+                                  type: "array"
+                                outputs:
+                                  description: "Outputs defines output bindings."
+                                  items:
+                                    description: "Output represents an output binding with a match to determine if the binding must be considered or not."
+                                    properties:
+                                      match:
+                                        description: "Match defines the matching statement."
+                                        type: "object"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                      name:
+                                        description: "Name the name of the binding."
+                                        pattern: "^(?:\\w+|\\(.+\\))$"
+                                        type: "string"
+                                      value:
+                                        description: "Value value of the binding."
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    required:
+                                      - "name"
+                                      - "value"
+                                    type: "object"
+                                  type: "array"
+                                skipLogOutput:
+                                  description: "SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise."
+                                  type: "boolean"
+                                timeout:
+                                  description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                              required:
+                                - "entrypoint"
+                              type: "object"
+                            delete:
+                              description: "Delete represents a deletion operation."
+                              properties:
+                                bindings:
+                                  description: "Bindings defines additional binding key/values."
+                                  items:
+                                    description: "Binding represents a key/value set as a binding in an executing test."
+                                    properties:
+                                      name:
+                                        description: "Name the name of the binding."
+                                        pattern: "^(?:\\w+|\\(.+\\))$"
+                                        type: "string"
+                                      value:
+                                        description: "Value value of the binding."
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    required:
+                                      - "name"
+                                      - "value"
+                                    type: "object"
+                                  type: "array"
+                                cluster:
+                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  type: "string"
+                                clusters:
+                                  additionalProperties:
+                                    description: "Cluster defines cluster config and context."
+                                    properties:
+                                      context:
+                                        description: "Context is the name of the context to use."
+                                        type: "string"
+                                      kubeconfig:
+                                        description: "Kubeconfig is the path to the referenced file."
+                                        type: "string"
+                                    required:
+                                      - "kubeconfig"
+                                    type: "object"
+                                  description: "Clusters holds a registry to clusters to support multi-cluster tests."
+                                  type: "object"
+                                deletionPropagationPolicy:
+                                  description: "DeletionPropagationPolicy decides if a deletion will propagate to the dependents of\nthe object, and how the garbage collector will handle the propagation.\nOverrides the deletion propagation policy set in the Configuration, the Test and the TestStep."
+                                  enum:
+                                    - "Orphan"
+                                    - "Background"
+                                    - "Foreground"
+                                  type: "string"
+                                expect:
+                                  description: "Expect defines a list of matched checks to validate the operation outcome."
+                                  items:
+                                    description: "Expectation represents a check to be applied on the result of an operation\nwith a match filter to determine if the verification should be considered."
+                                    properties:
+                                      check:
+                                        description: "Check defines the verification statement."
+                                        type: "object"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                      match:
+                                        description: "Match defines the matching statement."
+                                        type: "object"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    required:
+                                      - "check"
+                                    type: "object"
+                                  type: "array"
+                                file:
+                                  description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
+                                  type: "string"
+                                ref:
+                                  description: "Ref determines objects to be deleted."
+                                  properties:
+                                    apiVersion:
+                                      description: "API version of the referent."
+                                      type: "string"
+                                    kind:
+                                      description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                      type: "string"
+                                    labels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "Label selector to match objects to delete"
+                                      type: "object"
+                                    name:
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                      type: "string"
+                                    namespace:
+                                      description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                      type: "string"
+                                  required:
+                                    - "apiVersion"
+                                    - "kind"
+                                  type: "object"
+                                template:
+                                  description: "Template determines whether resources should be considered for templating."
+                                  type: "boolean"
+                                timeout:
+                                  description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                              type: "object"
+                            describe:
+                              description: "Describe determines the resource describe collector to execute."
+                              properties:
+                                apiVersion:
+                                  description: "API version of the referent."
+                                  type: "string"
+                                cluster:
+                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  type: "string"
+                                clusters:
+                                  additionalProperties:
+                                    description: "Cluster defines cluster config and context."
+                                    properties:
+                                      context:
+                                        description: "Context is the name of the context to use."
+                                        type: "string"
+                                      kubeconfig:
+                                        description: "Kubeconfig is the path to the referenced file."
+                                        type: "string"
+                                    required:
+                                      - "kubeconfig"
+                                    type: "object"
+                                  description: "Clusters holds a registry to clusters to support multi-cluster tests."
+                                  type: "object"
+                                kind:
+                                  description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                  type: "string"
+                                name:
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                namespace:
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  type: "string"
+                                selector:
+                                  description: "Selector defines labels selector."
+                                  type: "string"
+                                showEvents:
+                                  description: "Show Events indicates whether to include related events."
+                                  type: "boolean"
+                                timeout:
+                                  description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                              required:
+                                - "apiVersion"
+                                - "kind"
+                              type: "object"
+                            description:
+                              description: "Description contains a description of the operation."
+                              type: "string"
+                            events:
+                              description: "Events determines the events collector to execute."
+                              properties:
+                                cluster:
+                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  type: "string"
+                                clusters:
+                                  additionalProperties:
+                                    description: "Cluster defines cluster config and context."
+                                    properties:
+                                      context:
+                                        description: "Context is the name of the context to use."
+                                        type: "string"
+                                      kubeconfig:
+                                        description: "Kubeconfig is the path to the referenced file."
+                                        type: "string"
+                                    required:
+                                      - "kubeconfig"
+                                    type: "object"
+                                  description: "Clusters holds a registry to clusters to support multi-cluster tests."
+                                  type: "object"
+                                format:
+                                  description: "Format determines the output format (json or yaml)."
+                                  pattern: "^(?:json|yaml|\\(.+\\))$"
+                                  type: "string"
+                                name:
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                namespace:
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  type: "string"
+                                selector:
+                                  description: "Selector defines labels selector."
+                                  type: "string"
+                                timeout:
+                                  description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                              type: "object"
+                            get:
+                              description: "Get determines the resource get collector to execute."
+                              properties:
+                                apiVersion:
+                                  description: "API version of the referent."
+                                  type: "string"
+                                cluster:
+                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  type: "string"
+                                clusters:
+                                  additionalProperties:
+                                    description: "Cluster defines cluster config and context."
+                                    properties:
+                                      context:
+                                        description: "Context is the name of the context to use."
+                                        type: "string"
+                                      kubeconfig:
+                                        description: "Kubeconfig is the path to the referenced file."
+                                        type: "string"
+                                    required:
+                                      - "kubeconfig"
+                                    type: "object"
+                                  description: "Clusters holds a registry to clusters to support multi-cluster tests."
+                                  type: "object"
+                                format:
+                                  description: "Format determines the output format (json or yaml)."
+                                  pattern: "^(?:json|yaml|\\(.+\\))$"
+                                  type: "string"
+                                kind:
+                                  description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                  type: "string"
+                                name:
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                namespace:
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  type: "string"
+                                selector:
+                                  description: "Selector defines labels selector."
+                                  type: "string"
+                                timeout:
+                                  description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                              required:
+                                - "apiVersion"
+                                - "kind"
+                              type: "object"
+                            podLogs:
+                              description: "PodLogs determines the pod logs collector to execute."
+                              properties:
+                                cluster:
+                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  type: "string"
+                                clusters:
+                                  additionalProperties:
+                                    description: "Cluster defines cluster config and context."
+                                    properties:
+                                      context:
+                                        description: "Context is the name of the context to use."
+                                        type: "string"
+                                      kubeconfig:
+                                        description: "Kubeconfig is the path to the referenced file."
+                                        type: "string"
+                                    required:
+                                      - "kubeconfig"
+                                    type: "object"
+                                  description: "Clusters holds a registry to clusters to support multi-cluster tests."
+                                  type: "object"
+                                container:
+                                  description: "Container in pod to get logs from else --all-containers is used."
+                                  type: "string"
+                                name:
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                namespace:
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                  type: "string"
+                                selector:
+                                  description: "Selector defines labels selector."
+                                  type: "string"
+                                tail:
+                                  description: "Tail is the number of last lines to collect from pods. If omitted or zero,\nthen the default is 10 if you use a selector, or -1 (all) if you use a pod name.\nThis matches default behavior of `kubectl logs`."
+                                  type: "integer"
+                                timeout:
+                                  description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                              type: "object"
+                            script:
+                              description: "Script defines a script to run."
+                              properties:
+                                bindings:
+                                  description: "Bindings defines additional binding key/values."
+                                  items:
+                                    description: "Binding represents a key/value set as a binding in an executing test."
+                                    properties:
+                                      name:
+                                        description: "Name the name of the binding."
+                                        pattern: "^(?:\\w+|\\(.+\\))$"
+                                        type: "string"
+                                      value:
+                                        description: "Value value of the binding."
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    required:
+                                      - "name"
+                                      - "value"
+                                    type: "object"
+                                  type: "array"
+                                check:
+                                  description: "Check is an assertion tree to validate the operation outcome."
+                                  type: "object"
+                                  x-kubernetes-preserve-unknown-fields: true
+                                cluster:
+                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  type: "string"
+                                clusters:
+                                  additionalProperties:
+                                    description: "Cluster defines cluster config and context."
+                                    properties:
+                                      context:
+                                        description: "Context is the name of the context to use."
+                                        type: "string"
+                                      kubeconfig:
+                                        description: "Kubeconfig is the path to the referenced file."
+                                        type: "string"
+                                    required:
+                                      - "kubeconfig"
+                                    type: "object"
+                                  description: "Clusters holds a registry to clusters to support multi-cluster tests."
+                                  type: "object"
+                                content:
+                                  description: "Content defines a shell script (run with \"sh -c ...\")."
+                                  type: "string"
+                                env:
+                                  description: "Env defines additional environment variables."
+                                  items:
+                                    description: "Binding represents a key/value set as a binding in an executing test."
+                                    properties:
+                                      name:
+                                        description: "Name the name of the binding."
+                                        pattern: "^(?:\\w+|\\(.+\\))$"
+                                        type: "string"
+                                      value:
+                                        description: "Value value of the binding."
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    required:
+                                      - "name"
+                                      - "value"
+                                    type: "object"
+                                  type: "array"
+                                outputs:
+                                  description: "Outputs defines output bindings."
+                                  items:
+                                    description: "Output represents an output binding with a match to determine if the binding must be considered or not."
+                                    properties:
+                                      match:
+                                        description: "Match defines the matching statement."
+                                        type: "object"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                      name:
+                                        description: "Name the name of the binding."
+                                        pattern: "^(?:\\w+|\\(.+\\))$"
+                                        type: "string"
+                                      value:
+                                        description: "Value value of the binding."
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    required:
+                                      - "name"
+                                      - "value"
+                                    type: "object"
+                                  type: "array"
+                                skipLogOutput:
+                                  description: "SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise."
+                                  type: "boolean"
+                                timeout:
+                                  description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                              type: "object"
+                            sleep:
+                              description: "Sleep defines zzzz."
+                              properties:
+                                duration:
+                                  description: "Duration is the delay used for sleeping."
+                                  type: "string"
+                              required:
+                                - "duration"
+                              type: "object"
+                            wait:
+                              description: "Wait determines the resource wait collector to execute."
+                              properties:
+                                apiVersion:
+                                  description: "API version of the referent."
+                                  type: "string"
+                                cluster:
+                                  description: "Cluster defines the target cluster where the wait operation will be performed (default cluster will be used if not specified)."
+                                  type: "string"
+                                clusters:
+                                  additionalProperties:
+                                    description: "Cluster defines cluster config and context."
+                                    properties:
+                                      context:
+                                        description: "Context is the name of the context to use."
+                                        type: "string"
+                                      kubeconfig:
+                                        description: "Kubeconfig is the path to the referenced file."
+                                        type: "string"
+                                    required:
+                                      - "kubeconfig"
+                                    type: "object"
+                                  description: "Clusters holds a registry to clusters to support multi-cluster tests."
+                                  type: "object"
+                                for:
+                                  description: "For specifies the condition to wait for."
+                                  properties:
+                                    condition:
+                                      description: "Condition specifies the condition to wait for."
+                                      properties:
+                                        name:
+                                          description: "Name defines the specific condition to wait for, e.g., \"Available\", \"Ready\"."
+                                          type: "string"
+                                        value:
+                                          description: "Value defines the specific condition status to wait for, e.g., \"True\", \"False\"."
+                                          type: "string"
+                                      required:
+                                        - "name"
+                                      type: "object"
+                                    deletion:
+                                      description: "Deletion specifies parameters for waiting on a resource's deletion."
+                                      type: "object"
+                                    jsonPath:
+                                      description: "JsonPath specifies the json path condition to wait for."
+                                      properties:
+                                        path:
+                                          description: "Path defines the json path to wait for, e.g. '{.status.phase}'."
+                                          type: "string"
+                                        value:
+                                          description: "Value defines the expected value to wait for, e.g., \"Running\"."
+                                          type: "string"
+                                      required:
+                                        - "path"
+                                        - "value"
+                                      type: "object"
+                                  type: "object"
+                                format:
+                                  description: "Format determines the output format (json or yaml)."
+                                  pattern: "^(?:json|yaml|\\(.+\\))$"
+                                  type: "string"
+                                kind:
+                                  description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                  type: "string"
+                                name:
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                namespace:
+                                  description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
@@ -1199,7 +1771,9 @@ spec:
                                   description: "Timeout for the operation. Specifies how long to wait for the condition to be met before timing out."
                                   type: "string"
                               required:
+                                - "apiVersion"
                                 - "for"
+                                - "kind"
                               type: "object"
                           type: "object"
                         type: "array"
@@ -1221,6 +1795,13 @@ spec:
                           type: "object"
                         description: "Clusters holds a registry to clusters to support multi-cluster tests."
                         type: "object"
+                      deletionPropagationPolicy:
+                        description: "DeletionPropagationPolicy decides if a deletion will propagate to the dependents of\nthe object, and how the garbage collector will handle the propagation.\nOverrides the deletion propagation policy set in both the Configuration and the Test."
+                        enum:
+                          - "Orphan"
+                          - "Background"
+                          - "Foreground"
+                        type: "string"
                       description:
                         description: "Description contains a description of the test step."
                         type: "string"
@@ -1364,6 +1945,13 @@ spec:
                                     type: "object"
                                   description: "Clusters holds a registry to clusters to support multi-cluster tests."
                                   type: "object"
+                                deletionPropagationPolicy:
+                                  description: "DeletionPropagationPolicy decides if a deletion will propagate to the dependents of\nthe object, and how the garbage collector will handle the propagation.\nOverrides the deletion propagation policy set in the Configuration, the Test and the TestStep."
+                                  enum:
+                                    - "Orphan"
+                                    - "Background"
+                                    - "Foreground"
+                                  type: "string"
                                 expect:
                                   description: "Expect defines a list of matched checks to validate the operation outcome."
                                   items:
@@ -1381,8 +1969,11 @@ spec:
                                       - "check"
                                     type: "object"
                                   type: "array"
+                                file:
+                                  description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
+                                  type: "string"
                                 ref:
-                                  description: "ObjectReference determines objects to be deleted."
+                                  description: "Ref determines objects to be deleted."
                                   properties:
                                     apiVersion:
                                       description: "API version of the referent."
@@ -1411,8 +2002,6 @@ spec:
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                                   type: "string"
-                              required:
-                                - "ref"
                               type: "object"
                             describe:
                               description: "Describe determines the resource describe collector to execute."
@@ -1447,9 +2036,6 @@ spec:
                                 namespace:
                                   description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
-                                resource:
-                                  description: "Resource name of the referent."
-                                  type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
                                   type: "string"
@@ -1459,6 +2045,9 @@ spec:
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                                   type: "string"
+                              required:
+                                - "apiVersion"
+                                - "kind"
                               type: "object"
                             description:
                               description: "Description contains a description of the operation."
@@ -1538,15 +2127,15 @@ spec:
                                 namespace:
                                   description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
-                                resource:
-                                  description: "Resource name of the referent."
-                                  type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
                                   type: "string"
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                                   type: "string"
+                              required:
+                                - "apiVersion"
+                                - "kind"
                               type: "object"
                             podLogs:
                               description: "PodLogs determines the pod logs collector to execute."
@@ -1756,9 +2345,6 @@ spec:
                                 namespace:
                                   description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
-                                resource:
-                                  description: "Resource name of the referent."
-                                  type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
                                   type: "string"
@@ -1766,7 +2352,9 @@ spec:
                                   description: "Timeout for the operation. Specifies how long to wait for the condition to be met before timing out."
                                   type: "string"
                               required:
+                                - "apiVersion"
                                 - "for"
+                                - "kind"
                               type: "object"
                           type: "object"
                         type: "array"
@@ -2184,6 +2772,13 @@ spec:
                                     type: "object"
                                   description: "Clusters holds a registry to clusters to support multi-cluster tests."
                                   type: "object"
+                                deletionPropagationPolicy:
+                                  description: "DeletionPropagationPolicy decides if a deletion will propagate to the dependents of\nthe object, and how the garbage collector will handle the propagation.\nOverrides the deletion propagation policy set in the Configuration, the Test and the TestStep."
+                                  enum:
+                                    - "Orphan"
+                                    - "Background"
+                                    - "Foreground"
+                                  type: "string"
                                 expect:
                                   description: "Expect defines a list of matched checks to validate the operation outcome."
                                   items:
@@ -2201,8 +2796,11 @@ spec:
                                       - "check"
                                     type: "object"
                                   type: "array"
+                                file:
+                                  description: "File is the path to the referenced file. This can be a direct path to a file\nor an expression that matches multiple files, such as \"manifest/*.yaml\" for all YAML\nfiles within the \"manifest\" directory."
+                                  type: "string"
                                 ref:
-                                  description: "ObjectReference determines objects to be deleted."
+                                  description: "Ref determines objects to be deleted."
                                   properties:
                                     apiVersion:
                                       description: "API version of the referent."
@@ -2231,8 +2829,6 @@ spec:
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                                   type: "string"
-                              required:
-                                - "ref"
                               type: "object"
                             description:
                               description: "Description contains a description of the operation."
@@ -2645,9 +3241,6 @@ spec:
                                 namespace:
                                   description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                   type: "string"
-                                resource:
-                                  description: "Resource name of the referent."
-                                  type: "string"
                                 selector:
                                   description: "Selector defines labels selector."
                                   type: "string"
@@ -2655,7 +3248,9 @@ spec:
                                   description: "Timeout for the operation. Specifies how long to wait for the condition to be met before timing out."
                                   type: "string"
                               required:
+                                - "apiVersion"
                                 - "for"
+                                - "kind"
                               type: "object"
                           type: "object"
                         minItems: 1
