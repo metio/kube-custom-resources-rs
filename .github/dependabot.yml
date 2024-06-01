@@ -12,6 +12,11 @@ updates:
   - package-ecosystem: cargo
     directory: /
     schedule:
-      interval: daily
+      interval: weekly
+    groups:
+      kube:
+        patterns:
+          - kube
+          - k8s-openapi
     assignees:
       - sebhoss
