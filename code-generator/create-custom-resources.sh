@@ -16,7 +16,6 @@ for file in ./crd-catalog/**/*.yaml; do
 
   path="${file%.*}"
   ignore_file="${path}.ignore"
-  args_file="${path}.args"
   fixup_file="${path}.fixup"
   fixed_file="${path}.fixed"
   file_to_read="${file}"
@@ -39,14 +38,8 @@ for file in ./crd-catalog/**/*.yaml; do
       file_to_read="${fixed_file}"
     fi
 
-    if [ -f "${args_file}" ]; then
-      if ! xargs --arg-file="${args_file}" --delimiter='\n' kopium --docs --filename="${file_to_read}" > "${version_directory}/${resource_filename}.rs"; then
-        echo "  error in ${file_to_read}"
-      fi
-    else
-      if ! kopium --docs --filename="${file_to_read}" --derive=Default --derive=PartialEq > "${version_directory}/${resource_filename}.rs"; then
-        echo "  error in ${file_to_read}"
-      fi
+    if ! kopium --docs --filename="${file_to_read}" --derive=Default --derive=PartialEq --smart-derive-elision > "${version_directory}/${resource_filename}.rs"; then
+      echo "  error in ${file_to_read}"
     fi
   fi
 done
