@@ -401,6 +401,9 @@ spec:
                                           description: "uri of test content"
                                           type: "string"
                                       type: "object"
+                                    disableWebhooks:
+                                      description: "whether webhooks should be disabled for this execution"
+                                      type: "boolean"
                                     duration:
                                       description: "test duration"
                                       type: "string"
@@ -917,6 +920,9 @@ spec:
                                     description: "uri of test content"
                                     type: "string"
                                 type: "object"
+                              disableWebhooks:
+                                description: "whether webhooks should be disabled for this execution"
+                                type: "boolean"
                               duration:
                                 description: "test duration"
                                 type: "string"

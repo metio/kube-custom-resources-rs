@@ -8,6 +8,7 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -3446,40 +3447,16 @@ pub enum CiliumNetworkPolicysNodeSelectorMatchExpressionsOperator {
 /// Status is the status of the Cilium policy rule
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNetworkPolicyStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// DerivativePolicies is the status of all policies derived from the Cilium policy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "derivativePolicies")]
     pub derivative_policies: Option<BTreeMap<String, CiliumNetworkPolicyStatusDerivativePolicies>>,
-    /// Nodes is the Cilium policy status for each node
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub nodes: Option<BTreeMap<String, CiliumNetworkPolicyStatusNodes>>,
 }
 
 /// DerivativePolicies is the status of all policies derived from the Cilium policy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNetworkPolicyStatusDerivativePolicies {
-    /// Annotations corresponds to the Annotations in the ObjectMeta of the CNP that have been realized on the node for CNP. That is, if a CNP has been imported and has been assigned annotation X=Y by the user, Annotations in CiliumNetworkPolicyNodeStatus will be X=Y once the CNP that was imported corresponding to Annotation X=Y has been realized on the node.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, String>>,
-    /// Enforcing is set to true once all endpoints present at the time the policy has been imported are enforcing this policy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub enforcing: Option<bool>,
-    /// Error describes any error that occurred when parsing or importing the policy, or realizing the policy for the endpoints to which it applies on the node.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error: Option<String>,
-    /// LastUpdated contains the last time this status was updated
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
-    pub last_updated: Option<String>,
-    /// Revision is the policy revision of the repository which first implemented this policy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPolicyRevision")]
-    pub local_policy_revision: Option<i64>,
-    /// OK is true when the policy has been parsed and imported successfully into the in-memory policy repository on the node.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ok: Option<bool>,
-}
-
-/// Nodes is the Cilium policy status for each node
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CiliumNetworkPolicyStatusNodes {
     /// Annotations corresponds to the Annotations in the ObjectMeta of the CNP that have been realized on the node for CNP. That is, if a CNP has been imported and has been assigned annotation X=Y by the user, Annotations in CiliumNetworkPolicyNodeStatus will be X=Y once the CNP that was imported corresponding to Annotation X=Y has been realized on the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,

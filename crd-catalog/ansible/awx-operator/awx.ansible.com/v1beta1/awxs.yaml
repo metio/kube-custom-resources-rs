@@ -1444,6 +1444,10 @@ spec:
                   description: "Number of seconds to wait for a probe response from task pod"
                   format: "int32"
                   type: "integer"
+                task_manage_replicas:
+                  default: true
+                  description: "Enables operator control of replicas count for the task deployment when set to 'true'"
+                  type: "boolean"
                 task_node_selector:
                   description: "nodeSelector for the task pods"
                   type: "string"
@@ -1925,6 +1929,10 @@ spec:
                   description: "Number of seconds to wait for a probe response from web pod"
                   format: "int32"
                   type: "integer"
+                web_manage_replicas:
+                  default: true
+                  description: "Enables operator control of replicas count for the web deployment when set to 'true'"
+                  type: "boolean"
                 web_node_selector:
                   description: "nodeSelector for the web pods"
                   type: "string"

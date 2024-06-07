@@ -147,11 +147,9 @@ pub struct WasmPluginTargetRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     /// kind is kind of the target resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
+    pub kind: String,
     /// name is the name of the target resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// namespace is the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -163,11 +161,9 @@ pub struct WasmPluginTargetRefs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     /// kind is kind of the target resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
+    pub kind: String,
     /// name is the name of the target resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// namespace is the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,

@@ -339,6 +339,13 @@ pub struct PrometheusAgentSpec {
     /// enabling the StatefulSetMinReadySeconds feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
+    /// Mode defines how the Prometheus operator deploys the PrometheusAgent pod(s).
+    /// For now this field has no effect.
+    /// 
+    /// 
+    /// (Alpha) Using this field requires the `PrometheusAgentDaemonSet` feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<PrometheusAgentMode>,
     /// Defines on which Nodes the Pods are scheduled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
@@ -4238,6 +4245,14 @@ pub enum PrometheusAgentLogLevel {
     Warn,
     #[serde(rename = "error")]
     Error,
+}
+
+/// Specification of the desired behavior of the Prometheus agent. More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentMode {
+    StatefulSet,
+    DaemonSet,
 }
 
 /// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.

@@ -104,6 +104,9 @@ pub struct TestSuiteAfterExecuteExecutionRequest {
     /// cron job template extensions reference
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
+    /// whether webhooks should be called on execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// test execution labels
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,
@@ -323,6 +326,9 @@ pub struct TestSuiteBeforeExecuteExecutionRequest {
     /// cron job template extensions reference
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
+    /// whether webhooks should be called on execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// test execution labels
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,
@@ -488,6 +494,9 @@ pub struct TestSuiteExecutionRequest {
     /// name of the template resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
+    /// whether webhooks should be called on execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// execution labels
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,
@@ -691,6 +700,9 @@ pub struct TestSuiteStepsExecuteExecutionRequest {
     /// cron job template extensions reference
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
+    /// whether webhooks should be called on execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// test execution labels
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,

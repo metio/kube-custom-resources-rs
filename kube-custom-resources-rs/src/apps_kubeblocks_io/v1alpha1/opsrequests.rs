@@ -48,7 +48,7 @@ pub struct OpsRequestSpec {
     ///  Note: Once set, the `force` field is immutable and cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
-    /// Lists HorizontalScaling objects, each specifying scaling requirements for a Component, including desired total replica counts, configurations for new instances, modifications for existing instances, and instance downscaling options.
+    /// Lists HorizontalScaling objects, each specifying scaling requirements for a Component, including desired replica changes, configurations for new instances, modifications for existing instances, and take offline/online the specified instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "horizontalScaling")]
     pub horizontal_scaling: Option<Vec<OpsRequestHorizontalScaling>>,
     /// Specifies the maximum time in seconds that the OpsRequest will wait for its pre-conditions to be met before it aborts the operation. If set to 0 (default), pre-conditions must be satisfied immediately for the OpsRequest to proceed.
@@ -298,27 +298,77 @@ pub struct OpsRequestHorizontalScaling {
     /// Specifies the name of the Component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// Contains a list of InstanceTemplate objects. Each InstanceTemplate object allows for modifying replica counts or specifying configurations for new instances during scaling. 
-    ///  The field supports two main use cases: 
-    ///  - Modifying replica count: Specify the desired replica count for existing instances with a particular configuration using Name and Replicas fields. To modify the replica count, the Name and Replicas fields of the InstanceTemplate object should be provided. Only these fields are used for matching and adjusting replicas; other fields are ignored. The Replicas value overrides any existing count. - Configuring new instances: Define the configuration for new instances added during scaling, including resource requirements, labels, annotations, etc. New instances are created based on the provided InstanceTemplate.
+    /// Deprecated: since v0.9, use scaleOut and scaleIn instead. Specifies the number of replicas for the component. Cannot be used with "scaleIn" and "scaleOut".
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub instances: Option<Vec<OpsRequestHorizontalScalingInstances>>,
-    /// Specifies the names of instances to be scaled down. This provides control over which specific instances are targeted for termination when reducing the replica count.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
-    pub offline_instances: Option<Vec<String>>,
-    /// Specifies the number of total replicas.
-    pub replicas: i32,
+    pub replicas: Option<i32>,
+    /// Specifies the replica changes for scaling in components and instance templates, and takes specified instances offline. Can be used in conjunction with the "scaleOut" operation. Note: Any configuration that creates instances is considered invalid.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIn")]
+    pub scale_in: Option<OpsRequestHorizontalScalingScaleIn>,
+    /// Specifies the replica changes for scaling out components and instance templates, and brings offline instances back online. Can be used in conjunction with the "scaleIn" operation. Note: Any configuration that deletes instances is considered invalid.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleOut")]
+    pub scale_out: Option<OpsRequestHorizontalScalingScaleOut>,
+}
+
+/// Specifies the replica changes for scaling in components and instance templates, and takes specified instances offline. Can be used in conjunction with the "scaleOut" operation. Note: Any configuration that creates instances is considered invalid.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleIn {
+    /// Modifies the desired replicas count for existing InstanceTemplate. if the inst
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub instances: Option<Vec<OpsRequestHorizontalScalingScaleInInstances>>,
+    /// Specifies the instance names that need to be taken offline.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlineInstancesToOffline")]
+    pub online_instances_to_offline: Option<Vec<String>>,
+    /// Specifies the replica changes for the component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaChanges")]
+    pub replica_changes: Option<i32>,
+}
+
+/// InstanceReplicasTemplate defines the template for instance replicas.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleInInstances {
+    /// Specifies the name of the instance template.
+    pub name: String,
+    /// Specifies the replica changes for the instance template.
+    #[serde(rename = "replicaChanges")]
+    pub replica_changes: i32,
+}
+
+/// Specifies the replica changes for scaling out components and instance templates, and brings offline instances back online. Can be used in conjunction with the "scaleIn" operation. Note: Any configuration that deletes instances is considered invalid.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOut {
+    /// Modifies the desired replicas count for existing InstanceTemplate. if the inst
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub instances: Option<Vec<OpsRequestHorizontalScalingScaleOutInstances>>,
+    /// Defines the configuration for new instances added during scaling, including resource requirements, labels, annotations, etc. New instances are created based on the provided instance templates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "newInstances")]
+    pub new_instances: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstances>>,
+    /// Specifies the instances in the offline list to bring back online.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstancesToOnline")]
+    pub offline_instances_to_online: Option<Vec<String>>,
+    /// Specifies the replica changes for the component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaChanges")]
+    pub replica_changes: Option<i32>,
+}
+
+/// InstanceReplicasTemplate defines the template for instance replicas.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutInstances {
+    /// Specifies the name of the instance template.
+    pub name: String,
+    /// Specifies the replica changes for the instance template.
+    #[serde(rename = "replicaChanges")]
+    pub replica_changes: i32,
 }
 
 /// InstanceTemplate allows customization of individual replica configurations in a Component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstances {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstances {
     /// Specifies a map of key-value pairs to be merged into the Pod's existing annotations. Existing keys will have their values overwritten, while new keys will be added to the annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Defines Env to override. Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<OpsRequestHorizontalScalingInstancesEnv>>,
+    pub env: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesEnv>>,
     /// Specifies an override for the first container's image in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -327,36 +377,29 @@ pub struct OpsRequestHorizontalScalingInstances {
     pub labels: Option<BTreeMap<String, String>>,
     /// Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns.
     pub name: String,
-    /// Specifies the name of the node where the Pod should be scheduled. If set, the Pod will be directly assigned to the specified node, bypassing the Kubernetes scheduler. This is useful for controlling Pod placement on specific nodes. 
-    ///  Important considerations: - `nodeName` bypasses default scheduling constraints (e.g., resource requirements, node selectors, affinity rules). - It is the user's responsibility to ensure the node is suitable for the Pod. - If the node is unavailable, the Pod will remain in "Pending" state until the node is available or the Pod is deleted.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
-    pub node_name: Option<String>,
-    /// Defines NodeSelector to override.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
-    pub node_selector: Option<BTreeMap<String, String>>,
     /// Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the Component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<OpsRequestHorizontalScalingInstancesResources>,
-    /// Tolerations specifies a list of tolerations to be applied to the Pod, allowing it to tolerate node taints. This field can be used to add new tolerations or override existing ones.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations: Option<Vec<OpsRequestHorizontalScalingInstancesTolerations>>,
+    pub resources: Option<OpsRequestHorizontalScalingScaleOutNewInstancesResources>,
+    /// Specifies the scheduling policy for the Component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
+    pub scheduling_policy: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicy>,
     /// Defines VolumeClaimTemplates to override. Add new or override existing volume claim templates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
-    pub volume_claim_templates: Option<Vec<OpsRequestHorizontalScalingInstancesVolumeClaimTemplates>>,
+    pub volume_claim_templates: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplates>>,
     /// Defines VolumeMounts to override. Add new or override existing volume mounts of the first container in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
-    pub volume_mounts: Option<Vec<OpsRequestHorizontalScalingInstancesVolumeMounts>>,
+    pub volume_mounts: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumeMounts>>,
     /// Defines Volumes to override. Add new or override existing volumes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<Vec<OpsRequestHorizontalScalingInstancesVolumes>>,
+    pub volumes: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumes>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesEnv {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
@@ -364,29 +407,29 @@ pub struct OpsRequestHorizontalScalingInstancesEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<OpsRequestHorizontalScalingInstancesEnvValueFrom>,
+    pub value_from: Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesEnvValueFrom {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<OpsRequestHorizontalScalingInstancesEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<OpsRequestHorizontalScalingInstancesEnvValueFromFieldRef>,
+    pub field_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<OpsRequestHorizontalScalingInstancesEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<OpsRequestHorizontalScalingInstancesEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesEnvValueFromConfigMapKeyRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -399,7 +442,7 @@ pub struct OpsRequestHorizontalScalingInstancesEnvValueFromConfigMapKeyRef {
 
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesEnvValueFromFieldRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -410,7 +453,7 @@ pub struct OpsRequestHorizontalScalingInstancesEnvValueFromFieldRef {
 
 /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesEnvValueFromResourceFieldRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -423,7 +466,7 @@ pub struct OpsRequestHorizontalScalingInstancesEnvValueFromResourceFieldRef {
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesEnvValueFromSecretKeyRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -436,12 +479,12 @@ pub struct OpsRequestHorizontalScalingInstancesEnvValueFromSecretKeyRef {
 
 /// Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesResources {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
     ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<OpsRequestHorizontalScalingInstancesResourcesClaims>>,
+    pub claims: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
@@ -452,14 +495,445 @@ pub struct OpsRequestHorizontalScalingInstancesResources {
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesResourcesClaims {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
     pub name: String,
 }
 
+/// Specifies the scheduling policy for the Component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicy {
+    /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinity>,
+    /// NodeName is a request to schedule this Pod onto a specific node. If it is non-empty, the scheduler simply schedules this Pod onto that node, assuming that it fits resource requirements.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
+    pub node_name: Option<String>,
+    /// NodeSelector is a selector which must be true for the Pod to fit on a node. Selector which must match a node's labels for the Pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// If specified, the Pod will be dispatched by specified scheduler. If not specified, the Pod will be dispatched by default scheduler.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
+    pub scheduler_name: Option<String>,
+    /// Allows Pods to be scheduled onto nodes with matching taints. Each toleration in the array allows the Pod to tolerate node taints based on specified `key`, `value`, `effect`, and `operator`. 
+    ///  - The `key`, `value`, and `effect` identify the taint that the toleration matches. - The `operator` determines how the toleration matches the taint. 
+    ///  Pods with matching tolerations are allowed to be scheduled on tainted nodes, typically reserved for specific purposes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTolerations>>,
+    /// TopologySpreadConstraints describes how a group of Pods ought to spread across topology domains. Scheduler will schedule Pods in a way which abides by the constraints. All topologySpreadConstraints are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTopologySpreadConstraints>>,
+}
+
+/// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinity {
+    /// Describes node affinity scheduling rules for the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinity>,
+    /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinity>,
+    /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinity>,
+}
+
+/// Describes node affinity scheduling rules for the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+}
+
+/// An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// A node selector term, associated with the corresponding weight.
+    pub preference: OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// A node selector term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A list of node selector terms. The terms are ORed.
+    #[serde(rename = "nodeSelectorTerms")]
+    pub node_selector_terms: Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+}
+
+/// A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
 /// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesTolerations {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTolerations {
     /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
@@ -477,8 +951,65 @@ pub struct OpsRequestHorizontalScalingInstancesTolerations {
     pub value: Option<String>,
 }
 
+/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumeClaimTemplates {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTopologySpreadConstraints {
+    /// LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot be set when LabelSelector isn't set. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector. 
+    ///  This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. The global minimum is the minimum number of matching pods in an eligible domain or zero if the number of eligible domains is less than MinDomains. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 2/2/1: In this case, the global minimum is 1. | zone1 | zone2 | zone3 | |  P P  |  P P  |   P   | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2; scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed.
+    #[serde(rename = "maxSkew")]
+    pub max_skew: i32,
+    /// MinDomains indicates a minimum number of eligible domains. When the number of eligible domains with matching topology keys is less than minDomains, Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed. And when the number of eligible domains with matching topology keys equals or greater than minDomains, this value has no effect on scheduling. As a result, when the number of eligible domains is less than minDomains, scheduler won't schedule more than maxSkew Pods to those domains. If value is nil, the constraint behaves as if MinDomains is equal to 1. Valid values are integers greater than 0. When value is not nil, WhenUnsatisfiable must be DoNotSchedule. 
+    ///  For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same labelSelector spread as 2/2/2: | zone1 | zone2 | zone3 | |  P P  |  P P  |  P P  | The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0. In this situation, new pod with the same labelSelector cannot be scheduled, because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones, it will violate MaxSkew. 
+    ///  This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod topology spread skew. Options are: - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations. - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations. 
+    ///  If this value is nil, the behavior is equivalent to the Honor policy. This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    /// NodeTaintsPolicy indicates how we will treat node taints when calculating pod topology spread skew. Options are: - Honor: nodes without taints, along with tainted nodes for which the incoming pod has a toleration, are included. - Ignore: node taints are ignored. All nodes are included. 
+    ///  If this value is nil, the behavior is equivalent to the Ignore policy. This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
+    /// TopologyKey is the key of node labels. Nodes that have a label with this key and identical values are considered to be in the same topology. We consider each <key, value> as a "bucket", and try to put balanced number of pods into each bucket. We define a domain as a particular instance of a topology. Also, we define an eligible domain as a domain whose nodes meet the requirements of nodeAffinityPolicy and nodeTaintsPolicy. e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology. And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology. It's a required field.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint. - DoNotSchedule (default) tells the scheduler not to schedule it. - ScheduleAnyway tells the scheduler to schedule the pod in any location, but giving higher precedence to topologies that would help reduce the skew. A constraint is considered "Unsatisfiable" for an incoming pod if and only if every possible node assignment for that pod would violate "MaxSkew" on some topology. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 3/1/1: | zone1 | zone2 | zone3 | | P P P |   P   |   P   | If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler won't make it *more* imbalanced. It's a required field.
+    #[serde(rename = "whenUnsatisfiable")]
+    pub when_unsatisfiable: String,
+}
+
+/// LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplates {
     /// Refers to the name of a volumeMount defined in either: 
     ///  - `componentDefinition.spec.runtime.containers[*].volumeMounts` - `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated) 
     ///  The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
@@ -486,19 +1017,19 @@ pub struct OpsRequestHorizontalScalingInstancesVolumeClaimTemplates {
     /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume with the mount name specified in the `name` field. 
     ///  When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<OpsRequestHorizontalScalingInstancesVolumeClaimTemplatesSpec>,
+    pub spec: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplatesSpec>,
 }
 
 /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume with the mount name specified in the `name` field. 
 ///  When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumeClaimTemplatesSpec {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplatesSpec {
     /// Contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// Represents the minimum resources the volume should have. If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<OpsRequestHorizontalScalingInstancesVolumeClaimTemplatesSpecResources>,
+    pub resources: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplatesSpecResources>,
     /// The name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
@@ -509,12 +1040,12 @@ pub struct OpsRequestHorizontalScalingInstancesVolumeClaimTemplatesSpec {
 
 /// Represents the minimum resources the volume should have. If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumeClaimTemplatesSpecResources {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplatesSpecResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
     ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<OpsRequestHorizontalScalingInstancesVolumeClaimTemplatesSpecResourcesClaims>>,
+    pub claims: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplatesSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
@@ -525,14 +1056,14 @@ pub struct OpsRequestHorizontalScalingInstancesVolumeClaimTemplatesSpecResources
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumeClaimTemplatesSpecResourcesClaims {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplatesSpecResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
     pub name: String,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumeMounts {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumeMounts {
     /// Path within the container at which the volume should be mounted.  Must not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
@@ -554,105 +1085,105 @@ pub struct OpsRequestHorizontalScalingInstancesVolumeMounts {
 
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumes {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
-    pub aws_elastic_block_store: Option<OpsRequestHorizontalScalingInstancesVolumesAwsElasticBlockStore>,
+    pub aws_elastic_block_store: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
-    pub azure_disk: Option<OpsRequestHorizontalScalingInstancesVolumesAzureDisk>,
+    pub azure_disk: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
-    pub azure_file: Option<OpsRequestHorizontalScalingInstancesVolumesAzureFile>,
+    pub azure_file: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAzureFile>,
     /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cephfs: Option<OpsRequestHorizontalScalingInstancesVolumesCephfs>,
+    pub cephfs: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cinder: Option<OpsRequestHorizontalScalingInstancesVolumesCinder>,
+    pub cinder: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<OpsRequestHorizontalScalingInstancesVolumesConfigMap>,
+    pub config_map: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesConfigMap>,
     /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub csi: Option<OpsRequestHorizontalScalingInstancesVolumesCsi>,
+    pub csi: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<OpsRequestHorizontalScalingInstancesVolumesDownwardApi>,
+    pub downward_api: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<OpsRequestHorizontalScalingInstancesVolumesEmptyDir>,
+    pub empty_dir: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEmptyDir>,
     /// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
     ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
     ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
     ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
     ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ephemeral: Option<OpsRequestHorizontalScalingInstancesVolumesEphemeral>,
+    pub ephemeral: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeral>,
     /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fc: Option<OpsRequestHorizontalScalingInstancesVolumesFc>,
+    pub fc: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFc>,
     /// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
-    pub flex_volume: Option<OpsRequestHorizontalScalingInstancesVolumesFlexVolume>,
+    pub flex_volume: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flocker: Option<OpsRequestHorizontalScalingInstancesVolumesFlocker>,
+    pub flocker: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
-    pub gce_persistent_disk: Option<OpsRequestHorizontalScalingInstancesVolumesGcePersistentDisk>,
+    pub gce_persistent_disk: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
-    pub git_repo: Option<OpsRequestHorizontalScalingInstancesVolumesGitRepo>,
+    pub git_repo: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glusterfs: Option<OpsRequestHorizontalScalingInstancesVolumesGlusterfs>,
+    pub glusterfs: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesGlusterfs>,
     /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<OpsRequestHorizontalScalingInstancesVolumesHostPath>,
+    pub host_path: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesHostPath>,
     /// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub iscsi: Option<OpsRequestHorizontalScalingInstancesVolumesIscsi>,
+    pub iscsi: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesIscsi>,
     /// name of the volume. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
     /// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub nfs: Option<OpsRequestHorizontalScalingInstancesVolumesNfs>,
+    pub nfs: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesNfs>,
     /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<OpsRequestHorizontalScalingInstancesVolumesPersistentVolumeClaim>,
+    pub persistent_volume_claim: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
-    pub photon_persistent_disk: Option<OpsRequestHorizontalScalingInstancesVolumesPhotonPersistentDisk>,
+    pub photon_persistent_disk: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
-    pub portworx_volume: Option<OpsRequestHorizontalScalingInstancesVolumesPortworxVolume>,
+    pub portworx_volume: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub projected: Option<OpsRequestHorizontalScalingInstancesVolumesProjected>,
+    pub projected: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjected>,
     /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub quobyte: Option<OpsRequestHorizontalScalingInstancesVolumesQuobyte>,
+    pub quobyte: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rbd: Option<OpsRequestHorizontalScalingInstancesVolumesRbd>,
+    pub rbd: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
-    pub scale_io: Option<OpsRequestHorizontalScalingInstancesVolumesScaleIo>,
+    pub scale_io: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesScaleIo>,
     /// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<OpsRequestHorizontalScalingInstancesVolumesSecret>,
+    pub secret: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub storageos: Option<OpsRequestHorizontalScalingInstancesVolumesStorageos>,
+    pub storageos: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
-    pub vsphere_volume: Option<OpsRequestHorizontalScalingInstancesVolumesVsphereVolume>,
+    pub vsphere_volume: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesAwsElasticBlockStore {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAwsElasticBlockStore {
     /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
@@ -669,7 +1200,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesAwsElasticBlockStore {
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesAzureDisk {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
@@ -692,7 +1223,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesAzureDisk {
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesAzureFile {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
@@ -706,7 +1237,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesAzureFile {
 
 /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesCephfs {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     pub monitors: Vec<String>,
     /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
@@ -720,7 +1251,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesCephfs {
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<OpsRequestHorizontalScalingInstancesVolumesCephfsSecretRef>,
+    pub secret_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCephfsSecretRef>,
     /// user is optional: User is the rados user name, default is admin More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
@@ -728,7 +1259,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesCephfs {
 
 /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesCephfsSecretRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCephfsSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -736,7 +1267,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesCephfsSecretRef {
 
 /// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesCinder {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCinder {
     /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
@@ -745,7 +1276,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesCinder {
     pub read_only: Option<bool>,
     /// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<OpsRequestHorizontalScalingInstancesVolumesCinderSecretRef>,
+    pub secret_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCinderSecretRef>,
     /// volumeID used to identify the volume in cinder. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
     pub volume_id: String,
@@ -753,7 +1284,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesCinder {
 
 /// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesCinderSecretRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCinderSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -761,13 +1292,13 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesCinderSecretRef {
 
 /// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesConfigMap {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesConfigMap {
     /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<OpsRequestHorizontalScalingInstancesVolumesConfigMapItems>>,
+    pub items: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesConfigMapItems>>,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -778,7 +1309,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesConfigMap {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesConfigMapItems {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
@@ -790,7 +1321,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesConfigMapItems {
 
 /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesCsi {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCsi {
     /// driver is the name of the CSI driver that handles this volume. Consult with your admin for the correct name as registered in the cluster.
     pub driver: String,
     /// fsType to mount. Ex. "ext4", "xfs", "ntfs". If not provided, the empty value is passed to the associated CSI driver which will determine the default filesystem to apply.
@@ -798,7 +1329,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesCsi {
     pub fs_type: Option<String>,
     /// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
-    pub node_publish_secret_ref: Option<OpsRequestHorizontalScalingInstancesVolumesCsiNodePublishSecretRef>,
+    pub node_publish_secret_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume. Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
@@ -809,7 +1340,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesCsi {
 
 /// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesCsiNodePublishSecretRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCsiNodePublishSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -817,21 +1348,21 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesCsiNodePublishSecretRef {
 
 /// downwardAPI represents downward API about the pod that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesDownwardApi {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApi {
     /// Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<OpsRequestHorizontalScalingInstancesVolumesDownwardApiItems>>,
+    pub items: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesDownwardApiItems {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<OpsRequestHorizontalScalingInstancesVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
@@ -839,12 +1370,12 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<OpsRequestHorizontalScalingInstancesVolumesDownwardApiItemsResourceFieldRef>,
+    pub resource_field_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesDownwardApiItemsFieldRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -855,7 +1386,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesDownwardApiItemsFieldRef {
 
 /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesDownwardApiItemsResourceFieldRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -868,7 +1399,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesDownwardApiItemsResourceFi
 
 /// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEmptyDir {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEmptyDir {
     /// medium represents what type of storage medium should back this directory. The default is "" which means to use the node's default medium. Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
@@ -883,13 +1414,13 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesEmptyDir {
 ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
 ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeral {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeral {
     /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
     ///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
     ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
     ///  Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
-    pub volume_claim_template: Option<OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplate>,
+    pub volume_claim_template: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
@@ -897,17 +1428,17 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeral {
 ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
 ///  Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplate {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplate {
     /// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateMetadata>,
+    pub metadata: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
-    pub spec: OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpec,
+    pub spec: OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpec,
 }
 
 /// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateMetadata {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -922,22 +1453,22 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTempla
 
 /// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpec {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    pub data_source: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    pub data_source_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    pub resources: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    pub selector: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
@@ -951,7 +1482,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTempla
 
 /// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
@@ -963,7 +1494,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTempla
 
 /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
@@ -978,12 +1509,12 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTempla
 
 /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecResources {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
     ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
+    pub claims: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
@@ -994,17 +1525,17 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTempla
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
     pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
@@ -1012,7 +1543,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTempla
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1024,7 +1555,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesEphemeralVolumeClaimTempla
 
 /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesFc {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFc {
     /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
@@ -1044,7 +1575,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesFc {
 
 /// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesFlexVolume {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
     pub driver: String,
     /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
@@ -1058,12 +1589,12 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesFlexVolume {
     pub read_only: Option<bool>,
     /// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<OpsRequestHorizontalScalingInstancesVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlexVolumeSecretRef>,
 }
 
 /// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesFlexVolumeSecretRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlexVolumeSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1071,7 +1602,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesFlexVolumeSecretRef {
 
 /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesFlocker {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
@@ -1082,7 +1613,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesFlocker {
 
 /// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesGcePersistentDisk {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesGcePersistentDisk {
     /// fsType is filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
@@ -1099,7 +1630,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesGcePersistentDisk {
 
 /// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesGitRepo {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesGitRepo {
     /// directory is the target directory name. Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the git repository.  Otherwise, if specified, the volume will contain the git repository in the subdirectory with the given name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub directory: Option<String>,
@@ -1112,7 +1643,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesGitRepo {
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesGlusterfs {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesGlusterfs {
     /// endpoints is the endpoint name that details Glusterfs topology. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub endpoints: String,
     /// path is the Glusterfs volume path. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
@@ -1124,7 +1655,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesGlusterfs {
 
 /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesHostPath {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesHostPath {
     /// path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     pub path: String,
     /// type for HostPath Volume Defaults to "" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
@@ -1134,7 +1665,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesHostPath {
 
 /// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesIscsi {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -1162,7 +1693,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesIscsi {
     pub read_only: Option<bool>,
     /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<OpsRequestHorizontalScalingInstancesVolumesIscsiSecretRef>,
+    pub secret_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesIscsiSecretRef>,
     /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
     pub target_portal: String,
@@ -1170,7 +1701,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesIscsi {
 
 /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesIscsiSecretRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesIscsiSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1178,7 +1709,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesIscsiSecretRef {
 
 /// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesNfs {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesNfs {
     /// path that is exported by the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub path: String,
     /// readOnly here will force the NFS export to be mounted with read-only permissions. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
@@ -1190,7 +1721,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesNfs {
 
 /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesPersistentVolumeClaim {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPersistentVolumeClaim {
     /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
     pub claim_name: String,
@@ -1201,7 +1732,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesPersistentVolumeClaim {
 
 /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesPhotonPersistentDisk {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPhotonPersistentDisk {
     /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
@@ -1212,7 +1743,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesPhotonPersistentDisk {
 
 /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesPortworxVolume {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
@@ -1226,38 +1757,38 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesPortworxVolume {
 
 /// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjected {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjected {
     /// defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources: Option<Vec<OpsRequestHorizontalScalingInstancesVolumesProjectedSources>>,
+    pub sources: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSources>>,
 }
 
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSources {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSources {
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesConfigMap>,
+    pub config_map: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardApi>,
+    pub downward_api: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesSecret>,
+    pub secret: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
-    pub service_account_token: Option<OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesServiceAccountToken>,
+    pub service_account_token: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesConfigMap {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesConfigMap {
     /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesConfigMapItems>>,
+    pub items: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1268,7 +1799,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesConfigMap 
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesConfigMapItems {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
@@ -1280,18 +1811,18 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesConfigMapI
 
 /// downwardAPI information about the downwardAPI data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardApi {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardApiItems>>,
+    pub items: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardApiItems {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
@@ -1299,12 +1830,12 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardAp
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    pub resource_field_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -1315,7 +1846,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardAp
 
 /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -1328,10 +1859,10 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesDownwardAp
 
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesSecret {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesSecret {
     /// items if unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesSecretItems>>,
+    pub items: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1342,7 +1873,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesSecret {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesSecretItems {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesSecretItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
@@ -1354,7 +1885,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesSecretItem
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesServiceAccountToken {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesServiceAccountToken {
     /// audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
@@ -1367,7 +1898,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesProjectedSourcesServiceAcc
 
 /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesQuobyte {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesQuobyte {
     /// group to map volume access to Default is no group
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
@@ -1388,7 +1919,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesQuobyte {
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesRbd {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesRbd {
     /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
@@ -1407,7 +1938,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesRbd {
     pub read_only: Option<bool>,
     /// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<OpsRequestHorizontalScalingInstancesVolumesRbdSecretRef>,
+    pub secret_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesRbdSecretRef>,
     /// user is the rados user name. Default is admin. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
@@ -1415,7 +1946,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesRbd {
 
 /// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesRbdSecretRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesRbdSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1423,7 +1954,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesRbdSecretRef {
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesScaleIo {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesScaleIo {
     /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Default is "xfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
@@ -1437,7 +1968,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesScaleIo {
     pub read_only: Option<bool>,
     /// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
     #[serde(rename = "secretRef")]
-    pub secret_ref: OpsRequestHorizontalScalingInstancesVolumesScaleIoSecretRef,
+    pub secret_ref: OpsRequestHorizontalScalingScaleOutNewInstancesVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
@@ -1456,7 +1987,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesScaleIo {
 
 /// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesScaleIoSecretRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesScaleIoSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1464,13 +1995,13 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesScaleIoSecretRef {
 
 /// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesSecret {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesSecret {
     /// defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<OpsRequestHorizontalScalingInstancesVolumesSecretItems>>,
+    pub items: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesSecretItems>>,
     /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
@@ -1481,7 +2012,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesSecret {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesSecretItems {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesSecretItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
@@ -1493,7 +2024,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesSecretItems {
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesStorageos {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesStorageos {
     /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
@@ -1502,7 +2033,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesStorageos {
     pub read_only: Option<bool>,
     /// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<OpsRequestHorizontalScalingInstancesVolumesStorageosSecretRef>,
+    pub secret_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
@@ -1513,7 +2044,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesStorageos {
 
 /// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesStorageosSecretRef {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesStorageosSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1521,7 +2052,7 @@ pub struct OpsRequestHorizontalScalingInstancesVolumesStorageosSecretRef {
 
 /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingInstancesVolumesVsphereVolume {
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesVsphereVolume {
     /// fsType is filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
@@ -2324,22 +2855,15 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstances {
     pub labels: Option<BTreeMap<String, String>>,
     /// Name specifies the unique name of the instance Pod created using this InstanceTemplate. This name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0. The specified name overrides any default naming conventions or patterns.
     pub name: String,
-    /// Specifies the name of the node where the Pod should be scheduled. If set, the Pod will be directly assigned to the specified node, bypassing the Kubernetes scheduler. This is useful for controlling Pod placement on specific nodes. 
-    ///  Important considerations: - `nodeName` bypasses default scheduling constraints (e.g., resource requirements, node selectors, affinity rules). - It is the user's responsibility to ensure the node is suitable for the Pod. - If the node is unavailable, the Pod will remain in "Pending" state until the node is available or the Pod is deleted.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
-    pub node_name: Option<String>,
-    /// Defines NodeSelector to override.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
-    pub node_selector: Option<BTreeMap<String, String>>,
     /// Specifies the number of instances (Pods) to create from this InstanceTemplate. This field allows setting how many replicated instances of the Component, with the specific overrides in the InstanceTemplate, are created. The default value is 1. A value of 0 disables instance creation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// Specifies an override for the resource requirements of the first container in the Pod. This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpsRequestStatusLastConfigurationComponentsInstancesResources>,
-    /// Tolerations specifies a list of tolerations to be applied to the Pod, allowing it to tolerate node taints. This field can be used to add new tolerations or override existing ones.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesTolerations>>,
+    /// Specifies the scheduling policy for the Component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
+    pub scheduling_policy: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicy>,
     /// Defines VolumeClaimTemplates to override. Add new or override existing volume claim templates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumeClaimTemplates>>,
@@ -2454,9 +2978,440 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesResourcesClaims {
     pub name: String,
 }
 
+/// Specifies the scheduling policy for the Component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicy {
+    /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinity>,
+    /// NodeName is a request to schedule this Pod onto a specific node. If it is non-empty, the scheduler simply schedules this Pod onto that node, assuming that it fits resource requirements.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
+    pub node_name: Option<String>,
+    /// NodeSelector is a selector which must be true for the Pod to fit on a node. Selector which must match a node's labels for the Pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// If specified, the Pod will be dispatched by specified scheduler. If not specified, the Pod will be dispatched by default scheduler.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
+    pub scheduler_name: Option<String>,
+    /// Allows Pods to be scheduled onto nodes with matching taints. Each toleration in the array allows the Pod to tolerate node taints based on specified `key`, `value`, `effect`, and `operator`. 
+    ///  - The `key`, `value`, and `effect` identify the taint that the toleration matches. - The `operator` determines how the toleration matches the taint. 
+    ///  Pods with matching tolerations are allowed to be scheduled on tainted nodes, typically reserved for specific purposes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyTolerations>>,
+    /// TopologySpreadConstraints describes how a group of Pods ought to spread across topology domains. Scheduler will schedule Pods in a way which abides by the constraints. All topologySpreadConstraints are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyTopologySpreadConstraints>>,
+}
+
+/// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinity {
+    /// Describes node affinity scheduling rules for the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinity>,
+    /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinity>,
+    /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinity>,
+}
+
+/// Describes node affinity scheduling rules for the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+}
+
+/// An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// A node selector term, associated with the corresponding weight.
+    pub preference: OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// A node selector term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A list of node selector terms. The terms are ORed.
+    #[serde(rename = "nodeSelectorTerms")]
+    pub node_selector_terms: Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+}
+
+/// A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
 /// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesTolerations {
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyTolerations {
     /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
@@ -2472,6 +3427,63 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesTolerations {
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyTopologySpreadConstraints {
+    /// LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot be set when LabelSelector isn't set. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector. 
+    ///  This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. The global minimum is the minimum number of matching pods in an eligible domain or zero if the number of eligible domains is less than MinDomains. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 2/2/1: In this case, the global minimum is 1. | zone1 | zone2 | zone3 | |  P P  |  P P  |   P   | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2; scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed.
+    #[serde(rename = "maxSkew")]
+    pub max_skew: i32,
+    /// MinDomains indicates a minimum number of eligible domains. When the number of eligible domains with matching topology keys is less than minDomains, Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed. And when the number of eligible domains with matching topology keys equals or greater than minDomains, this value has no effect on scheduling. As a result, when the number of eligible domains is less than minDomains, scheduler won't schedule more than maxSkew Pods to those domains. If value is nil, the constraint behaves as if MinDomains is equal to 1. Valid values are integers greater than 0. When value is not nil, WhenUnsatisfiable must be DoNotSchedule. 
+    ///  For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same labelSelector spread as 2/2/2: | zone1 | zone2 | zone3 | |  P P  |  P P  |  P P  | The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0. In this situation, new pod with the same labelSelector cannot be scheduled, because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones, it will violate MaxSkew. 
+    ///  This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod topology spread skew. Options are: - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations. - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations. 
+    ///  If this value is nil, the behavior is equivalent to the Honor policy. This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    /// NodeTaintsPolicy indicates how we will treat node taints when calculating pod topology spread skew. Options are: - Honor: nodes without taints, along with tainted nodes for which the incoming pod has a toleration, are included. - Ignore: node taints are ignored. All nodes are included. 
+    ///  If this value is nil, the behavior is equivalent to the Ignore policy. This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
+    /// TopologyKey is the key of node labels. Nodes that have a label with this key and identical values are considered to be in the same topology. We consider each <key, value> as a "bucket", and try to put balanced number of pods into each bucket. We define a domain as a particular instance of a topology. Also, we define an eligible domain as a domain whose nodes meet the requirements of nodeAffinityPolicy and nodeTaintsPolicy. e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology. And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology. It's a required field.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint. - DoNotSchedule (default) tells the scheduler not to schedule it. - ScheduleAnyway tells the scheduler to schedule the pod in any location, but giving higher precedence to topologies that would help reduce the skew. A constraint is considered "Unsatisfiable" for an incoming pod if and only if every possible node assignment for that pod would violate "MaxSkew" on some topology. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 3/1/1: | zone1 | zone2 | zone3 | | P P P |   P   |   P   | If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler won't make it *more* imbalanced. It's a required field.
+    #[serde(rename = "whenUnsatisfiable")]
+    pub when_unsatisfiable: String,
+}
+
+/// LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

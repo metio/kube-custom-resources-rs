@@ -2800,6 +2800,12 @@ spec:
                   description: "Minimum number of seconds for which a newly created Pod should be ready\nwithout any of its container crashing for it to be considered available.\nDefaults to 0 (pod will be considered available as soon as it is ready)\n\n\nThis is an alpha field from kubernetes 1.22 until 1.24 which requires\nenabling the StatefulSetMinReadySeconds feature gate."
                   format: "int32"
                   type: "integer"
+                mode:
+                  description: "Mode defines how the Prometheus operator deploys the PrometheusAgent pod(s).\nFor now this field has no effect.\n\n\n(Alpha) Using this field requires the `PrometheusAgentDaemonSet` feature gate to be enabled."
+                  enum:
+                    - "StatefulSet"
+                    - "DaemonSet"
+                  type: "string"
                 nodeSelector:
                   additionalProperties:
                     type: "string"

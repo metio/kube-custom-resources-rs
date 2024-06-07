@@ -219,7 +219,7 @@ spec:
                   description: "NodeSelector Define which Nodes the Pods are scheduled on."
                   type: "object"
                 paused:
-                  description: "Paused If set to true all actions on the underlaying managed objects are not\ngoing to be performed, except for delete actions."
+                  description: "Paused If set to true all actions on the underlying managed objects are not\ngoing to be performed, except for delete actions."
                   type: "boolean"
                 podMetadata:
                   description: "PodMetadata configures Labels and Annotations which are propagated to the VMSingle pods."
@@ -607,7 +607,7 @@ spec:
                             description: "Match is a label selector (or list of label selectors) for filtering time series for the given selector.\n\n\nIf the match isn't set, then all the input time series are processed."
                             x-kubernetes-preserve-unknown-fields: true
                           no_align_flush_to_interval:
-                            description: "NoAlighFlushToInterval disables aligning of flushes to multiples of Interval.\nBy default flushes are aligned to Interval."
+                            description: "NoAlignFlushToInterval disables aligning of flushes to multiples of Interval.\nBy default flushes are aligned to Interval."
                             type: "boolean"
                           output_relabel_configs:
                             description: "OutputRelabelConfigs is an optional relabeling rules, which are applied\non the aggregated output before being sent to remote storage."

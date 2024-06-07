@@ -1160,6 +1160,9 @@ pub struct SecretStoreProviderGcpsm {
     /// Auth defines the information necessary to authenticate against GCP
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<SecretStoreProviderGcpsmAuth>,
+    /// Location optionally defines a location for a secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub location: Option<String>,
     /// ProjectID project where secret is located
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
     pub project_id: Option<String>,

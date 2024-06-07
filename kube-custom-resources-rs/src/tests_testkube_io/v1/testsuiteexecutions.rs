@@ -351,6 +351,9 @@ pub struct TestSuiteExecutionStatusLatestExecutionExecuteStepResultsExecuteExecu
     /// TestContent defines test content
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<TestSuiteExecutionStatusLatestExecutionExecuteStepResultsExecuteExecutionContent>,
+    /// whether webhooks should be disabled for this execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// test duration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
@@ -933,6 +936,9 @@ pub struct TestSuiteExecutionStatusLatestExecutionStepResultsExecution {
     /// TestContent defines test content
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<TestSuiteExecutionStatusLatestExecutionStepResultsExecutionContent>,
+    /// whether webhooks should be disabled for this execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// test duration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,

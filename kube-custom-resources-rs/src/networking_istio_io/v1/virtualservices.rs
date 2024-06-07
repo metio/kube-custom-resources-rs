@@ -126,7 +126,7 @@ pub struct VirtualServiceHttpCorsPolicyAllowOrigins {
     pub exact: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
@@ -260,7 +260,7 @@ pub struct VirtualServiceHttpHeadersResponse {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServiceHttpMatch {
-    /// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authority: Option<VirtualServiceHttpMatchAuthority>,
     /// Names of gateways where the rule should be applied.
@@ -272,7 +272,7 @@ pub struct VirtualServiceHttpMatch {
     /// Flag to specify whether the URI matching should be case-insensitive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreUriCase")]
     pub ignore_uri_case: Option<bool>,
-    /// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<VirtualServiceHttpMatchMethod>,
     /// The name assigned to a match.
@@ -284,7 +284,7 @@ pub struct VirtualServiceHttpMatch {
     /// Query parameters for matching.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParams")]
     pub query_params: Option<BTreeMap<String, VirtualServiceHttpMatchQueryParams>>,
-    /// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<VirtualServiceHttpMatchScheme>,
     /// One or more labels that constrain the applicability of a rule to source (client) workloads with the given labels.
@@ -296,7 +296,7 @@ pub struct VirtualServiceHttpMatch {
     /// The human readable prefix to use when emitting statistics for this route.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statPrefix")]
     pub stat_prefix: Option<String>,
-    /// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uri: Option<VirtualServiceHttpMatchUri>,
     /// withoutHeader has the same syntax with the header, but has opposite meaning.
@@ -304,14 +304,14 @@ pub struct VirtualServiceHttpMatch {
     pub without_headers: Option<BTreeMap<String, VirtualServiceHttpMatchWithoutHeaders>>,
 }
 
-/// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+/// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServiceHttpMatchAuthority {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exact: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
@@ -323,19 +323,19 @@ pub struct VirtualServiceHttpMatchHeaders {
     pub exact: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
 
-/// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+/// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServiceHttpMatchMethod {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exact: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
@@ -347,31 +347,31 @@ pub struct VirtualServiceHttpMatchQueryParams {
     pub exact: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
 
-/// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+/// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServiceHttpMatchScheme {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exact: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
 
-/// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+/// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServiceHttpMatchUri {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exact: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
@@ -383,7 +383,7 @@ pub struct VirtualServiceHttpMatchWithoutHeaders {
     pub exact: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
@@ -519,7 +519,7 @@ pub struct VirtualServiceHttpRewrite {
 /// rewrite the path portion of the URI with the specified regex.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServiceHttpRewriteUriRegexRewrite {
-    /// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+    /// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<String>,
     /// The string that should replace into matching portions of original URI.

@@ -166,6 +166,9 @@ pub struct TestExecutionRequest {
     /// name of the template resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
+    /// whether webhooks should be called on execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// config map references
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envConfigMaps")]
     pub env_config_maps: Option<Vec<TestExecutionRequestEnvConfigMaps>>,

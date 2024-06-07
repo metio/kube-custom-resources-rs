@@ -427,6 +427,9 @@ pub struct AWXSpec {
     /// Number of seconds to wait for a probe response from task pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub task_liveness_timeout: Option<i32>,
+    /// Enables operator control of replicas count for the task deployment when set to 'true'
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub task_manage_replicas: Option<bool>,
     /// nodeSelector for the task pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub task_node_selector: Option<String>,
@@ -499,6 +502,9 @@ pub struct AWXSpec {
     /// Number of seconds to wait for a probe response from web pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub web_liveness_timeout: Option<i32>,
+    /// Enables operator control of replicas count for the web deployment when set to 'true'
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub web_manage_replicas: Option<bool>,
     /// nodeSelector for the web pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub web_node_selector: Option<String>,

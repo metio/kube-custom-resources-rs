@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.11.3"
+    controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "hyperfoils.hyperfoil.io"
 spec:
   group: "hyperfoil.io"
@@ -37,15 +37,15 @@ spec:
           description: "Hyperfoil is the Schema for the hyperfoils API"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
             spec:
-              description: "HyperfoilSpec Configures Hyperfoil Controller and related resources."
+              description: "HyperfoilSpec defines the desired state of Hyperfoil.It Configures Hyperfoil Controller and related resources."
               properties:
                 additionalArgs:
                   description: "AdditionalArgs specifies additional arguments to pass to the Hyperfoil controller."
@@ -95,15 +95,15 @@ spec:
                       type: "string"
                   type: "object"
                 secretEnvVars:
-                  description: "List of secrets in this namespace; each entry from those secrets will be mapped as environment variable, using the key as variable name."
+                  description: "List of secrets in this namespace; each entry from those secrets will be mapped\nas environment variable, using the key as variable name."
                   items:
                     type: "string"
                   type: "array"
                 serviceType:
-                  description: "Type of the service being exposed. By default this is ClusterIP if Openshift Route resource is available (the route will target this service). If Openshift Routes are not available (on vanilla Kubernetes) the default is NodePort."
+                  description: "Type of the service being exposed. By default this is ClusterIP if Openshift Route resource is available (the route will target this service).\nIf Openshift Routes are not available (on vanilla Kubernetes) the default is NodePort."
                   type: "string"
                 triggerUrl:
-                  description: "If this is set the controller does not start benchmark run right away after hitting /benchmark/my-benchmark/start ; instead it responds with status 301 and header Location set to concatenation of this string and 'BENCHMARK=my-benchmark&RUN_ID=xxxx'. CLI interprets that response as a request to hit CI instance on this URL, assuming that CI will trigger a new job that will eventually call /benchmark/my-benchmark/start?runId=xxxx with header 'x-trigger-job'. This is useful if the the CI has to synchronize Hyperfoil to other benchmarks that don't use this controller instance."
+                  description: "If this is set the controller does not start benchmark run right away after hitting\n/benchmark/my-benchmark/start ; instead it responds with status 301 and header Location\nset to concatenation of this string and 'BENCHMARK=my-benchmark&RUN_ID=xxxx'.\nCLI interprets that response as a request to hit CI instance on this URL, assuming that\nCI will trigger a new job that will eventually call /benchmark/my-benchmark/start?runId=xxxx\nwith header 'x-trigger-job'. This is useful if the the CI has to synchronize Hyperfoil\nto other benchmarks that don't use this controller instance."
                   type: "string"
                 version:
                   description: "Tag for controller image. Defaults to version matching the operator version."

@@ -7886,6 +7886,9 @@ pub struct PostgresClusterStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PostgresClusterStatusInstances {
+    /// Desired Size of the pgData volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredPGDataVolume")]
+    pub desired_pg_data_volume: Option<BTreeMap<String, String>>,
     pub name: String,
     /// Total number of ready pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]

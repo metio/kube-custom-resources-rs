@@ -256,8 +256,18 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
-    /// Machines older than this duration without a node will be considered to have
-    /// failed and will be remediated.
+    /// NodeStartupTimeout allows to set the maximum time for MachineHealthCheck
+    /// to consider a Machine unhealthy if a corresponding Node isn't associated
+    /// through a `Spec.ProviderID` field.
+    /// 
+    /// 
+    /// The duration set in this field is compared to the greatest of:
+    /// - Cluster's infrastructure and control plane ready condition timestamp (if and when available)
+    /// - Machine's infrastructure ready condition timestamp (if and when available)
+    /// - Machine's metadata creation timestamp
+    /// 
+    /// 
+    /// Defaults to 10 minutes.
     /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
@@ -505,8 +515,18 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
-    /// Machines older than this duration without a node will be considered to have
-    /// failed and will be remediated.
+    /// NodeStartupTimeout allows to set the maximum time for MachineHealthCheck
+    /// to consider a Machine unhealthy if a corresponding Node isn't associated
+    /// through a `Spec.ProviderID` field.
+    /// 
+    /// 
+    /// The duration set in this field is compared to the greatest of:
+    /// - Cluster's infrastructure and control plane ready condition timestamp (if and when available)
+    /// - Machine's infrastructure ready condition timestamp (if and when available)
+    /// - Machine's metadata creation timestamp
+    /// 
+    /// 
+    /// Defaults to 10 minutes.
     /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
