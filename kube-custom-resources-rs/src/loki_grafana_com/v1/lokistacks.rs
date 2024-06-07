@@ -483,21 +483,23 @@ pub struct LokiStackStorage {
     pub tls: Option<LokiStackStorageTls>,
 }
 
-/// ObjectStorageSchema defines the requirements needed to configure a new
-/// storage schema.
+/// ObjectStorageSchema defines a schema version and the date when it will become effective.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LokiStackStorageSchemas {
-    /// EffectiveDate is the date in UTC that the schema will be applied on.
-    /// To ensure readibility of logs, this date should be before the current
-    /// date in UTC.
+    /// EffectiveDate contains a date in YYYY-MM-DD format which is interpreted in the UTC time zone.
+    /// 
+    /// 
+    /// The configuration always needs at least one schema that is currently valid. This means that when creating a new
+    /// LokiStack it is recommended to add a schema with the latest available version and an effective date of "yesterday".
+    /// New schema versions added to the configuration always needs to be placed "in the future", so that Loki can start
+    /// using it once the day rolls over.
     #[serde(rename = "effectiveDate")]
     pub effective_date: String,
     /// Version for writing and reading logs.
     pub version: LokiStackStorageSchemasVersion,
 }
 
-/// ObjectStorageSchema defines the requirements needed to configure a new
-/// storage schema.
+/// ObjectStorageSchema defines a schema version and the date when it will become effective.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum LokiStackStorageSchemasVersion {
     #[serde(rename = "v11")]
@@ -3054,21 +3056,23 @@ pub enum LokiStackStatusStorageCredentialMode {
     TokenCco,
 }
 
-/// ObjectStorageSchema defines the requirements needed to configure a new
-/// storage schema.
+/// ObjectStorageSchema defines a schema version and the date when it will become effective.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LokiStackStatusStorageSchemas {
-    /// EffectiveDate is the date in UTC that the schema will be applied on.
-    /// To ensure readibility of logs, this date should be before the current
-    /// date in UTC.
+    /// EffectiveDate contains a date in YYYY-MM-DD format which is interpreted in the UTC time zone.
+    /// 
+    /// 
+    /// The configuration always needs at least one schema that is currently valid. This means that when creating a new
+    /// LokiStack it is recommended to add a schema with the latest available version and an effective date of "yesterday".
+    /// New schema versions added to the configuration always needs to be placed "in the future", so that Loki can start
+    /// using it once the day rolls over.
     #[serde(rename = "effectiveDate")]
     pub effective_date: String,
     /// Version for writing and reading logs.
     pub version: LokiStackStatusStorageSchemasVersion,
 }
 
-/// ObjectStorageSchema defines the requirements needed to configure a new
-/// storage schema.
+/// ObjectStorageSchema defines a schema version and the date when it will become effective.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum LokiStackStatusStorageSchemasVersion {
     #[serde(rename = "v11")]

@@ -69,10 +69,8 @@ pub struct FlowCollectorAgent {
     /// is set to `IPFIX`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipfix: Option<FlowCollectorAgentIpfix>,
-    /// `type` [deprecated (*)] selects the flows tracing agent. The only possible value is `eBPF` (default), to use NetObserv eBPF agent.<br>
-    /// Previously, using an IPFIX collector was allowed, but was deprecated and it is now removed.<br>
-    /// Setting `IPFIX` is ignored and still use the eBPF Agent.
-    /// Since there is only a single option here, this field will be remove in a future API version.
+    /// `type` [deprecated (*)] selects the flows tracing agent. Previously, this field allowed to select between `eBPF` or `IPFIX`.
+    /// Only `eBPF` is allowed now, so this field is deprecated and is planned for removal in a future version of the API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorAgentType>,
 }
@@ -116,7 +114,7 @@ pub struct FlowCollectorAgentEbpf {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorAgentEbpfImagePullPolicy>,
     /// `interfaces` contains the interface names from where flows are collected. If empty, the agent
-    /// fetches all the interfaces in the system, excepting the ones listed in ExcludeInterfaces.
+    /// fetches all the interfaces in the system, excepting the ones listed in `excludeInterfaces`.
     /// An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression.
     /// Otherwise it is matched as a case-sensitive string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -157,36 +155,32 @@ pub struct FlowCollectorAgentEbpfAdvanced {
     /// in edge debug or support scenarios.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
-    /// scheduling controls whether the pod will be scheduled or not.
+    /// scheduling controls how the pods are scheduled on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduling: Option<FlowCollectorAgentEbpfAdvancedScheduling>,
 }
 
-/// scheduling controls whether the pod will be scheduled or not.
+/// scheduling controls how the pods are scheduled on nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfAdvancedScheduling {
-    /// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling
+    /// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<FlowCollectorAgentEbpfAdvancedSchedulingAffinity>,
-    /// NodeSelector is a selector which must be true for the pod to fit on a node.
-    /// Selector which must match a node's labels for the pod to be scheduled on that node.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    /// `nodeSelector` allows to schedule pods only onto nodes that have each of the specified labels.
+    /// For documentation, refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// If specified, indicates the pod's priority. "system-node-critical" and
-    /// "system-cluster-critical" are two special keywords which indicate the
-    /// highest priorities with the former being the highest priority. Any other
-    /// name must be defined by creating a PriorityClass object with that name.
-    /// If not specified, the pod priority will be default or zero if there is no
-    /// default.
+    /// If specified, indicates the pod's priority. For documentation, refer to https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#how-to-use-priority-and-preemption.
+    /// If not specified, default priority is used, or zero if there is no default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// tolerations is a list of tolerations that allow the pod to schedule onto nodes with matching taints.
+    /// `tolerations` is a list of tolerations that allow the pod to schedule onto nodes with matching taints.
+    /// For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<FlowCollectorAgentEbpfAdvancedSchedulingTolerations>>,
 }
 
-/// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling
+/// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinity {
     /// Describes node affinity scheduling rules for the pod.
@@ -920,45 +914,45 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingTolerations {
 /// `flowFilter` defines the eBPF agent configuration regarding flow filtering
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfFlowFilter {
-    /// Action defines the action to perform on the flows that match the filter.
+    /// `action` defines the action to perform on the flows that match the filter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<FlowCollectorAgentEbpfFlowFilterAction>,
-    /// CIDR defines the IP CIDR to filter flows by.
-    /// Example: 10.10.10.0/24 or 100:100:100:100::/64
+    /// `cidr` defines the IP CIDR to filter flows by.
+    /// Examples: `10.10.10.0/24` or `100:100:100:100::/64`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
-    /// DestPorts defines the destination ports to filter flows by.
-    /// To filter a single port, set a single port as an integer value. For example destPorts: 80.
-    /// To filter a range of ports, use a "start-end" range, string format. For example destPorts: "80-100".
+    /// `destPorts` defines the destination ports to filter flows by.
+    /// To filter a single port, set a single port as an integer value. For example: `destPorts: 80`.
+    /// To filter a range of ports, use a "start-end" range, string format. For example: `destPorts: "80-100"`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destPorts")]
     pub dest_ports: Option<IntOrString>,
-    /// Direction defines the direction to filter flows by.
+    /// `direction` defines the direction to filter flows by.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub direction: Option<FlowCollectorAgentEbpfFlowFilterDirection>,
     /// Set `enable` to `true` to enable eBPF flow filtering feature.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// ICMPCode defines the ICMP code to filter flows by.
+    /// `icmpCode` defines the ICMP code to filter flows by.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "icmpCode")]
     pub icmp_code: Option<i64>,
-    /// ICMPType defines the ICMP type to filter flows by.
+    /// `icmpType` defines the ICMP type to filter flows by.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "icmpType")]
     pub icmp_type: Option<i64>,
-    /// PeerIP defines the IP address to filter flows by.
-    /// Example: 10.10.10.10
+    /// `peerIP` defines the IP address to filter flows by.
+    /// Example: `10.10.10.10`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerIP")]
     pub peer_ip: Option<String>,
-    /// Ports defines the ports to filter flows by. it can be user for either source or destination ports.
-    /// To filter a single port, set a single port as an integer value. For example ports: 80.
-    /// To filter a range of ports, use a "start-end" range, string format. For example ports: "80-10
+    /// `ports` defines the ports to filter flows by, used both for source and destination ports.
+    /// To filter a single port, set a single port as an integer value. For example: `ports: 80`.
+    /// To filter a range of ports, use a "start-end" range, string format. For example: `ports: "80-100"`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<IntOrString>,
-    /// Protocol defines the protocol to filter flows by.
+    /// `protocol` defines the protocol to filter flows by.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<FlowCollectorAgentEbpfFlowFilterProtocol>,
-    /// SourcePorts defines the source ports to filter flows by.
-    /// To filter a single port, set a single port as an integer value. For example sourcePorts: 80.
-    /// To filter a range of ports, use a "start-end" range, string format. For example sourcePorts: "80-100".
+    /// `sourcePorts` defines the source ports to filter flows by.
+    /// To filter a single port, set a single port as an integer value. For example: `sourcePorts: 80`.
+    /// To filter a range of ports, use a "start-end" range, string format. For example: `sourcePorts: "80-100"`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourcePorts")]
     pub source_ports: Option<IntOrString>,
 }
@@ -1029,7 +1023,7 @@ pub struct FlowCollectorAgentEbpfMetrics {
     /// `NetObservDroppedFlows`, which is triggered when the eBPF agent is dropping flows, such as when the BPF hashmap is full or the capacity limiter being triggered.<br>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAlerts")]
     pub disable_alerts: Option<Vec<String>>,
-    /// Set `enable` to `false` to disable eBPF agent metrics collection, by default it's `true`.
+    /// Set `enable` to `false` to disable eBPF agent metrics collection. It is enabled by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// Metrics server endpoint configuration for Prometheus scraper
@@ -1040,7 +1034,7 @@ pub struct FlowCollectorAgentEbpfMetrics {
 /// Metrics server endpoint configuration for Prometheus scraper
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfMetricsServer {
-    /// The prometheus HTTP port
+    /// The metrics server HTTP port
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// TLS configuration.
@@ -1292,36 +1286,32 @@ pub struct FlowCollectorConsolePluginAdvanced {
     /// `oc patch console.operator.openshift.io cluster --type='json' -p '[{"op": "add", "path": "/spec/plugins/-", "value": "netobserv-plugin"}]'`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub register: Option<bool>,
-    /// scheduling controls whether the pod will be scheduled or not.
+    /// scheduling controls how the pods are scheduled on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduling: Option<FlowCollectorConsolePluginAdvancedScheduling>,
 }
 
-/// scheduling controls whether the pod will be scheduled or not.
+/// scheduling controls how the pods are scheduled on nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAdvancedScheduling {
-    /// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling
+    /// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<FlowCollectorConsolePluginAdvancedSchedulingAffinity>,
-    /// NodeSelector is a selector which must be true for the pod to fit on a node.
-    /// Selector which must match a node's labels for the pod to be scheduled on that node.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    /// `nodeSelector` allows to schedule pods only onto nodes that have each of the specified labels.
+    /// For documentation, refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// If specified, indicates the pod's priority. "system-node-critical" and
-    /// "system-cluster-critical" are two special keywords which indicate the
-    /// highest priorities with the former being the highest priority. Any other
-    /// name must be defined by creating a PriorityClass object with that name.
-    /// If not specified, the pod priority will be default or zero if there is no
-    /// default.
+    /// If specified, indicates the pod's priority. For documentation, refer to https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#how-to-use-priority-and-preemption.
+    /// If not specified, default priority is used, or zero if there is no default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// tolerations is a list of tolerations that allow the pod to schedule onto nodes with matching taints.
+    /// `tolerations` is a list of tolerations that allow the pod to schedule onto nodes with matching taints.
+    /// For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<FlowCollectorConsolePluginAdvancedSchedulingTolerations>>,
 }
 
-/// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling
+/// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinity {
     /// Describes node affinity scheduling rules for the pod.
@@ -2768,7 +2758,7 @@ pub struct FlowCollectorLoki {
     /// If they are both disabled, the Console plugin is not deployed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// Loki configuration for `LokiStack` mode. This is useful for an easy loki-operator configuration.
+    /// Loki configuration for `LokiStack` mode. This is useful for an easy Loki Operator configuration.
     /// It is ignored for other modes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lokiStack")]
     pub loki_stack: Option<FlowCollectorLokiLokiStack>,
@@ -2827,7 +2817,7 @@ pub struct FlowCollectorLokiAdvanced {
     pub write_min_backoff: Option<String>,
 }
 
-/// Loki configuration for `LokiStack` mode. This is useful for an easy loki-operator configuration.
+/// Loki configuration for `LokiStack` mode. This is useful for an easy Loki Operator configuration.
 /// It is ignored for other modes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiLokiStack {
@@ -3298,7 +3288,7 @@ pub struct FlowCollectorProcessor {
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorProcessorResources>,
-    /// `SubnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift.
+    /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic.
     /// When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetLabels")]
     pub subnet_labels: Option<FlowCollectorProcessorSubnetLabels>,
@@ -3342,36 +3332,32 @@ pub struct FlowCollectorProcessorAdvanced {
     /// `profilePort` allows setting up a Go pprof profiler listening to this port
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilePort")]
     pub profile_port: Option<i32>,
-    /// scheduling controls whether the pod will be scheduled or not.
+    /// scheduling controls how the pods are scheduled on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduling: Option<FlowCollectorProcessorAdvancedScheduling>,
 }
 
-/// scheduling controls whether the pod will be scheduled or not.
+/// scheduling controls how the pods are scheduled on nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorAdvancedScheduling {
-    /// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling
+    /// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<FlowCollectorProcessorAdvancedSchedulingAffinity>,
-    /// NodeSelector is a selector which must be true for the pod to fit on a node.
-    /// Selector which must match a node's labels for the pod to be scheduled on that node.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    /// `nodeSelector` allows to schedule pods only onto nodes that have each of the specified labels.
+    /// For documentation, refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// If specified, indicates the pod's priority. "system-node-critical" and
-    /// "system-cluster-critical" are two special keywords which indicate the
-    /// highest priorities with the former being the highest priority. Any other
-    /// name must be defined by creating a PriorityClass object with that name.
-    /// If not specified, the pod priority will be default or zero if there is no
-    /// default.
+    /// If specified, indicates the pod's priority. For documentation, refer to https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#how-to-use-priority-and-preemption.
+    /// If not specified, default priority is used, or zero if there is no default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// tolerations is a list of tolerations that allow the pod to schedule onto nodes with matching taints.
+    /// `tolerations` is a list of tolerations that allow the pod to schedule onto nodes with matching taints.
+    /// For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<FlowCollectorProcessorAdvancedSchedulingTolerations>>,
 }
 
-/// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling
+/// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorAdvancedSchedulingAffinity {
     /// Describes node affinity scheduling rules for the pod.
@@ -4386,7 +4372,7 @@ pub struct FlowCollectorProcessorMetrics {
 /// Metrics server endpoint configuration for Prometheus scraper
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorMetricsServer {
-    /// The prometheus HTTP port
+    /// The metrics server HTTP port
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// TLS configuration.
@@ -4516,7 +4502,7 @@ pub struct FlowCollectorProcessorResourcesClaims {
     pub name: String,
 }
 
-/// `SubnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift.
+/// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic.
 /// When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorSubnetLabels {
@@ -4553,7 +4539,8 @@ pub struct FlowCollectorPrometheus {
 /// Prometheus querying configuration, such as client settings, used in the Console plugin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorPrometheusQuerier {
-    /// Set `enable` to `true` to make the Console plugin querying flow metrics from Prometheus instead of Loki whenever possible.
+    /// When `enable` is `true`, the Console plugin queries flow metrics from Prometheus instead of Loki whenever possible.
+    /// It is enbaled by default: set it to `false` to disable this feature.
     /// The Console plugin can use either Loki or Prometheus as a data source for metrics (see also `spec.loki`), or both.
     /// Not all queries are transposable from Loki to Prometheus. Hence, if Loki is disabled, some features of the plugin are disabled as well,
     /// such as getting per-pod information or viewing raw flows.

@@ -33,6 +33,7 @@ pub struct UserSpec {
     pub name: Option<String>,
     /// PasswordSecretKeyRef is a reference to the password to be used by the User.
     /// If not provided, the account will be locked and the password will expire.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: Option<UserPasswordSecretKeyRef>,
     /// RequeueInterval is used to perform requeue reconciliations.
@@ -86,6 +87,7 @@ pub struct UserMariaDbRef {
 
 /// PasswordSecretKeyRef is a reference to the password to be used by the User.
 /// If not provided, the account will be locked and the password will expire.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.

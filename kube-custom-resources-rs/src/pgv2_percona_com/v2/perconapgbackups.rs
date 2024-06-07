@@ -38,12 +38,16 @@ pub struct PerconaPGBackupStatus {
     pub backup_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completed: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "crVersion")]
+    pub cr_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobName")]
     pub job_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
+    pub latest_restorable_time: Option<String>,
     /// PGBackRestRepo represents a pgBackRest repository.  Only one of its members may be specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<PerconaPGBackupStatusRepo>,

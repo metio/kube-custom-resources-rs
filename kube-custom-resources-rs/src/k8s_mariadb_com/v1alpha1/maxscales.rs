@@ -872,6 +872,7 @@ pub struct MaxScaleAuth {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientMaxConnections")]
     pub client_max_connections: Option<i32>,
     /// ClientPasswordSecretKeyRef is Secret key reference to the password to connect to MaxScale. It is defaulted if not provided.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPasswordSecretKeyRef")]
     pub client_password_secret_key_ref: Option<MaxScaleAuthClientPasswordSecretKeyRef>,
     /// ClientUsername is the user to connect to MaxScale. It is defaulted if not provided.
@@ -885,6 +886,7 @@ pub struct MaxScaleAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<bool>,
     /// MetricsPasswordSecretKeyRef is Secret key reference to the metrics password to call the admib REST API. It is defaulted if metrics are enabled.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPasswordSecretKeyRef")]
     pub metrics_password_secret_key_ref: Option<MaxScaleAuthMetricsPasswordSecretKeyRef>,
     /// MetricsUsername is an metrics username to call the REST API. It is defaulted if metrics are enabled.
@@ -896,6 +898,7 @@ pub struct MaxScaleAuth {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorMaxConnections")]
     pub monitor_max_connections: Option<i32>,
     /// MonitorPasswordSecretKeyRef is Secret key reference to the password used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorPasswordSecretKeyRef")]
     pub monitor_password_secret_key_ref: Option<MaxScaleAuthMonitorPasswordSecretKeyRef>,
     /// MonitorUsername is the user used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
@@ -907,6 +910,7 @@ pub struct MaxScaleAuth {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverMaxConnections")]
     pub server_max_connections: Option<i32>,
     /// ServerPasswordSecretKeyRef is Secret key reference to the password used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverPasswordSecretKeyRef")]
     pub server_password_secret_key_ref: Option<MaxScaleAuthServerPasswordSecretKeyRef>,
     /// ServerUsername is the user used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
@@ -918,6 +922,7 @@ pub struct MaxScaleAuth {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncMaxConnections")]
     pub sync_max_connections: Option<i32>,
     /// SyncPasswordSecretKeyRef is Secret key reference to the password used by MaxScale config to connect to MariaDB server. It is defaulted when HA is enabled.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncPasswordSecretKeyRef")]
     pub sync_password_secret_key_ref: Option<MaxScaleAuthSyncPasswordSecretKeyRef>,
     /// MonitoSyncUsernamerUsername is the user used by MaxScale config sync to connect to MariaDB server. It is defaulted when HA is enabled.
@@ -944,6 +949,7 @@ pub struct MaxScaleAuthAdminPasswordSecretKeyRef {
 }
 
 /// ClientPasswordSecretKeyRef is Secret key reference to the password to connect to MaxScale. It is defaulted if not provided.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAuthClientPasswordSecretKeyRef {
     /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.
@@ -962,6 +968,7 @@ pub struct MaxScaleAuthClientPasswordSecretKeyRef {
 }
 
 /// MetricsPasswordSecretKeyRef is Secret key reference to the metrics password to call the admib REST API. It is defaulted if metrics are enabled.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAuthMetricsPasswordSecretKeyRef {
     /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.
@@ -980,6 +987,7 @@ pub struct MaxScaleAuthMetricsPasswordSecretKeyRef {
 }
 
 /// MonitorPasswordSecretKeyRef is Secret key reference to the password used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAuthMonitorPasswordSecretKeyRef {
     /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.
@@ -998,6 +1006,7 @@ pub struct MaxScaleAuthMonitorPasswordSecretKeyRef {
 }
 
 /// ServerPasswordSecretKeyRef is Secret key reference to the password used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAuthServerPasswordSecretKeyRef {
     /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.
@@ -1016,6 +1025,7 @@ pub struct MaxScaleAuthServerPasswordSecretKeyRef {
 }
 
 /// SyncPasswordSecretKeyRef is Secret key reference to the password used by MaxScale config to connect to MariaDB server. It is defaulted when HA is enabled.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAuthSyncPasswordSecretKeyRef {
     /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.

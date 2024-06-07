@@ -66,7 +66,14 @@ pub struct CheClusterComponents {
 /// General configuration settings related to the Che server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsCheServer {
-    /// Additional ClusterRoles assigned to Che ServiceAccount. Each role must have a `app.kubernetes.io/part-of=che.eclipse.org` label. The defaults roles are: - `<che-namespace>-cheworkspaces-clusterrole` - `<che-namespace>-cheworkspaces-namespaces-clusterrole` - `<che-namespace>-cheworkspaces-devworkspace-clusterrole` where the <che-namespace> is the namespace where the CheCluster CR is created. The Che Operator must already have all permissions in these ClusterRoles to grant them.
+    /// Additional ClusterRoles assigned to Che ServiceAccount.
+    /// Each role must have a `app.kubernetes.io/part-of=che.eclipse.org` label.
+    /// The defaults roles are:
+    /// - `<che-namespace>-cheworkspaces-clusterrole`
+    /// - `<che-namespace>-cheworkspaces-namespaces-clusterrole`
+    /// - `<che-namespace>-cheworkspaces-devworkspace-clusterrole`
+    /// where the <che-namespace> is the namespace where the CheCluster CR is created.
+    /// The Che Operator must already have all permissions in these ClusterRoles to grant them.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
     /// Enables the debug mode for Che server.
@@ -75,13 +82,17 @@ pub struct CheClusterComponentsCheServer {
     /// Deployment override options.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<CheClusterComponentsCheServerDeployment>,
-    /// A map of additional environment variables applied in the generated `che` ConfigMap to be used by the Che server in addition to the values already generated from other fields of the `CheCluster` custom resource (CR). If the `extraProperties` field contains a property normally generated in `che` ConfigMap from other CR fields, the value defined in the `extraProperties` is used instead.
+    /// A map of additional environment variables applied in the generated `che` ConfigMap to be used by the Che server
+    /// in addition to the values already generated from other fields of the `CheCluster` custom resource (CR).
+    /// If the `extraProperties` field contains a property normally generated in `che` ConfigMap from other CR fields,
+    /// the value defined in the `extraProperties` is used instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraProperties")]
     pub extra_properties: Option<BTreeMap<String, String>>,
     /// The log level for the Che server: `INFO` or `DEBUG`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
-    /// Proxy server settings for Kubernetes cluster. No additional configuration is required for OpenShift cluster. By specifying these settings for the OpenShift cluster, you override the OpenShift proxy configuration.
+    /// Proxy server settings for Kubernetes cluster. No additional configuration is required for OpenShift cluster.
+    /// By specifying these settings for the OpenShift cluster, you override the OpenShift proxy configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<CheClusterComponentsCheServerProxy>,
 }
@@ -122,7 +133,15 @@ pub struct CheClusterComponentsCheServerDeploymentContainers {
 pub struct CheClusterComponentsCheServerDeploymentContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -136,10 +155,12 @@ pub struct CheClusterComponentsCheServerDeploymentContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CheClusterComponentsCheServerDeploymentContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CheClusterComponentsCheServerDeploymentContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CheClusterComponentsCheServerDeploymentContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -152,7 +173,9 @@ pub struct CheClusterComponentsCheServerDeploymentContainersEnvValueFrom {
 pub struct CheClusterComponentsCheServerDeploymentContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -160,7 +183,8 @@ pub struct CheClusterComponentsCheServerDeploymentContainersEnvValueFromConfigMa
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsCheServerDeploymentContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -171,7 +195,8 @@ pub struct CheClusterComponentsCheServerDeploymentContainersEnvValueFromFieldRef
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsCheServerDeploymentContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -189,7 +214,9 @@ pub struct CheClusterComponentsCheServerDeploymentContainersEnvValueFromResource
 pub struct CheClusterComponentsCheServerDeploymentContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -219,10 +246,14 @@ pub struct CheClusterComponentsCheServerDeploymentContainersResources {
 /// Describes the maximum amount of compute resources allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsCheServerDeploymentContainersResourcesLimits {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -230,10 +261,14 @@ pub struct CheClusterComponentsCheServerDeploymentContainersResourcesLimits {
 /// Describes the minimum amount of compute resources required.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsCheServerDeploymentContainersResourcesRequest {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -249,19 +284,31 @@ pub struct CheClusterComponentsCheServerDeploymentSecurityContext {
     pub run_as_user: Option<i64>,
 }
 
-/// Proxy server settings for Kubernetes cluster. No additional configuration is required for OpenShift cluster. By specifying these settings for the OpenShift cluster, you override the OpenShift proxy configuration.
+/// Proxy server settings for Kubernetes cluster. No additional configuration is required for OpenShift cluster.
+/// By specifying these settings for the OpenShift cluster, you override the OpenShift proxy configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsCheServerProxy {
-    /// The secret name that contains `user` and `password` for a proxy server. The secret must have a `app.kubernetes.io/part-of=che.eclipse.org` label.
+    /// The secret name that contains `user` and `password` for a proxy server.
+    /// The secret must have a `app.kubernetes.io/part-of=che.eclipse.org` label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretName")]
     pub credentials_secret_name: Option<String>,
-    /// A list of hosts that can be reached directly, bypassing the proxy. Specify wild card domain use the following form `.<DOMAIN>`, for example:    - localhost    - my.host.com    - 123.42.12.32 Use only when a proxy configuration is required. The Operator respects OpenShift cluster-wide proxy configuration, defining `nonProxyHosts` in a custom resource leads to merging non-proxy hosts lists from the cluster proxy configuration, and the ones defined in the custom resources. See the following page: https://docs.openshift.com/container-platform/latest/networking/enable-cluster-wide-proxy.html.
+    /// A list of hosts that can be reached directly, bypassing the proxy.
+    /// Specify wild card domain use the following form `.<DOMAIN>`, for example:
+    ///    - localhost
+    ///    - my.host.com
+    ///    - 123.42.12.32
+    /// Use only when a proxy configuration is required. The Operator respects OpenShift cluster-wide proxy configuration,
+    /// defining `nonProxyHosts` in a custom resource leads to merging non-proxy hosts lists from the cluster proxy configuration, and the ones defined in the custom resources.
+    /// See the following page: https://docs.openshift.com/container-platform/latest/networking/enable-cluster-wide-proxy.html.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonProxyHosts")]
     pub non_proxy_hosts: Option<Vec<String>>,
     /// Proxy server port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
-    /// URL (protocol+hostname) of the proxy server. Use only when a proxy configuration is required. The Operator respects OpenShift cluster-wide proxy configuration, defining `url` in a custom resource leads to overriding the cluster proxy configuration. See the following page: https://docs.openshift.com/container-platform/latest/networking/enable-cluster-wide-proxy.html.
+    /// URL (protocol+hostname) of the proxy server.
+    /// Use only when a proxy configuration is required. The Operator respects OpenShift cluster-wide proxy configuration,
+    /// defining `url` in a custom resource leads to overriding the cluster proxy configuration.
+    /// See the following page: https://docs.openshift.com/container-platform/latest/networking/enable-cluster-wide-proxy.html.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -334,7 +381,15 @@ pub struct CheClusterComponentsDashboardDeploymentContainers {
 pub struct CheClusterComponentsDashboardDeploymentContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -348,10 +403,12 @@ pub struct CheClusterComponentsDashboardDeploymentContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CheClusterComponentsDashboardDeploymentContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CheClusterComponentsDashboardDeploymentContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CheClusterComponentsDashboardDeploymentContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -364,7 +421,9 @@ pub struct CheClusterComponentsDashboardDeploymentContainersEnvValueFrom {
 pub struct CheClusterComponentsDashboardDeploymentContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -372,7 +431,8 @@ pub struct CheClusterComponentsDashboardDeploymentContainersEnvValueFromConfigMa
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDashboardDeploymentContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -383,7 +443,8 @@ pub struct CheClusterComponentsDashboardDeploymentContainersEnvValueFromFieldRef
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDashboardDeploymentContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -401,7 +462,9 @@ pub struct CheClusterComponentsDashboardDeploymentContainersEnvValueFromResource
 pub struct CheClusterComponentsDashboardDeploymentContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -431,10 +494,14 @@ pub struct CheClusterComponentsDashboardDeploymentContainersResources {
 /// Describes the maximum amount of compute resources allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDashboardDeploymentContainersResourcesLimits {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -442,10 +509,14 @@ pub struct CheClusterComponentsDashboardDeploymentContainersResourcesLimits {
 /// Describes the minimum amount of compute resources required.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDashboardDeploymentContainersResourcesRequest {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -494,7 +565,8 @@ pub enum CheClusterComponentsDashboardLogLevel {
 /// DevWorkspace Operator configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDevWorkspace {
-    /// Deprecated in favor of `MaxNumberOfRunningWorkspacesPerUser` The maximum number of running workspaces per user.
+    /// Deprecated in favor of `MaxNumberOfRunningWorkspacesPerUser`
+    /// The maximum number of running workspaces per user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningLimit")]
     pub running_limit: Option<String>,
 }
@@ -549,7 +621,15 @@ pub struct CheClusterComponentsDevfileRegistryDeploymentContainers {
 pub struct CheClusterComponentsDevfileRegistryDeploymentContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -563,10 +643,12 @@ pub struct CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -579,7 +661,9 @@ pub struct CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFrom {
 pub struct CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -587,7 +671,8 @@ pub struct CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFromCo
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -598,7 +683,8 @@ pub struct CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFromFi
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -616,7 +702,9 @@ pub struct CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFromRe
 pub struct CheClusterComponentsDevfileRegistryDeploymentContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -646,10 +734,14 @@ pub struct CheClusterComponentsDevfileRegistryDeploymentContainersResources {
 /// Describes the maximum amount of compute resources allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDevfileRegistryDeploymentContainersResourcesLimits {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -657,10 +749,14 @@ pub struct CheClusterComponentsDevfileRegistryDeploymentContainersResourcesLimit
 /// Describes the minimum amount of compute resources required.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDevfileRegistryDeploymentContainersResourcesRequest {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -687,7 +783,14 @@ pub struct CheClusterComponentsDevfileRegistryExternalDevfileRegistries {
 /// Kubernetes Image Puller configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsImagePuller {
-    /// Install and configure the community supported Kubernetes Image Puller Operator. When you set the value to `true` without providing any specs, it creates a default Kubernetes Image Puller object managed by the Operator. When you set the value to `false`, the Kubernetes Image Puller object is deleted, and the Operator uninstalled, regardless of whether a spec is provided. If you leave the `spec.images` field empty, a set of recommended workspace-related images is automatically detected and pre-pulled after installation. Note that while this Operator and its behavior is community-supported, its payload may be commercially-supported for pulling commercially-supported images.
+    /// Install and configure the community supported Kubernetes Image Puller Operator. When you set the value to `true` without providing any specs,
+    /// it creates a default Kubernetes Image Puller object managed by the Operator.
+    /// When you set the value to `false`, the Kubernetes Image Puller object is deleted, and the Operator uninstalled,
+    /// regardless of whether a spec is provided.
+    /// If you leave the `spec.images` field empty, a set of recommended workspace-related images is automatically detected and
+    /// pre-pulled after installation.
+    /// Note that while this Operator and its behavior is community-supported, its payload may be commercially-supported
+    /// for pulling commercially-supported images.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// A Kubernetes Image Puller spec to configure the image puller in the CheCluster.
@@ -787,7 +890,15 @@ pub struct CheClusterComponentsPluginRegistryDeploymentContainers {
 pub struct CheClusterComponentsPluginRegistryDeploymentContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -801,10 +912,12 @@ pub struct CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -817,7 +930,9 @@ pub struct CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFrom {
 pub struct CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -825,7 +940,8 @@ pub struct CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFromCon
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -836,7 +952,8 @@ pub struct CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFromFie
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -854,7 +971,9 @@ pub struct CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFromRes
 pub struct CheClusterComponentsPluginRegistryDeploymentContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -884,10 +1003,14 @@ pub struct CheClusterComponentsPluginRegistryDeploymentContainersResources {
 /// Describes the maximum amount of compute resources allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsPluginRegistryDeploymentContainersResourcesLimits {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -895,10 +1018,14 @@ pub struct CheClusterComponentsPluginRegistryDeploymentContainersResourcesLimits
 /// Describes the minimum amount of compute resources required.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsPluginRegistryDeploymentContainersResourcesRequest {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -925,10 +1052,14 @@ pub struct CheClusterComponentsPluginRegistryExternalPluginRegistries {
 /// Configuration of an alternative registry that stores Che images.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterContainerRegistry {
-    /// An optional hostname or URL of an alternative container registry to pull images from. This value overrides the container registry hostname defined in all the default container images involved in a Che deployment. This is particularly useful for installing Che in a restricted environment.
+    /// An optional hostname or URL of an alternative container registry to pull images from.
+    /// This value overrides the container registry hostname defined in all the default container images involved in a Che deployment.
+    /// This is particularly useful for installing Che in a restricted environment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// An optional repository name of an alternative registry to pull images from. This value overrides the container registry organization defined in all the default container images involved in a Che deployment. This is particularly useful for installing Eclipse Che in a restricted environment.
+    /// An optional repository name of an alternative registry to pull images from.
+    /// This value overrides the container registry organization defined in all the default container images involved in a Che deployment.
+    /// This is particularly useful for installing Eclipse Che in a restricted environment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<String>,
 }
@@ -939,10 +1070,13 @@ pub struct CheClusterDevEnvironments {
     /// Container build configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerBuildConfiguration")]
     pub container_build_configuration: Option<CheClusterDevEnvironmentsContainerBuildConfiguration>,
-    /// Default components applied to DevWorkspaces. These default components are meant to be used when a Devfile, that does not contain any components.
+    /// Default components applied to DevWorkspaces.
+    /// These default components are meant to be used when a Devfile, that does not contain any components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultComponents")]
     pub default_components: Option<Vec<CheClusterDevEnvironmentsDefaultComponents>>,
-    /// The default editor to workspace create with. It could be a plugin ID or a URI. The plugin ID must have `publisher/name/version` format. The URI must start from `http://` or `https://`.
+    /// The default editor to workspace create with. It could be a plugin ID or a URI.
+    /// The plugin ID must have `publisher/name/version` format.
+    /// The URI must start from `http://` or `https://`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEditor")]
     pub default_editor: Option<String>,
     /// User's default namespace.
@@ -951,11 +1085,25 @@ pub struct CheClusterDevEnvironments {
     /// Default plug-ins applied to DevWorkspaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultPlugins")]
     pub default_plugins: Option<Vec<CheClusterDevEnvironmentsDefaultPlugins>>,
-    /// DeploymentStrategy defines the deployment strategy to use to replace existing workspace pods with new ones. The available deployment stragies are `Recreate` and `RollingUpdate`. With the `Recreate` deployment strategy, the existing workspace pod is killed before the new one is created. With the `RollingUpdate` deployment strategy, a new workspace pod is created and the existing workspace pod is deleted only when the new workspace pod is in a ready state. If not specified, the default `Recreate` deployment strategy is used.
+    /// DeploymentStrategy defines the deployment strategy to use to replace existing workspace pods
+    /// with new ones. The available deployment stragies are `Recreate` and `RollingUpdate`.
+    /// With the `Recreate` deployment strategy, the existing workspace pod is killed before the new one is created.
+    /// With the `RollingUpdate` deployment strategy, a new workspace pod is created and the existing workspace pod is deleted
+    /// only when the new workspace pod is in a ready state.
+    /// If not specified, the default `Recreate` deployment strategy is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
     pub deployment_strategy: Option<CheClusterDevEnvironmentsDeploymentStrategy>,
-    /// Disables the container build capabilities. When set to `false` (the default value), the devEnvironments.security.containerSecurityContext field is ignored, and the following container SecurityContext is applied: 
-    ///   containerSecurityContext:    allowPrivilegeEscalation: true    capabilities:      add:      - SETGID      - SETUID
+    /// Disables the container build capabilities.
+    /// When set to `false` (the default value), the devEnvironments.security.containerSecurityContext
+    /// field is ignored, and the following container SecurityContext is applied:
+    /// 
+    /// 
+    ///  containerSecurityContext:
+    ///    allowPrivilegeEscalation: true
+    ///    capabilities:
+    ///      add:
+    ///      - SETGID
+    ///      - SETUID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableContainerBuildCapabilities")]
     pub disable_container_build_capabilities: Option<bool>,
     /// GatewayContainer configuration.
@@ -964,28 +1112,36 @@ pub struct CheClusterDevEnvironments {
     /// ImagePullPolicy defines the imagePullPolicy used for containers in a DevWorkspace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<CheClusterDevEnvironmentsImagePullPolicy>,
-    /// The maximum number of running workspaces per user. The value, -1, allows users to run an unlimited number of workspaces.
+    /// The maximum number of running workspaces per user.
+    /// The value, -1, allows users to run an unlimited number of workspaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfRunningWorkspacesPerUser")]
     pub max_number_of_running_workspaces_per_user: Option<i64>,
-    /// Total number of workspaces, both stopped and running, that a user can keep. The value, -1, allows users to keep an unlimited number of workspaces.
+    /// Total number of workspaces, both stopped and running, that a user can keep.
+    /// The value, -1, allows users to keep an unlimited number of workspaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfWorkspacesPerUser")]
     pub max_number_of_workspaces_per_user: Option<i64>,
     /// The node selector limits the nodes that can run the workspace pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// PersistUserHome defines configuration options for persisting the user home directory in workspaces.
+    /// PersistUserHome defines configuration options for persisting the
+    /// user home directory in workspaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistUserHome")]
     pub persist_user_home: Option<CheClusterDevEnvironmentsPersistUserHome>,
-    /// Pod scheduler for the workspace pods. If not specified, the pod scheduler is set to the default scheduler on the cluster.
+    /// Pod scheduler for the workspace pods.
+    /// If not specified, the pod scheduler is set to the default scheduler on the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSchedulerName")]
     pub pod_scheduler_name: Option<String>,
     /// Project clone container configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectCloneContainer")]
     pub project_clone_container: Option<CheClusterDevEnvironmentsProjectCloneContainer>,
-    /// Idle timeout for workspaces in seconds. This timeout is the duration after which a workspace will be idled if there is no activity. To disable workspace idling due to inactivity, set this value to -1.
+    /// Idle timeout for workspaces in seconds.
+    /// This timeout is the duration after which a workspace will be idled if there is no activity.
+    /// To disable workspace idling due to inactivity, set this value to -1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondsOfInactivityBeforeIdling")]
     pub seconds_of_inactivity_before_idling: Option<i32>,
-    /// Run timeout for workspaces in seconds. This timeout is the maximum duration a workspace runs. To disable workspace run timeout, set this value to -1.
+    /// Run timeout for workspaces in seconds.
+    /// This timeout is the maximum duration a workspace runs.
+    /// To disable workspace run timeout, set this value to -1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondsOfRunBeforeIdling")]
     pub seconds_of_run_before_idling: Option<i32>,
     /// Workspace security configuration.
@@ -997,7 +1153,9 @@ pub struct CheClusterDevEnvironments {
     /// List of ServiceAccount tokens that will be mounted into workspace pods as projected volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountTokens")]
     pub service_account_tokens: Option<Vec<CheClusterDevEnvironmentsServiceAccountTokens>>,
-    /// StartTimeoutSeconds determines the maximum duration (in seconds) that a workspace can take to start before it is automatically failed. If not specified, the default value of 300 seconds (5 minutes) is used.
+    /// StartTimeoutSeconds determines the maximum duration (in seconds) that a workspace can take to start
+    /// before it is automatically failed.
+    /// If not specified, the default value of 300 seconds (5 minutes) is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimeoutSeconds")]
     pub start_timeout_seconds: Option<i32>,
     /// Workspaces persistent storage.
@@ -1033,25 +1191,39 @@ pub struct CheClusterDevEnvironmentsDefaultComponents {
     /// Allows adding and configuring devworkspace-related containers
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<CheClusterDevEnvironmentsDefaultComponentsContainer>,
-    /// Custom component whose logic is implementation-dependant and should be provided by the user possibly through some dedicated controller
+    /// Custom component whose logic is implementation-dependant
+    /// and should be provided by the user
+    /// possibly through some dedicated controller
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<CheClusterDevEnvironmentsDefaultComponentsCustom>,
     /// Allows specifying the definition of an image for outer loop builds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<CheClusterDevEnvironmentsDefaultComponentsImage>,
-    /// Allows importing into the devworkspace the Kubernetes resources defined in a given manifest. For example this allows reusing the Kubernetes definitions used to deploy some runtime components in production.
+    /// Allows importing into the devworkspace the Kubernetes resources
+    /// defined in a given manifest. For example this allows reusing the Kubernetes
+    /// definitions used to deploy some runtime components in production.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<CheClusterDevEnvironmentsDefaultComponentsKubernetes>,
-    /// Mandatory name that allows referencing the component from other elements (such as commands) or from an external devfile that may reference this component through a parent or a plugin.
+    /// Mandatory name that allows referencing the component
+    /// from other elements (such as commands) or from an external
+    /// devfile that may reference this component through a parent or a plugin.
     pub name: String,
-    /// Allows importing into the devworkspace the OpenShift resources defined in a given manifest. For example this allows reusing the OpenShift definitions used to deploy some runtime components in production.
+    /// Allows importing into the devworkspace the OpenShift resources
+    /// defined in a given manifest. For example this allows reusing the OpenShift
+    /// definitions used to deploy some runtime components in production.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openshift: Option<CheClusterDevEnvironmentsDefaultComponentsOpenshift>,
-    /// Allows importing a plugin. 
-    ///  Plugins are mainly imported devfiles that contribute components, commands and events as a consistent single unit. They are defined in either YAML files following the devfile syntax, or as `DevWorkspaceTemplate` Kubernetes Custom Resources
+    /// Allows importing a plugin.
+    /// 
+    /// 
+    /// Plugins are mainly imported devfiles that contribute components, commands
+    /// and events as a consistent single unit. They are defined in either YAML files
+    /// following the devfile syntax,
+    /// or as `DevWorkspaceTemplate` Kubernetes Custom Resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugin: Option<CheClusterDevEnvironmentsDefaultComponentsPlugin>,
-    /// Allows specifying the definition of a volume shared by several other components
+    /// Allows specifying the definition of a volume
+    /// shared by several other components
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volume: Option<CheClusterDevEnvironmentsDefaultComponentsVolume>,
 }
@@ -1073,28 +1245,41 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsContainer {
     /// Annotations that should be added to specific resources for this container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotation: Option<CheClusterDevEnvironmentsDefaultComponentsContainerAnnotation>,
-    /// The arguments to supply to the command running the dockerimage component. The arguments are supplied either to the default command provided in the image or to the overridden command. 
-    ///  Defaults to an empty array, meaning use whatever is defined in the image.
+    /// The arguments to supply to the command running the dockerimage component. The arguments are supplied either to the default command provided in the image or to the overridden command.
+    /// 
+    /// 
+    /// Defaults to an empty array, meaning use whatever is defined in the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// The command to run in the dockerimage component instead of the default one provided in the image. 
-    ///  Defaults to an empty array, meaning use whatever is defined in the image.
+    /// The command to run in the dockerimage component instead of the default one provided in the image.
+    /// 
+    /// 
+    /// Defaults to an empty array, meaning use whatever is defined in the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuLimit")]
     pub cpu_limit: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuRequest")]
     pub cpu_request: Option<String>,
-    /// Specify if a container should run in its own separated pod, instead of running as part of the main development environment pod. 
-    ///  Default value is `false`
+    /// Specify if a container should run in its own separated pod,
+    /// instead of running as part of the main development environment pod.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dedicatedPod")]
     pub dedicated_pod: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<CheClusterDevEnvironmentsDefaultComponentsContainerEndpoints>>,
-    /// Environment variables used in this container. 
-    ///  The following variables are reserved and cannot be overridden via env: 
-    ///   - `$PROJECTS_ROOT` 
-    ///   - `$PROJECT_SOURCE`
+    /// Environment variables used in this container.
+    /// 
+    /// 
+    /// The following variables are reserved and cannot be overridden via env:
+    /// 
+    /// 
+    ///  - `$PROJECTS_ROOT`
+    /// 
+    /// 
+    ///  - `$PROJECT_SOURCE`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<CheClusterDevEnvironmentsDefaultComponentsContainerEnv>>,
     pub image: String,
@@ -1102,11 +1287,16 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsContainer {
     pub memory_limit: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryRequest")]
     pub memory_request: Option<String>,
-    /// Toggles whether or not the project source code should be mounted in the component. 
-    ///  Defaults to true for all component types except plugins and components that set `dedicatedPod` to true.
+    /// Toggles whether or not the project source code should
+    /// be mounted in the component.
+    /// 
+    /// 
+    /// Defaults to true for all component types except plugins and components that set `dedicatedPod` to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountSources")]
     pub mount_sources: Option<bool>,
-    /// Optional specification of the path in the container where project sources should be transferred/mounted when `mountSources` is `true`. When omitted, the default value of /projects is used.
+    /// Optional specification of the path in the container where
+    /// project sources should be transferred/mounted when `mountSources` is `true`.
+    /// When omitted, the default value of /projects is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceMapping")]
     pub source_mapping: Option<String>,
     /// List of volumes mounts that should be mounted is this container.
@@ -1130,37 +1320,73 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsContainerEndpoints {
     /// Annotations to be added to Kubernetes Ingress or Openshift Route
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotation: Option<BTreeMap<String, String>>,
-    /// Map of implementation-dependant string-based free-form attributes. 
-    ///  Examples of Che-specific attributes: 
-    ///  - cookiesAuthEnabled: "true" / "false", 
-    ///  - type: "terminal" / "ide" / "ide-dev",
+    /// Map of implementation-dependant string-based free-form attributes.
+    /// 
+    /// 
+    /// Examples of Che-specific attributes:
+    /// 
+    /// 
+    /// - cookiesAuthEnabled: "true" / "false",
+    /// 
+    /// 
+    /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
-    /// Describes how the endpoint should be exposed on the network. 
-    ///  - `public` means that the endpoint will be exposed on the public network, typically through a K8S ingress or an OpenShift route. 
-    ///  - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD, typically by K8S services, to be consumed by other elements running on the same cloud internal network. 
-    ///  - `none` means that the endpoint will not be exposed and will only be accessible inside the main devworkspace POD, on a local address. 
-    ///  Default value is `public`
+    /// Describes how the endpoint should be exposed on the network.
+    /// 
+    /// 
+    /// - `public` means that the endpoint will be exposed on the public network, typically through
+    /// a K8S ingress or an OpenShift route.
+    /// 
+    /// 
+    /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
+    /// typically by K8S services, to be consumed by other elements running
+    /// on the same cloud internal network.
+    /// 
+    /// 
+    /// - `none` means that the endpoint will not be exposed and will only be accessible
+    /// inside the main devworkspace POD, on a local address.
+    /// 
+    /// 
+    /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exposure: Option<CheClusterDevEnvironmentsDefaultComponentsContainerEndpointsExposure>,
     pub name: String,
     /// Path of the endpoint URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Describes the application and transport protocols of the traffic that will go through this endpoint. 
-    ///  - `http`: Endpoint will have `http` traffic, typically on a TCP connection. It will be automaticaly promoted to `https` when the `secure` field is set to `true`. 
-    ///  - `https`: Endpoint will have `https` traffic, typically on a TCP connection. 
-    ///  - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection. It will be automaticaly promoted to `wss` when the `secure` field is set to `true`. 
-    ///  - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection. 
-    ///  - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol. 
-    ///  - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol. 
-    ///  Default value is `http`
+    /// Describes the application and transport protocols of the traffic that will go through this endpoint.
+    /// 
+    /// 
+    /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<CheClusterDevEnvironmentsDefaultComponentsContainerEndpointsProtocol>,
-    /// Describes whether the endpoint should be secured and protected by some authentication process. This requires a protocol of `https` or `wss`.
+    /// Describes whether the endpoint should be secured and protected by some
+    /// authentication process. This requires a protocol of `https` or `wss`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
-    /// Port number to be used within the container component. The same port cannot be used by two different container components.
+    /// Port number to be used within the container component. The same port cannot
+    /// be used by two different container components.
     #[serde(rename = "targetPort")]
     pub target_port: i64,
 }
@@ -1200,20 +1426,27 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsContainerEnv {
 /// Volume that should be mounted to a component container
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsContainerVolumeMounts {
-    /// The volume mount name is the name of an existing `Volume` component. If several containers mount the same volume name then they will reuse the same volume and will be able to access to the same files.
+    /// The volume mount name is the name of an existing `Volume` component.
+    /// If several containers mount the same volume name
+    /// then they will reuse the same volume and will be able to access to the same files.
     pub name: String,
-    /// The path in the component container where the volume should be mounted. If not path is mentioned, default path is the is `/<name>`.
+    /// The path in the component container where the volume should be mounted.
+    /// If not path is mentioned, default path is the is `/<name>`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
 }
 
-/// Custom component whose logic is implementation-dependant and should be provided by the user possibly through some dedicated controller
+/// Custom component whose logic is implementation-dependant
+/// and should be provided by the user
+/// possibly through some dedicated controller
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsCustom {
-    /// Class of component that the associated implementation controller should use to process this command with the appropriate logic
+    /// Class of component that the associated implementation controller
+    /// should use to process this command with the appropriate logic
     #[serde(rename = "componentClass")]
     pub component_class: String,
-    /// Additional free-form configuration for this custom component that the implementation controller will know how to use
+    /// Additional free-form configuration for this custom component
+    /// that the implementation controller will know how to use
     #[serde(rename = "embeddedResource")]
     pub embedded_resource: BTreeMap<String, serde_json::Value>,
 }
@@ -1221,8 +1454,10 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsCustom {
 /// Allows specifying the definition of an image for outer loop builds
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsImage {
-    /// Defines if the image should be built during startup. 
-    ///  Default value is `false`
+    /// Defines if the image should be built during startup.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoBuild")]
     pub auto_build: Option<bool>,
     /// Allows specifying dockerfile type build
@@ -1251,14 +1486,17 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsImageDockerfile {
     /// Dockerfile's Git source
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub git: Option<CheClusterDevEnvironmentsDefaultComponentsImageDockerfileGit>,
-    /// Specify if a privileged builder pod is required. 
-    ///  Default value is `false`
+    /// Specify if a privileged builder pod is required.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootRequired")]
     pub root_required: Option<bool>,
     /// Type of Dockerfile src
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "srcType")]
     pub src_type: Option<CheClusterDevEnvironmentsDefaultComponentsImageDockerfileSrcType>,
-    /// URI Reference of a Dockerfile. It can be a full URL or a relative URI from the current devfile as the base URI.
+    /// URI Reference of a Dockerfile.
+    /// It can be a full URL or a relative URI from the current devfile as the base URI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
 }
@@ -1266,9 +1504,12 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsImageDockerfile {
 /// Dockerfile's Devfile Registry source
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsImageDockerfileDevfileRegistry {
-    /// Id in a devfile registry that contains a Dockerfile. The src in the OCI registry required for the Dockerfile build will be downloaded for building the image.
+    /// Id in a devfile registry that contains a Dockerfile. The src in the OCI registry
+    /// required for the Dockerfile build will be downloaded for building the image.
     pub id: String,
-    /// Devfile Registry URL to pull the Dockerfile from when using the Devfile Registry as Dockerfile src. To ensure the Dockerfile gets resolved consistently in different environments, it is recommended to always specify the `devfileRegistryUrl` when `Id` is used.
+    /// Devfile Registry URL to pull the Dockerfile from when using the Devfile Registry as Dockerfile src.
+    /// To ensure the Dockerfile gets resolved consistently in different environments,
+    /// it is recommended to always specify the `devfileRegistryUrl` when `Id` is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryUrl")]
     pub registry_url: Option<String>,
 }
@@ -1279,10 +1520,12 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsImageDockerfileGit {
     /// Defines from what the project should be checked out. Required if there are more than one remote configured
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkoutFrom")]
     pub checkout_from: Option<CheClusterDevEnvironmentsDefaultComponentsImageDockerfileGitCheckoutFrom>,
-    /// Location of the Dockerfile in the Git repository when using git as Dockerfile src. Defaults to Dockerfile.
+    /// Location of the Dockerfile in the Git repository when using git as Dockerfile src.
+    /// Defaults to Dockerfile.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileLocation")]
     pub file_location: Option<String>,
-    /// The remotes map which should be initialized in the git project. Projects must have at least one remote configured while StarterProjects & Image Component's Git source can only have at most one remote configured.
+    /// The remotes map which should be initialized in the git project.
+    /// Projects must have at least one remote configured while StarterProjects & Image Component's Git source can only have at most one remote configured.
     pub remotes: BTreeMap<String, String>,
 }
 
@@ -1292,7 +1535,8 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsImageDockerfileGitCheckoutF
     /// The remote name should be used as init. Required if there are more than one remote configured
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remote: Option<String>,
-    /// The revision to checkout from. Should be branch name, tag or commit id. Default branch is used if missing or specified revision is not found.
+    /// The revision to checkout from. Should be branch name, tag or commit id.
+    /// Default branch is used if missing or specified revision is not found.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,
 }
@@ -1311,11 +1555,15 @@ pub enum CheClusterDevEnvironmentsDefaultComponentsImageImageType {
     Dockerfile,
 }
 
-/// Allows importing into the devworkspace the Kubernetes resources defined in a given manifest. For example this allows reusing the Kubernetes definitions used to deploy some runtime components in production.
+/// Allows importing into the devworkspace the Kubernetes resources
+/// defined in a given manifest. For example this allows reusing the Kubernetes
+/// definitions used to deploy some runtime components in production.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsKubernetes {
-    /// Defines if the component should be deployed during startup. 
-    ///  Default value is `false`
+    /// Defines if the component should be deployed during startup.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployByDefault")]
     pub deploy_by_default: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1336,37 +1584,73 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsKubernetesEndpoints {
     /// Annotations to be added to Kubernetes Ingress or Openshift Route
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotation: Option<BTreeMap<String, String>>,
-    /// Map of implementation-dependant string-based free-form attributes. 
-    ///  Examples of Che-specific attributes: 
-    ///  - cookiesAuthEnabled: "true" / "false", 
-    ///  - type: "terminal" / "ide" / "ide-dev",
+    /// Map of implementation-dependant string-based free-form attributes.
+    /// 
+    /// 
+    /// Examples of Che-specific attributes:
+    /// 
+    /// 
+    /// - cookiesAuthEnabled: "true" / "false",
+    /// 
+    /// 
+    /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
-    /// Describes how the endpoint should be exposed on the network. 
-    ///  - `public` means that the endpoint will be exposed on the public network, typically through a K8S ingress or an OpenShift route. 
-    ///  - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD, typically by K8S services, to be consumed by other elements running on the same cloud internal network. 
-    ///  - `none` means that the endpoint will not be exposed and will only be accessible inside the main devworkspace POD, on a local address. 
-    ///  Default value is `public`
+    /// Describes how the endpoint should be exposed on the network.
+    /// 
+    /// 
+    /// - `public` means that the endpoint will be exposed on the public network, typically through
+    /// a K8S ingress or an OpenShift route.
+    /// 
+    /// 
+    /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
+    /// typically by K8S services, to be consumed by other elements running
+    /// on the same cloud internal network.
+    /// 
+    /// 
+    /// - `none` means that the endpoint will not be exposed and will only be accessible
+    /// inside the main devworkspace POD, on a local address.
+    /// 
+    /// 
+    /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exposure: Option<CheClusterDevEnvironmentsDefaultComponentsKubernetesEndpointsExposure>,
     pub name: String,
     /// Path of the endpoint URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Describes the application and transport protocols of the traffic that will go through this endpoint. 
-    ///  - `http`: Endpoint will have `http` traffic, typically on a TCP connection. It will be automaticaly promoted to `https` when the `secure` field is set to `true`. 
-    ///  - `https`: Endpoint will have `https` traffic, typically on a TCP connection. 
-    ///  - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection. It will be automaticaly promoted to `wss` when the `secure` field is set to `true`. 
-    ///  - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection. 
-    ///  - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol. 
-    ///  - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol. 
-    ///  Default value is `http`
+    /// Describes the application and transport protocols of the traffic that will go through this endpoint.
+    /// 
+    /// 
+    /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<CheClusterDevEnvironmentsDefaultComponentsKubernetesEndpointsProtocol>,
-    /// Describes whether the endpoint should be secured and protected by some authentication process. This requires a protocol of `https` or `wss`.
+    /// Describes whether the endpoint should be secured and protected by some
+    /// authentication process. This requires a protocol of `https` or `wss`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
-    /// Port number to be used within the container component. The same port cannot be used by two different container components.
+    /// Port number to be used within the container component. The same port cannot
+    /// be used by two different container components.
     #[serde(rename = "targetPort")]
     pub target_port: i64,
 }
@@ -1397,18 +1681,24 @@ pub enum CheClusterDevEnvironmentsDefaultComponentsKubernetesEndpointsProtocol {
     Udp,
 }
 
-/// Allows importing into the devworkspace the Kubernetes resources defined in a given manifest. For example this allows reusing the Kubernetes definitions used to deploy some runtime components in production.
+/// Allows importing into the devworkspace the Kubernetes resources
+/// defined in a given manifest. For example this allows reusing the Kubernetes
+/// definitions used to deploy some runtime components in production.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CheClusterDevEnvironmentsDefaultComponentsKubernetesLocationType {
     Uri,
     Inlined,
 }
 
-/// Allows importing into the devworkspace the OpenShift resources defined in a given manifest. For example this allows reusing the OpenShift definitions used to deploy some runtime components in production.
+/// Allows importing into the devworkspace the OpenShift resources
+/// defined in a given manifest. For example this allows reusing the OpenShift
+/// definitions used to deploy some runtime components in production.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsOpenshift {
-    /// Defines if the component should be deployed during startup. 
-    ///  Default value is `false`
+    /// Defines if the component should be deployed during startup.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployByDefault")]
     pub deploy_by_default: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1429,37 +1719,73 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsOpenshiftEndpoints {
     /// Annotations to be added to Kubernetes Ingress or Openshift Route
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotation: Option<BTreeMap<String, String>>,
-    /// Map of implementation-dependant string-based free-form attributes. 
-    ///  Examples of Che-specific attributes: 
-    ///  - cookiesAuthEnabled: "true" / "false", 
-    ///  - type: "terminal" / "ide" / "ide-dev",
+    /// Map of implementation-dependant string-based free-form attributes.
+    /// 
+    /// 
+    /// Examples of Che-specific attributes:
+    /// 
+    /// 
+    /// - cookiesAuthEnabled: "true" / "false",
+    /// 
+    /// 
+    /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
-    /// Describes how the endpoint should be exposed on the network. 
-    ///  - `public` means that the endpoint will be exposed on the public network, typically through a K8S ingress or an OpenShift route. 
-    ///  - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD, typically by K8S services, to be consumed by other elements running on the same cloud internal network. 
-    ///  - `none` means that the endpoint will not be exposed and will only be accessible inside the main devworkspace POD, on a local address. 
-    ///  Default value is `public`
+    /// Describes how the endpoint should be exposed on the network.
+    /// 
+    /// 
+    /// - `public` means that the endpoint will be exposed on the public network, typically through
+    /// a K8S ingress or an OpenShift route.
+    /// 
+    /// 
+    /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
+    /// typically by K8S services, to be consumed by other elements running
+    /// on the same cloud internal network.
+    /// 
+    /// 
+    /// - `none` means that the endpoint will not be exposed and will only be accessible
+    /// inside the main devworkspace POD, on a local address.
+    /// 
+    /// 
+    /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exposure: Option<CheClusterDevEnvironmentsDefaultComponentsOpenshiftEndpointsExposure>,
     pub name: String,
     /// Path of the endpoint URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Describes the application and transport protocols of the traffic that will go through this endpoint. 
-    ///  - `http`: Endpoint will have `http` traffic, typically on a TCP connection. It will be automaticaly promoted to `https` when the `secure` field is set to `true`. 
-    ///  - `https`: Endpoint will have `https` traffic, typically on a TCP connection. 
-    ///  - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection. It will be automaticaly promoted to `wss` when the `secure` field is set to `true`. 
-    ///  - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection. 
-    ///  - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol. 
-    ///  - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol. 
-    ///  Default value is `http`
+    /// Describes the application and transport protocols of the traffic that will go through this endpoint.
+    /// 
+    /// 
+    /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<CheClusterDevEnvironmentsDefaultComponentsOpenshiftEndpointsProtocol>,
-    /// Describes whether the endpoint should be secured and protected by some authentication process. This requires a protocol of `https` or `wss`.
+    /// Describes whether the endpoint should be secured and protected by some
+    /// authentication process. This requires a protocol of `https` or `wss`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
-    /// Port number to be used within the container component. The same port cannot be used by two different container components.
+    /// Port number to be used within the container component. The same port cannot
+    /// be used by two different container components.
     #[serde(rename = "targetPort")]
     pub target_port: i64,
 }
@@ -1490,21 +1816,30 @@ pub enum CheClusterDevEnvironmentsDefaultComponentsOpenshiftEndpointsProtocol {
     Udp,
 }
 
-/// Allows importing into the devworkspace the OpenShift resources defined in a given manifest. For example this allows reusing the OpenShift definitions used to deploy some runtime components in production.
+/// Allows importing into the devworkspace the OpenShift resources
+/// defined in a given manifest. For example this allows reusing the OpenShift
+/// definitions used to deploy some runtime components in production.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CheClusterDevEnvironmentsDefaultComponentsOpenshiftLocationType {
     Uri,
     Inlined,
 }
 
-/// Allows importing a plugin. 
-///  Plugins are mainly imported devfiles that contribute components, commands and events as a consistent single unit. They are defined in either YAML files following the devfile syntax, or as `DevWorkspaceTemplate` Kubernetes Custom Resources
+/// Allows importing a plugin.
+/// 
+/// 
+/// Plugins are mainly imported devfiles that contribute components, commands
+/// and events as a consistent single unit. They are defined in either YAML files
+/// following the devfile syntax,
+/// or as `DevWorkspaceTemplate` Kubernetes Custom Resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPlugin {
-    /// Overrides of commands encapsulated in a parent devfile or a plugin. Overriding is done according to K8S strategic merge patch standard rules.
+    /// Overrides of commands encapsulated in a parent devfile or a plugin.
+    /// Overriding is done according to K8S strategic merge patch standard rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commands: Option<Vec<CheClusterDevEnvironmentsDefaultComponentsPluginCommands>>,
-    /// Overrides of components encapsulated in a parent devfile or a plugin. Overriding is done according to K8S strategic merge patch standard rules.
+    /// Overrides of components encapsulated in a parent devfile or a plugin.
+    /// Overriding is done according to K8S strategic merge patch standard rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<Vec<CheClusterDevEnvironmentsDefaultComponentsPluginComponents>>,
     /// Id in a registry that contains a Devfile yaml file
@@ -1516,22 +1851,38 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPlugin {
     /// Reference to a Kubernetes CRD of type DevWorkspaceTemplate
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<CheClusterDevEnvironmentsDefaultComponentsPluginKubernetes>,
-    /// Registry URL to pull the parent devfile from when using id in the parent reference. To ensure the parent devfile gets resolved consistently in different environments, it is recommended to always specify the `registryUrl` when `id` is used.
+    /// Registry URL to pull the parent devfile from when using id in the parent reference.
+    /// To ensure the parent devfile gets resolved consistently in different environments,
+    /// it is recommended to always specify the `registryUrl` when `id` is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryUrl")]
     pub registry_url: Option<String>,
-    /// URI Reference of a parent devfile YAML file. It can be a full URL or a relative URI with the current devfile as the base URI.
+    /// URI Reference of a parent devfile YAML file.
+    /// It can be a full URL or a relative URI with the current devfile as the base URI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
-    /// Specific stack/sample version to pull the parent devfile from, when using id in the parent reference. To specify `version`, `id` must be defined and used as the import reference source. `version` can be either a specific stack version, or `latest`. If no `version` specified, default version will be used.
+    /// Specific stack/sample version to pull the parent devfile from, when using id in the parent reference.
+    /// To specify `version`, `id` must be defined and used as the import reference source.
+    /// `version` can be either a specific stack version, or `latest`.
+    /// If no `version` specified, default version will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPluginCommands {
-    /// Command that consists in applying a given component definition, typically bound to a devworkspace event. 
-    ///  For example, when an `apply` command is bound to a `preStart` event, and references a `container` component, it will start the container as a K8S initContainer in the devworkspace POD, unless the component has its `dedicatedPod` field set to `true`. 
-    ///  When no `apply` command exist for a given component, it is assumed the component will be applied at devworkspace start by default, unless `deployByDefault` for that component is set to false.
+    /// Command that consists in applying a given component definition,
+    /// typically bound to a devworkspace event.
+    /// 
+    /// 
+    /// For example, when an `apply` command is bound to a `preStart` event,
+    /// and references a `container` component, it will start the container as a
+    /// K8S initContainer in the devworkspace POD, unless the component has its
+    /// `dedicatedPod` field set to `true`.
+    /// 
+    /// 
+    /// When no `apply` command exist for a given component,
+    /// it is assumed the component will be applied at devworkspace start
+    /// by default, unless `deployByDefault` for that component is set to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub apply: Option<CheClusterDevEnvironmentsDefaultComponentsPluginCommandsApply>,
     /// Map of implementation-dependant free-form YAML attributes.
@@ -1540,19 +1891,32 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginCommands {
     /// Type of devworkspace command
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commandType")]
     pub command_type: Option<CheClusterDevEnvironmentsDefaultComponentsPluginCommandsCommandType>,
-    /// Composite command that allows executing several sub-commands either sequentially or concurrently
+    /// Composite command that allows executing several sub-commands
+    /// either sequentially or concurrently
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub composite: Option<CheClusterDevEnvironmentsDefaultComponentsPluginCommandsComposite>,
     /// CLI Command executed in an existing component container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CheClusterDevEnvironmentsDefaultComponentsPluginCommandsExec>,
-    /// Mandatory identifier that allows referencing this command in composite commands, from a parent, or in events.
+    /// Mandatory identifier that allows referencing
+    /// this command in composite commands, from
+    /// a parent, or in events.
     pub id: String,
 }
 
-/// Command that consists in applying a given component definition, typically bound to a devworkspace event. 
-///  For example, when an `apply` command is bound to a `preStart` event, and references a `container` component, it will start the container as a K8S initContainer in the devworkspace POD, unless the component has its `dedicatedPod` field set to `true`. 
-///  When no `apply` command exist for a given component, it is assumed the component will be applied at devworkspace start by default, unless `deployByDefault` for that component is set to false.
+/// Command that consists in applying a given component definition,
+/// typically bound to a devworkspace event.
+/// 
+/// 
+/// For example, when an `apply` command is bound to a `preStart` event,
+/// and references a `container` component, it will start the container as a
+/// K8S initContainer in the devworkspace POD, unless the component has its
+/// `dedicatedPod` field set to `true`.
+/// 
+/// 
+/// When no `apply` command exist for a given component,
+/// it is assumed the component will be applied at devworkspace start
+/// by default, unless `deployByDefault` for that component is set to false.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPluginCommandsApply {
     /// Describes component that will be applied
@@ -1561,7 +1925,8 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginCommandsApply {
     /// Defines the group this command is part of
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<CheClusterDevEnvironmentsDefaultComponentsPluginCommandsApplyGroup>,
-    /// Optional label that provides a label for this command to be used in Editor UI menus for example
+    /// Optional label that provides a label for this command
+    /// to be used in Editor UI menus for example
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
 }
@@ -1599,7 +1964,8 @@ pub enum CheClusterDevEnvironmentsDefaultComponentsPluginCommandsCommandType {
     Composite,
 }
 
-/// Composite command that allows executing several sub-commands either sequentially or concurrently
+/// Composite command that allows executing several sub-commands
+/// either sequentially or concurrently
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPluginCommandsComposite {
     /// The commands that comprise this composite command
@@ -1608,7 +1974,8 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginCommandsComposite {
     /// Defines the group this command is part of
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<CheClusterDevEnvironmentsDefaultComponentsPluginCommandsCompositeGroup>,
-    /// Optional label that provides a label for this command to be used in Editor UI menus for example
+    /// Optional label that provides a label for this command
+    /// to be used in Editor UI menus for example
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
     /// Indicates if the sub-commands should be executed concurrently
@@ -1645,32 +2012,52 @@ pub enum CheClusterDevEnvironmentsDefaultComponentsPluginCommandsCompositeGroupK
 /// CLI Command executed in an existing component container
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPluginCommandsExec {
-    /// The actual command-line string 
-    ///  Special variables that can be used: 
-    ///   - `$PROJECTS_ROOT`: A path where projects sources are mounted as defined by container component's sourceMapping. 
-    ///   - `$PROJECT_SOURCE`: A path to a project source ($PROJECTS_ROOT/<project-name>). If there are multiple projects, this will point to the directory of the first one.
+    /// The actual command-line string
+    /// 
+    /// 
+    /// Special variables that can be used:
+    /// 
+    /// 
+    ///  - `$PROJECTS_ROOT`: A path where projects sources are mounted as defined by container component's sourceMapping.
+    /// 
+    /// 
+    ///  - `$PROJECT_SOURCE`: A path to a project source ($PROJECTS_ROOT/<project-name>). If there are multiple projects, this will point to the directory of the first one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commandLine")]
     pub command_line: Option<String>,
     /// Describes component to which given action relates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub component: Option<String>,
-    /// Optional list of environment variables that have to be set before running the command
+    /// Optional list of environment variables that have to be set
+    /// before running the command
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<CheClusterDevEnvironmentsDefaultComponentsPluginCommandsExecEnv>>,
     /// Defines the group this command is part of
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<CheClusterDevEnvironmentsDefaultComponentsPluginCommandsExecGroup>,
-    /// Specify whether the command is restarted or not when the source code changes. If set to `true` the command won't be restarted. A *hotReloadCapable* `run` or `debug` command is expected to handle file changes on its own and won't be restarted. A *hotReloadCapable* `build` command is expected to be executed only once and won't be executed again. This field is taken into account only for commands `build`, `run` and `debug` with `isDefault` set to `true`. 
-    ///  Default value is `false`
+    /// Specify whether the command is restarted or not when the source code changes.
+    /// If set to `true` the command won't be restarted.
+    /// A *hotReloadCapable* `run` or `debug` command is expected to handle file changes on its own and won't be restarted.
+    /// A *hotReloadCapable* `build` command is expected to be executed only once and won't be executed again.
+    /// This field is taken into account only for commands `build`, `run` and `debug` with `isDefault` set to `true`.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hotReloadCapable")]
     pub hot_reload_capable: Option<bool>,
-    /// Optional label that provides a label for this command to be used in Editor UI menus for example
+    /// Optional label that provides a label for this command
+    /// to be used in Editor UI menus for example
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
-    /// Working directory where the command should be executed 
-    ///  Special variables that can be used: 
-    ///   - `$PROJECTS_ROOT`: A path where projects sources are mounted as defined by container component's sourceMapping. 
-    ///   - `$PROJECT_SOURCE`: A path to a project source ($PROJECTS_ROOT/<project-name>). If there are multiple projects, this will point to the directory of the first one.
+    /// Working directory where the command should be executed
+    /// 
+    /// 
+    /// Special variables that can be used:
+    /// 
+    /// 
+    ///  - `$PROJECTS_ROOT`: A path where projects sources are mounted as defined by container component's sourceMapping.
+    /// 
+    /// 
+    ///  - `$PROJECT_SOURCE`: A path to a project source ($PROJECTS_ROOT/<project-name>). If there are multiple projects, this will point to the directory of the first one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
@@ -1722,15 +2109,22 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponents {
     /// Allows specifying the definition of an image for outer loop builds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImage>,
-    /// Allows importing into the devworkspace the Kubernetes resources defined in a given manifest. For example this allows reusing the Kubernetes definitions used to deploy some runtime components in production.
+    /// Allows importing into the devworkspace the Kubernetes resources
+    /// defined in a given manifest. For example this allows reusing the Kubernetes
+    /// definitions used to deploy some runtime components in production.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsKubernetes>,
-    /// Mandatory name that allows referencing the component from other elements (such as commands) or from an external devfile that may reference this component through a parent or a plugin.
+    /// Mandatory name that allows referencing the component
+    /// from other elements (such as commands) or from an external
+    /// devfile that may reference this component through a parent or a plugin.
     pub name: String,
-    /// Allows importing into the devworkspace the OpenShift resources defined in a given manifest. For example this allows reusing the OpenShift definitions used to deploy some runtime components in production.
+    /// Allows importing into the devworkspace the OpenShift resources
+    /// defined in a given manifest. For example this allows reusing the OpenShift
+    /// definitions used to deploy some runtime components in production.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openshift: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsOpenshift>,
-    /// Allows specifying the definition of a volume shared by several other components
+    /// Allows specifying the definition of a volume
+    /// shared by several other components
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volume: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsVolume>,
 }
@@ -1750,28 +2144,41 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainer {
     /// Annotations that should be added to specific resources for this container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotation: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainerAnnotation>,
-    /// The arguments to supply to the command running the dockerimage component. The arguments are supplied either to the default command provided in the image or to the overridden command. 
-    ///  Defaults to an empty array, meaning use whatever is defined in the image.
+    /// The arguments to supply to the command running the dockerimage component. The arguments are supplied either to the default command provided in the image or to the overridden command.
+    /// 
+    /// 
+    /// Defaults to an empty array, meaning use whatever is defined in the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// The command to run in the dockerimage component instead of the default one provided in the image. 
-    ///  Defaults to an empty array, meaning use whatever is defined in the image.
+    /// The command to run in the dockerimage component instead of the default one provided in the image.
+    /// 
+    /// 
+    /// Defaults to an empty array, meaning use whatever is defined in the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuLimit")]
     pub cpu_limit: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuRequest")]
     pub cpu_request: Option<String>,
-    /// Specify if a container should run in its own separated pod, instead of running as part of the main development environment pod. 
-    ///  Default value is `false`
+    /// Specify if a container should run in its own separated pod,
+    /// instead of running as part of the main development environment pod.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dedicatedPod")]
     pub dedicated_pod: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainerEndpoints>>,
-    /// Environment variables used in this container. 
-    ///  The following variables are reserved and cannot be overridden via env: 
-    ///   - `$PROJECTS_ROOT` 
-    ///   - `$PROJECT_SOURCE`
+    /// Environment variables used in this container.
+    /// 
+    /// 
+    /// The following variables are reserved and cannot be overridden via env:
+    /// 
+    /// 
+    ///  - `$PROJECTS_ROOT`
+    /// 
+    /// 
+    ///  - `$PROJECT_SOURCE`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainerEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1780,11 +2187,16 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainer {
     pub memory_limit: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryRequest")]
     pub memory_request: Option<String>,
-    /// Toggles whether or not the project source code should be mounted in the component. 
-    ///  Defaults to true for all component types except plugins and components that set `dedicatedPod` to true.
+    /// Toggles whether or not the project source code should
+    /// be mounted in the component.
+    /// 
+    /// 
+    /// Defaults to true for all component types except plugins and components that set `dedicatedPod` to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountSources")]
     pub mount_sources: Option<bool>,
-    /// Optional specification of the path in the container where project sources should be transferred/mounted when `mountSources` is `true`. When omitted, the default value of /projects is used.
+    /// Optional specification of the path in the container where
+    /// project sources should be transferred/mounted when `mountSources` is `true`.
+    /// When omitted, the default value of /projects is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceMapping")]
     pub source_mapping: Option<String>,
     /// List of volumes mounts that should be mounted is this container.
@@ -1808,37 +2220,73 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainerEn
     /// Annotations to be added to Kubernetes Ingress or Openshift Route
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotation: Option<BTreeMap<String, String>>,
-    /// Map of implementation-dependant string-based free-form attributes. 
-    ///  Examples of Che-specific attributes: 
-    ///  - cookiesAuthEnabled: "true" / "false", 
-    ///  - type: "terminal" / "ide" / "ide-dev",
+    /// Map of implementation-dependant string-based free-form attributes.
+    /// 
+    /// 
+    /// Examples of Che-specific attributes:
+    /// 
+    /// 
+    /// - cookiesAuthEnabled: "true" / "false",
+    /// 
+    /// 
+    /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
-    /// Describes how the endpoint should be exposed on the network. 
-    ///  - `public` means that the endpoint will be exposed on the public network, typically through a K8S ingress or an OpenShift route. 
-    ///  - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD, typically by K8S services, to be consumed by other elements running on the same cloud internal network. 
-    ///  - `none` means that the endpoint will not be exposed and will only be accessible inside the main devworkspace POD, on a local address. 
-    ///  Default value is `public`
+    /// Describes how the endpoint should be exposed on the network.
+    /// 
+    /// 
+    /// - `public` means that the endpoint will be exposed on the public network, typically through
+    /// a K8S ingress or an OpenShift route.
+    /// 
+    /// 
+    /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
+    /// typically by K8S services, to be consumed by other elements running
+    /// on the same cloud internal network.
+    /// 
+    /// 
+    /// - `none` means that the endpoint will not be exposed and will only be accessible
+    /// inside the main devworkspace POD, on a local address.
+    /// 
+    /// 
+    /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exposure: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainerEndpointsExposure>,
     pub name: String,
     /// Path of the endpoint URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Describes the application and transport protocols of the traffic that will go through this endpoint. 
-    ///  - `http`: Endpoint will have `http` traffic, typically on a TCP connection. It will be automaticaly promoted to `https` when the `secure` field is set to `true`. 
-    ///  - `https`: Endpoint will have `https` traffic, typically on a TCP connection. 
-    ///  - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection. It will be automaticaly promoted to `wss` when the `secure` field is set to `true`. 
-    ///  - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection. 
-    ///  - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol. 
-    ///  - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol. 
-    ///  Default value is `http`
+    /// Describes the application and transport protocols of the traffic that will go through this endpoint.
+    /// 
+    /// 
+    /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainerEndpointsProtocol>,
-    /// Describes whether the endpoint should be secured and protected by some authentication process. This requires a protocol of `https` or `wss`.
+    /// Describes whether the endpoint should be secured and protected by some
+    /// authentication process. This requires a protocol of `https` or `wss`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
-    /// Port number to be used within the container component. The same port cannot be used by two different container components.
+    /// Port number to be used within the container component. The same port cannot
+    /// be used by two different container components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<i64>,
 }
@@ -1879,9 +2327,12 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainerEn
 /// Volume that should be mounted to a component container
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainerVolumeMounts {
-    /// The volume mount name is the name of an existing `Volume` component. If several containers mount the same volume name then they will reuse the same volume and will be able to access to the same files.
+    /// The volume mount name is the name of an existing `Volume` component.
+    /// If several containers mount the same volume name
+    /// then they will reuse the same volume and will be able to access to the same files.
     pub name: String,
-    /// The path in the component container where the volume should be mounted. If not path is mentioned, default path is the is `/<name>`.
+    /// The path in the component container where the volume should be mounted.
+    /// If not path is mentioned, default path is the is `/<name>`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
 }
@@ -1889,8 +2340,10 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsContainerVo
 /// Allows specifying the definition of an image for outer loop builds
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImage {
-    /// Defines if the image should be built during startup. 
-    ///  Default value is `false`
+    /// Defines if the image should be built during startup.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoBuild")]
     pub auto_build: Option<bool>,
     /// Allows specifying dockerfile type build
@@ -1919,14 +2372,17 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImageDocker
     /// Dockerfile's Git source
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub git: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImageDockerfileGit>,
-    /// Specify if a privileged builder pod is required. 
-    ///  Default value is `false`
+    /// Specify if a privileged builder pod is required.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootRequired")]
     pub root_required: Option<bool>,
     /// Type of Dockerfile src
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "srcType")]
     pub src_type: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImageDockerfileSrcType>,
-    /// URI Reference of a Dockerfile. It can be a full URL or a relative URI from the current devfile as the base URI.
+    /// URI Reference of a Dockerfile.
+    /// It can be a full URL or a relative URI from the current devfile as the base URI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
 }
@@ -1934,10 +2390,13 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImageDocker
 /// Dockerfile's Devfile Registry source
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImageDockerfileDevfileRegistry {
-    /// Id in a devfile registry that contains a Dockerfile. The src in the OCI registry required for the Dockerfile build will be downloaded for building the image.
+    /// Id in a devfile registry that contains a Dockerfile. The src in the OCI registry
+    /// required for the Dockerfile build will be downloaded for building the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// Devfile Registry URL to pull the Dockerfile from when using the Devfile Registry as Dockerfile src. To ensure the Dockerfile gets resolved consistently in different environments, it is recommended to always specify the `devfileRegistryUrl` when `Id` is used.
+    /// Devfile Registry URL to pull the Dockerfile from when using the Devfile Registry as Dockerfile src.
+    /// To ensure the Dockerfile gets resolved consistently in different environments,
+    /// it is recommended to always specify the `devfileRegistryUrl` when `Id` is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryUrl")]
     pub registry_url: Option<String>,
 }
@@ -1948,10 +2407,12 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImageDocker
     /// Defines from what the project should be checked out. Required if there are more than one remote configured
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkoutFrom")]
     pub checkout_from: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImageDockerfileGitCheckoutFrom>,
-    /// Location of the Dockerfile in the Git repository when using git as Dockerfile src. Defaults to Dockerfile.
+    /// Location of the Dockerfile in the Git repository when using git as Dockerfile src.
+    /// Defaults to Dockerfile.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileLocation")]
     pub file_location: Option<String>,
-    /// The remotes map which should be initialized in the git project. Projects must have at least one remote configured while StarterProjects & Image Component's Git source can only have at most one remote configured.
+    /// The remotes map which should be initialized in the git project.
+    /// Projects must have at least one remote configured while StarterProjects & Image Component's Git source can only have at most one remote configured.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remotes: Option<BTreeMap<String, String>>,
 }
@@ -1962,7 +2423,8 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImageDocker
     /// The remote name should be used as init. Required if there are more than one remote configured
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remote: Option<String>,
-    /// The revision to checkout from. Should be branch name, tag or commit id. Default branch is used if missing or specified revision is not found.
+    /// The revision to checkout from. Should be branch name, tag or commit id.
+    /// Default branch is used if missing or specified revision is not found.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,
 }
@@ -1982,11 +2444,15 @@ pub enum CheClusterDevEnvironmentsDefaultComponentsPluginComponentsImageImageTyp
     AutoBuild,
 }
 
-/// Allows importing into the devworkspace the Kubernetes resources defined in a given manifest. For example this allows reusing the Kubernetes definitions used to deploy some runtime components in production.
+/// Allows importing into the devworkspace the Kubernetes resources
+/// defined in a given manifest. For example this allows reusing the Kubernetes
+/// definitions used to deploy some runtime components in production.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsKubernetes {
-    /// Defines if the component should be deployed during startup. 
-    ///  Default value is `false`
+    /// Defines if the component should be deployed during startup.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployByDefault")]
     pub deploy_by_default: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2007,37 +2473,73 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsKubernetesE
     /// Annotations to be added to Kubernetes Ingress or Openshift Route
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotation: Option<BTreeMap<String, String>>,
-    /// Map of implementation-dependant string-based free-form attributes. 
-    ///  Examples of Che-specific attributes: 
-    ///  - cookiesAuthEnabled: "true" / "false", 
-    ///  - type: "terminal" / "ide" / "ide-dev",
+    /// Map of implementation-dependant string-based free-form attributes.
+    /// 
+    /// 
+    /// Examples of Che-specific attributes:
+    /// 
+    /// 
+    /// - cookiesAuthEnabled: "true" / "false",
+    /// 
+    /// 
+    /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
-    /// Describes how the endpoint should be exposed on the network. 
-    ///  - `public` means that the endpoint will be exposed on the public network, typically through a K8S ingress or an OpenShift route. 
-    ///  - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD, typically by K8S services, to be consumed by other elements running on the same cloud internal network. 
-    ///  - `none` means that the endpoint will not be exposed and will only be accessible inside the main devworkspace POD, on a local address. 
-    ///  Default value is `public`
+    /// Describes how the endpoint should be exposed on the network.
+    /// 
+    /// 
+    /// - `public` means that the endpoint will be exposed on the public network, typically through
+    /// a K8S ingress or an OpenShift route.
+    /// 
+    /// 
+    /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
+    /// typically by K8S services, to be consumed by other elements running
+    /// on the same cloud internal network.
+    /// 
+    /// 
+    /// - `none` means that the endpoint will not be exposed and will only be accessible
+    /// inside the main devworkspace POD, on a local address.
+    /// 
+    /// 
+    /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exposure: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsKubernetesEndpointsExposure>,
     pub name: String,
     /// Path of the endpoint URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Describes the application and transport protocols of the traffic that will go through this endpoint. 
-    ///  - `http`: Endpoint will have `http` traffic, typically on a TCP connection. It will be automaticaly promoted to `https` when the `secure` field is set to `true`. 
-    ///  - `https`: Endpoint will have `https` traffic, typically on a TCP connection. 
-    ///  - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection. It will be automaticaly promoted to `wss` when the `secure` field is set to `true`. 
-    ///  - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection. 
-    ///  - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol. 
-    ///  - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol. 
-    ///  Default value is `http`
+    /// Describes the application and transport protocols of the traffic that will go through this endpoint.
+    /// 
+    /// 
+    /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsKubernetesEndpointsProtocol>,
-    /// Describes whether the endpoint should be secured and protected by some authentication process. This requires a protocol of `https` or `wss`.
+    /// Describes whether the endpoint should be secured and protected by some
+    /// authentication process. This requires a protocol of `https` or `wss`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
-    /// Port number to be used within the container component. The same port cannot be used by two different container components.
+    /// Port number to be used within the container component. The same port cannot
+    /// be used by two different container components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<i64>,
 }
@@ -2068,18 +2570,24 @@ pub enum CheClusterDevEnvironmentsDefaultComponentsPluginComponentsKubernetesEnd
     Udp,
 }
 
-/// Allows importing into the devworkspace the Kubernetes resources defined in a given manifest. For example this allows reusing the Kubernetes definitions used to deploy some runtime components in production.
+/// Allows importing into the devworkspace the Kubernetes resources
+/// defined in a given manifest. For example this allows reusing the Kubernetes
+/// definitions used to deploy some runtime components in production.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CheClusterDevEnvironmentsDefaultComponentsPluginComponentsKubernetesLocationType {
     Uri,
     Inlined,
 }
 
-/// Allows importing into the devworkspace the OpenShift resources defined in a given manifest. For example this allows reusing the OpenShift definitions used to deploy some runtime components in production.
+/// Allows importing into the devworkspace the OpenShift resources
+/// defined in a given manifest. For example this allows reusing the OpenShift
+/// definitions used to deploy some runtime components in production.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsOpenshift {
-    /// Defines if the component should be deployed during startup. 
-    ///  Default value is `false`
+    /// Defines if the component should be deployed during startup.
+    /// 
+    /// 
+    /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployByDefault")]
     pub deploy_by_default: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2100,37 +2608,73 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsOpenshiftEn
     /// Annotations to be added to Kubernetes Ingress or Openshift Route
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotation: Option<BTreeMap<String, String>>,
-    /// Map of implementation-dependant string-based free-form attributes. 
-    ///  Examples of Che-specific attributes: 
-    ///  - cookiesAuthEnabled: "true" / "false", 
-    ///  - type: "terminal" / "ide" / "ide-dev",
+    /// Map of implementation-dependant string-based free-form attributes.
+    /// 
+    /// 
+    /// Examples of Che-specific attributes:
+    /// 
+    /// 
+    /// - cookiesAuthEnabled: "true" / "false",
+    /// 
+    /// 
+    /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
-    /// Describes how the endpoint should be exposed on the network. 
-    ///  - `public` means that the endpoint will be exposed on the public network, typically through a K8S ingress or an OpenShift route. 
-    ///  - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD, typically by K8S services, to be consumed by other elements running on the same cloud internal network. 
-    ///  - `none` means that the endpoint will not be exposed and will only be accessible inside the main devworkspace POD, on a local address. 
-    ///  Default value is `public`
+    /// Describes how the endpoint should be exposed on the network.
+    /// 
+    /// 
+    /// - `public` means that the endpoint will be exposed on the public network, typically through
+    /// a K8S ingress or an OpenShift route.
+    /// 
+    /// 
+    /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
+    /// typically by K8S services, to be consumed by other elements running
+    /// on the same cloud internal network.
+    /// 
+    /// 
+    /// - `none` means that the endpoint will not be exposed and will only be accessible
+    /// inside the main devworkspace POD, on a local address.
+    /// 
+    /// 
+    /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exposure: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsOpenshiftEndpointsExposure>,
     pub name: String,
     /// Path of the endpoint URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Describes the application and transport protocols of the traffic that will go through this endpoint. 
-    ///  - `http`: Endpoint will have `http` traffic, typically on a TCP connection. It will be automaticaly promoted to `https` when the `secure` field is set to `true`. 
-    ///  - `https`: Endpoint will have `https` traffic, typically on a TCP connection. 
-    ///  - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection. It will be automaticaly promoted to `wss` when the `secure` field is set to `true`. 
-    ///  - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection. 
-    ///  - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol. 
-    ///  - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol. 
-    ///  Default value is `http`
+    /// Describes the application and transport protocols of the traffic that will go through this endpoint.
+    /// 
+    /// 
+    /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
+    /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
+    /// 
+    /// 
+    /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
+    /// 
+    /// 
+    /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
+    /// 
+    /// 
+    /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<CheClusterDevEnvironmentsDefaultComponentsPluginComponentsOpenshiftEndpointsProtocol>,
-    /// Describes whether the endpoint should be secured and protected by some authentication process. This requires a protocol of `https` or `wss`.
+    /// Describes whether the endpoint should be secured and protected by some
+    /// authentication process. This requires a protocol of `https` or `wss`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
-    /// Port number to be used within the container component. The same port cannot be used by two different container components.
+    /// Port number to be used within the container component. The same port cannot
+    /// be used by two different container components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<i64>,
 }
@@ -2161,17 +2705,21 @@ pub enum CheClusterDevEnvironmentsDefaultComponentsPluginComponentsOpenshiftEndp
     Udp,
 }
 
-/// Allows importing into the devworkspace the OpenShift resources defined in a given manifest. For example this allows reusing the OpenShift definitions used to deploy some runtime components in production.
+/// Allows importing into the devworkspace the OpenShift resources
+/// defined in a given manifest. For example this allows reusing the OpenShift
+/// definitions used to deploy some runtime components in production.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CheClusterDevEnvironmentsDefaultComponentsPluginComponentsOpenshiftLocationType {
     Uri,
     Inlined,
 }
 
-/// Allows specifying the definition of a volume shared by several other components
+/// Allows specifying the definition of a volume
+/// shared by several other components
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsVolume {
-    /// Ephemeral volumes are not stored persistently across restarts. Defaults to false
+    /// Ephemeral volumes are not stored persistently across restarts. Defaults
+    /// to false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<bool>,
     /// Size of the volume
@@ -2179,8 +2727,13 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginComponentsVolume {
     pub size: Option<String>,
 }
 
-/// Allows importing a plugin. 
-///  Plugins are mainly imported devfiles that contribute components, commands and events as a consistent single unit. They are defined in either YAML files following the devfile syntax, or as `DevWorkspaceTemplate` Kubernetes Custom Resources
+/// Allows importing a plugin.
+/// 
+/// 
+/// Plugins are mainly imported devfiles that contribute components, commands
+/// and events as a consistent single unit. They are defined in either YAML files
+/// following the devfile syntax,
+/// or as `DevWorkspaceTemplate` Kubernetes Custom Resources
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CheClusterDevEnvironmentsDefaultComponentsPluginImportReferenceType {
     Uri,
@@ -2196,10 +2749,12 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsPluginKubernetes {
     pub namespace: Option<String>,
 }
 
-/// Allows specifying the definition of a volume shared by several other components
+/// Allows specifying the definition of a volume
+/// shared by several other components
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultComponentsVolume {
-    /// Ephemeral volumes are not stored persistently across restarts. Defaults to false
+    /// Ephemeral volumes are not stored persistently across restarts. Defaults
+    /// to false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<bool>,
     /// Size of the volume
@@ -2210,17 +2765,20 @@ pub struct CheClusterDevEnvironmentsDefaultComponentsVolume {
 /// User's default namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultNamespace {
-    /// Indicates if is allowed to automatically create a user namespace. If it set to false, then user namespace must be pre-created by a cluster administrator.
+    /// Indicates if is allowed to automatically create a user namespace.
+    /// If it set to false, then user namespace must be pre-created by a cluster administrator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoProvision")]
     pub auto_provision: Option<bool>,
-    /// If you don't create the user namespaces in advance, this field defines the Kubernetes namespace created when you start your first workspace. You can use `<username>` and `<userid>` placeholders, such as che-workspace-<username>.
+    /// If you don't create the user namespaces in advance, this field defines the Kubernetes namespace created when you start your first workspace.
+    /// You can use `<username>` and `<userid>` placeholders, such as che-workspace-<username>.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsDefaultPlugins {
-    /// The editor ID to specify default plug-ins for. The plugin ID must have `publisher/name/version` format.
+    /// The editor ID to specify default plug-ins for.
+    /// The plugin ID must have `publisher/name/version` format.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub editor: Option<String>,
     /// Default plug-in URIs for the specified editor.
@@ -2260,7 +2818,15 @@ pub struct CheClusterDevEnvironmentsGatewayContainer {
 pub struct CheClusterDevEnvironmentsGatewayContainerEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -2274,10 +2840,12 @@ pub struct CheClusterDevEnvironmentsGatewayContainerEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CheClusterDevEnvironmentsGatewayContainerEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CheClusterDevEnvironmentsGatewayContainerEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CheClusterDevEnvironmentsGatewayContainerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -2290,7 +2858,9 @@ pub struct CheClusterDevEnvironmentsGatewayContainerEnvValueFrom {
 pub struct CheClusterDevEnvironmentsGatewayContainerEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2298,7 +2868,8 @@ pub struct CheClusterDevEnvironmentsGatewayContainerEnvValueFromConfigMapKeyRef 
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsGatewayContainerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -2309,7 +2880,8 @@ pub struct CheClusterDevEnvironmentsGatewayContainerEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsGatewayContainerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -2327,7 +2899,9 @@ pub struct CheClusterDevEnvironmentsGatewayContainerEnvValueFromResourceFieldRef
 pub struct CheClusterDevEnvironmentsGatewayContainerEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2357,10 +2931,14 @@ pub struct CheClusterDevEnvironmentsGatewayContainerResources {
 /// Describes the maximum amount of compute resources allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsGatewayContainerResourcesLimits {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -2368,10 +2946,14 @@ pub struct CheClusterDevEnvironmentsGatewayContainerResourcesLimits {
 /// Describes the minimum amount of compute resources required.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsGatewayContainerResourcesRequest {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -2384,10 +2966,14 @@ pub enum CheClusterDevEnvironmentsImagePullPolicy {
     Never,
 }
 
-/// PersistUserHome defines configuration options for persisting the user home directory in workspaces.
+/// PersistUserHome defines configuration options for persisting the
+/// user home directory in workspaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsPersistUserHome {
-    /// Determines whether the user home directory in workspaces should persist between workspace shutdown and startup. Must be used with the 'per-user' or 'per-workspace' PVC strategy in order to take effect. Disabled by default.
+    /// Determines whether the user home directory in workspaces should persist between
+    /// workspace shutdown and startup.
+    /// Must be used with the 'per-user' or 'per-workspace' PVC strategy in order to take effect.
+    /// Disabled by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
@@ -2417,7 +3003,15 @@ pub struct CheClusterDevEnvironmentsProjectCloneContainer {
 pub struct CheClusterDevEnvironmentsProjectCloneContainerEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -2431,10 +3025,12 @@ pub struct CheClusterDevEnvironmentsProjectCloneContainerEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CheClusterDevEnvironmentsProjectCloneContainerEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CheClusterDevEnvironmentsProjectCloneContainerEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CheClusterDevEnvironmentsProjectCloneContainerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -2447,7 +3043,9 @@ pub struct CheClusterDevEnvironmentsProjectCloneContainerEnvValueFrom {
 pub struct CheClusterDevEnvironmentsProjectCloneContainerEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2455,7 +3053,8 @@ pub struct CheClusterDevEnvironmentsProjectCloneContainerEnvValueFromConfigMapKe
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsProjectCloneContainerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -2466,7 +3065,8 @@ pub struct CheClusterDevEnvironmentsProjectCloneContainerEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsProjectCloneContainerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -2484,7 +3084,9 @@ pub struct CheClusterDevEnvironmentsProjectCloneContainerEnvValueFromResourceFie
 pub struct CheClusterDevEnvironmentsProjectCloneContainerEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2514,10 +3116,14 @@ pub struct CheClusterDevEnvironmentsProjectCloneContainerResources {
 /// Describes the maximum amount of compute resources allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsProjectCloneContainerResourcesLimits {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -2525,10 +3131,14 @@ pub struct CheClusterDevEnvironmentsProjectCloneContainerResourcesLimits {
 /// Describes the minimum amount of compute resources required.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsProjectCloneContainerResourcesRequest {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -2536,53 +3146,100 @@ pub struct CheClusterDevEnvironmentsProjectCloneContainerResourcesRequest {
 /// Workspace security configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurity {
-    /// Container SecurityContext used by all workspace-related containers. If set, defined values are merged into the default Container SecurityContext configuration. Requires devEnvironments.disableContainerBuildCapabilities to be set to `true` in order to take effect.
+    /// Container SecurityContext used by all workspace-related containers.
+    /// If set, defined values are merged into the default Container SecurityContext configuration.
+    /// Requires devEnvironments.disableContainerBuildCapabilities to be set to `true` in order to take effect.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<CheClusterDevEnvironmentsSecurityContainerSecurityContext>,
-    /// PodSecurityContext used by all workspace-related pods. If set, defined values are merged into the default PodSecurityContext configuration.
+    /// PodSecurityContext used by all workspace-related pods.
+    /// If set, defined values are merged into the default PodSecurityContext configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<CheClusterDevEnvironmentsSecurityPodSecurityContext>,
 }
 
-/// Container SecurityContext used by all workspace-related containers. If set, defined values are merged into the default Container SecurityContext configuration. Requires devEnvironments.disableContainerBuildCapabilities to be set to `true` in order to take effect.
+/// Container SecurityContext used by all workspace-related containers.
+/// If set, defined values are merged into the default Container SecurityContext configuration.
+/// Requires devEnvironments.disableContainerBuildCapabilities to be set to `true` in order to take effect.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurityContainerSecurityContext {
-    /// AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
-    /// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<CheClusterDevEnvironmentsSecurityContainerSecurityContextCapabilities>,
-    /// Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false. Note that this field cannot be set when spec.os.name is windows.
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    /// procMount denotes the type of proc mount to use for the containers. The default is DefaultProcMount which uses the container runtime defaults for readonly paths and masked paths. This requires the ProcMountType feature flag to be enabled. Note that this field cannot be set when spec.os.name is windows.
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    /// Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<CheClusterDevEnvironmentsSecurityContainerSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<CheClusterDevEnvironmentsSecurityContainerSecurityContextSeccompProfile>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<CheClusterDevEnvironmentsSecurityContainerSecurityContextWindowsOptions>,
 }
 
-/// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurityContainerSecurityContextCapabilities {
     /// Added capabilities
@@ -2593,7 +3250,11 @@ pub struct CheClusterDevEnvironmentsSecurityContainerSecurityContextCapabilities
     pub drop: Option<Vec<String>>,
 }
 
-/// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurityContainerSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -2610,72 +3271,150 @@ pub struct CheClusterDevEnvironmentsSecurityContainerSecurityContextSeLinuxOptio
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurityContainerSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must only be set if type is "Localhost".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurityContainerSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// This field is alpha-level and will only be honored by components that enable the
+    /// WindowsHostProcessContainers feature flag. Setting this field without the feature
+    /// flag will result in errors when validating the Pod. All of a Pod's containers must
+    /// have the same effective HostProcess value (it is not allowed to have a mix of HostProcess
+    /// containers and non-HostProcess containers).  In addition, if HostProcess is true
+    /// then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
-/// PodSecurityContext used by all workspace-related pods. If set, defined values are merged into the default PodSecurityContext configuration.
+/// PodSecurityContext used by all workspace-related pods.
+/// If set, defined values are merged into the default PodSecurityContext configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurityPodSecurityContext {
-    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
-    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows.
+    /// A special supplemental group that applies to all containers in a pod.
+    /// Some volume types allow the Kubelet to change the ownership of that volume
+    /// to be owned by the pod:
+    /// 
+    /// 
+    /// 1. The owning GID will be the FSGroup
+    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
+    /// 
+    /// 
+    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used. Note that this field cannot be set when spec.os.name is windows.
+    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
+    /// before being exposed inside Pod. This field will only apply to
+    /// volume types which support fsGroup based ownership(and permissions).
+    /// It will have no effect on ephemeral volume types such as: secret, configmaps
+    /// and emptydir.
+    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to all containers.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in SecurityContext.  If set in
+    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+    /// takes precedence for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<CheClusterDevEnvironmentsSecurityPodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<CheClusterDevEnvironmentsSecurityPodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition to the container's primary GID, the fsGroup (if specified), and group memberships defined in the container image for the uid of the container process. If unspecified, no additional groups are added to any container. Note that group memberships defined in the container image for the uid of the container process are still effective, even if they are not included in this list. Note that this field cannot be set when spec.os.name is windows.
+    /// A list of groups applied to the first process run in each container, in addition
+    /// to the container's primary GID, the fsGroup (if specified), and group memberships
+    /// defined in the container image for the uid of the container process. If unspecified,
+    /// no additional groups are added to any container. Note that group memberships
+    /// defined in the container image for the uid of the container process are still effective,
+    /// even if they are not included in this list.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows.
+    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
+    /// sysctls (by the container runtime) might fail to launch.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<CheClusterDevEnvironmentsSecurityPodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options within a container's SecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<CheClusterDevEnvironmentsSecurityPodSecurityContextWindowsOptions>,
 }
 
-/// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to all containers.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in SecurityContext.  If set in
+/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+/// takes precedence for that container.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurityPodSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -2692,14 +3431,23 @@ pub struct CheClusterDevEnvironmentsSecurityPodSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurityPodSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must only be set if type is "Localhost".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -2713,37 +3461,63 @@ pub struct CheClusterDevEnvironmentsSecurityPodSecurityContextSysctls {
     pub value: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options within a container's SecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurityPodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// This field is alpha-level and will only be honored by components that enable the
+    /// WindowsHostProcessContainers feature flag. Setting this field without the feature
+    /// flag will result in errors when validating the Pod. All of a Pod's containers must
+    /// have the same effective HostProcess value (it is not allowed to have a mix of HostProcess
+    /// containers and non-HostProcess containers).  In addition, if HostProcess is true
+    /// then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsServiceAccountTokens {
-    /// Audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
+    /// Audience is the intended audience of the token. A recipient of a token
+    /// must identify itself with an identifier specified in the audience of the
+    /// token, and otherwise should reject the token. The audience defaults to the
+    /// identifier of the apiserver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// ExpirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours. Defaults to 1 hour and must be at least 10 minutes.
+    /// ExpirationSeconds is the requested duration of validity of the service
+    /// account token. As the token approaches expiration, the kubelet volume
+    /// plugin will proactively rotate the service account token. The kubelet will
+    /// start trying to rotate the token if the token is older than 80 percent of
+    /// its time to live or if the token is older than 24 hours. Defaults to 1 hour
+    /// and must be at least 10 minutes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// Path within the workspace container at which the token should be mounted.  Must not contain ':'.
+    /// Path within the workspace container at which the token should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// Identifiable name of the ServiceAccount token. If multiple ServiceAccount tokens use the same mount path, a generic name will be used for the projected volume instead.
+    /// Identifiable name of the ServiceAccount token.
+    /// If multiple ServiceAccount tokens use the same mount path, a generic name will be used
+    /// for the projected volume instead.
     pub name: String,
-    /// Path is the path relative to the mount point of the file to project the token into.
+    /// Path is the path relative to the mount point of the file to project the
+    /// token into.
     pub path: String,
 }
 
@@ -2756,7 +3530,11 @@ pub struct CheClusterDevEnvironmentsStorage {
     /// PVC settings when using the `per-workspace` PVC strategy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "perWorkspaceStrategyPvcConfig")]
     pub per_workspace_strategy_pvc_config: Option<CheClusterDevEnvironmentsStoragePerWorkspaceStrategyPvcConfig>,
-    /// Persistent volume claim strategy for the Che server. The supported strategies are: `per-user` (all workspaces PVCs in one volume), `per-workspace` (each workspace is given its own individual PVC) and `ephemeral` (non-persistent storage where local changes will be lost when the workspace is stopped.)
+    /// Persistent volume claim strategy for the Che server.
+    /// The supported strategies are: `per-user` (all workspaces PVCs in one volume),
+    /// `per-workspace` (each workspace is given its own individual PVC)
+    /// and `ephemeral` (non-persistent storage where local changes will be lost when
+    /// the workspace is stopped.)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcStrategy")]
     pub pvc_strategy: Option<CheClusterDevEnvironmentsStoragePvcStrategy>,
 }
@@ -2796,22 +3574,32 @@ pub enum CheClusterDevEnvironmentsStoragePvcStrategy {
     Ephemeral,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -2819,7 +3607,9 @@ pub struct CheClusterDevEnvironmentsTolerations {
 /// Trusted certificate settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsTrustedCerts {
-    /// The ConfigMap contains certificates to propagate to the Che components and to provide a particular configuration for Git. See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/deploying-che-with-support-for-git-repositories-with-self-signed-certificates/ The ConfigMap must have a `app.kubernetes.io/part-of=che.eclipse.org` label.
+    /// The ConfigMap contains certificates to propagate to the Che components and to provide a particular configuration for Git.
+    /// See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/deploying-che-with-support-for-git-repositories-with-self-signed-certificates/
+    /// The ConfigMap must have a `app.kubernetes.io/part-of=che.eclipse.org` label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitTrustedCertsConfigMapName")]
     pub git_trusted_certs_config_map_name: Option<String>,
 }
@@ -2827,7 +3617,8 @@ pub struct CheClusterDevEnvironmentsTrustedCerts {
 /// User configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsUser {
-    /// Additional ClusterRoles assigned to the user. The role must have `app.kubernetes.io/part-of=che.eclipse.org` label.
+    /// Additional ClusterRoles assigned to the user.
+    /// The role must have `app.kubernetes.io/part-of=che.eclipse.org` label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
 }
@@ -2852,7 +3643,8 @@ pub struct CheClusterGitServices {
 /// AzureDevOpsService enables users to work with repositories hosted on Azure DevOps Service (dev.azure.com).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterGitServicesAzure {
-    /// Kubernetes secret, that contains Base64-encoded Azure DevOps Service Application ID and Client Secret. See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-microsoft-azure-devops-services
+    /// Kubernetes secret, that contains Base64-encoded Azure DevOps Service Application ID and Client Secret.
+    /// See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-microsoft-azure-devops-services
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
@@ -2860,10 +3652,14 @@ pub struct CheClusterGitServicesAzure {
 /// BitBucketService enables users to work with repositories hosted on Bitbucket (bitbucket.org or self-hosted).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterGitServicesBitbucket {
-    /// Bitbucket server endpoint URL. Deprecated in favor of `che.eclipse.org/scm-server-endpoint` annotation. See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-1-for-a-bitbucket-server/.
+    /// Bitbucket server endpoint URL.
+    /// Deprecated in favor of `che.eclipse.org/scm-server-endpoint` annotation.
+    /// See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-1-for-a-bitbucket-server/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    /// Kubernetes secret, that contains Base64-encoded Bitbucket OAuth 1.0 or OAuth 2.0 data. See the following pages for details: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-1-for-a-bitbucket-server/ and https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-the-bitbucket-cloud/.
+    /// Kubernetes secret, that contains Base64-encoded Bitbucket OAuth 1.0 or OAuth 2.0 data.
+    /// See the following pages for details: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-1-for-a-bitbucket-server/
+    /// and https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-the-bitbucket-cloud/.
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
@@ -2871,13 +3667,18 @@ pub struct CheClusterGitServicesBitbucket {
 /// GitHubService enables users to work with repositories hosted on GitHub (GitHub.com or GitHub Enterprise).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterGitServicesGithub {
-    /// Disables subdomain isolation. Deprecated in favor of `che.eclipse.org/scm-github-disable-subdomain-isolation` annotation. See the following page for details: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-github/.
+    /// Disables subdomain isolation.
+    /// Deprecated in favor of `che.eclipse.org/scm-github-disable-subdomain-isolation` annotation.
+    /// See the following page for details: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-github/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSubdomainIsolation")]
     pub disable_subdomain_isolation: Option<bool>,
-    /// GitHub server endpoint URL. Deprecated in favor of `che.eclipse.org/scm-server-endpoint` annotation. See the following page for details: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-github/.
+    /// GitHub server endpoint URL.
+    /// Deprecated in favor of `che.eclipse.org/scm-server-endpoint` annotation.
+    /// See the following page for details: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-github/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    /// Kubernetes secret, that contains Base64-encoded GitHub OAuth Client id and GitHub OAuth Client secret. See the following page for details: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-github/.
+    /// Kubernetes secret, that contains Base64-encoded GitHub OAuth Client id and GitHub OAuth Client secret.
+    /// See the following page for details: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-github/.
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
@@ -2885,10 +3686,13 @@ pub struct CheClusterGitServicesGithub {
 /// GitLabService enables users to work with repositories hosted on GitLab (gitlab.com or self-hosted).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterGitServicesGitlab {
-    /// GitLab server endpoint URL. Deprecated in favor of `che.eclipse.org/scm-server-endpoint` annotation. See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-gitlab/.
+    /// GitLab server endpoint URL.
+    /// Deprecated in favor of `che.eclipse.org/scm-server-endpoint` annotation.
+    /// See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-gitlab/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    /// Kubernetes secret, that contains Base64-encoded GitHub Application id and GitLab Application Client secret. See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-gitlab/.
+    /// Kubernetes secret, that contains Base64-encoded GitHub Application id and GitLab Application Client secret.
+    /// See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/configuring-oauth-2-for-gitlab/.
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
@@ -2896,25 +3700,37 @@ pub struct CheClusterGitServicesGitlab {
 /// Networking, Che authentication, and TLS configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterNetworking {
-    /// Defines annotations which will be set for an Ingress (a route for OpenShift platform). The defaults for kubernetes platforms are:     kubernetes.io/ingress.class:                       "nginx"     nginx.ingress.kubernetes.io/proxy-read-timeout:    "3600",     nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600",     nginx.ingress.kubernetes.io/ssl-redirect:          "true"
+    /// Defines annotations which will be set for an Ingress (a route for OpenShift platform).
+    /// The defaults for kubernetes platforms are:
+    ///     kubernetes.io/ingress.class:                       "nginx"
+    ///     nginx.ingress.kubernetes.io/proxy-read-timeout:    "3600",
+    ///     nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600",
+    ///     nginx.ingress.kubernetes.io/ssl-redirect:          "true"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Authentication settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<CheClusterNetworkingAuth>,
-    /// For an OpenShift cluster, the Operator uses the domain to generate a hostname for the route. The generated hostname follows this pattern: che-<che-namespace>.<domain>. The <che-namespace> is the namespace where the CheCluster CRD is created. In conjunction with labels, it creates a route served by a non-default Ingress controller. For a Kubernetes cluster, it contains a global ingress domain. There are no default values: you must specify them.
+    /// For an OpenShift cluster, the Operator uses the domain to generate a hostname for the route.
+    /// The generated hostname follows this pattern: che-<che-namespace>.<domain>. The <che-namespace> is the namespace where the CheCluster CRD is created.
+    /// In conjunction with labels, it creates a route served by a non-default Ingress controller.
+    /// For a Kubernetes cluster, it contains a global ingress domain. There are no default values: you must specify them.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub domain: Option<String>,
     /// The public hostname of the installed Che server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// IngressClassName is the name of an IngressClass cluster resource. If a class name is defined in both the `IngressClassName` field and the `kubernetes.io/ingress.class` annotation, `IngressClassName` field takes precedence.
+    /// IngressClassName is the name of an IngressClass cluster resource.
+    /// If a class name is defined in both the `IngressClassName` field and the `kubernetes.io/ingress.class` annotation,
+    /// `IngressClassName` field takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// Defines labels which will be set for an Ingress (a route for OpenShift platform).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// The name of the secret used to set up Ingress TLS termination. If the field is an empty string, the default cluster certificate is used. The secret must have a `app.kubernetes.io/part-of=che.eclipse.org` label.
+    /// The name of the secret used to set up Ingress TLS termination.
+    /// If the field is an empty string, the default cluster certificate is used.
+    /// The secret must have a `app.kubernetes.io/part-of=che.eclipse.org` label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecretName")]
     pub tls_secret_name: Option<String>,
 }
@@ -2922,7 +3738,11 @@ pub struct CheClusterNetworking {
 /// Authentication settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterNetworkingAuth {
-    /// Advance authorization settings. Determines which users and groups are allowed to access Che. User is allowed to access Che if he/she is either in the `allowUsers` list or is member of group from `allowGroups` list and not in neither the `denyUsers` list nor is member of group from `denyGroups` list. If `allowUsers` and `allowGroups` are empty, then all users are allowed to access Che. if `denyUsers` and `denyGroups` are empty, then no users are denied to access Che.
+    /// Advance authorization settings. Determines which users and groups are allowed to access Che.
+    /// User is allowed to access Che if he/she is either in the `allowUsers` list or is member of group from `allowGroups` list
+    /// and not in neither the `denyUsers` list nor is member of group from `denyGroups` list.
+    /// If `allowUsers` and `allowGroups` are empty, then all users are allowed to access Che.
+    /// if `denyUsers` and `denyGroups` are empty, then no users are denied to access Che.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "advancedAuthorization")]
     pub advanced_authorization: Option<CheClusterNetworkingAuthAdvancedAuthorization>,
     /// Gateway settings.
@@ -2931,27 +3751,39 @@ pub struct CheClusterNetworkingAuth {
     /// Public URL of the Identity Provider server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityProviderURL")]
     pub identity_provider_url: Option<String>,
-    /// Identity token to be passed to upstream. There are two types of tokens supported: `id_token` and `access_token`. Default value is `id_token`. This field is specific to Che installations made for Kubernetes only and ignored for OpenShift.
+    /// Identity token to be passed to upstream. There are two types of tokens supported: `id_token` and `access_token`.
+    /// Default value is `id_token`.
+    /// This field is specific to Che installations made for Kubernetes only and ignored for OpenShift.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityToken")]
     pub identity_token: Option<CheClusterNetworkingAuthIdentityToken>,
-    /// Inactivity timeout for tokens to set in the OpenShift `OAuthClient` resource used to set up identity federation on the OpenShift side. 0 means tokens for this client never time out.
+    /// Inactivity timeout for tokens to set in the OpenShift `OAuthClient` resource used to set up identity federation on the OpenShift side.
+    /// 0 means tokens for this client never time out.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthAccessTokenInactivityTimeoutSeconds")]
     pub o_auth_access_token_inactivity_timeout_seconds: Option<i32>,
-    /// Access token max age for tokens to set in the OpenShift `OAuthClient` resource used to set up identity federation on the OpenShift side. 0 means no expiration.
+    /// Access token max age for tokens to set in the OpenShift `OAuthClient` resource used to set up identity federation on the OpenShift side.
+    /// 0 means no expiration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthAccessTokenMaxAgeSeconds")]
     pub o_auth_access_token_max_age_seconds: Option<i32>,
     /// Name of the OpenShift `OAuthClient` resource used to set up identity federation on the OpenShift side.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthClientName")]
     pub o_auth_client_name: Option<String>,
-    /// Access Token Scope. This field is specific to Che installations made for Kubernetes only and ignored for OpenShift.
+    /// Access Token Scope.
+    /// This field is specific to Che installations made for Kubernetes only and ignored for OpenShift.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthScope")]
     pub o_auth_scope: Option<String>,
-    /// Name of the secret set in the OpenShift `OAuthClient` resource used to set up identity federation on the OpenShift side. For Kubernetes, this can either be the plain text oAuthSecret value, or the name of a kubernetes secret which contains a key `oAuthSecret` and the value is the secret. NOTE: this secret must exist in the same namespace as the `CheCluster` resource and contain the label `app.kubernetes.io/part-of=che.eclipse.org`.
+    /// Name of the secret set in the OpenShift `OAuthClient` resource used to set up identity federation on the OpenShift side.
+    /// For Kubernetes, this can either be the plain text oAuthSecret value, or the name of a kubernetes secret which contains a
+    /// key `oAuthSecret` and the value is the secret. NOTE: this secret must exist in the same namespace as the `CheCluster`
+    /// resource and contain the label `app.kubernetes.io/part-of=che.eclipse.org`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthSecret")]
     pub o_auth_secret: Option<String>,
 }
 
-/// Advance authorization settings. Determines which users and groups are allowed to access Che. User is allowed to access Che if he/she is either in the `allowUsers` list or is member of group from `allowGroups` list and not in neither the `denyUsers` list nor is member of group from `denyGroups` list. If `allowUsers` and `allowGroups` are empty, then all users are allowed to access Che. if `denyUsers` and `denyGroups` are empty, then no users are denied to access Che.
+/// Advance authorization settings. Determines which users and groups are allowed to access Che.
+/// User is allowed to access Che if he/she is either in the `allowUsers` list or is member of group from `allowGroups` list
+/// and not in neither the `denyUsers` list nor is member of group from `denyGroups` list.
+/// If `allowUsers` and `allowGroups` are empty, then all users are allowed to access Che.
+/// if `denyUsers` and `denyGroups` are empty, then no users are denied to access Che.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterNetworkingAuthAdvancedAuthorization {
     /// List of groups allowed to access Che (currently supported in OpenShift only).
@@ -2974,7 +3806,12 @@ pub struct CheClusterNetworkingAuthGateway {
     /// Gateway configuration labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configLabels")]
     pub config_labels: Option<BTreeMap<String, String>>,
-    /// Deployment override options. Since gateway deployment consists of several containers, they must be distinguished in the configuration by their names: - `gateway` - `configbump` - `oauth-proxy` - `kube-rbac-proxy`
+    /// Deployment override options.
+    /// Since gateway deployment consists of several containers, they must be distinguished in the configuration by their names:
+    /// - `gateway`
+    /// - `configbump`
+    /// - `oauth-proxy`
+    /// - `kube-rbac-proxy`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<CheClusterNetworkingAuthGatewayDeployment>,
     /// Configuration for kube-rbac-proxy within the Che gateway pod.
@@ -2988,7 +3825,12 @@ pub struct CheClusterNetworkingAuthGateway {
     pub traefik: Option<CheClusterNetworkingAuthGatewayTraefik>,
 }
 
-/// Deployment override options. Since gateway deployment consists of several containers, they must be distinguished in the configuration by their names: - `gateway` - `configbump` - `oauth-proxy` - `kube-rbac-proxy`
+/// Deployment override options.
+/// Since gateway deployment consists of several containers, they must be distinguished in the configuration by their names:
+/// - `gateway`
+/// - `configbump`
+/// - `oauth-proxy`
+/// - `kube-rbac-proxy`
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterNetworkingAuthGatewayDeployment {
     /// List of containers belonging to the pod.
@@ -3024,7 +3866,15 @@ pub struct CheClusterNetworkingAuthGatewayDeploymentContainers {
 pub struct CheClusterNetworkingAuthGatewayDeploymentContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -3038,10 +3888,12 @@ pub struct CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -3054,7 +3906,9 @@ pub struct CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFrom {
 pub struct CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3062,7 +3916,8 @@ pub struct CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFromConfig
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -3073,7 +3928,8 @@ pub struct CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFromFieldR
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -3091,7 +3947,9 @@ pub struct CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFromResour
 pub struct CheClusterNetworkingAuthGatewayDeploymentContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3121,10 +3979,14 @@ pub struct CheClusterNetworkingAuthGatewayDeploymentContainersResources {
 /// Describes the maximum amount of compute resources allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterNetworkingAuthGatewayDeploymentContainersResourcesLimits {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -3132,10 +3994,14 @@ pub struct CheClusterNetworkingAuthGatewayDeploymentContainersResourcesLimits {
 /// Describes the minimum amount of compute resources required.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterNetworkingAuthGatewayDeploymentContainersResourcesRequest {
-    /// CPU, in cores. (500m = .5 cores) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// CPU, in cores. (500m = .5 cores)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024) If the value is not specified, then the default value is set depending on the component. If value is `0`, then no value is set for the component.
+    /// Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+    /// If the value is not specified, then the default value is set depending on the component.
+    /// If value is `0`, then no value is set for the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -3228,7 +4094,9 @@ pub struct CheClusterStatus {
     /// A brief CamelCase message indicating details about why the Che deployment is in the current phase.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    /// The resolved workspace base domain. This is either the copy of the explicitly defined property of the same name in the spec or, if it is undefined in the spec and we're running on OpenShift, the automatically resolved basedomain for routes.
+    /// The resolved workspace base domain. This is either the copy of the explicitly defined property of the
+    /// same name in the spec or, if it is undefined in the spec and we're running on OpenShift, the automatically
+    /// resolved basedomain for routes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceBaseDomain")]
     pub workspace_base_domain: Option<String>,
 }

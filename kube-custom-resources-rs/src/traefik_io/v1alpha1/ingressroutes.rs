@@ -80,7 +80,7 @@ pub struct IngressRouteRoutesMiddlewares {
 /// Service defines an upstream HTTP service to proxy traffic to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteRoutesServices {
-    /// Healthcheck defines health checks for the service.
+    /// Healthcheck defines health checks for ExternalName services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<IngressRouteRoutesServicesHealthCheck>,
     /// Kind defines the kind of the Service.
@@ -138,37 +138,47 @@ pub struct IngressRouteRoutesServices {
     pub weight: Option<i64>,
 }
 
-/// Healthcheck defines health checks for the service.
+/// Healthcheck defines health checks for ExternalName services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteRoutesServicesHealthCheck {
-    #[serde(rename = "followRedirects")]
-    pub follow_redirects: bool,
+    /// FollowRedirects defines whether redirects should be followed during the health check calls.
+    /// Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
+    pub follow_redirects: Option<bool>,
+    /// Headers defines custom headers to be sent to the health check endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
+    /// Hostname defines the value of hostname in the Host header of the health check request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// Duration is a custom type suitable for parsing duration values.
-    /// It supports `time.ParseDuration`-compatible values and suffix-less digits; in
-    /// the latter case, seconds are assumed.
+    /// Interval defines the frequency of the health check calls.
+    /// Default: 30s
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub interval: Option<i64>,
+    pub interval: Option<IntOrString>,
+    /// Method defines the healthcheck method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
+    /// Mode defines the health check mode.
+    /// If defined to grpc, will use the gRPC health check protocol to probe the server.
+    /// Default: http
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
+    /// Path defines the server URL path for the health check endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+    /// Port defines the server URL port for the health check endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
+    /// Scheme replaces the server URL scheme for the health check endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
+    /// Status defines the expected HTTP status code of the response to the health check request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<i64>,
-    /// Duration is a custom type suitable for parsing duration values.
-    /// It supports `time.ParseDuration`-compatible values and suffix-less digits; in
-    /// the latter case, seconds are assumed.
+    /// Timeout defines the maximum duration Traefik will wait for a health check request before considering the server unhealthy.
+    /// Default: 5s
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timeout: Option<i64>,
+    pub timeout: Option<IntOrString>,
 }
 
 /// Service defines an upstream HTTP service to proxy traffic to.

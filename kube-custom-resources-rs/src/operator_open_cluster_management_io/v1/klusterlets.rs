@@ -164,9 +164,16 @@ pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsCo
     /// HubConnectionTimeoutSeconds is used to set the timeout of connecting to the hub cluster. When agent loses the connection to the hub over the timeout seconds, the agent do a rebootstrap. By default is 10 mins.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubConnectionTimeoutSeconds")]
     pub hub_connection_timeout_seconds: Option<i32>,
-    /// SecretNames is a list of secret names. The secrets are in the same namespace where the agent controller runs.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNames")]
-    pub secret_names: Option<Vec<String>>,
+    /// KubeConfigSecrets is a list of secret names. The secrets are in the same namespace where the agent controller runs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeConfigSecrets")]
+    pub kube_config_secrets: Option<Vec<KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfigKubeConfigSecrets>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfigKubeConfigSecrets {
+    /// Name is the name of the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap. 

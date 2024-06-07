@@ -30,7 +30,6 @@ pub struct MachinePoolSpec {
     /// be ready.
     /// Defaults to 0 (machine instance will be considered available as soon as it
     /// is ready)
-    /// NOTE: No logic is implemented for this field and it currently has no behaviour.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// ProviderIDList are the identification IDs of machine instances provided by the provider.

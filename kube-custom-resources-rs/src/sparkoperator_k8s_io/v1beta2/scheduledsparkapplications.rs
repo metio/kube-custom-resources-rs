@@ -561,6 +561,8 @@ pub struct ScheduledSparkApplicationTemplateDriverInitContainers {
     pub readiness_probe: Option<ScheduledSparkApplicationTemplateDriverInitContainersReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ScheduledSparkApplicationTemplateDriverInitContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ScheduledSparkApplicationTemplateDriverInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -2216,6 +2218,8 @@ pub struct ScheduledSparkApplicationTemplateExecutorInitContainers {
     pub readiness_probe: Option<ScheduledSparkApplicationTemplateExecutorInitContainersReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ScheduledSparkApplicationTemplateExecutorInitContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ScheduledSparkApplicationTemplateExecutorInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]

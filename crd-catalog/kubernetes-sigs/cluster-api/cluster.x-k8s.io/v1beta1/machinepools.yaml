@@ -69,7 +69,7 @@ spec:
                     type: "string"
                   type: "array"
                 minReadySeconds:
-                  description: "Minimum number of seconds for which a newly created machine instances should\nbe ready.\nDefaults to 0 (machine instance will be considered available as soon as it\nis ready)\nNOTE: No logic is implemented for this field and it currently has no behaviour."
+                  description: "Minimum number of seconds for which a newly created machine instances should\nbe ready.\nDefaults to 0 (machine instance will be considered available as soon as it\nis ready)"
                   format: "int32"
                   type: "integer"
                 providerIDList:

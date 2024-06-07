@@ -45,6 +45,9 @@ pub struct VolumeSpec {
     /// Deprecated: Replaced by field `image`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineImage")]
     pub engine_image: Option<String>,
+    /// Setting that freezes the filesystem on the root partition before a snapshot is created.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "freezeFilesystemForSnapshot")]
+    pub freeze_filesystem_for_snapshot: Option<VolumeFreezeFilesystemForSnapshot>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromBackup")]
     pub from_backup: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -133,6 +136,17 @@ pub enum VolumeDataLocality {
     BestEffort,
     #[serde(rename = "strict-local")]
     StrictLocal,
+}
+
+/// VolumeSpec defines the desired state of the Longhorn volume
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VolumeFreezeFilesystemForSnapshot {
+    #[serde(rename = "ignored")]
+    Ignored,
+    #[serde(rename = "enabled")]
+    Enabled,
+    #[serde(rename = "disabled")]
+    Disabled,
 }
 
 /// VolumeSpec defines the desired state of the Longhorn volume

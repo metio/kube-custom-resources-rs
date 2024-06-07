@@ -32,7 +32,7 @@ spec:
                 catch:
                   description: "Catch defines what the tests steps will execute when an error happens.\nThis will be combined with catch handlers defined at the test and step levels."
                   items:
-                    description: "Catch defines actions to be executed on failure."
+                    description: "CatchFinally defines actions to be executed in catch, finally and cleanup blocks."
                     properties:
                       command:
                         description: "Command defines a command to run."

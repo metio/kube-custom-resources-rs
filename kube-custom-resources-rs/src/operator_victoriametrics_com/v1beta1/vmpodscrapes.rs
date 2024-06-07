@@ -150,7 +150,7 @@ pub struct VMPodScrapePodMetricsEndpoints {
     /// TLSConfig configuration to use when scraping the endpoint
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VMPodScrapePodMetricsEndpointsTlsConfig>,
-    /// VMScrapeParams defines VictoriaMetrics specific scrape parametrs
+    /// VMScrapeParams defines VictoriaMetrics specific scrape parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vm_scrape_params: Option<VMPodScrapePodMetricsEndpointsVmScrapeParams>,
 }
@@ -585,7 +585,7 @@ pub struct VMPodScrapePodMetricsEndpointsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// VMScrapeParams defines VictoriaMetrics specific scrape parametrs
+/// VMScrapeParams defines VictoriaMetrics specific scrape parameters
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMPodScrapePodMetricsEndpointsVmScrapeParams {
     #[serde(default, skip_serializing_if = "Option::is_none")]

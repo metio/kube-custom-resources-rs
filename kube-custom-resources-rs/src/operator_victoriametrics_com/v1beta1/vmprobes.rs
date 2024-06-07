@@ -81,7 +81,7 @@ pub struct VMProbeSpec {
     /// The prober.URL parameter is required. Targets cannot be probed if left empty.
     #[serde(rename = "vmProberSpec")]
     pub vm_prober_spec: VMProbeVmProberSpec,
-    /// VMScrapeParams defines VictoriaMetrics specific scrape parametrs
+    /// VMScrapeParams defines VictoriaMetrics specific scrape parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vm_scrape_params: Option<VMProbeVmScrapeParams>,
 }
@@ -607,7 +607,7 @@ pub enum VMProbeVmProberSpecScheme {
     Https,
 }
 
-/// VMScrapeParams defines VictoriaMetrics specific scrape parametrs
+/// VMScrapeParams defines VictoriaMetrics specific scrape parameters
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMProbeVmScrapeParams {
     #[serde(default, skip_serializing_if = "Option::is_none")]

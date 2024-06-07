@@ -96,7 +96,7 @@ pub struct VMNodeScrapeSpec {
     /// TLSConfig specifies TLSConfig configuration parameters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VMNodeScrapeTlsConfig>,
-    /// VMScrapeParams defines VictoriaMetrics specific scrape parametrs
+    /// VMScrapeParams defines VictoriaMetrics specific scrape parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vm_scrape_params: Option<VMNodeScrapeVmScrapeParams>,
 }
@@ -552,7 +552,7 @@ pub struct VMNodeScrapeTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// VMScrapeParams defines VictoriaMetrics specific scrape parametrs
+/// VMScrapeParams defines VictoriaMetrics specific scrape parameters
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeVmScrapeParams {
     #[serde(default, skip_serializing_if = "Option::is_none")]

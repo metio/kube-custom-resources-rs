@@ -49,6 +49,9 @@ pub struct TestExecutionExecutionRequest {
     /// cron job template extensions
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplate")]
     pub cron_job_template: Option<String>,
+    /// whether webhooks should be called on execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// config map references
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envConfigMaps")]
     pub env_config_maps: Option<Vec<TestExecutionExecutionRequestEnvConfigMaps>>,

@@ -3685,6 +3685,33 @@ spec:
             status:
               description: "Status is the status of the Cilium policy rule. \n The reason this field exists in this structure is due a bug in the k8s code-generator that doesn't create a `UpdateStatus` method because the field does not exist in the structure."
               properties:
+                conditions:
+                  items:
+                    properties:
+                      lastTransitionTime:
+                        description: "The last time the condition transitioned from one status to another."
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "A human readable message indicating details about the transition."
+                        type: "string"
+                      reason:
+                        description: "The reason for the condition's last transition."
+                        type: "string"
+                      status:
+                        description: "The status of the condition, one of True, False, or Unknown"
+                        type: "string"
+                      type:
+                        description: "The type of the policy condition"
+                        type: "string"
+                    required:
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "type"
+                  x-kubernetes-list-type: "map"
                 derivativePolicies:
                   additionalProperties:
                     description: "CiliumNetworkPolicyNodeStatus is the status of a Cilium policy rule for a specific node."
@@ -3713,35 +3740,6 @@ spec:
                         type: "boolean"
                     type: "object"
                   description: "DerivativePolicies is the status of all policies derived from the Cilium policy"
-                  type: "object"
-                nodes:
-                  additionalProperties:
-                    description: "CiliumNetworkPolicyNodeStatus is the status of a Cilium policy rule for a specific node."
-                    properties:
-                      annotations:
-                        additionalProperties:
-                          type: "string"
-                        description: "Annotations corresponds to the Annotations in the ObjectMeta of the CNP that have been realized on the node for CNP. That is, if a CNP has been imported and has been assigned annotation X=Y by the user, Annotations in CiliumNetworkPolicyNodeStatus will be X=Y once the CNP that was imported corresponding to Annotation X=Y has been realized on the node."
-                        type: "object"
-                      enforcing:
-                        description: "Enforcing is set to true once all endpoints present at the time the policy has been imported are enforcing this policy."
-                        type: "boolean"
-                      error:
-                        description: "Error describes any error that occurred when parsing or importing the policy, or realizing the policy for the endpoints to which it applies on the node."
-                        type: "string"
-                      lastUpdated:
-                        description: "LastUpdated contains the last time this status was updated"
-                        format: "date-time"
-                        type: "string"
-                      localPolicyRevision:
-                        description: "Revision is the policy revision of the repository which first implemented this policy."
-                        format: "int64"
-                        type: "integer"
-                      ok:
-                        description: "OK is true when the policy has been parsed and imported successfully into the in-memory policy repository on the node."
-                        type: "boolean"
-                    type: "object"
-                  description: "Nodes is the Cilium policy status for each node"
                   type: "object"
               type: "object"
           required:

@@ -42,6 +42,9 @@ pub struct OutputOutputs {
     /// out_es plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub elasticsearch: Option<OutputOutputsElasticsearch>,
+    /// out_es datastreams plugin
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearchDataStream")]
+    pub elasticsearch_data_stream: Option<OutputOutputsElasticsearchDataStream>,
     /// format section
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<OutputOutputsFormat>,
@@ -728,6 +731,201 @@ pub struct OutputOutputsElasticsearchUserValueFrom {
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputOutputsElasticsearchUserValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// out_es datastreams plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStream {
+    /// Optional, Absolute path to CA certificate file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
+    pub ca_file: Option<String>,
+    /// Optional, Absolute path to client Certificate file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
+    pub client_cert: Option<String>,
+    /// Optional, Absolute path to client private Key file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKey")]
+    pub client_key: Option<String>,
+    /// Optional, password for ClientKey file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKeyPassword")]
+    pub client_key_password: Option<OutputOutputsElasticsearchDataStreamClientKeyPassword>,
+    /// Authenticate towards Elastic Cloud using cloudAuth.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudAuth")]
+    pub cloud_auth: Option<OutputOutputsElasticsearchDataStreamCloudAuth>,
+    /// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must be set as well and host, port, user and password are ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudId")]
+    pub cloud_id: Option<OutputOutputsElasticsearchDataStreamCloudId>,
+    /// You can specify Elasticsearch data stream name by this parameter. This parameter is mandatory for elasticsearch_data_stream
+    #[serde(rename = "dataStreamName")]
+    pub data_stream_name: String,
+    /// The hostname of your Elasticsearch node (default: localhost).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Hosts defines a list of hosts if you want to connect to more than one Elasticsearch nodes
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hosts: Option<String>,
+    /// Optional, The login credentials to connect to Elasticsearch
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<OutputOutputsElasticsearchDataStreamPassword>,
+    /// Path defines the REST API endpoint of Elasticsearch to post write requests (default: nil).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// The port number of your Elasticsearch node (default: 9200).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// Specify https if your Elasticsearch endpoint supports SSL (default: http).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+    /// Optional, Force certificate validation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerify")]
+    pub ssl_verify: Option<bool>,
+    /// Optional, The login credentials to connect to Elasticsearch
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<OutputOutputsElasticsearchDataStreamUser>,
+}
+
+/// Optional, password for ClientKey file
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamClientKeyPassword {
+    /// ValueSource defines how to find a value's key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOutputsElasticsearchDataStreamClientKeyPasswordValueFrom>,
+}
+
+/// ValueSource defines how to find a value's key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamClientKeyPasswordValueFrom {
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOutputsElasticsearchDataStreamClientKeyPasswordValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamClientKeyPasswordValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Authenticate towards Elastic Cloud using cloudAuth.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamCloudAuth {
+    /// ValueSource defines how to find a value's key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOutputsElasticsearchDataStreamCloudAuthValueFrom>,
+}
+
+/// ValueSource defines how to find a value's key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamCloudAuthValueFrom {
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOutputsElasticsearchDataStreamCloudAuthValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamCloudAuthValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must be set as well and host, port, user and password are ignored.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamCloudId {
+    /// ValueSource defines how to find a value's key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOutputsElasticsearchDataStreamCloudIdValueFrom>,
+}
+
+/// ValueSource defines how to find a value's key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamCloudIdValueFrom {
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOutputsElasticsearchDataStreamCloudIdValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamCloudIdValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Optional, The login credentials to connect to Elasticsearch
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamPassword {
+    /// ValueSource defines how to find a value's key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOutputsElasticsearchDataStreamPasswordValueFrom>,
+}
+
+/// ValueSource defines how to find a value's key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamPasswordValueFrom {
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOutputsElasticsearchDataStreamPasswordValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamPasswordValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Optional, The login credentials to connect to Elasticsearch
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamUser {
+    /// ValueSource defines how to find a value's key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOutputsElasticsearchDataStreamUserValueFrom>,
+}
+
+/// ValueSource defines how to find a value's key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamUserValueFrom {
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOutputsElasticsearchDataStreamUserValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsElasticsearchDataStreamUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?

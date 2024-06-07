@@ -25,6 +25,9 @@ pub struct NutanixDatacenterConfigSpec {
     pub credential_ref: Option<NutanixDatacenterConfigCredentialRef>,
     /// Endpoint is the Endpoint of Nutanix Prism Central
     pub endpoint: String,
+    /// FailureDomains is the optional list of failure domains for the Nutanix Datacenter.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
+    pub failure_domains: Option<Vec<NutanixDatacenterConfigFailureDomains>>,
     /// Insecure is the optional flag to skip TLS verification. Nutanix Prism Central installation by default ships with a self-signed certificate that will fail TLS verification because the certificate is not issued by a public CA and does not have the IP SANs with the Prism Central endpoint. To accommodate the scenario where the user has not changed the default Certificate that ships with Prism Central, we allow the user to skip TLS verification. This is not recommended for production use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
@@ -39,6 +42,65 @@ pub struct NutanixDatacenterConfigCredentialRef {
     pub kind: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// NutanixDatacenterFailureDomain defines the failure domain for the Nutanix Datacenter.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NutanixDatacenterConfigFailureDomains {
+    /// Cluster is the Prism Element cluster name or uuid that is connected to the Prism Central.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<NutanixDatacenterConfigFailureDomainsCluster>,
+    /// Name is the unique name of the failure domain. Name must be between 1 and 64 characters long. It must consist of only lower case alphanumeric characters and hyphens (-). It must start and end with an alphanumeric character.
+    pub name: String,
+    /// Subnets holds the list of subnets identifiers cluster's network subnets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub subnets: Option<Vec<NutanixDatacenterConfigFailureDomainsSubnets>>,
+}
+
+/// Cluster is the Prism Element cluster name or uuid that is connected to the Prism Central.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct NutanixDatacenterConfigFailureDomainsCluster {
+    /// name is the resource name in the PC
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Type is the identifier type to use for this resource.
+    #[serde(rename = "type")]
+    pub r#type: NutanixDatacenterConfigFailureDomainsClusterType,
+    /// uuid is the UUID of the resource in the PC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
+}
+
+/// Cluster is the Prism Element cluster name or uuid that is connected to the Prism Central.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NutanixDatacenterConfigFailureDomainsClusterType {
+    #[serde(rename = "uuid")]
+    Uuid,
+    #[serde(rename = "name")]
+    Name,
+}
+
+/// NutanixResourceIdentifier holds the identity of a Nutanix Prism resource (cluster, image, subnet, etc.)
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct NutanixDatacenterConfigFailureDomainsSubnets {
+    /// name is the resource name in the PC
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Type is the identifier type to use for this resource.
+    #[serde(rename = "type")]
+    pub r#type: NutanixDatacenterConfigFailureDomainsSubnetsType,
+    /// uuid is the UUID of the resource in the PC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
+}
+
+/// NutanixResourceIdentifier holds the identity of a Nutanix Prism resource (cluster, image, subnet, etc.)
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NutanixDatacenterConfigFailureDomainsSubnetsType {
+    #[serde(rename = "uuid")]
+    Uuid,
+    #[serde(rename = "name")]
+    Name,
 }
 
 /// NutanixDatacenterConfigStatus defines the observed state of NutanixDatacenterConfig.

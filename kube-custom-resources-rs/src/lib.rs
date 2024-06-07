@@ -597,6 +597,7 @@ apiVersion `chainsaw.kyverno.io/v1alpha1`:
 
 apiVersion `chainsaw.kyverno.io/v1alpha2`:
 - `Configuration`
+- `Test`
 
 ## chaos_mesh_org
 
@@ -2353,6 +2354,9 @@ apiVersion `operator.cluster.x-k8s.io/v1alpha2`:
 ## operator_cryostat_io
 
 apiVersion `operator.cryostat.io/v1beta1`:
+- `Cryostat`
+
+apiVersion `operator.cryostat.io/v1beta2`:
 - `Cryostat`
 
 ## operator_marin3r_3scale_net

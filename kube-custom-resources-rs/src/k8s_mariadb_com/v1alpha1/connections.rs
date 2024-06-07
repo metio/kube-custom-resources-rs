@@ -39,6 +39,7 @@ pub struct ConnectionSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
     /// PasswordSecretKeyRef is a reference to the password to use for configuring the Connection.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
     #[serde(rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: ConnectionPasswordSecretKeyRef,
     /// Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
@@ -148,6 +149,7 @@ pub struct ConnectionMaxScaleRef {
 }
 
 /// PasswordSecretKeyRef is a reference to the password to use for configuring the Connection.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConnectionPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.

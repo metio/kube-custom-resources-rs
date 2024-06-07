@@ -82,11 +82,9 @@ pub struct RequestAuthenticationJwtRulesFromHeaders {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RequestAuthenticationJwtRulesOutputClaimToHeaders {
     /// The name of the claim to be copied from.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claim: Option<String>,
+    pub claim: String,
     /// The name of the header to be created.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub header: Option<String>,
+    pub header: String,
 }
 
 /// Optional.
@@ -103,11 +101,9 @@ pub struct RequestAuthenticationTargetRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     /// kind is kind of the target resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
+    pub kind: String,
     /// name is the name of the target resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// namespace is the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -119,11 +115,9 @@ pub struct RequestAuthenticationTargetRefs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     /// kind is kind of the target resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
+    pub kind: String,
     /// name is the name of the target resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// namespace is the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,

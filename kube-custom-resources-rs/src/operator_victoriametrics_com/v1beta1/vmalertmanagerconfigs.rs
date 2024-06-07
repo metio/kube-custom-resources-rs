@@ -82,7 +82,7 @@ pub struct VMAlertmanagerConfigMuteTimeIntervalsTimeIntervals {
     /// Location in golang time location form, e.g. UTC
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
-    /// Months  defines list of calendar months identified by a case-insentive name (e.g. ‘January’) or numeric 1.
+    /// Months  defines list of calendar months identified by a case-insensitive name (e.g. ‘January’) or numeric 1.
     /// For example, ['1:3', 'may:august', 'december']
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub months: Option<Vec<String>>,
@@ -2507,7 +2507,7 @@ pub struct VMAlertmanagerConfigTimeIntervalsTimeIntervals {
     /// Location in golang time location form, e.g. UTC
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
-    /// Months  defines list of calendar months identified by a case-insentive name (e.g. ‘January’) or numeric 1.
+    /// Months  defines list of calendar months identified by a case-insensitive name (e.g. ‘January’) or numeric 1.
     /// For example, ['1:3', 'may:august', 'december']
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub months: Option<Vec<String>>,

@@ -19,6 +19,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct NodeFeatureDiscoverySpec {
+    /// EnableTaints enables the enable the experimental tainting feature This allows keeping nodes with specialized hardware away from running general workload i and instead leave them for workloads that need the specialized hardware.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableTaints")]
+    pub enable_taints: Option<bool>,
     /// ExtraLabelNs defines the list of of allowed extra label namespaces By default, only allow labels in the default `feature.node.kubernetes.io` label namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraLabelNs")]
     pub extra_label_ns: Option<Vec<String>>,

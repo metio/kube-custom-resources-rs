@@ -115,7 +115,7 @@ pub struct ConfigurationError {
     pub catch: Option<Vec<ConfigurationErrorCatch>>,
 }
 
-/// Catch defines actions to be executed on failure.
+/// CatchFinally defines actions to be executed in catch, finally and cleanup blocks.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatch {
     /// Command defines a command to run.
