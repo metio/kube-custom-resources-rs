@@ -544,13 +544,13 @@ pub struct TestCatchWait {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster where the wait operation will be performed (default cluster will be used if not specified).
+    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<BTreeMap<String, TestCatchWaitClusters>>,
-    /// For specifies the condition to wait for.
+    /// WaitFor specifies the condition to wait for.
     #[serde(rename = "for")]
     pub r#for: TestCatchWaitFor,
     /// Format determines the output format (json or yaml).
@@ -570,7 +570,7 @@ pub struct TestCatchWait {
     /// Selector defines labels selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Timeout for the operation. Specifies how long to wait for the condition to be met before timing out.
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -586,7 +586,7 @@ pub struct TestCatchWaitClusters {
     pub kubeconfig: Option<String>,
 }
 
-/// For specifies the condition to wait for.
+/// WaitFor specifies the condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestCatchWaitFor {
     /// Condition specifies the condition to wait for.
@@ -1164,13 +1164,13 @@ pub struct TestStepsCatchWait {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster where the wait operation will be performed (default cluster will be used if not specified).
+    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<BTreeMap<String, TestStepsCatchWaitClusters>>,
-    /// For specifies the condition to wait for.
+    /// WaitFor specifies the condition to wait for.
     #[serde(rename = "for")]
     pub r#for: TestStepsCatchWaitFor,
     /// Format determines the output format (json or yaml).
@@ -1190,7 +1190,7 @@ pub struct TestStepsCatchWait {
     /// Selector defines labels selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Timeout for the operation. Specifies how long to wait for the condition to be met before timing out.
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -1206,7 +1206,7 @@ pub struct TestStepsCatchWaitClusters {
     pub kubeconfig: Option<String>,
 }
 
-/// For specifies the condition to wait for.
+/// WaitFor specifies the condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsCatchWaitFor {
     /// Condition specifies the condition to wait for.
@@ -1710,13 +1710,13 @@ pub struct TestStepsCleanupWait {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster where the wait operation will be performed (default cluster will be used if not specified).
+    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<BTreeMap<String, TestStepsCleanupWaitClusters>>,
-    /// For specifies the condition to wait for.
+    /// WaitFor specifies the condition to wait for.
     #[serde(rename = "for")]
     pub r#for: TestStepsCleanupWaitFor,
     /// Format determines the output format (json or yaml).
@@ -1736,7 +1736,7 @@ pub struct TestStepsCleanupWait {
     /// Selector defines labels selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Timeout for the operation. Specifies how long to wait for the condition to be met before timing out.
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -1752,7 +1752,7 @@ pub struct TestStepsCleanupWaitClusters {
     pub kubeconfig: Option<String>,
 }
 
-/// For specifies the condition to wait for.
+/// WaitFor specifies the condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsCleanupWaitFor {
     /// Condition specifies the condition to wait for.
@@ -2275,13 +2275,13 @@ pub struct TestStepsFinallyWait {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster where the wait operation will be performed (default cluster will be used if not specified).
+    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<BTreeMap<String, TestStepsFinallyWaitClusters>>,
-    /// For specifies the condition to wait for.
+    /// WaitFor specifies the condition to wait for.
     #[serde(rename = "for")]
     pub r#for: TestStepsFinallyWaitFor,
     /// Format determines the output format (json or yaml).
@@ -2301,7 +2301,7 @@ pub struct TestStepsFinallyWait {
     /// Selector defines labels selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Timeout for the operation. Specifies how long to wait for the condition to be met before timing out.
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -2317,7 +2317,7 @@ pub struct TestStepsFinallyWaitClusters {
     pub kubeconfig: Option<String>,
 }
 
-/// For specifies the condition to wait for.
+/// WaitFor specifies the condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsFinallyWaitFor {
     /// Condition specifies the condition to wait for.
@@ -3286,13 +3286,13 @@ pub struct TestStepsTryWait {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster where the wait operation will be performed (default cluster will be used if not specified).
+    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<BTreeMap<String, TestStepsTryWaitClusters>>,
-    /// For specifies the condition to wait for.
+    /// WaitFor specifies the condition to wait for.
     #[serde(rename = "for")]
     pub r#for: TestStepsTryWaitFor,
     /// Format determines the output format (json or yaml).
@@ -3312,7 +3312,7 @@ pub struct TestStepsTryWait {
     /// Selector defines labels selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Timeout for the operation. Specifies how long to wait for the condition to be met before timing out.
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -3328,7 +3328,7 @@ pub struct TestStepsTryWaitClusters {
     pub kubeconfig: Option<String>,
 }
 
-/// For specifies the condition to wait for.
+/// WaitFor specifies the condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTryWaitFor {
     /// Condition specifies the condition to wait for.

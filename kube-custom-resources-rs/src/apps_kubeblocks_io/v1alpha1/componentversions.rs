@@ -28,9 +28,15 @@ pub struct ComponentVersionSpec {
 /// ComponentVersionCompatibilityRule defines the compatibility between a set of component definitions and a set of releases.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentVersionCompatibilityRules {
-    /// CompDefs specifies names for the component definitions associated with this ComponentVersion. Each name in the list can represent an exact name, or a name prefix. 
-    ///  For example: 
-    ///  - "mysql-8.0.30-v1alpha1": Matches the exact name "mysql-8.0.30-v1alpha1" - "mysql-8.0.30": Matches all names starting with "mysql-8.0.30"
+    /// CompDefs specifies names for the component definitions associated with this ComponentVersion.
+    /// Each name in the list can represent an exact name, or a name prefix.
+    /// 
+    /// 
+    /// For example:
+    /// 
+    /// 
+    /// - "mysql-8.0.30-v1alpha1": Matches the exact name "mysql-8.0.30-v1alpha1"
+    /// - "mysql-8.0.30": Matches all names starting with "mysql-8.0.30"
     #[serde(rename = "compDefs")]
     pub comp_defs: Vec<String>,
     /// Releases is a list of identifiers for the releases.
@@ -45,9 +51,13 @@ pub struct ComponentVersionReleases {
     pub changes: Option<String>,
     /// Images define the new images for different containers within the release.
     pub images: BTreeMap<String, String>,
-    /// Name is a unique identifier for this release. Cannot be updated.
+    /// Name is a unique identifier for this release.
+    /// Cannot be updated.
     pub name: String,
-    /// ServiceVersion defines the version of the well-known service that the component provides. The version should follow the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/). If the release is used, it will serve as the service version for component instances, overriding the one defined in the component definition. Cannot be updated.
+    /// ServiceVersion defines the version of the well-known service that the component provides.
+    /// The version should follow the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/).
+    /// If the release is used, it will serve as the service version for component instances, overriding the one defined in the component definition.
+    /// Cannot be updated.
     #[serde(rename = "serviceVersion")]
     pub service_version: String,
 }
@@ -61,7 +71,8 @@ pub struct ComponentVersionStatus {
     /// ObservedGeneration is the most recent generation observed for this ComponentVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Phase valid values are ``, `Available`, 'Unavailable`. Available is ComponentVersion become available, and can be used for co-related objects.
+    /// Phase valid values are ``, `Available`, 'Unavailable`.
+    /// Available is ComponentVersion become available, and can be used for co-related objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ComponentVersionStatusPhase>,
     /// ServiceVersions represent the supported service versions of this ComponentVersion.

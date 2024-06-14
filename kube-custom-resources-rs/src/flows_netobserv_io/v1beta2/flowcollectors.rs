@@ -14,7 +14,7 @@ use self::prelude::*;
 
 /// Defines the desired state of the FlowCollector resource.
 /// <br><br>
-/// *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature
+/// *: the mention of "unsupported" or "deprecated" for a feature throughout this document means that this feature
 /// is not officially supported by Red Hat. It might have been, for example, contributed by the community
 /// and accepted without a formal agreement for maintenance. The product maintainers might provide some support
 /// for these features as a best effort only.
@@ -32,7 +32,7 @@ pub struct FlowCollectorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolePlugin")]
     pub console_plugin: Option<FlowCollectorConsolePlugin>,
     /// `deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br>
-    /// - `Direct` (default) to make the flow processor listening directly from the agents.<br>
+    /// - `Direct` (default) to make the flow processor listen directly from the agents.<br>
     /// - `Kafka` to make flows sent to a Kafka pipeline before consumption by the processor.<br>
     /// Kafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentModel")]
@@ -107,7 +107,7 @@ pub struct FlowCollectorAgentEbpf {
     /// - `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
-    /// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+    /// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flowFilter")]
     pub flow_filter: Option<FlowCollectorAgentEbpfFlowFilter>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
@@ -125,7 +125,7 @@ pub struct FlowCollectorAgentEbpf {
     /// `logLevel` defines the log level for the NetObserv eBPF Agent
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorAgentEbpfLogLevel>,
-    /// `metrics` defines the eBPF agent configuration regarding metrics
+    /// `metrics` defines the eBPF agent configuration regarding metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<FlowCollectorAgentEbpfMetrics>,
     /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets
@@ -136,7 +136,7 @@ pub struct FlowCollectorAgentEbpf {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// `resources` are the compute resources required by this container.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// For more information, see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorAgentEbpfResources>,
     /// Sampling rate of the flow reporter. 100 means one flow on 100 is sent. 0 or 1 means all flows are sampled.
@@ -166,7 +166,7 @@ pub struct FlowCollectorAgentEbpfAdvancedScheduling {
     /// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<FlowCollectorAgentEbpfAdvancedSchedulingAffinity>,
-    /// `nodeSelector` allows to schedule pods only onto nodes that have each of the specified labels.
+    /// `nodeSelector` allows scheduling of pods only onto nodes that have each of the specified labels.
     /// For documentation, refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
@@ -911,7 +911,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingTolerations {
     pub value: Option<String>,
 }
 
-/// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+/// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfFlowFilter {
     /// `action` defines the action to perform on the flows that match the filter.
@@ -923,28 +923,28 @@ pub struct FlowCollectorAgentEbpfFlowFilter {
     pub cidr: Option<String>,
     /// `destPorts` defines the destination ports to filter flows by.
     /// To filter a single port, set a single port as an integer value. For example: `destPorts: 80`.
-    /// To filter a range of ports, use a "start-end" range, string format. For example: `destPorts: "80-100"`.
+    /// To filter a range of ports, use a "start-end" range in string format. For example: `destPorts: "80-100"`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destPorts")]
     pub dest_ports: Option<IntOrString>,
     /// `direction` defines the direction to filter flows by.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub direction: Option<FlowCollectorAgentEbpfFlowFilterDirection>,
-    /// Set `enable` to `true` to enable eBPF flow filtering feature.
+    /// Set `enable` to `true` to enable the eBPF flow filtering feature.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// `icmpCode` defines the ICMP code to filter flows by.
+    /// `icmpCode`, for Internet Control Message Protocol (ICMP) traffic, defines the ICMP code to filter flows by.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "icmpCode")]
     pub icmp_code: Option<i64>,
-    /// `icmpType` defines the ICMP type to filter flows by.
+    /// `icmpType`, for ICMP traffic, defines the ICMP type to filter flows by.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "icmpType")]
     pub icmp_type: Option<i64>,
     /// `peerIP` defines the IP address to filter flows by.
     /// Example: `10.10.10.10`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerIP")]
     pub peer_ip: Option<String>,
-    /// `ports` defines the ports to filter flows by, used both for source and destination ports.
+    /// `ports` defines the ports to filter flows by. It is used both for source and destination ports.
     /// To filter a single port, set a single port as an integer value. For example: `ports: 80`.
-    /// To filter a range of ports, use a "start-end" range, string format. For example: `ports: "80-100"`.
+    /// To filter a range of ports, use a "start-end" range in string format. For example: `ports: "80-100"`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<IntOrString>,
     /// `protocol` defines the protocol to filter flows by.
@@ -952,26 +952,26 @@ pub struct FlowCollectorAgentEbpfFlowFilter {
     pub protocol: Option<FlowCollectorAgentEbpfFlowFilterProtocol>,
     /// `sourcePorts` defines the source ports to filter flows by.
     /// To filter a single port, set a single port as an integer value. For example: `sourcePorts: 80`.
-    /// To filter a range of ports, use a "start-end" range, string format. For example: `sourcePorts: "80-100"`.
+    /// To filter a range of ports, use a "start-end" range in string format. For example: `sourcePorts: "80-100"`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourcePorts")]
     pub source_ports: Option<IntOrString>,
 }
 
-/// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+/// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorAgentEbpfFlowFilterAction {
     Accept,
     Reject,
 }
 
-/// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+/// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorAgentEbpfFlowFilterDirection {
     Ingress,
     Egress,
 }
 
-/// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+/// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorAgentEbpfFlowFilterProtocol {
     #[serde(rename = "TCP")]
@@ -1015,26 +1015,26 @@ pub enum FlowCollectorAgentEbpfLogLevel {
     Panic,
 }
 
-/// `metrics` defines the eBPF agent configuration regarding metrics
+/// `metrics` defines the eBPF agent configuration regarding metrics.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfMetrics {
     /// `disableAlerts` is a list of alerts that should be disabled.
     /// Possible values are:<br>
-    /// `NetObservDroppedFlows`, which is triggered when the eBPF agent is dropping flows, such as when the BPF hashmap is full or the capacity limiter being triggered.<br>
+    /// `NetObservDroppedFlows`, which is triggered when the eBPF agent is missing packets or flows, such as when the BPF hashmap is busy or full, or the capacity limiter is being triggered.<br>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAlerts")]
     pub disable_alerts: Option<Vec<String>>,
     /// Set `enable` to `false` to disable eBPF agent metrics collection. It is enabled by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// Metrics server endpoint configuration for Prometheus scraper
+    /// Metrics server endpoint configuration for the Prometheus scraper.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<FlowCollectorAgentEbpfMetricsServer>,
 }
 
-/// Metrics server endpoint configuration for Prometheus scraper
+/// Metrics server endpoint configuration for the Prometheus scraper.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfMetricsServer {
-    /// The metrics server HTTP port
+    /// The metrics server HTTP port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// TLS configuration.
@@ -1066,20 +1066,20 @@ pub struct FlowCollectorAgentEbpfMetricsServerTls {
 /// TLS configuration when `type` is set to `Provided`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfMetricsServerTlsProvided {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorAgentEbpfMetricsServerTlsProvidedType>,
 }
@@ -1096,17 +1096,17 @@ pub enum FlowCollectorAgentEbpfMetricsServerTlsProvidedType {
 /// Reference to the CA file when `type` is set to `Provided`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFile {
-    /// File name within the config map or secret
+    /// File name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
-    /// Name of the config map or secret containing the file
+    /// Name of the config map or secret containing the file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret"
+    /// Type for the file reference: "configmap" or "secret".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFileType>,
 }
@@ -1129,7 +1129,7 @@ pub enum FlowCollectorAgentEbpfMetricsServerTlsType {
 }
 
 /// `resources` are the compute resources required by this container.
-/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+/// For more information, see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
@@ -1237,7 +1237,6 @@ pub struct FlowCollectorConsolePlugin {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscaler: Option<FlowCollectorConsolePluginAutoscaler>,
     /// Enables the console plugin deployment.
-    /// `spec.loki.enable` must also be `true`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
@@ -1256,7 +1255,7 @@ pub struct FlowCollectorConsolePlugin {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// `resources`, in terms of compute resources, required by this container.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// For more information, see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorConsolePluginResources>,
 }
@@ -1267,7 +1266,7 @@ pub struct FlowCollectorConsolePlugin {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAdvanced {
     /// `args` allows passing custom arguments to underlying components. Useful for overriding
-    /// some parameters, such as an url or a configuration path, that should not be
+    /// some parameters, such as a URL or a configuration path, that should not be
     /// publicly exposed as part of the FlowCollector descriptor, as they are only useful
     /// in edge debug or support scenarios.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1286,18 +1285,18 @@ pub struct FlowCollectorConsolePluginAdvanced {
     /// `oc patch console.operator.openshift.io cluster --type='json' -p '[{"op": "add", "path": "/spec/plugins/-", "value": "netobserv-plugin"}]'`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub register: Option<bool>,
-    /// scheduling controls how the pods are scheduled on nodes.
+    /// `scheduling` controls how the pods are scheduled on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduling: Option<FlowCollectorConsolePluginAdvancedScheduling>,
 }
 
-/// scheduling controls how the pods are scheduled on nodes.
+/// `scheduling` controls how the pods are scheduled on nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAdvancedScheduling {
     /// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<FlowCollectorConsolePluginAdvancedSchedulingAffinity>,
-    /// `nodeSelector` allows to schedule pods only onto nodes that have each of the specified labels.
+    /// `nodeSelector` allows scheduling of pods only onto nodes that have each of the specified labels.
     /// For documentation, refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
@@ -2311,7 +2310,7 @@ pub struct FlowCollectorConsolePluginQuickFilters {
 }
 
 /// `resources`, in terms of compute resources, required by this container.
-/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+/// For more information, see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
@@ -2348,7 +2347,7 @@ pub struct FlowCollectorConsolePluginResourcesClaims {
 
 /// Defines the desired state of the FlowCollector resource.
 /// <br><br>
-/// *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature
+/// *: the mention of "unsupported" or "deprecated" for a feature throughout this document means that this feature
 /// is not officially supported by Red Hat. It might have been, for example, contributed by the community
 /// and accepted without a formal agreement for maintenance. The product maintainers might provide some support
 /// for these features as a best effort only.
@@ -2427,17 +2426,17 @@ pub struct FlowCollectorExportersKafkaSasl {
 /// Reference to the secret or config map containing the client ID
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersKafkaSaslClientIdReference {
-    /// File name within the config map or secret
+    /// File name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
-    /// Name of the config map or secret containing the file
+    /// Name of the config map or secret containing the file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret"
+    /// Type for the file reference: "configmap" or "secret".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorExportersKafkaSaslClientIdReferenceType>,
 }
@@ -2454,17 +2453,17 @@ pub enum FlowCollectorExportersKafkaSaslClientIdReferenceType {
 /// Reference to the secret or config map containing the client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersKafkaSaslClientSecretReference {
-    /// File name within the config map or secret
+    /// File name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
-    /// Name of the config map or secret containing the file
+    /// Name of the config map or secret containing the file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret"
+    /// Type for the file reference: "configmap" or "secret".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorExportersKafkaSaslClientSecretReferenceType>,
 }
@@ -2508,20 +2507,20 @@ pub struct FlowCollectorExportersKafkaTls {
 /// `caCert` defines the reference of the certificate for the Certificate Authority
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersKafkaTlsCaCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorExportersKafkaTlsCaCertType>,
 }
@@ -2538,20 +2537,20 @@ pub enum FlowCollectorExportersKafkaTlsCaCertType {
 /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersKafkaTlsUserCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorExportersKafkaTlsUserCertType>,
 }
@@ -2605,17 +2604,17 @@ pub struct FlowCollectorKafkaSasl {
 /// Reference to the secret or config map containing the client ID
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorKafkaSaslClientIdReference {
-    /// File name within the config map or secret
+    /// File name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
-    /// Name of the config map or secret containing the file
+    /// Name of the config map or secret containing the file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret"
+    /// Type for the file reference: "configmap" or "secret".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorKafkaSaslClientIdReferenceType>,
 }
@@ -2632,17 +2631,17 @@ pub enum FlowCollectorKafkaSaslClientIdReferenceType {
 /// Reference to the secret or config map containing the client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorKafkaSaslClientSecretReference {
-    /// File name within the config map or secret
+    /// File name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
-    /// Name of the config map or secret containing the file
+    /// Name of the config map or secret containing the file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret"
+    /// Type for the file reference: "configmap" or "secret".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorKafkaSaslClientSecretReferenceType>,
 }
@@ -2686,20 +2685,20 @@ pub struct FlowCollectorKafkaTls {
 /// `caCert` defines the reference of the certificate for the Certificate Authority
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorKafkaTlsCaCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorKafkaTlsCaCertType>,
 }
@@ -2716,20 +2715,20 @@ pub enum FlowCollectorKafkaTlsCaCertType {
 /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorKafkaTlsUserCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorKafkaTlsUserCertType>,
 }
@@ -2900,20 +2899,20 @@ pub struct FlowCollectorLokiManualStatusTls {
 /// `caCert` defines the reference of the certificate for the Certificate Authority
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiManualStatusTlsCaCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorLokiManualStatusTlsCaCertType>,
 }
@@ -2930,20 +2929,20 @@ pub enum FlowCollectorLokiManualStatusTlsCaCertType {
 /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiManualStatusTlsUserCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorLokiManualStatusTlsUserCertType>,
 }
@@ -2978,20 +2977,20 @@ pub struct FlowCollectorLokiManualTls {
 /// `caCert` defines the reference of the certificate for the Certificate Authority
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiManualTlsCaCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorLokiManualTlsCaCertType>,
 }
@@ -3008,20 +3007,20 @@ pub enum FlowCollectorLokiManualTlsCaCertType {
 /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiManualTlsUserCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorLokiManualTlsUserCertType>,
 }
@@ -3075,20 +3074,20 @@ pub struct FlowCollectorLokiMicroservicesTls {
 /// `caCert` defines the reference of the certificate for the Certificate Authority
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMicroservicesTlsCaCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorLokiMicroservicesTlsCaCertType>,
 }
@@ -3105,20 +3104,20 @@ pub enum FlowCollectorLokiMicroservicesTlsCaCertType {
 /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMicroservicesTlsUserCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorLokiMicroservicesTlsUserCertType>,
 }
@@ -3178,20 +3177,20 @@ pub struct FlowCollectorLokiMonolithicTls {
 /// `caCert` defines the reference of the certificate for the Certificate Authority
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMonolithicTlsCaCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorLokiMonolithicTlsCaCertType>,
 }
@@ -3208,20 +3207,20 @@ pub enum FlowCollectorLokiMonolithicTlsCaCertType {
 /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMonolithicTlsUserCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorLokiMonolithicTlsUserCertType>,
 }
@@ -3285,7 +3284,7 @@ pub struct FlowCollectorProcessor {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiClusterDeployment")]
     pub multi_cluster_deployment: Option<bool>,
     /// `resources` are the compute resources required by this container.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// For more information, see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorProcessorResources>,
     /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic.
@@ -3343,7 +3342,7 @@ pub struct FlowCollectorProcessorAdvancedScheduling {
     /// If specified, the pod's scheduling constraints. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<FlowCollectorProcessorAdvancedSchedulingAffinity>,
-    /// `nodeSelector` allows to schedule pods only onto nodes that have each of the specified labels.
+    /// `nodeSelector` allows scheduling of pods only onto nodes that have each of the specified labels.
     /// For documentation, refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
@@ -4372,7 +4371,7 @@ pub struct FlowCollectorProcessorMetrics {
 /// Metrics server endpoint configuration for Prometheus scraper
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorMetricsServer {
-    /// The metrics server HTTP port
+    /// The metrics server HTTP port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// TLS configuration.
@@ -4404,20 +4403,20 @@ pub struct FlowCollectorProcessorMetricsServerTls {
 /// TLS configuration when `type` is set to `Provided`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorMetricsServerTlsProvided {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorProcessorMetricsServerTlsProvidedType>,
 }
@@ -4434,17 +4433,17 @@ pub enum FlowCollectorProcessorMetricsServerTlsProvidedType {
 /// Reference to the CA file when `type` is set to `Provided`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorMetricsServerTlsProvidedCaFile {
-    /// File name within the config map or secret
+    /// File name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
-    /// Name of the config map or secret containing the file
+    /// Name of the config map or secret containing the file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret"
+    /// Type for the file reference: "configmap" or "secret".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorProcessorMetricsServerTlsProvidedCaFileType>,
 }
@@ -4467,7 +4466,7 @@ pub enum FlowCollectorProcessorMetricsServerTlsType {
 }
 
 /// `resources` are the compute resources required by this container.
-/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+/// For more information, see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
@@ -4597,20 +4596,20 @@ pub struct FlowCollectorPrometheusQuerierManualTls {
 /// `caCert` defines the reference of the certificate for the Certificate Authority
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorPrometheusQuerierManualTlsCaCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorPrometheusQuerierManualTlsCaCertType>,
 }
@@ -4627,20 +4626,20 @@ pub enum FlowCollectorPrometheusQuerierManualTlsCaCertType {
 /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorPrometheusQuerierManualTlsUserCert {
-    /// `certFile` defines the path to the certificate file name within the config map or secret
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
     pub cert_key: Option<String>,
-    /// Name of the config map or secret containing certificates
+    /// Name of the config map or secret containing certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the certificate reference: `configmap` or `secret`
+    /// Type for the certificate reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorPrometheusQuerierManualTlsUserCertType>,
 }

@@ -37,6 +37,10 @@ pub struct MeshHTTPRouteTargetRef {
     /// Kind of the referenced resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<MeshHTTPRouteTargetRefKind>,
+    /// Labels are used to select group of MeshServices that match labels. Either Labels or
+    /// Name and Namespace can be used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
@@ -44,10 +48,18 @@ pub struct MeshHTTPRouteTargetRef {
     /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Namespace specifies the namespace of target resource. If empty only resources in policy namespace
+    /// will be targeted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
+    /// SectionName is used to target specific section of resource.
+    /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
+    pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -63,6 +75,7 @@ pub enum MeshHTTPRouteTargetRefKind {
     MeshSubset,
     MeshGateway,
     MeshService,
+    MeshExternalService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
@@ -112,6 +125,10 @@ pub struct MeshHTTPRouteToRulesDefaultBackendRefs {
     /// Kind of the referenced resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<MeshHTTPRouteToRulesDefaultBackendRefsKind>,
+    /// Labels are used to select group of MeshServices that match labels. Either Labels or
+    /// Name and Namespace can be used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
@@ -119,6 +136,10 @@ pub struct MeshHTTPRouteToRulesDefaultBackendRefs {
     /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Namespace specifies the namespace of target resource. If empty only resources in policy namespace
+    /// will be targeted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Port is only supported when this ref refers to a real MeshService object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
@@ -126,6 +147,10 @@ pub struct MeshHTTPRouteToRulesDefaultBackendRefs {
     /// all data plane types are targeted by the policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
+    /// SectionName is used to target specific section of resource.
+    /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
+    pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -141,6 +166,7 @@ pub enum MeshHTTPRouteToRulesDefaultBackendRefsKind {
     MeshSubset,
     MeshGateway,
     MeshService,
+    MeshExternalService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
@@ -210,6 +236,10 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     /// Kind of the referenced resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRefKind>,
+    /// Labels are used to select group of MeshServices that match labels. Either Labels or
+    /// Name and Namespace can be used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
@@ -217,6 +247,10 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Namespace specifies the namespace of target resource. If empty only resources in policy namespace
+    /// will be targeted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Port is only supported when this ref refers to a real MeshService object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
@@ -224,6 +258,10 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     /// all data plane types are targeted by the policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
+    /// SectionName is used to target specific section of resource.
+    /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
+    pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -239,6 +277,7 @@ pub enum MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRefKind {
     MeshSubset,
     MeshGateway,
     MeshService,
+    MeshExternalService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
@@ -483,6 +522,10 @@ pub struct MeshHTTPRouteToTargetRef {
     /// Kind of the referenced resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<MeshHTTPRouteToTargetRefKind>,
+    /// Labels are used to select group of MeshServices that match labels. Either Labels or
+    /// Name and Namespace can be used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
@@ -490,10 +533,18 @@ pub struct MeshHTTPRouteToTargetRef {
     /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Namespace specifies the namespace of target resource. If empty only resources in policy namespace
+    /// will be targeted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
+    /// SectionName is used to target specific section of resource.
+    /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
+    pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -508,6 +559,7 @@ pub enum MeshHTTPRouteToTargetRefKind {
     MeshSubset,
     MeshGateway,
     MeshService,
+    MeshExternalService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,

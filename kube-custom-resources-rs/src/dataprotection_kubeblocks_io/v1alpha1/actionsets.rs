@@ -21,16 +21,29 @@ pub struct ActionSetSpec {
     /// Specifies the backup action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<ActionSetBackup>,
-    /// Specifies the backup type. Supported values include: 
-    ///  - `Full` for a full backup. - `Incremental` back up data that have changed since the last backup (either full or incremental). - `Differential` back up data that has changed since the last full backup. - `Continuous` back up transaction logs continuously, such as MySQL binlog, PostgreSQL WAL, etc. 
-    ///  Continuous backup is essential for implementing Point-in-Time Recovery (PITR).
+    /// Specifies the backup type. Supported values include:
+    /// 
+    /// 
+    /// - `Full` for a full backup.
+    /// - `Incremental` back up data that have changed since the last backup (either full or incremental).
+    /// - `Differential` back up data that has changed since the last full backup.
+    /// - `Continuous` back up transaction logs continuously, such as MySQL binlog, PostgreSQL WAL, etc.
+    /// 
+    /// 
+    /// Continuous backup is essential for implementing Point-in-Time Recovery (PITR).
     #[serde(rename = "backupType")]
     pub backup_type: String,
     /// Specifies a list of environment variables to be set in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ActionSetEnv>>,
-    /// Specifies a list of sources to populate environment variables in the container. The keys within a source must be a C_IDENTIFIER. Any invalid keys will be reported as an event when the container starts. If a key exists in multiple sources, the value from the last source will take precedence. Any values defined by an Env with a duplicate key will take precedence. 
-    ///  This field cannot be updated.
+    /// Specifies a list of sources to populate environment variables in the container.
+    /// The keys within a source must be a C_IDENTIFIER. Any invalid keys will be
+    /// reported as an event when the container starts. If a key exists in multiple
+    /// sources, the value from the last source will take precedence. Any values
+    /// defined by an Env with a duplicate key will take precedence.
+    /// 
+    /// 
+    /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<ActionSetEnvFrom>>,
     /// Specifies the restore action.
@@ -50,7 +63,8 @@ pub struct ActionSetBackup {
     /// Represents a set of actions that should be executed before the backup process begins.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preBackup")]
     pub pre_backup: Option<Vec<ActionSetBackupPreBackup>>,
-    /// Represents a custom deletion action that can be executed before the built-in deletion action. Note: The preDelete action job will ignore the env/envFrom.
+    /// Represents a custom deletion action that can be executed before the built-in deletion action.
+    /// Note: The preDelete action job will ignore the env/envFrom.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preDelete")]
     pub pre_delete: Option<ActionSetBackupPreDelete>,
 }
@@ -65,10 +79,13 @@ pub struct ActionSetBackupBackupData {
     /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetBackupBackupDataOnError>,
-    /// Determines whether to run the job workload on the target pod node. If the backup container needs to mount the target pod's volumes, this field should be set to true. Otherwise, the target pod's volumes will be ignored.
+    /// Determines whether to run the job workload on the target pod node.
+    /// If the backup container needs to mount the target pod's volumes, this field
+    /// should be set to true. Otherwise, the target pod's volumes will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
-    /// Determines if the backup progress should be synchronized and the interval for synchronization in seconds.
+    /// Determines if the backup progress should be synchronized and the interval
+    /// for synchronization in seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncProgress")]
     pub sync_progress: Option<ActionSetBackupBackupDataSyncProgress>,
 }
@@ -80,10 +97,13 @@ pub enum ActionSetBackupBackupDataOnError {
     Fail,
 }
 
-/// Determines if the backup progress should be synchronized and the interval for synchronization in seconds.
+/// Determines if the backup progress should be synchronized and the interval
+/// for synchronization in seconds.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupBackupDataSyncProgress {
-    /// Determines if the backup progress should be synchronized. If set to true, a sidecar container will be instantiated to synchronize the backup progress with the Backup Custom Resource (CR) status.
+    /// Determines if the backup progress should be synchronized. If set to true,
+    /// a sidecar container will be instantiated to synchronize the backup progress with the
+    /// Backup Custom Resource (CR) status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Defines the interval in seconds for synchronizing the backup progress.
@@ -107,13 +127,15 @@ pub struct ActionSetBackupPostBackup {
 pub struct ActionSetBackupPostBackupExec {
     /// Defines the command and arguments to be executed.
     pub command: Vec<String>,
-    /// Specifies the container within the pod where the command should be executed. If not specified, the first container in the pod is used by default.
+    /// Specifies the container within the pod where the command should be executed.
+    /// If not specified, the first container in the pod is used by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetBackupPostBackupExecOnError>,
-    /// Specifies the maximum duration to wait for the hook to complete before considering the execution a failure.
+    /// Specifies the maximum duration to wait for the hook to complete before
+    /// considering the execution a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -135,7 +157,9 @@ pub struct ActionSetBackupPostBackupJob {
     /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetBackupPostBackupJobOnError>,
-    /// Determines whether to run the job workload on the target pod node. If the backup container needs to mount the target pod's volumes, this field should be set to true. Otherwise, the target pod's volumes will be ignored.
+    /// Determines whether to run the job workload on the target pod node.
+    /// If the backup container needs to mount the target pod's volumes, this field
+    /// should be set to true. Otherwise, the target pod's volumes will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
@@ -163,13 +187,15 @@ pub struct ActionSetBackupPreBackup {
 pub struct ActionSetBackupPreBackupExec {
     /// Defines the command and arguments to be executed.
     pub command: Vec<String>,
-    /// Specifies the container within the pod where the command should be executed. If not specified, the first container in the pod is used by default.
+    /// Specifies the container within the pod where the command should be executed.
+    /// If not specified, the first container in the pod is used by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetBackupPreBackupExecOnError>,
-    /// Specifies the maximum duration to wait for the hook to complete before considering the execution a failure.
+    /// Specifies the maximum duration to wait for the hook to complete before
+    /// considering the execution a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -191,7 +217,9 @@ pub struct ActionSetBackupPreBackupJob {
     /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetBackupPreBackupJobOnError>,
-    /// Determines whether to run the job workload on the target pod node. If the backup container needs to mount the target pod's volumes, this field should be set to true. Otherwise, the target pod's volumes will be ignored.
+    /// Determines whether to run the job workload on the target pod node.
+    /// If the backup container needs to mount the target pod's volumes, this field
+    /// should be set to true. Otherwise, the target pod's volumes will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
@@ -203,7 +231,8 @@ pub enum ActionSetBackupPreBackupJobOnError {
     Fail,
 }
 
-/// Represents a custom deletion action that can be executed before the built-in deletion action. Note: The preDelete action job will ignore the env/envFrom.
+/// Represents a custom deletion action that can be executed before the built-in deletion action.
+/// Note: The preDelete action job will ignore the env/envFrom.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupPreDelete {
     /// Defines the commands to back up the volume data.
@@ -217,7 +246,15 @@ pub struct ActionSetBackupPreDelete {
 pub struct ActionSetEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -231,10 +268,12 @@ pub struct ActionSetEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ActionSetEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ActionSetEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ActionSetEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -247,7 +286,9 @@ pub struct ActionSetEnvValueFrom {
 pub struct ActionSetEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -255,7 +296,8 @@ pub struct ActionSetEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -266,7 +308,8 @@ pub struct ActionSetEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -284,7 +327,9 @@ pub struct ActionSetEnvValueFromResourceFieldRef {
 pub struct ActionSetEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -309,7 +354,9 @@ pub struct ActionSetEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -320,7 +367,9 @@ pub struct ActionSetEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -355,13 +404,15 @@ pub struct ActionSetRestorePostReady {
 pub struct ActionSetRestorePostReadyExec {
     /// Defines the command and arguments to be executed.
     pub command: Vec<String>,
-    /// Specifies the container within the pod where the command should be executed. If not specified, the first container in the pod is used by default.
+    /// Specifies the container within the pod where the command should be executed.
+    /// If not specified, the first container in the pod is used by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetRestorePostReadyExecOnError>,
-    /// Specifies the maximum duration to wait for the hook to complete before considering the execution a failure.
+    /// Specifies the maximum duration to wait for the hook to complete before
+    /// considering the execution a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -383,7 +434,9 @@ pub struct ActionSetRestorePostReadyJob {
     /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetRestorePostReadyJobOnError>,
-    /// Determines whether to run the job workload on the target pod node. If the backup container needs to mount the target pod's volumes, this field should be set to true. Otherwise, the target pod's volumes will be ignored.
+    /// Determines whether to run the job workload on the target pod node.
+    /// If the backup container needs to mount the target pod's volumes, this field
+    /// should be set to true. Otherwise, the target pod's volumes will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
@@ -405,7 +458,9 @@ pub struct ActionSetRestorePrepareData {
     /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetRestorePrepareDataOnError>,
-    /// Determines whether to run the job workload on the target pod node. If the backup container needs to mount the target pod's volumes, this field should be set to true. Otherwise, the target pod's volumes will be ignored.
+    /// Determines whether to run the job workload on the target pod node.
+    /// If the backup container needs to mount the target pod's volumes, this field
+    /// should be set to true. Otherwise, the target pod's volumes will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }

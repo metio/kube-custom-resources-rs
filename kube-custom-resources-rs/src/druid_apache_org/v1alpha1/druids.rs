@@ -1319,6 +1319,9 @@ pub struct DruidNodes {
     /// PodSecurityContext Overrides `securityContext` at top level.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<DruidNodesSecurityContext>,
+    /// ServiceAccountName Kubernetes native `serviceAccountName` specification.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
     /// Services Overrides services at top level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<DruidNodesServices>>,

@@ -103,8 +103,8 @@ pub struct JobSetFailurePolicyRules {
     /// The rules are evaluated in order, and the first matching
     /// rule is executed.
     /// An empty list applies the rule to any job failure reason.
-    #[serde(rename = "onJobFailureReasons")]
-    pub on_job_failure_reasons: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onJobFailureReasons")]
+    pub on_job_failure_reasons: Option<Vec<String>>,
     /// TargetReplicatedJobs are the names of the replicated jobs the operator applies to.
     /// An empty list will apply to all replicatedJobs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetReplicatedJobs")]

@@ -6435,6 +6435,8 @@ pub struct PerconaPGClusterExtensionsStorage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     /// Adapts a secret into a projected volume.
     /// 
@@ -6595,7 +6597,7 @@ pub struct PerconaPGClusterInstances {
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<PerconaPGClusterInstancesTopologySpreadConstraints>>,
-    /// The list of volume mounts to mount to PostgreSQL instance pods. Chaning this value causes
+    /// The list of volume mounts to mount to PostgreSQL instance pods. Changing this value causes
     /// PostgreSQL to restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<PerconaPGClusterInstancesVolumeMounts>>,

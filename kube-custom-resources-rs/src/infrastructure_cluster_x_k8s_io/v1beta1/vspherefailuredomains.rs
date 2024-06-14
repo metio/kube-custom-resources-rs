@@ -26,8 +26,10 @@ pub struct VSphereFailureDomainSpec {
 /// Region defines the name and type of a region
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereFailureDomainRegion {
-    /// AutoConfigure tags the Type which is specified in the Topology 
-    ///  Deprecated: This field is going to be removed in a future release.
+    /// AutoConfigure tags the Type which is specified in the Topology
+    /// 
+    /// 
+    /// Deprecated: This field is going to be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoConfigure")]
     pub auto_configure: Option<bool>,
     /// Name is the name of the tag that represents this failure domain
@@ -56,7 +58,8 @@ pub struct VSphereFailureDomainTopology {
     pub compute_cluster: Option<String>,
     /// Datacenter as the failure domain.
     pub datacenter: String,
-    /// Datastore is the name or inventory path of the datastore in which the virtual machine is created/located.
+    /// Datastore is the name or inventory path of the datastore in which the
+    /// virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datastore: Option<String>,
     /// Hosts has information required for placement of machines on VSphere hosts.
@@ -81,8 +84,10 @@ pub struct VSphereFailureDomainTopologyHosts {
 /// Zone defines the name and type of a zone
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereFailureDomainZone {
-    /// AutoConfigure tags the Type which is specified in the Topology 
-    ///  Deprecated: This field is going to be removed in a future release.
+    /// AutoConfigure tags the Type which is specified in the Topology
+    /// 
+    /// 
+    /// Deprecated: This field is going to be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoConfigure")]
     pub auto_configure: Option<bool>,
     /// Name is the name of the tag that represents this failure domain

@@ -426,7 +426,7 @@ spec:
                     logical_backup_cronjob_environment_secret:
                       type: "string"
                     logical_backup_docker_image:
-                      default: "ghcr.io/zalando/postgres-operator/logical-backup:v1.12.0"
+                      default: "ghcr.io/zalando/postgres-operator/logical-backup:v1.12.2"
                       type: "string"
                     logical_backup_google_application_credentials:
                       type: "string"

@@ -24,7 +24,8 @@ pub struct BackupScheduleSpec {
     pub backup_policy_name: String,
     /// Defines the list of backup schedules.
     pub schedules: Vec<BackupScheduleSchedules>,
-    /// Defines the deadline in minutes for starting the backup workload if it misses its scheduled time for any reason.
+    /// Defines the deadline in minutes for starting the backup workload if it
+    /// misses its scheduled time for any reason.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingDeadlineMinutes")]
     pub starting_deadline_minutes: Option<i64>,
 }
@@ -34,15 +35,27 @@ pub struct BackupScheduleSchedules {
     /// Specifies the backup method name that is defined in backupPolicy.
     #[serde(rename = "backupMethod")]
     pub backup_method: String,
-    /// Specifies the cron expression for the schedule. The timezone is in UTC. see https://en.wikipedia.org/wiki/Cron.
+    /// Specifies the cron expression for the schedule. The timezone is in UTC.
+    /// see https://en.wikipedia.org/wiki/Cron.
     #[serde(rename = "cronExpression")]
     pub cron_expression: String,
     /// Specifies whether the backup schedule is enabled or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Determines the duration for which the backup should be kept. KubeBlocks will remove all backups that are older than the RetentionPeriod. For example, RetentionPeriod of `30d` will keep only the backups of last 30 days. Sample duration format: 
-    ///  - years: 	2y - months: 	6mo - days: 		30d - hours: 	12h - minutes: 	30m 
-    ///  You can also combine the above durations. For example: 30d12h30m
+    /// Determines the duration for which the backup should be kept.
+    /// KubeBlocks will remove all backups that are older than the RetentionPeriod.
+    /// For example, RetentionPeriod of `30d` will keep only the backups of last 30 days.
+    /// Sample duration format:
+    /// 
+    /// 
+    /// - years: 	2y
+    /// - months: 	6mo
+    /// - days: 		30d
+    /// - hours: 	12h
+    /// - minutes: 	30m
+    /// 
+    /// 
+    /// You can also combine the above durations. For example: 30d12h30m
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<String>,
 }
@@ -53,7 +66,9 @@ pub struct BackupScheduleStatus {
     /// Represents an error that caused the backup to fail.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// Represents the most recent generation observed for this BackupSchedule. It refers to the BackupSchedule's generation, which is updated on mutation by the API Server.
+    /// Represents the most recent generation observed for this BackupSchedule.
+    /// It refers to the BackupSchedule's generation, which is updated on mutation
+    /// by the API Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Describes the phase of the BackupSchedule.

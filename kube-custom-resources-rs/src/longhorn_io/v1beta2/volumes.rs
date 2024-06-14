@@ -341,6 +341,8 @@ pub struct VolumeStatusKubernetesStatus {
 pub struct VolumeStatusKubernetesStatusWorkloadsStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podName")]
     pub pod_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podNamespace")]
+    pub pod_namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podStatus")]
     pub pod_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadName")]

@@ -68,5 +68,7 @@ pub enum MetricTemplateProviderType {
     Graphite,
     #[serde(rename = "dynatrace")]
     Dynatrace,
+    #[serde(rename = "keptn")]
+    Keptn,
 }
 

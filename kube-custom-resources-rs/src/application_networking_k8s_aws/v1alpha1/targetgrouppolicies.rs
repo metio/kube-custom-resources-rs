@@ -23,11 +23,11 @@ pub struct TargetGroupPolicySpec {
     ///  Changes to this value will update VPC Lattice resource in place.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<TargetGroupPolicyHealthCheck>,
-    /// The protocol to use for routing traffic to the targets. Supported values are HTTP (default) and HTTPS. 
+    /// The protocol to use for routing traffic to the targets. Supported values are HTTP (default), HTTPS and TCP. 
     ///  Changes to this value results in a replacement of VPC Lattice target group.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// The protocol version to use. Supported values are HTTP1 (default) and HTTP2. When a policy is behind GRPCRoute, this field value will be ignored as GRPC is only supported through HTTP/2. 
+    /// The protocol version to use. Supported values are HTTP1 (default) and HTTP2. When a policy Protocol is TCP, you should not set this field. Otherwise, the whole TargetGroupPolicy will not take effect. When a policy is behind GRPCRoute, this field value will be ignored as GRPC is only supported through HTTP/2. 
     ///  Changes to this value results in a replacement of VPC Lattice target group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolVersion")]
     pub protocol_version: Option<String>,
@@ -59,7 +59,7 @@ pub struct TargetGroupPolicyHealthCheck {
     /// The protocol used when performing health checks on targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<TargetGroupPolicyHealthCheckProtocol>,
-    /// The protocol version used when performing health checks on targets. Defaults to HTTP/1.
+    /// The protocol version used when performing health checks on targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolVersion")]
     pub protocol_version: Option<TargetGroupPolicyHealthCheckProtocolVersion>,
     /// A regular expression to match HTTP status codes when checking for successful response from a target.

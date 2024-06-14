@@ -20,19 +20,23 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct TemporalNamespaceSpec {
-    /// The name of active Temporal Cluster. Only applicable if the namespace is a global namespace.
+    /// The name of active Temporal Cluster.
+    /// Only applicable if the namespace is a global namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeClusterName")]
     pub active_cluster_name: Option<String>,
-    /// AllowDeletion makes the controller delete the Temporal namespace if the CRD is deleted.
+    /// AllowDeletion makes the controller delete the Temporal namespace if the
+    /// CRD is deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowDeletion")]
     pub allow_deletion: Option<bool>,
-    /// Archival is a per-namespace archival configuration. If not set, the default cluster configuration is used.
+    /// Archival is a per-namespace archival configuration.
+    /// If not set, the default cluster configuration is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub archival: Option<TemporalNamespaceArchival>,
     /// Reference to the temporal cluster the namespace will be created.
     #[serde(rename = "clusterRef")]
     pub cluster_ref: TemporalNamespaceClusterRef,
-    /// List of clusters names to which the namespace can fail over. Only applicable if the namespace is a global namespace.
+    /// List of clusters names to which the namespace can fail over.
+    /// Only applicable if the namespace is a global namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<Vec<String>>,
     /// Data is a key-value map for any customized purpose.
@@ -54,7 +58,8 @@ pub struct TemporalNamespaceSpec {
     pub security_token: Option<String>,
 }
 
-/// Archival is a per-namespace archival configuration. If not set, the default cluster configuration is used.
+/// Archival is a per-namespace archival configuration.
+/// If not set, the default cluster configuration is used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TemporalNamespaceArchival {
     /// History is the config for this namespace history archival.
@@ -71,7 +76,8 @@ pub struct TemporalNamespaceArchivalHistory {
     /// EnableRead allows temporal to read from the archived Event History.
     #[serde(rename = "enableRead")]
     pub enable_read: bool,
-    /// Enabled defines if the archival is enabled by default for all namespaces or for a particular namespace (depends if it's for a TemporalCluster or a TemporalNamespace).
+    /// Enabled defines if the archival is enabled by default for all namespaces
+    /// or for a particular namespace (depends if it's for a TemporalCluster or a TemporalNamespace).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Path is ...
@@ -86,7 +92,8 @@ pub struct TemporalNamespaceArchivalVisibility {
     /// EnableRead allows temporal to read from the archived Event History.
     #[serde(rename = "enableRead")]
     pub enable_read: bool,
-    /// Enabled defines if the archival is enabled by default for all namespaces or for a particular namespace (depends if it's for a TemporalCluster or a TemporalNamespace).
+    /// Enabled defines if the archival is enabled by default for all namespaces
+    /// or for a particular namespace (depends if it's for a TemporalCluster or a TemporalNamespace).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Path is ...
@@ -98,10 +105,11 @@ pub struct TemporalNamespaceArchivalVisibility {
 /// Reference to the temporal cluster the namespace will be created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TemporalNamespaceClusterRef {
-    /// The name of the TemporalCluster to reference.
+    /// The name of the temporal object to reference.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The namespace of the TemporalCluster to reference. Defaults to the namespace of the requested resource if omitted.
+    /// The namespace of the temporal object to reference.
+    /// Defaults to the namespace of the requested resource if omitted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }

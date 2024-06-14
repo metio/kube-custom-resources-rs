@@ -41,9 +41,7 @@ pub struct PolicySpec {
     /// Allowed values are Ignore or Fail. Defaults to Fail.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<PolicyFailurePolicy>,
-    /// GenerateExisting controls whether to trigger generate rule in existing resources
-    /// If is set to "true" generate rule will be triggered and applied to existing matched resources.
-    /// Defaults to "false" if not specified.
+    /// Deprecated, use generateExisting under the generate rule instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateExisting")]
     pub generate_existing: Option<bool>,
     /// Deprecated, use generateExisting instead
@@ -824,6 +822,10 @@ pub struct PolicyRulesGenerate {
     /// resource will be created with default data only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<serde_json::Value>,
+    /// GenerateExisting controls whether to trigger the rule in existing resources
+    /// If is set to "true" the rule will be triggered and applied to existing matched resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateExisting")]
+    pub generate_existing: Option<bool>,
     /// Kind specifies resource kind.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
@@ -4469,6 +4471,10 @@ pub struct PolicyStatusAutogenRulesGenerate {
     /// resource will be created with default data only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<serde_json::Value>,
+    /// GenerateExisting controls whether to trigger the rule in existing resources
+    /// If is set to "true" the rule will be triggered and applied to existing matched resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateExisting")]
+    pub generate_existing: Option<bool>,
     /// Kind specifies resource kind.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,

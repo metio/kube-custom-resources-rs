@@ -125,6 +125,9 @@ spec:
                             type: "string"
                           description: "Annotations to add to the Ingress or Route during its creation."
                           type: "object"
+                        externalHost:
+                          description: "Externally routable host to be used to reach this\nCryostat service. Used to define a Route's host on\nOpenShift when it is first created.\nOn Kubernetes, define this using \"spec.ingressSpec\"."
+                          type: "string"
                         ingressSpec:
                           description: "Configuration for an Ingress object.\nCurrently subpaths are not supported, so unique hosts must be specified\n(if a single external IP is being used) to differentiate between ingresses/services."
                           properties:
