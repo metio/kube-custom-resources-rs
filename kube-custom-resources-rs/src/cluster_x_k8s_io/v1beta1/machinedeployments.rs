@@ -119,6 +119,10 @@ pub struct MachineDeploymentSelectorMatchExpressions {
 /// new ones.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentStrategy {
+    /// Remediation controls the strategy of remediating unhealthy machines
+    /// and how remediating operations should occur during the lifecycle of the dependant MachineSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remediation: Option<MachineDeploymentStrategyRemediation>,
     /// Rolling update config params. Present only if
     /// MachineDeploymentStrategyType = RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
@@ -127,6 +131,32 @@ pub struct MachineDeploymentStrategy {
     /// The default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<MachineDeploymentStrategyType>,
+}
+
+/// Remediation controls the strategy of remediating unhealthy machines
+/// and how remediating operations should occur during the lifecycle of the dependant MachineSets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineDeploymentStrategyRemediation {
+    /// MaxInFlight determines how many in flight remediations should happen at the same time.
+    /// 
+    /// 
+    /// Remediation only happens on the MachineSet with the most current revision, while
+    /// older MachineSets (usually present during rollout operations) aren't allowed to remediate.
+    /// 
+    /// 
+    /// Note: In general (independent of remediations), unhealthy machines are always
+    /// prioritized during scale down operations over healthy ones.
+    /// 
+    /// 
+    /// MaxInFlight can be set to a fixed number or a percentage.
+    /// Example: when this is set to 20%, the MachineSet controller deletes at most 20% of
+    /// the desired replicas.
+    /// 
+    /// 
+    /// If not set, remediation is limited to all machines (bounded by replicas)
+    /// under the active MachineSet's management.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInFlight")]
+    pub max_in_flight: Option<IntOrString>,
 }
 
 /// Rolling update config params. Present only if

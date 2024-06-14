@@ -98,7 +98,7 @@ spec:
                           type: "object"
                         type: "array"
                       podSets:
-                        description: "PodSets contained in the Component"
+                        description: "DeclaredPodSets for the Component (optional for known PodCreating GVKs)"
                         items:
                           description: "AppWrapperPodSet describes an homogeneous set of pods"
                           properties:
@@ -192,10 +192,27 @@ spec:
                       name:
                         description: "Name is the name of the Component"
                         type: "string"
+                      podSets:
+                        description: "PodSets is the validated PodSets for the Component (either from AppWrapperComponent.DeclaredPodSets or inferred by the controller)"
+                        items:
+                          description: "AppWrapperPodSet describes an homogeneous set of pods"
+                          properties:
+                            path:
+                              description: "Path is the path Component.Template to the PodTemplateSpec for this PodSet"
+                              type: "string"
+                            replicas:
+                              description: "Replicas is the number of pods in this PodSet"
+                              format: "int32"
+                              type: "integer"
+                          required:
+                            - "path"
+                          type: "object"
+                        type: "array"
                     required:
                       - "apiVersion"
                       - "kind"
                       - "name"
+                      - "podSets"
                     type: "object"
                   type: "array"
                 conditions:

@@ -53,9 +53,11 @@ pub struct VSphereFailureDomainTopology {
     /// ComputeCluster as the failure domain
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "computeCluster")]
     pub compute_cluster: Option<String>,
-    /// The underlying infrastructure for this failure domain Datacenter as the failure domain
+    /// The underlying infrastructure for this failure domain
+    /// Datacenter as the failure domain
     pub datacenter: String,
-    /// Datastore is the name or inventory path of the datastore in which the virtual machine is created/located.
+    /// Datastore is the name or inventory path of the datastore in which the
+    /// virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datastore: Option<String>,
     /// Hosts has information required for placement of machines on VSphere hosts.

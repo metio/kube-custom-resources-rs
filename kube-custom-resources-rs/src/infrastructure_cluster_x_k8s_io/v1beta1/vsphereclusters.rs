@@ -20,16 +20,22 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct VSphereClusterSpec {
-    /// ClusterModules hosts information regarding the anti-affinity vSphere constructs for each of the objects responsible for creation of VM objects belonging to the cluster.
+    /// ClusterModules hosts information regarding the anti-affinity vSphere constructs
+    /// for each of the objects responsible for creation of VM objects belonging to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterModules")]
     pub cluster_modules: Option<Vec<VSphereClusterClusterModules>>,
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<VSphereClusterControlPlaneEndpoint>,
-    /// FailureDomainSelector is the label selector to use for failure domain selection for the control plane nodes of the cluster. If not set (`nil`), selecting failure domains will be disabled. An empty value (`{}`) selects all existing failure domains. A valid selector will select all failure domains which match the selector.
+    /// FailureDomainSelector is the label selector to use for failure domain selection
+    /// for the control plane nodes of the cluster.
+    /// If not set (`nil`), selecting failure domains will be disabled.
+    /// An empty value (`{}`) selects all existing failure domains.
+    /// A valid selector will select all failure domains which match the selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomainSelector")]
     pub failure_domain_selector: Option<VSphereClusterFailureDomainSelector>,
-    /// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains the identity to use when reconciling the cluster.
+    /// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains
+    /// the identity to use when reconciling the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityRef")]
     pub identity_ref: Option<VSphereClusterIdentityRef>,
     /// Server is the address of the vSphere endpoint.
@@ -40,16 +46,20 @@ pub struct VSphereClusterSpec {
     pub thumbprint: Option<String>,
 }
 
-/// ClusterModule holds the anti affinity construct `ClusterModule` identifier in use by the VMs owned by the object referred by the TargetObjectName field.
+/// ClusterModule holds the anti affinity construct `ClusterModule` identifier
+/// in use by the VMs owned by the object referred by the TargetObjectName field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterClusterModules {
-    /// ControlPlane indicates whether the referred object is responsible for control plane nodes. Currently, only the KubeadmControlPlane objects have this flag set to true. Only a single object in the slice can have this value set to true.
+    /// ControlPlane indicates whether the referred object is responsible for control plane nodes.
+    /// Currently, only the KubeadmControlPlane objects have this flag set to true.
+    /// Only a single object in the slice can have this value set to true.
     #[serde(rename = "controlPlane")]
     pub control_plane: bool,
     /// ModuleUUID is the unique identifier of the `ClusterModule` used by the object.
     #[serde(rename = "moduleUUID")]
     pub module_uuid: String,
-    /// TargetObjectName points to the object that uses the Cluster Module information to enforce anti-affinity amongst its descendant VM objects.
+    /// TargetObjectName points to the object that uses the Cluster Module information to enforce
+    /// anti-affinity amongst its descendant VM objects.
     #[serde(rename = "targetObjectName")]
     pub target_object_name: String,
 }
@@ -63,30 +73,42 @@ pub struct VSphereClusterControlPlaneEndpoint {
     pub port: i32,
 }
 
-/// FailureDomainSelector is the label selector to use for failure domain selection for the control plane nodes of the cluster. If not set (`nil`), selecting failure domains will be disabled. An empty value (`{}`) selects all existing failure domains. A valid selector will select all failure domains which match the selector.
+/// FailureDomainSelector is the label selector to use for failure domain selection
+/// for the control plane nodes of the cluster.
+/// If not set (`nil`), selecting failure domains will be disabled.
+/// An empty value (`{}`) selects all existing failure domains.
+/// A valid selector will select all failure domains which match the selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterFailureDomainSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<VSphereClusterFailureDomainSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterFailureDomainSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains the identity to use when reconciling the cluster.
+/// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains
+/// the identity to use when reconciling the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereClusterIdentityRef {
     /// Kind of the identity. Can either be VSphereClusterIdentity or Secret
@@ -95,7 +117,8 @@ pub struct VSphereClusterIdentityRef {
     pub name: String,
 }
 
-/// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains the identity to use when reconciling the cluster.
+/// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains
+/// the identity to use when reconciling the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VSphereClusterIdentityRefKind {
     VSphereClusterIdentity,

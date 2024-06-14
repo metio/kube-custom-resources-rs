@@ -67,6 +67,7 @@ spec:
                         - "newrelic"
                         - "graphite"
                         - "dynatrace"
+                        - "keptn"
                       type: "string"
                   required:
                     - "type"

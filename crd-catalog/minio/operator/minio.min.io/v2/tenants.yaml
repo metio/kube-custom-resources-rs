@@ -3068,6 +3068,7 @@ spec:
                           type: "string"
                         type: "object"
                       name:
+                        minLength: 1
                         type: "string"
                       nodeSelector:
                         additionalProperties:

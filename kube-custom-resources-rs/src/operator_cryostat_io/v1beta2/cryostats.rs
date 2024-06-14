@@ -187,6 +187,12 @@ pub struct CryostatNetworkOptionsCoreConfig {
     /// Annotations to add to the Ingress or Route during its creation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// Externally routable host to be used to reach this
+    /// Cryostat service. Used to define a Route's host on
+    /// OpenShift when it is first created.
+    /// On Kubernetes, define this using "spec.ingressSpec".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalHost")]
+    pub external_host: Option<String>,
     /// Configuration for an Ingress object.
     /// Currently subpaths are not supported, so unique hosts must be specified
     /// (if a single external IP is being used) to differentiate between ingresses/services.

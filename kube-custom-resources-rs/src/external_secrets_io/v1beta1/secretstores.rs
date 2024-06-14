@@ -104,6 +104,9 @@ pub struct SecretStoreProvider {
     /// https://docs.delinea.com/online-help/products/devops-secrets-vault/current
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delinea: Option<SecretStoreProviderDelinea>,
+    /// Device42 configures this store to sync secrets using the Device42 provider
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub device42: Option<SecretStoreProviderDevice42>,
     /// Doppler configures this store to sync secrets using the Doppler provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub doppler: Option<SecretStoreProviderDoppler>,
@@ -122,6 +125,9 @@ pub struct SecretStoreProvider {
     /// IBM configures this store to sync secrets using IBM Cloud provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ibm: Option<SecretStoreProviderIbm>,
+    /// Infisical configures this store to sync secrets using the Infisical provider
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub infisical: Option<SecretStoreProviderInfisical>,
     /// KeeperSecurity configures this store to sync secrets using the KeeperSecurity provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keepersecurity: Option<SecretStoreProviderKeepersecurity>,
@@ -1016,6 +1022,45 @@ pub struct SecretStoreProviderDelineaClientSecretSecretRef {
     pub namespace: Option<String>,
 }
 
+/// Device42 configures this store to sync secrets using the Device42 provider
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDevice42 {
+    /// Auth configures how secret-manager authenticates with a Device42 instance.
+    pub auth: SecretStoreProviderDevice42Auth,
+    /// URL configures the Device42 instance URL.
+    pub host: String,
+}
+
+/// Auth configures how secret-manager authenticates with a Device42 instance.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDevice42Auth {
+    #[serde(rename = "secretRef")]
+    pub secret_ref: SecretStoreProviderDevice42AuthSecretRef,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDevice42AuthSecretRef {
+    /// Username / Password is used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<SecretStoreProviderDevice42AuthSecretRefCredentials>,
+}
+
+/// Username / Password is used for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDevice42AuthSecretRefCredentials {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// Doppler configures this store to sync secrets using the Doppler provider
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderDoppler {
@@ -1334,6 +1379,80 @@ pub struct SecretStoreProviderIbmAuthSecretRefSecretApiKeySecretRef {
     /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Infisical configures this store to sync secrets using the Infisical provider
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisical {
+    /// Auth configures how the Operator authenticates with the Infisical API
+    pub auth: SecretStoreProviderInfisicalAuth,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAPI")]
+    pub host_api: Option<String>,
+    #[serde(rename = "secretsScope")]
+    pub secrets_scope: SecretStoreProviderInfisicalSecretsScope,
+}
+
+/// Auth configures how the Operator authenticates with the Infisical API
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuth {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "universalAuthCredentials")]
+    pub universal_auth_credentials: Option<SecretStoreProviderInfisicalAuthUniversalAuthCredentials>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuthUniversalAuthCredentials {
+    /// A reference to a specific 'key' within a Secret resource,
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "clientId")]
+    pub client_id: SecretStoreProviderInfisicalAuthUniversalAuthCredentialsClientId,
+    /// A reference to a specific 'key' within a Secret resource,
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "clientSecret")]
+    pub client_secret: SecretStoreProviderInfisicalAuthUniversalAuthCredentialsClientSecret,
+}
+
+/// A reference to a specific 'key' within a Secret resource,
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuthUniversalAuthCredentialsClientId {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// A reference to a specific 'key' within a Secret resource,
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuthUniversalAuthCredentialsClientSecret {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalSecretsScope {
+    #[serde(rename = "environmentSlug")]
+    pub environment_slug: String,
+    #[serde(rename = "projectSlug")]
+    pub project_slug: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretsPath")]
+    pub secrets_path: Option<String>,
 }
 
 /// KeeperSecurity configures this store to sync secrets using the KeeperSecurity provider

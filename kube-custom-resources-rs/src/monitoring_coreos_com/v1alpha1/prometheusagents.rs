@@ -349,10 +349,11 @@ pub struct PrometheusAgentSpec {
     /// Defines on which Nodes the Pods are scheduled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// When true, Prometheus resolves label conflicts by renaming the labels in
-    /// the scraped data to "exported_<label value>" for all targets created
-    /// from service and pod monitors.
-    /// Otherwise the HonorLabels field of the service or pod monitor applies.
+    /// When true, Prometheus resolves label conflicts by renaming the labels in the scraped data
+    ///  to “exported_” for all targets created from ServiceMonitor, PodMonitor and
+    /// ScrapeConfig objects. Otherwise the HonorLabels field of the service or pod monitor applies.
+    /// In practice,`overrideHonorLaels:true` enforces `honorLabels:false`
+    /// for all ServiceMonitor, PodMonitor and ScrapeConfig objects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "overrideHonorLabels")]
     pub override_honor_labels: Option<bool>,
     /// When true, Prometheus ignores the timestamps for all the targets created

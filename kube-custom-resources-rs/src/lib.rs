@@ -2459,6 +2459,7 @@ apiVersion `pgv2.percona.com/v2`:
 - `PerconaPGBackup`
 - `PerconaPGCluster`
 - `PerconaPGRestore`
+- `PerconaPGUpgrade`
 
 ## pipes_services_k8s_aws
 

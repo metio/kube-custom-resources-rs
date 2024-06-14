@@ -24,7 +24,8 @@ pub struct VSphereDeploymentZoneSpec {
     /// failureDomain is the name of the VSphereFailureDomain used for this VSphereDeploymentZone
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
-    /// PlacementConstraint encapsulates the placement constraints used within this deployment zone.
+    /// PlacementConstraint encapsulates the placement constraints
+    /// used within this deployment zone.
     #[serde(rename = "placementConstraint")]
     pub placement_constraint: VSphereDeploymentZonePlacementConstraint,
     /// Server is the address of the vSphere endpoint.
@@ -32,13 +33,16 @@ pub struct VSphereDeploymentZoneSpec {
     pub server: Option<String>,
 }
 
-/// PlacementConstraint encapsulates the placement constraints used within this deployment zone.
+/// PlacementConstraint encapsulates the placement constraints
+/// used within this deployment zone.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereDeploymentZonePlacementConstraint {
-    /// Folder is the name or inventory path of the folder in which the virtual machine is created/located.
+    /// Folder is the name or inventory path of the folder in which the
+    /// virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub folder: Option<String>,
-    /// ResourcePool is the name or inventory path of the resource pool in which the virtual machine is created/located.
+    /// ResourcePool is the name or inventory path of the resource pool in which
+    /// the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePool")]
     pub resource_pool: Option<String>,
 }
@@ -48,7 +52,8 @@ pub struct VSphereDeploymentZoneStatus {
     /// Conditions defines current service state of the VSphereMachine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Ready is true when the VSphereDeploymentZone resource is ready. If set to false, it will be ignored by VSphereClusters
+    /// Ready is true when the VSphereDeploymentZone resource is ready.
+    /// If set to false, it will be ignored by VSphereClusters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
 }

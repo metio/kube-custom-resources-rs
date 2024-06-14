@@ -621,6 +621,9 @@ pub struct ClusterOutputEs {
     /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ClusterOutputEsTls>,
+    /// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalLimitSize")]
+    pub total_limit_size: Option<String>,
     /// When enabled print the elasticsearch API calls to stdout when elasticsearch returns an error
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "traceError")]
     pub trace_error: Option<bool>,

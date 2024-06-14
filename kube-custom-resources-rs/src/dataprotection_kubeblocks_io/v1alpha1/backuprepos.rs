@@ -88,7 +88,8 @@ pub struct BackupRepoStatus {
     /// Represents the latest generation of the resource that the controller has observed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Represents the current phase of reconciliation for the backup repository. Permissible values are PreChecking, Failed, Ready, Deleting.
+    /// Represents the current phase of reconciliation for the backup repository.
+    /// Permissible values are PreChecking, Failed, Ready, Deleting.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     /// Represents the name of the secret that contains the configuration for the tool.

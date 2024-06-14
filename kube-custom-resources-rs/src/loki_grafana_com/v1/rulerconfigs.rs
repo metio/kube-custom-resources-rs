@@ -115,6 +115,9 @@ pub struct RulerConfigAlertmanagerClientTls {
     /// The client-side certificate file path for the TLS configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certPath")]
     pub cert_path: Option<String>,
+    /// Skip validating server certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
     /// The client-side key file path for the TLS configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
     pub key_path: Option<String>,
@@ -294,6 +297,9 @@ pub struct RulerConfigOverridesAlertmanagerClientTls {
     /// The client-side certificate file path for the TLS configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certPath")]
     pub cert_path: Option<String>,
+    /// Skip validating server certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
     /// The client-side key file path for the TLS configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
     pub key_path: Option<String>,

@@ -23,7 +23,8 @@ pub struct VSphereClusterSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<VSphereClusterControlPlaneEndpoint>,
-    /// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains the identity to use when reconciling the cluster.
+    /// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains
+    /// the identity to use when reconciling the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityRef")]
     pub identity_ref: Option<VSphereClusterIdentityRef>,
     /// Server is the address of the vSphere endpoint.
@@ -43,7 +44,8 @@ pub struct VSphereClusterControlPlaneEndpoint {
     pub port: i32,
 }
 
-/// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains the identity to use when reconciling the cluster.
+/// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains
+/// the identity to use when reconciling the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereClusterIdentityRef {
     /// Kind of the identity. Can either be VSphereClusterIdentity or Secret
@@ -52,7 +54,8 @@ pub struct VSphereClusterIdentityRef {
     pub name: String,
 }
 
-/// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains the identity to use when reconciling the cluster.
+/// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains
+/// the identity to use when reconciling the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VSphereClusterIdentityRefKind {
     VSphereClusterIdentity,

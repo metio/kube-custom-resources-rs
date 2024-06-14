@@ -581,13 +581,13 @@ pub struct ConfigurationErrorCatchWait {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster where the wait operation will be performed (default cluster will be used if not specified).
+    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<BTreeMap<String, ConfigurationErrorCatchWaitClusters>>,
-    /// For specifies the condition to wait for.
+    /// WaitFor specifies the condition to wait for.
     #[serde(rename = "for")]
     pub r#for: ConfigurationErrorCatchWaitFor,
     /// Format determines the output format (json or yaml).
@@ -607,7 +607,7 @@ pub struct ConfigurationErrorCatchWait {
     /// Selector defines labels selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Timeout for the operation. Specifies how long to wait for the condition to be met before timing out.
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -623,7 +623,7 @@ pub struct ConfigurationErrorCatchWaitClusters {
     pub kubeconfig: Option<String>,
 }
 
-/// For specifies the condition to wait for.
+/// WaitFor specifies the condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatchWaitFor {
     /// Condition specifies the condition to wait for.

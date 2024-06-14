@@ -28,13 +28,15 @@ pub struct AddonSpec {
     /// Specifies the description of the add-on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Represents the Helm installation specifications. This is only processed when the type is set to 'helm'.
+    /// Represents the Helm installation specifications. This is only processed
+    /// when the type is set to 'helm'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub helm: Option<AddonHelm>,
     /// Defines the installation parameters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub install: Option<AddonInstall>,
-    /// Represents the installable specifications of the add-on. This includes the selector and auto-install settings.
+    /// Represents the installable specifications of the add-on. This includes
+    /// the selector and auto-install settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installable: Option<AddonInstallable>,
     /// Specifies the provider of the add-on.
@@ -77,7 +79,8 @@ pub struct AddonDefaultInstallValues {
     /// Specifies the resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AddonDefaultInstallValuesResources>,
-    /// Indicates the default selectors for add-on installations. If multiple selectors are provided, all selectors must evaluate to true.
+    /// Indicates the default selectors for add-on installations. If multiple selectors are provided,
+    /// all selectors must evaluate to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selectors: Option<Vec<AddonDefaultInstallValuesSelectors>>,
     /// Specifies the name of the storage class.
@@ -112,10 +115,14 @@ pub struct AddonDefaultInstallValuesExtras {
 /// Specifies the resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonDefaultInstallValuesExtrasResources {
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified; otherwise, it defaults to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified;
+    /// otherwise, it defaults to an implementation-defined value.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -123,22 +130,38 @@ pub struct AddonDefaultInstallValuesExtrasResources {
 /// Specifies the resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonDefaultInstallValuesResources {
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified; otherwise, it defaults to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified;
+    /// otherwise, it defaults to an implementation-defined value.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonDefaultInstallValuesSelectors {
-    /// The selector key. Valid values are KubeVersion, KubeGitVersion and KubeProvider. 
-    ///  - `KubeVersion` the semver expression of Kubernetes versions, i.e., v1.24. - `KubeGitVersion` may contain distro. info., i.e., v1.24.4+eks. - `KubeProvider` the Kubernetes provider, i.e., aws, gcp, azure, huaweiCloud, tencentCloud etc.
+    /// The selector key. Valid values are KubeVersion, KubeGitVersion and KubeProvider.
+    /// 
+    /// 
+    /// - `KubeVersion` the semver expression of Kubernetes versions, i.e., v1.24.
+    /// - `KubeGitVersion` may contain distro. info., i.e., v1.24.4+eks.
+    /// - `KubeProvider` the Kubernetes provider, i.e., aws, gcp, azure, huaweiCloud, tencentCloud etc.
     pub key: AddonDefaultInstallValuesSelectorsKey,
-    /// Represents a key's relationship to a set of values. Valid operators are Contains, NotIn, DoesNotContain, MatchRegex, and DoesNoteMatchRegex. 
-    ///  Possible enum values: 
-    ///  - `Contains` line contains a string. - `DoesNotContain` line does not contain a string. - `MatchRegex` line contains a match to the regular expression. - `DoesNotMatchRegex` line does not contain a match to the regular expression.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are Contains, NotIn, DoesNotContain, MatchRegex, and DoesNoteMatchRegex.
+    /// 
+    /// 
+    /// Possible enum values:
+    /// 
+    /// 
+    /// - `Contains` line contains a string.
+    /// - `DoesNotContain` line does not contain a string.
+    /// - `MatchRegex` line contains a match to the regular expression.
+    /// - `DoesNotMatchRegex` line does not contain a match to the regular expression.
     pub operator: AddonDefaultInstallValuesSelectorsOperator,
     /// Represents an array of string values. This serves as an "OR" expression to the operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -160,7 +183,8 @@ pub enum AddonDefaultInstallValuesSelectorsOperator {
     DoesNotMatchRegex,
 }
 
-/// Represents the Helm installation specifications. This is only processed when the type is set to 'helm'.
+/// Represents the Helm installation specifications. This is only processed
+/// when the type is set to 'helm'.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonHelm {
     /// Specifies the URL location of the Helm Chart.
@@ -169,7 +193,8 @@ pub struct AddonHelm {
     /// Defines the image of Helm charts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chartsImage")]
     pub charts_image: Option<String>,
-    /// Defines the path of Helm charts in the image. This path is used to copy Helm charts from the image to the shared volume. The default path is "/charts".
+    /// Defines the path of Helm charts in the image. This path is used to copy
+    /// Helm charts from the image to the shared volume. The default path is "/charts".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chartsPathInImage")]
     pub charts_path_in_image: Option<String>,
     /// Defines the options for Helm release installation.
@@ -186,10 +211,14 @@ pub struct AddonHelm {
 /// Defines the set values for Helm release installation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonHelmInstallValues {
-    /// Selects a key from a ConfigMap item list. The value can be a JSON or YAML string content. Use a key name with ".json", ".yaml", or ".yml" extension to specify a content type.
+    /// Selects a key from a ConfigMap item list. The value can be
+    /// a JSON or YAML string content. Use a key name with ".json", ".yaml", or ".yml"
+    /// extension to specify a content type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRefs")]
     pub config_map_refs: Option<Vec<AddonHelmInstallValuesConfigMapRefs>>,
-    /// Selects a key from a Secrets item list. The value can be a JSON or YAML string content. Use a key name with ".json", ".yaml", or ".yml" extension to specify a content type.
+    /// Selects a key from a Secrets item list. The value can be
+    /// a JSON or YAML string content. Use a key name with ".json", ".yaml", or ".yml"
+    /// extension to specify a content type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRefs")]
     pub secret_refs: Option<Vec<AddonHelmInstallValuesSecretRefs>>,
     /// JSON values set during Helm installation. Multiple or separate values can be specified with commas (key1=jsonval1,key2=jsonval2).
@@ -225,23 +254,35 @@ pub struct AddonHelmValuesMapping {
     /// Helm value mapping items for extra items.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extras: Option<Vec<AddonHelmValuesMappingExtras>>,
-    /// Defines the "key" mapping values. The valid key is tolerations. Enum values explained: 
-    ///  - `tolerations` sets the toleration mapping key.
+    /// Defines the "key" mapping values. The valid key is tolerations.
+    /// Enum values explained:
+    /// 
+    /// 
+    /// - `tolerations` sets the toleration mapping key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonMap")]
     pub json_map: Option<AddonHelmValuesMappingJsonMap>,
     /// Sets resources related mapping keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AddonHelmValuesMappingResources>,
-    /// Defines the "key" mapping values. Valid keys include `replicaCount`, `persistentVolumeEnabled`, and `storageClass`. Enum values explained: 
-    ///  - `replicaCount` sets the replicaCount value mapping key. - `persistentVolumeEnabled` sets the persistent volume enabled mapping key. - `storageClass` sets the storageClass mapping key.
+    /// Defines the "key" mapping values. Valid keys include `replicaCount`,
+    /// `persistentVolumeEnabled`, and `storageClass`.
+    /// Enum values explained:
+    /// 
+    /// 
+    /// - `replicaCount` sets the replicaCount value mapping key.
+    /// - `persistentVolumeEnabled` sets the persistent volume enabled mapping key.
+    /// - `storageClass` sets the storageClass mapping key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueMap")]
     pub value_map: Option<AddonHelmValuesMappingValueMap>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonHelmValuesMappingExtras {
-    /// Defines the "key" mapping values. The valid key is tolerations. Enum values explained: 
-    ///  - `tolerations` sets the toleration mapping key.
+    /// Defines the "key" mapping values. The valid key is tolerations.
+    /// Enum values explained:
+    /// 
+    /// 
+    /// - `tolerations` sets the toleration mapping key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonMap")]
     pub json_map: Option<AddonHelmValuesMappingExtrasJsonMap>,
     /// Name of the item.
@@ -249,14 +290,23 @@ pub struct AddonHelmValuesMappingExtras {
     /// Sets resources related mapping keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AddonHelmValuesMappingExtrasResources>,
-    /// Defines the "key" mapping values. Valid keys include `replicaCount`, `persistentVolumeEnabled`, and `storageClass`. Enum values explained: 
-    ///  - `replicaCount` sets the replicaCount value mapping key. - `persistentVolumeEnabled` sets the persistent volume enabled mapping key. - `storageClass` sets the storageClass mapping key.
+    /// Defines the "key" mapping values. Valid keys include `replicaCount`,
+    /// `persistentVolumeEnabled`, and `storageClass`.
+    /// Enum values explained:
+    /// 
+    /// 
+    /// - `replicaCount` sets the replicaCount value mapping key.
+    /// - `persistentVolumeEnabled` sets the persistent volume enabled mapping key.
+    /// - `storageClass` sets the storageClass mapping key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueMap")]
     pub value_map: Option<AddonHelmValuesMappingExtrasValueMap>,
 }
 
-/// Defines the "key" mapping values. The valid key is tolerations. Enum values explained: 
-///  - `tolerations` sets the toleration mapping key.
+/// Defines the "key" mapping values. The valid key is tolerations.
+/// Enum values explained:
+/// 
+/// 
+/// - `tolerations` sets the toleration mapping key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonHelmValuesMappingExtrasJsonMap {
     /// Specifies the toleration mapping key.
@@ -300,8 +350,14 @@ pub struct AddonHelmValuesMappingExtrasResourcesMemory {
     pub requests: Option<String>,
 }
 
-/// Defines the "key" mapping values. Valid keys include `replicaCount`, `persistentVolumeEnabled`, and `storageClass`. Enum values explained: 
-///  - `replicaCount` sets the replicaCount value mapping key. - `persistentVolumeEnabled` sets the persistent volume enabled mapping key. - `storageClass` sets the storageClass mapping key.
+/// Defines the "key" mapping values. Valid keys include `replicaCount`,
+/// `persistentVolumeEnabled`, and `storageClass`.
+/// Enum values explained:
+/// 
+/// 
+/// - `replicaCount` sets the replicaCount value mapping key.
+/// - `persistentVolumeEnabled` sets the persistent volume enabled mapping key.
+/// - `storageClass` sets the storageClass mapping key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonHelmValuesMappingExtrasValueMap {
     /// Indicates whether the persistent volume is enabled in the Helm values map.
@@ -315,8 +371,11 @@ pub struct AddonHelmValuesMappingExtrasValueMap {
     pub storage_class: Option<String>,
 }
 
-/// Defines the "key" mapping values. The valid key is tolerations. Enum values explained: 
-///  - `tolerations` sets the toleration mapping key.
+/// Defines the "key" mapping values. The valid key is tolerations.
+/// Enum values explained:
+/// 
+/// 
+/// - `tolerations` sets the toleration mapping key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonHelmValuesMappingJsonMap {
     /// Specifies the toleration mapping key.
@@ -360,8 +419,14 @@ pub struct AddonHelmValuesMappingResourcesMemory {
     pub requests: Option<String>,
 }
 
-/// Defines the "key" mapping values. Valid keys include `replicaCount`, `persistentVolumeEnabled`, and `storageClass`. Enum values explained: 
-///  - `replicaCount` sets the replicaCount value mapping key. - `persistentVolumeEnabled` sets the persistent volume enabled mapping key. - `storageClass` sets the storageClass mapping key.
+/// Defines the "key" mapping values. Valid keys include `replicaCount`,
+/// `persistentVolumeEnabled`, and `storageClass`.
+/// Enum values explained:
+/// 
+/// 
+/// - `replicaCount` sets the replicaCount value mapping key.
+/// - `persistentVolumeEnabled` sets the persistent volume enabled mapping key.
+/// - `storageClass` sets the storageClass mapping key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonHelmValuesMappingValueMap {
     /// Indicates whether the persistent volume is enabled in the Helm values map.
@@ -425,10 +490,14 @@ pub struct AddonInstallExtras {
 /// Specifies the resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonInstallExtrasResources {
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified; otherwise, it defaults to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified;
+    /// otherwise, it defaults to an implementation-defined value.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -436,33 +505,51 @@ pub struct AddonInstallExtrasResources {
 /// Specifies the resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonInstallResources {
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified; otherwise, it defaults to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified;
+    /// otherwise, it defaults to an implementation-defined value.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// Represents the installable specifications of the add-on. This includes the selector and auto-install settings.
+/// Represents the installable specifications of the add-on. This includes
+/// the selector and auto-install settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonInstallable {
     /// Indicates whether an add-on should be installed automatically.
     #[serde(rename = "autoInstall")]
     pub auto_install: bool,
-    /// Specifies the selectors for add-on installation. If multiple selectors are provided, they must all evaluate to true for the add-on to be installed.
+    /// Specifies the selectors for add-on installation. If multiple selectors are provided,
+    /// they must all evaluate to true for the add-on to be installed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selectors: Option<Vec<AddonInstallableSelectors>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonInstallableSelectors {
-    /// The selector key. Valid values are KubeVersion, KubeGitVersion and KubeProvider. 
-    ///  - `KubeVersion` the semver expression of Kubernetes versions, i.e., v1.24. - `KubeGitVersion` may contain distro. info., i.e., v1.24.4+eks. - `KubeProvider` the Kubernetes provider, i.e., aws, gcp, azure, huaweiCloud, tencentCloud etc.
+    /// The selector key. Valid values are KubeVersion, KubeGitVersion and KubeProvider.
+    /// 
+    /// 
+    /// - `KubeVersion` the semver expression of Kubernetes versions, i.e., v1.24.
+    /// - `KubeGitVersion` may contain distro. info., i.e., v1.24.4+eks.
+    /// - `KubeProvider` the Kubernetes provider, i.e., aws, gcp, azure, huaweiCloud, tencentCloud etc.
     pub key: AddonInstallableSelectorsKey,
-    /// Represents a key's relationship to a set of values. Valid operators are Contains, NotIn, DoesNotContain, MatchRegex, and DoesNoteMatchRegex. 
-    ///  Possible enum values: 
-    ///  - `Contains` line contains a string. - `DoesNotContain` line does not contain a string. - `MatchRegex` line contains a match to the regular expression. - `DoesNotMatchRegex` line does not contain a match to the regular expression.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are Contains, NotIn, DoesNotContain, MatchRegex, and DoesNoteMatchRegex.
+    /// 
+    /// 
+    /// Possible enum values:
+    /// 
+    /// 
+    /// - `Contains` line contains a string.
+    /// - `DoesNotContain` line does not contain a string.
+    /// - `MatchRegex` line contains a match to the regular expression.
+    /// - `DoesNotMatchRegex` line does not contain a match to the regular expression.
     pub operator: AddonInstallableSelectorsOperator,
     /// Represents an array of string values. This serves as an "OR" expression to the operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -496,10 +583,12 @@ pub struct AddonStatus {
     /// Provides a detailed description of the current state of add-on API installation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Represents the most recent generation observed for this add-on. It corresponds to the add-on's generation, which is updated on mutation by the API Server.
+    /// Represents the most recent generation observed for this add-on. It corresponds
+    /// to the add-on's generation, which is updated on mutation by the API Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Defines the current installation phase of the add-on. It can take one of the following values: `Disabled`, `Enabled`, `Failed`, `Enabling`, `Disabling`.
+    /// Defines the current installation phase of the add-on. It can take one of
+    /// the following values: `Disabled`, `Enabled`, `Failed`, `Enabling`, `Disabling`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<AddonStatusPhase>,
 }

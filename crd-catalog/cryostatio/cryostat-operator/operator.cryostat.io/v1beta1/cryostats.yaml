@@ -20,6 +20,8 @@ spec:
         - jsonPath: ".status.grafanaSecret"
           name: "Grafana Secret"
           type: "string"
+      deprecated: true
+      deprecationWarning: "use v1beta2 API version"
       name: "v1beta1"
       schema:
         openAPIV3Schema:

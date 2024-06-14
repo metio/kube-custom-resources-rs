@@ -54,6 +54,14 @@ spec:
                   x-kubernetes-validations:
                     - message: "field is immutable"
                       rule: "self == oldSelf"
+                stopPolicy:
+                  default: "None"
+                  description: "stopPolicy - if set to a value different from None, the LocalQueue is considered Inactive,\nno new reservation being made.\n\n\nDepending on its value, its associated workloads will:\n\n\n- None - Workloads are admitted\n- HoldAndDrain - Admitted workloads are evicted and Reserving workloads will cancel the reservation.\n- Hold - Admitted workloads will run to completion and Reserving workloads will cancel the reservation."
+                  enum:
+                    - "None"
+                    - "Hold"
+                    - "HoldAndDrain"
+                  type: "string"
               type: "object"
             status:
               description: "LocalQueueStatus defines the observed state of LocalQueue"

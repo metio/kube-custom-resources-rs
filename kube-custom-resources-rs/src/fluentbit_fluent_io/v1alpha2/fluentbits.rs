@@ -121,6 +121,9 @@ pub struct FluentBitSpec {
     /// Annotations to add to the Fluentbit service account
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountAnnotations")]
     pub service_account_annotations: Option<BTreeMap<String, String>>,
+    /// Optional duration in seconds the pod needs to terminate gracefully. Value must be non-negative integer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
     /// Tolerations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<FluentBitTolerations>>,

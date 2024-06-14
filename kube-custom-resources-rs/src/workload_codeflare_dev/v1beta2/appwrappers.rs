@@ -37,7 +37,7 @@ pub struct AppWrapperComponents {
     /// PodSetInfos assigned to the Component's PodSets by Kueue
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetInfos")]
     pub pod_set_infos: Option<Vec<AppWrapperComponentsPodSetInfos>>,
-    /// PodSets contained in the Component
+    /// DeclaredPodSets for the Component (optional for known PodCreating GVKs)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSets")]
     pub pod_sets: Option<Vec<AppWrapperComponentsPodSets>>,
     /// Template defines the Kubernetes resource for the Component
@@ -147,5 +147,18 @@ pub struct AppWrapperStatusComponentStatus {
     pub kind: String,
     /// Name is the name of the Component
     pub name: String,
+    /// PodSets is the validated PodSets for the Component (either from AppWrapperComponent.DeclaredPodSets or inferred by the controller)
+    #[serde(rename = "podSets")]
+    pub pod_sets: Vec<AppWrapperStatusComponentStatusPodSets>,
+}
+
+/// AppWrapperPodSet describes an homogeneous set of pods
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AppWrapperStatusComponentStatusPodSets {
+    /// Path is the path Component.Template to the PodTemplateSpec for this PodSet
+    pub path: String,
+    /// Replicas is the number of pods in this PodSet
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
 }
 

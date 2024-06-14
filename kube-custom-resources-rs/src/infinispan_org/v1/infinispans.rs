@@ -553,6 +553,9 @@ pub struct InfinispanContainer {
 pub struct InfinispanDependencies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub artifacts: Option<Vec<InfinispanDependenciesArtifacts>>,
+    /// InitDependenciesContainerSpec describes the configuration options for the dependency download init container
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainer")]
+    pub init_container: Option<InfinispanDependenciesInitContainer>,
     /// The Persistent Volume Claim that holds custom libraries
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimName")]
     pub volume_claim_name: Option<String>,
@@ -582,6 +585,17 @@ pub enum InfinispanDependenciesArtifactsType {
     Zip,
     #[serde(rename = "tgz")]
     Tgz,
+}
+
+/// InitDependenciesContainerSpec describes the configuration options for the dependency download init container
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InfinispanDependenciesInitContainer {
+    /// CPU in limit:request format
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<String>,
+    /// Memory in limit:request format
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<String>,
 }
 
 /// ExposeSpec describe how Infinispan will be exposed externally
