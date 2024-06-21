@@ -67,6 +67,9 @@ pub struct CephObjectZoneDataPool {
     /// The device class the OSD should set to for use in the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceClass")]
     pub device_class: Option<String>,
+    /// Allow rook operator to change the pool CRUSH tunables once the pool is created
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCrushUpdates")]
+    pub enable_crush_updates: Option<bool>,
     /// EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRBDStats")]
     pub enable_rbd_stats: Option<bool>,
@@ -249,6 +252,9 @@ pub struct CephObjectZoneMetadataPool {
     /// The device class the OSD should set to for use in the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceClass")]
     pub device_class: Option<String>,
+    /// Allow rook operator to change the pool CRUSH tunables once the pool is created
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCrushUpdates")]
+    pub enable_crush_updates: Option<bool>,
     /// EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRBDStats")]
     pub enable_rbd_stats: Option<bool>,

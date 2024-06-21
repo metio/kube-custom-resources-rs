@@ -59,18 +59,22 @@ pub struct PatternGitSpec {
     /// Optional. FQDN of the git server if automatic parsing from TargetRepo is broken
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// Upstream git repo containing the pattern to deploy. Used when in-cluster fork to point to the upstream pattern repository
+    /// Enable in-cluster git server (avoids the need of forking the upstream repository)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inClusterGitServer")]
+    pub in_cluster_git_server: Option<bool>,
+    /// Upstream git repo containing the pattern to deploy. Used when in-cluster fork to point to the upstream pattern repository.
+    /// Takes precedence over TargetRepo
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "originRepo")]
     pub origin_repo: Option<String>,
-    /// Branch, tag or commit in the upstream git repository. Does not support short-sha's. Default to HEAD
+    /// (DEPRECATED) Branch, tag or commit in the upstream git repository. Does not support short-sha's. Default to HEAD
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "originRevision")]
     pub origin_revision: Option<String>,
     /// Interval in seconds to poll for drifts between origin and target repositories. Default: 180 seconds
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollInterval")]
     pub poll_interval: Option<i64>,
     /// Git repo containing the pattern to deploy. Must use https/http or, for ssh, git@server:foo/bar.git
-    #[serde(rename = "targetRepo")]
-    pub target_repo: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRepo")]
+    pub target_repo: Option<String>,
     /// Branch, tag, or commit to deploy.  Does not support short-sha's. Default: HEAD
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,

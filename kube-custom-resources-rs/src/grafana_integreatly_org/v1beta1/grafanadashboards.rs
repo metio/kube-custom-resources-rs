@@ -10,6 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// GrafanaDashboardSpec defines the desired state of GrafanaDashboard
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "grafana.integreatly.org", version = "v1beta1", kind = "GrafanaDashboard", plural = "grafanadashboards")]
 #[kube(namespaced)]
@@ -18,45 +19,71 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GrafanaDashboardSpec {
+    /// allow to import this resources from an operator in a different namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossNamespaceImport")]
     pub allow_cross_namespace_import: Option<bool>,
+    /// dashboard from configmap
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<GrafanaDashboardConfigMapRef>,
+    /// Cache duration for dashboards fetched from URLs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentCacheDuration")]
     pub content_cache_duration: Option<String>,
+    /// maps required data sources to existing ones
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datasources: Option<Vec<GrafanaDashboardDatasources>>,
+    /// environments variables from secrets or config maps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<GrafanaDashboardEnvFrom>>,
+    /// environments variables as a map
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub envs: Option<Vec<GrafanaDashboardEnvs>>,
+    /// folder assignment for dashboard
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub folder: Option<String>,
+    /// grafana.com/dashboards
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grafanaCom")]
     pub grafana_com: Option<GrafanaDashboardGrafanaCom>,
+    /// GzipJson the dashboard's JSON compressed with Gzip. Base64-encoded when in YAML.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gzipJson")]
     pub gzip_json: Option<String>,
+    /// selects Grafanas for import
     #[serde(rename = "instanceSelector")]
     pub instance_selector: GrafanaDashboardInstanceSelector,
+    /// dashboard json
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub json: Option<String>,
+    /// Jsonnet
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jsonnet: Option<String>,
+    /// Jsonnet project build
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonnetLib")]
     pub jsonnet_lib: Option<GrafanaDashboardJsonnetLib>,
+    /// plugins
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugins: Option<Vec<GrafanaDashboardPlugins>>,
+    /// how often the dashboard is refreshed, defaults to 5m if not set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
+    /// dashboard url
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
+/// dashboard from configmap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardConfigMapRef {
+    /// The key to select.
     pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -71,26 +98,48 @@ pub struct GrafanaDashboardDatasources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardEnvFrom {
+    /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<GrafanaDashboardEnvFromConfigMapKeyRef>,
+    /// Selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<GrafanaDashboardEnvFromSecretKeyRef>,
 }
 
+/// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardEnvFromConfigMapKeyRef {
+    /// The key to select.
     pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// Selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardEnvFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -98,38 +147,64 @@ pub struct GrafanaDashboardEnvFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardEnvs {
     pub name: String,
+    /// Inline evn value
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference on value source, might be the reference on a secret or config map
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<GrafanaDashboardEnvsValueFrom>,
 }
 
+/// Reference on value source, might be the reference on a secret or config map
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardEnvsValueFrom {
+    /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<GrafanaDashboardEnvsValueFromConfigMapKeyRef>,
+    /// Selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<GrafanaDashboardEnvsValueFromSecretKeyRef>,
 }
 
+/// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardEnvsValueFromConfigMapKeyRef {
+    /// The key to select.
     pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// Selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardEnvsValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// grafana.com/dashboards
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardGrafanaCom {
     pub id: i64,
@@ -137,22 +212,37 @@ pub struct GrafanaDashboardGrafanaCom {
     pub revision: Option<i64>,
 }
 
+/// selects Grafanas for import
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardInstanceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<GrafanaDashboardInstanceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardInstanceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
     pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
+/// Jsonnet project build
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardJsonnetLib {
     #[serde(rename = "fileName")]
@@ -169,8 +259,10 @@ pub struct GrafanaDashboardPlugins {
     pub version: String,
 }
 
+/// GrafanaDashboardStatus defines the observed state of GrafanaDashboard
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardStatus {
+    /// The dashboard instanceSelector can't find matching grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "NoMatchingInstances")]
     pub no_matching_instances: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentCache")]
@@ -181,6 +273,7 @@ pub struct GrafanaDashboardStatus {
     pub content_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hash: Option<String>,
+    /// Last time the dashboard was resynced
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastResync")]
     pub last_resync: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -77,11 +77,15 @@ spec:
                     hostname:
                       description: "Optional. FQDN of the git server if automatic parsing from TargetRepo is broken"
                       type: "string"
+                    inClusterGitServer:
+                      default: false
+                      description: "Enable in-cluster git server (avoids the need of forking the upstream repository)"
+                      type: "boolean"
                     originRepo:
-                      description: "Upstream git repo containing the pattern to deploy. Used when in-cluster fork to point to the upstream pattern repository"
+                      description: "Upstream git repo containing the pattern to deploy. Used when in-cluster fork to point to the upstream pattern repository.\nTakes precedence over TargetRepo"
                       type: "string"
                     originRevision:
-                      description: "Branch, tag or commit in the upstream git repository. Does not support short-sha's. Default to HEAD"
+                      description: "(DEPRECATED) Branch, tag or commit in the upstream git repository. Does not support short-sha's. Default to HEAD"
                       type: "string"
                     pollInterval:
                       default: 180
@@ -99,8 +103,6 @@ spec:
                     tokenSecretNamespace:
                       description: "Optional. K8s secret namespace where the token for connecting to git can be found"
                       type: "string"
-                  required:
-                    - "targetRepo"
                   type: "object"
                 multiSourceConfig:
                   properties:

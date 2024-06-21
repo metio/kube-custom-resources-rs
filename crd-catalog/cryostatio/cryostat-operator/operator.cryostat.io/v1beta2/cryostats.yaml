@@ -2622,7 +2622,7 @@ spec:
                       type: "array"
                   type: "object"
                 targetNamespaces:
-                  description: "List of namespaces whose workloads Cryostat should be\npermitted to access and profile. Defaults to this Cryostat's namespace.\nWarning: All Cryostat users will be able to create and manage\nrecordings for workloads in the listed namespaces.\nMore details: https://github.com/cryostatio/cryostat-operator/blob/v2.4.0/docs/multi-namespace.md#data-isolation"
+                  description: "List of namespaces whose workloads Cryostat should be\npermitted to access and profile. Defaults to this Cryostat's namespace.\nWarning: All Cryostat users will be able to create and manage\nrecordings for workloads in the listed namespaces.\nMore details: https://github.com/cryostatio/cryostat-operator/blob/v3.0.0/docs/config.md#data-isolation"
                   items:
                     type: "string"
                   type: "array"

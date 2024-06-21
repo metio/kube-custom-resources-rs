@@ -27,6 +27,9 @@ pub struct WebhookSpec {
     /// webhook headers (golang template supported)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
+    /// OnStateChange will trigger the webhook only when the result of the current execution differs from the previous result of the same test/test suite/workflow
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onStateChange")]
+    pub on_state_change: Option<bool>,
     /// will load the generated payload for notification inside the object
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "payloadObjectField")]
     pub payload_object_field: Option<String>,

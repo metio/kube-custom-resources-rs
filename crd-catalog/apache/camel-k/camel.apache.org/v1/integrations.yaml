@@ -4293,6 +4293,14 @@ spec:
                             - "Prefix"
                             - "ImplementationSpecific"
                           type: "string"
+                        tlsHosts:
+                          description: "To configure tls hosts"
+                          items:
+                            type: "string"
+                          type: "array"
+                        tlsSecretName:
+                          description: "To configure tls secret name"
+                          type: "string"
                       type: "object"
                     istio:
                       description: "The configuration of Istio trait"
@@ -4526,6 +4534,10 @@ spec:
                         rolloutDuration:
                           description: "Enables to gradually shift traffic to the latest Revision and sets the rollout duration. It's disabled by default and must be expressed as a Golang `time.Duration` string representation, rounded to a second precision."
                           type: "string"
+                        timeoutSeconds:
+                          description: "The maximum duration in seconds that the request instance is allowed to respond to a request. This field propagates to the integration pod's terminationGracePeriodSeconds \n Refer to the Knative documentation for more information."
+                          format: "int64"
+                          type: "integer"
                         visibility:
                           description: "Setting `cluster-local`, Knative service becomes a private service. Specifically, this option applies the `networking.knative.dev/visibility` label to Knative service. \n Refer to the Knative documentation for more information."
                           enum:

@@ -41,6 +41,9 @@ pub struct SecretStoreSpec {
 /// for a ClusterSecretStore instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreConditions {
+    /// Choose namespaces by using regex matching
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceRegexes")]
+    pub namespace_regexes: Option<Vec<String>>,
     /// Choose namespace using a labelSelector
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<SecretStoreConditionsNamespaceSelector>,

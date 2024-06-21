@@ -35,10 +35,7 @@ pub struct PolicySpec {
     /// uses variables that are only available in the admission review request (e.g. user name).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub background: Option<bool>,
-    /// FailurePolicy defines how unexpected policy errors and webhook response timeout errors are handled.
-    /// Rules within the same policy share the same failure behavior.
-    /// This field should not be accessed directly, instead `GetFailurePolicy()` should be used.
-    /// Allowed values are Ignore or Fail. Defaults to Fail.
+    /// Deprecated, use failurePolicy under the webhookConfiguration instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<PolicyFailurePolicy>,
     /// Deprecated, use generateExisting under the generate rule instead
@@ -47,8 +44,7 @@ pub struct PolicySpec {
     /// Deprecated, use generateExisting instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateExistingOnPolicyUpdate")]
     pub generate_existing_on_policy_update: Option<bool>,
-    /// MutateExistingOnPolicyUpdate controls if a mutateExisting policy is applied on policy events.
-    /// Default value is "false".
+    /// Deprecated, use mutateExistingOnPolicyUpdate under the mutate rule instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateExistingOnPolicyUpdate")]
     pub mutate_existing_on_policy_update: Option<bool>,
     /// Rules is a list of Rule instances. A Policy contains multiple rules and
@@ -74,12 +70,9 @@ pub struct PolicySpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureActionOverrides")]
     pub validation_failure_action_overrides: Option<Vec<PolicyValidationFailureActionOverrides>>,
     /// WebhookConfiguration specifies the custom configuration for Kubernetes admission webhookconfiguration.
-    /// Requires Kubernetes 1.27 or later.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookConfiguration")]
     pub webhook_configuration: Option<PolicyWebhookConfiguration>,
-    /// WebhookTimeoutSeconds specifies the maximum time in seconds allowed to apply this policy.
-    /// After the configured time expires, the admission request may fail, or may simply ignore the policy results,
-    /// based on the failure policy. The default timeout is 10s, the value must be between 1 and 30 seconds.
+    /// Deprecated, use webhookTimeoutSeconds under webhookConfiguration instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookTimeoutSeconds")]
     pub webhook_timeout_seconds: Option<i32>,
 }
@@ -1396,6 +1389,9 @@ pub struct PolicyRulesMutate {
     /// ForEach applies mutation rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub foreach: Option<Vec<PolicyRulesMutateForeach>>,
+    /// MutateExistingOnPolicyUpdate controls if the mutateExisting rule will be applied on policy events.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateExistingOnPolicyUpdate")]
+    pub mutate_existing_on_policy_update: Option<bool>,
     /// PatchStrategicMerge is a strategic merge patch used to modify resources.
     /// See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
     /// and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
@@ -2948,6 +2944,10 @@ pub struct PolicyRulesVerifyImages {
     /// Attestors specified the required attestors (i.e. authorities)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attestors: Option<Vec<PolicyRulesVerifyImagesAttestors>>,
+    /// CosignOCI11 enables the experimental OCI 1.1 behaviour in cosign image verification.
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosignOCI11")]
+    pub cosign_oci11: Option<bool>,
     /// Deprecated. Use ImageReferences instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -3680,12 +3680,30 @@ pub struct PolicyValidationFailureActionOverridesNamespaceSelectorMatchExpressio
 }
 
 /// WebhookConfiguration specifies the custom configuration for Kubernetes admission webhookconfiguration.
-/// Requires Kubernetes 1.27 or later.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyWebhookConfiguration {
+    /// FailurePolicy defines how unexpected policy errors and webhook response timeout errors are handled.
+    /// Rules within the same policy share the same failure behavior.
+    /// This field should not be accessed directly, instead `GetFailurePolicy()` should be used.
+    /// Allowed values are Ignore or Fail. Defaults to Fail.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
+    pub failure_policy: Option<PolicyWebhookConfigurationFailurePolicy>,
     /// MatchCondition configures admission webhook matchConditions.
+    /// Requires Kubernetes 1.27 or later.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchConditions")]
     pub match_conditions: Option<Vec<PolicyWebhookConfigurationMatchConditions>>,
+    /// TimeoutSeconds specifies the maximum time in seconds allowed to apply this policy.
+    /// After the configured time expires, the admission request may fail, or may simply ignore the policy results,
+    /// based on the failure policy. The default timeout is 10s, the value must be between 1 and 30 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// WebhookConfiguration specifies the custom configuration for Kubernetes admission webhookconfiguration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyWebhookConfigurationFailurePolicy {
+    Ignore,
+    Fail,
 }
 
 /// MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook.
@@ -5045,6 +5063,9 @@ pub struct PolicyStatusAutogenRulesMutate {
     /// ForEach applies mutation rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub foreach: Option<Vec<PolicyStatusAutogenRulesMutateForeach>>,
+    /// MutateExistingOnPolicyUpdate controls if the mutateExisting rule will be applied on policy events.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateExistingOnPolicyUpdate")]
+    pub mutate_existing_on_policy_update: Option<bool>,
     /// PatchStrategicMerge is a strategic merge patch used to modify resources.
     /// See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
     /// and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
@@ -6597,6 +6618,10 @@ pub struct PolicyStatusAutogenRulesVerifyImages {
     /// Attestors specified the required attestors (i.e. authorities)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attestors: Option<Vec<PolicyStatusAutogenRulesVerifyImagesAttestors>>,
+    /// CosignOCI11 enables the experimental OCI 1.1 behaviour in cosign image verification.
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosignOCI11")]
+    pub cosign_oci11: Option<bool>,
     /// Deprecated. Use ImageReferences instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,

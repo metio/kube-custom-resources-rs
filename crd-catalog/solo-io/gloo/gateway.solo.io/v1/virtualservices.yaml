@@ -3328,6 +3328,9 @@ spec:
                                 type: "object"
                               hostRewrite:
                                 type: "string"
+                              hostRewriteHeader:
+                                nullable: true
+                                type: "string"
                               hostRewritePathRegex:
                                 properties:
                                   pattern:

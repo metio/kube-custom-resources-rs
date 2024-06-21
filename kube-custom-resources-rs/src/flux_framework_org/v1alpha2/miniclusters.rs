@@ -241,6 +241,11 @@ pub struct MiniClusterContainersVolumes {
     /// You should also define items if you are using this
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<bool>,
+    /// Add an empty directory custom type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirMedium")]
+    pub empty_dir_medium: Option<String>,
     /// An existing hostPath to bind to path
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<String>,
@@ -640,6 +645,11 @@ pub struct MiniClusterServicesVolumes {
     /// You should also define items if you are using this
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<bool>,
+    /// Add an empty directory custom type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirMedium")]
+    pub empty_dir_medium: Option<String>,
     /// An existing hostPath to bind to path
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<String>,

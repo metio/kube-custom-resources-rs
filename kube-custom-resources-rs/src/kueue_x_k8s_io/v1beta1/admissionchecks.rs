@@ -18,23 +18,24 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct AdmissionCheckSpec {
-    /// controllerName is name of the controller which will actually perform
-    /// the checks. This is the name with which controller identifies with,
-    /// not necessarily a K8S Pod or Deployment name. Cannot be empty.
+    /// controllerName identifies the controller that processes the AdmissionCheck,
+    /// not necessarily a Kubernetes Pod or Deployment name. Cannot be empty.
     #[serde(rename = "controllerName")]
     pub controller_name: String,
-    /// Parameters identifies the resource providing additional check parameters.
+    /// Parameters identifies a configuration with additional parameters for the
+    /// check.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<AdmissionCheckParameters>,
-    /// RetryDelayMinutes specifies how long to keep the workload suspended
-    /// after a failed check (after it transitioned to False).
-    /// After that the check state goes to "Unknown".
+    /// RetryDelayMinutes **deprecated** specifies how long to keep the workload suspended after
+    /// a failed check (after it transitioned to False). When the delay period has passed, the check
+    /// state goes to "Unknown". The default is 15 min.
     /// The default is 15 min.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryDelayMinutes")]
     pub retry_delay_minutes: Option<i64>,
 }
 
-/// Parameters identifies the resource providing additional check parameters.
+/// Parameters identifies a configuration with additional parameters for the
+/// check.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdmissionCheckParameters {
     /// ApiGroup is the group for the resource being referenced.

@@ -52,8 +52,6 @@ spec:
               type: "object"
             spec:
               properties:
-                allowUnsafeConfigurations:
-                  type: "boolean"
                 backup:
                   properties:
                     backoffLimit:
@@ -8044,6 +8042,19 @@ spec:
                       type: "object"
                   required:
                     - "image"
+                  type: "object"
+                unsafeFlags:
+                  properties:
+                    mysqlSize:
+                      type: "boolean"
+                    orchestrator:
+                      type: "boolean"
+                    orchestratorSize:
+                      type: "boolean"
+                    proxy:
+                      type: "boolean"
+                    proxySize:
+                      type: "boolean"
                   type: "object"
                 updateStrategy:
                   type: "string"

@@ -1240,6 +1240,19 @@ spec:
                             - "roleId"
                             - "secretRef"
                           type: "object"
+                        clientCertificate:
+                          description: "ClientCertificate authenticates with Vault by presenting a client\ncertificate during the request's TLS handshake.\nWorks only when using HTTPS protocol."
+                          properties:
+                            mountPath:
+                              description: "The Vault mountPath here is the mount path to use when authenticating with\nVault. For example, setting a value to `/v1/auth/foo`, will use the path\n`/v1/auth/foo/login` to authenticate with Vault. If unspecified, the\ndefault value \"/v1/auth/cert\" will be used."
+                              type: "string"
+                            name:
+                              description: "Name of the certificate role to authenticate against.\nIf not set, matching any certificate role, if available."
+                              type: "string"
+                            secretName:
+                              description: "Reference to Kubernetes Secret of type \"kubernetes.io/tls\" (hence containing\ntls.crt and tls.key) used to authenticate to Vault using TLS client\nauthentication."
+                              type: "string"
+                          type: "object"
                         kubernetes:
                           description: "Kubernetes authenticates with Vault by passing the ServiceAccount\ntoken stored in the named Secret resource to the Vault server."
                           properties:

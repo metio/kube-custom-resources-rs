@@ -69,7 +69,7 @@ pub struct CryostatSpec {
     /// permitted to access and profile. Defaults to this Cryostat's namespace.
     /// Warning: All Cryostat users will be able to create and manage
     /// recordings for workloads in the listed namespaces.
-    /// More details: https://github.com/cryostatio/cryostat-operator/blob/v2.4.0/docs/multi-namespace.md#data-isolation
+    /// More details: https://github.com/cryostatio/cryostat-operator/blob/v3.0.0/docs/config.md#data-isolation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNamespaces")]
     pub target_namespaces: Option<Vec<String>>,
     /// List of TLS certificates to trust when connecting to targets.
