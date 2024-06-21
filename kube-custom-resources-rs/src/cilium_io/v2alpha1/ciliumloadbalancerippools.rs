@@ -25,9 +25,6 @@ pub struct CiliumLoadBalancerIPPoolSpec {
     /// Blocks is a list of CIDRs comprising this IP Pool
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub blocks: Option<Vec<CiliumLoadBalancerIPPoolBlocks>>,
-    /// Cidrs is a list of CIDRs comprising this IP Pool Deprecated: please use the `blocks` field instead. This field will be removed in a future release. https://github.com/cilium/cilium/issues/28590
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cidrs: Option<Vec<CiliumLoadBalancerIPPoolCidrs>>,
     /// Disabled, if set to true means that no new IPs will be allocated from this pool. Existing allocations will not be removed from services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
@@ -46,17 +43,6 @@ pub enum CiliumLoadBalancerIPPoolAllowFirstLastIPs {
 /// CiliumLoadBalancerIPPoolIPBlock describes a single IP block.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumLoadBalancerIPPoolBlocks {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cidr: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub start: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stop: Option<String>,
-}
-
-/// CiliumLoadBalancerIPPoolIPBlock describes a single IP block.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CiliumLoadBalancerIPPoolCidrs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

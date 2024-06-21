@@ -10,6 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// GrafanaFolderSpec defines the desired state of GrafanaFolder
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "grafana.integreatly.org", version = "v1beta1", kind = "GrafanaFolder", plural = "grafanafolders")]
 #[kube(namespaced)]
@@ -18,40 +19,63 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GrafanaFolderSpec {
+    /// allow to import this resources from an operator in a different namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossNamespaceImport")]
     pub allow_cross_namespace_import: Option<bool>,
+    /// selects Grafanas for import
     #[serde(rename = "instanceSelector")]
     pub instance_selector: GrafanaFolderInstanceSelector,
+    /// raw json with folder permissions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<String>,
+    /// how often the folder is synced, defaults to 5m if not set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 }
 
+/// selects Grafanas for import
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaFolderInstanceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<GrafanaFolderInstanceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaFolderInstanceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
     pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
+/// GrafanaFolderStatus defines the observed state of GrafanaFolder
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaFolderStatus {
+    /// The folder instanceSelector can't find matching grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "NoMatchingInstances")]
     pub no_matching_instances: Option<bool>,
+    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+    /// Important: Run "make" to regenerate code after modifying this file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hash: Option<String>,
+    /// Last time the folder was resynced
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastResync")]
     pub last_resync: Option<String>,
 }

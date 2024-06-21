@@ -280,6 +280,9 @@ pub struct PlanVms {
     /// Only relevant for an openshift source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Choose the primary disk the VM boots from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootDisk")]
+    pub root_disk: Option<String>,
     /// Type used to qualify the name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -542,6 +545,9 @@ pub struct PlanStatusMigrationVms {
     /// Only relevant for an openshift source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// The Operating System detected by virt-v2v.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatingSystem")]
+    pub operating_system: Option<String>,
     /// Phase
     pub phase: String,
     /// Migration pipeline.
@@ -549,6 +555,9 @@ pub struct PlanStatusMigrationVms {
     /// Source VM power state before migration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restorePowerState")]
     pub restore_power_state: Option<String>,
+    /// Choose the primary disk the VM boots from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootDisk")]
+    pub root_disk: Option<String>,
     /// Started timestamp.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub started: Option<String>,

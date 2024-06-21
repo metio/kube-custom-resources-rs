@@ -62,6 +62,9 @@ pub struct HiveConfigSpec {
     /// LogLevel is the level of logging to use for the Hive controllers. Acceptable levels, from coarsest to finest, are panic, fatal, error, warn, info, debug, and trace. The default level is info.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
+    /// MachinePoolPollInterval is a string duration indicating how much time must pass before checking whether remote resources related to MachinePools need to be reapplied. Set to zero to disable polling -- we'll only reconcile when hub objects change. The default interval is 30m.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machinePoolPollInterval")]
+    pub machine_pool_poll_interval: Option<String>,
     /// MaintenanceMode can be set to true to disable the hive controllers in situations where we need to ensure nothing is running that will add or act upon finalizers on Hive types. This should rarely be needed. Sets replicas to 0 for the hive-controllers deployment to accomplish this.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maintenanceMode")]
     pub maintenance_mode: Option<bool>,

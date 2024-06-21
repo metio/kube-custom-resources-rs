@@ -132,6 +132,10 @@ pub struct PrometheusSpec {
     pub base_image: Option<String>,
     /// BodySizeLimit defines per-scrape on response body size.
     /// Only valid in Prometheus versions 2.45.0 and newer.
+    /// 
+    /// 
+    /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
+    /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedBodySizeLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodySizeLimit")]
     pub body_size_limit: Option<String>,
     /// ConfigMaps is a list of ConfigMaps in the same namespace as the Prometheus
@@ -207,6 +211,13 @@ pub struct PrometheusSpec {
     /// 
     /// 
     /// It requires Prometheus >= v2.28.0.
+    /// 
+    /// 
+    /// When both `enforcedBodySizeLimit` and `bodySizeLimit` are defined and greater than zero, the following rules apply:
+    /// * Scrape objects without a defined bodySizeLimit value will inherit the global bodySizeLimit value (Prometheus >= 2.45.0) or the enforcedBodySizeLimit value (Prometheus < v2.45.0).
+    ///   If Prometheus version is >= 2.45.0 and the `enforcedBodySizeLimit` is greater than the `bodySizeLimit`, the `bodySizeLimit` will be set to `enforcedBodySizeLimit`.
+    /// * Scrape objects with a bodySizeLimit value less than or equal to enforcedBodySizeLimit keep their specific value.
+    /// * Scrape objects with a bodySizeLimit value greater than enforcedBodySizeLimit are set to enforcedBodySizeLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedBodySizeLimit")]
     pub enforced_body_size_limit: Option<String>,
     /// When defined, enforcedKeepDroppedTargets specifies a global limit on the number of targets
@@ -217,6 +228,13 @@ pub struct PrometheusSpec {
     /// 
     /// 
     /// It requires Prometheus >= v2.47.0.
+    /// 
+    /// 
+    /// When both `enforcedKeepDroppedTargets` and `keepDroppedTargets` are defined and greater than zero, the following rules apply:
+    /// * Scrape objects without a defined keepDroppedTargets value will inherit the global keepDroppedTargets value (Prometheus >= 2.45.0) or the enforcedKeepDroppedTargets value (Prometheus < v2.45.0).
+    ///   If Prometheus version is >= 2.45.0 and the `enforcedKeepDroppedTargets` is greater than the `keepDroppedTargets`, the `keepDroppedTargets` will be set to `enforcedKeepDroppedTargets`.
+    /// * Scrape objects with a keepDroppedTargets value less than or equal to enforcedKeepDroppedTargets keep their specific value.
+    /// * Scrape objects with a keepDroppedTargets value greater than enforcedKeepDroppedTargets are set to enforcedKeepDroppedTargets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedKeepDroppedTargets")]
     pub enforced_keep_dropped_targets: Option<i64>,
     /// When defined, enforcedLabelLimit specifies a global limit on the number
@@ -226,6 +244,13 @@ pub struct PrometheusSpec {
     /// 
     /// 
     /// It requires Prometheus >= v2.27.0.
+    /// 
+    /// 
+    /// When both `enforcedLabelLimit` and `labelLimit` are defined and greater than zero, the following rules apply:
+    /// * Scrape objects without a defined labelLimit value will inherit the global labelLimit value (Prometheus >= 2.45.0) or the enforcedLabelLimit value (Prometheus < v2.45.0).
+    ///   If Prometheus version is >= 2.45.0 and the `enforcedLabelLimit` is greater than the `labelLimit`, the `labelLimit` will be set to `enforcedLabelLimit`.
+    /// * Scrape objects with a labelLimit value less than or equal to enforcedLabelLimit keep their specific value.
+    /// * Scrape objects with a labelLimit value greater than enforcedLabelLimit are set to enforcedLabelLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedLabelLimit")]
     pub enforced_label_limit: Option<i64>,
     /// When defined, enforcedLabelNameLengthLimit specifies a global limit on the length
@@ -235,6 +260,13 @@ pub struct PrometheusSpec {
     /// 
     /// 
     /// It requires Prometheus >= v2.27.0.
+    /// 
+    /// 
+    /// When both `enforcedLabelNameLengthLimit` and `labelNameLengthLimit` are defined and greater than zero, the following rules apply:
+    /// * Scrape objects without a defined labelNameLengthLimit value will inherit the global labelNameLengthLimit value (Prometheus >= 2.45.0) or the enforcedLabelNameLengthLimit value (Prometheus < v2.45.0).
+    ///   If Prometheus version is >= 2.45.0 and the `enforcedLabelNameLengthLimit` is greater than the `labelNameLengthLimit`, the `labelNameLengthLimit` will be set to `enforcedLabelNameLengthLimit`.
+    /// * Scrape objects with a labelNameLengthLimit value less than or equal to enforcedLabelNameLengthLimit keep their specific value.
+    /// * Scrape objects with a labelNameLengthLimit value greater than enforcedLabelNameLengthLimit are set to enforcedLabelNameLengthLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedLabelNameLengthLimit")]
     pub enforced_label_name_length_limit: Option<i64>,
     /// When not null, enforcedLabelValueLengthLimit defines a global limit on the length
@@ -244,6 +276,13 @@ pub struct PrometheusSpec {
     /// 
     /// 
     /// It requires Prometheus >= v2.27.0.
+    /// 
+    /// 
+    /// When both `enforcedLabelValueLengthLimit` and `labelValueLengthLimit` are defined and greater than zero, the following rules apply:
+    /// * Scrape objects without a defined labelValueLengthLimit value will inherit the global labelValueLengthLimit value (Prometheus >= 2.45.0) or the enforcedLabelValueLengthLimit value (Prometheus < v2.45.0).
+    ///   If Prometheus version is >= 2.45.0 and the `enforcedLabelValueLengthLimit` is greater than the `labelValueLengthLimit`, the `labelValueLengthLimit` will be set to `enforcedLabelValueLengthLimit`.
+    /// * Scrape objects with a labelValueLengthLimit value less than or equal to enforcedLabelValueLengthLimit keep their specific value.
+    /// * Scrape objects with a labelValueLengthLimit value greater than enforcedLabelValueLengthLimit are set to enforcedLabelValueLengthLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedLabelValueLengthLimit")]
     pub enforced_label_value_length_limit: Option<i64>,
     /// When not empty, a label will be added to:
@@ -272,6 +311,13 @@ pub struct PrometheusSpec {
     /// 
     /// It is meant to be used by admins to keep the overall number of
     /// samples/series under a desired limit.
+    /// 
+    /// 
+    /// When both `enforcedSampleLimit` and `sampleLimit` are defined and greater than zero, the following rules apply:
+    /// * Scrape objects without a defined sampleLimit value will inherit the global sampleLimit value (Prometheus >= 2.45.0) or the enforcedSampleLimit value (Prometheus < v2.45.0).
+    ///   If Prometheus version is >= 2.45.0 and the `enforcedSampleLimit` is greater than the `sampleLimit`, the `sampleLimit` will be set to `enforcedSampleLimit`.
+    /// * Scrape objects with a sampleLimit value less than or equal to enforcedSampleLimit keep their specific value.
+    /// * Scrape objects with a sampleLimit value greater than enforcedSampleLimit are set to enforcedSampleLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedSampleLimit")]
     pub enforced_sample_limit: Option<i64>,
     /// When defined, enforcedTargetLimit specifies a global limit on the number
@@ -282,6 +328,13 @@ pub struct PrometheusSpec {
     /// 
     /// It is meant to be used by admins to to keep the overall number of
     /// targets under a desired limit.
+    /// 
+    /// 
+    /// When both `enforcedTargetLimit` and `targetLimit` are defined and greater than zero, the following rules apply:
+    /// * Scrape objects without a defined targetLimit value will inherit the global targetLimit value (Prometheus >= 2.45.0) or the enforcedTargetLimit value (Prometheus < v2.45.0).
+    ///   If Prometheus version is >= 2.45.0 and the `enforcedTargetLimit` is greater than the `targetLimit`, the `targetLimit` will be set to `enforcedTargetLimit`.
+    /// * Scrape objects with a targetLimit value less than or equal to enforcedTargetLimit keep their specific value.
+    /// * Scrape objects with a targetLimit value greater than enforcedTargetLimit are set to enforcedTargetLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedTargetLimit")]
     pub enforced_target_limit: Option<i64>,
     /// Interval between rule evaluations.
@@ -377,18 +430,34 @@ pub struct PrometheusSpec {
     /// 
     /// 
     /// It requires Prometheus >= v2.47.0.
+    /// 
+    /// 
+    /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
+    /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedKeepDroppedTargets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepDroppedTargets")]
     pub keep_dropped_targets: Option<i64>,
     /// Per-scrape limit on number of labels that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.45.0 and newer.
+    /// 
+    /// 
+    /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
+    /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedLabelLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelLimit")]
     pub label_limit: Option<i64>,
     /// Per-scrape limit on length of labels name that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.45.0 and newer.
+    /// 
+    /// 
+    /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
+    /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedLabelNameLengthLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelNameLengthLimit")]
     pub label_name_length_limit: Option<i64>,
     /// Per-scrape limit on length of labels value that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.45.0 and newer.
+    /// 
+    /// 
+    /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
+    /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedLabelValueLengthLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelValueLengthLimit")]
     pub label_value_length_limit: Option<i64>,
     /// When true, the Prometheus server listens on the loopback address
@@ -595,6 +664,10 @@ pub struct PrometheusSpec {
     pub rules: Option<PrometheusRules>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
     /// Only valid in Prometheus versions 2.45.0 and newer.
+    /// 
+    /// 
+    /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
+    /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedSampleLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// List of scrape classes to expose to scraping objects such as
@@ -711,6 +784,10 @@ pub struct PrometheusSpec {
     pub tag: Option<String>,
     /// TargetLimit defines a limit on the number of scraped targets that will be accepted.
     /// Only valid in Prometheus versions 2.45.0 and newer.
+    /// 
+    /// 
+    /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
+    /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedTargetLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLimit")]
     pub target_limit: Option<i64>,
     /// Defines the configuration of the optional Thanos sidecar.
@@ -5349,6 +5426,14 @@ pub struct PrometheusRemoteRead {
     /// It requires Prometheus >= v2.15.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
     /// OAuth2 configuration for the URL.
     /// 
     /// 
@@ -5358,7 +5443,24 @@ pub struct PrometheusRemoteRead {
     /// Cannot be set at the same time as `authorization`, or `basicAuth`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<PrometheusRemoteReadOauth2>,
-    /// Optional ProxyURL.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, PrometheusRemoteReadProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Whether reads should be made for queries for time ranges that
@@ -5579,6 +5681,25 @@ pub struct PrometheusRemoteReadOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusRemoteReadProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// TLS Config to use for the URL.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusRemoteReadTlsConfig {
@@ -5769,6 +5890,12 @@ pub struct PrometheusRemoteWrite {
     /// Whether to enable HTTP2.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
+    /// Configure whether HTTP requests follow HTTP 3xx redirects.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.26.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
+    pub follow_redirects: Option<bool>,
     /// Custom HTTP headers to be sent along with each remote write request.
     /// Be aware that headers that are set by Prometheus itself can't be overwritten.
     /// 
@@ -5786,6 +5913,14 @@ pub struct PrometheusRemoteWrite {
     /// It requires Prometheus >= v2.15.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
     /// OAuth2 configuration for the URL.
     /// 
     /// 
@@ -5795,7 +5930,24 @@ pub struct PrometheusRemoteWrite {
     /// Cannot be set at the same time as `sigv4`, `authorization`, `basicAuth`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<PrometheusRemoteWriteOauth2>,
-    /// Optional ProxyURL.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, PrometheusRemoteWriteProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// QueueConfig allows tuning of the remote write queue parameters.
@@ -6139,6 +6291,25 @@ pub struct PrometheusRemoteWriteOauth2ClientIdSecret {
 /// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusRemoteWriteOauth2ClientSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusRemoteWriteProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.

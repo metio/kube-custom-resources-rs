@@ -41,6 +41,9 @@ pub struct DatadogAgentFeatures {
     /// APM (Application Performance Monitoring) configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub apm: Option<DatadogAgentFeaturesApm>,
+    /// ASM (Application Security Management) configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub asm: Option<DatadogAgentFeaturesAsm>,
     /// ClusterChecks configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterChecks")]
     pub cluster_checks: Option<DatadogAgentFeaturesClusterChecks>,
@@ -62,6 +65,9 @@ pub struct DatadogAgentFeatures {
     /// ExternalMetricsServer configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalMetricsServer")]
     pub external_metrics_server: Option<DatadogAgentFeaturesExternalMetricsServer>,
+    /// HelmCheck configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmCheck")]
+    pub helm_check: Option<DatadogAgentFeaturesHelmCheck>,
     /// KubeStateMetricsCore check configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeStateMetricsCore")]
     pub kube_state_metrics_core: Option<DatadogAgentFeaturesKubeStateMetricsCore>,
@@ -112,6 +118,12 @@ pub struct DatadogAgentFeaturesAdmissionController {
     /// AgentCommunicationMode corresponds to the mode used by the Datadog application libraries to communicate with the Agent. It can be "hostip", "service", or "socket".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentCommunicationMode")]
     pub agent_communication_mode: Option<String>,
+    /// AgentSidecarInjection contains Agent sidecar injection configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentSidecarInjection")]
+    pub agent_sidecar_injection: Option<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjection>,
+    /// CWSInstrumentation holds the CWS Instrumentation endpoint configuration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cwsInstrumentation")]
+    pub cws_instrumentation: Option<DatadogAgentFeaturesAdmissionControllerCwsInstrumentation>,
     /// Enabled enables the Admission Controller. Default: true
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -121,12 +133,239 @@ pub struct DatadogAgentFeaturesAdmissionController {
     /// MutateUnlabelled enables config injection without the need of pod label 'admission.datadoghq.com/enabled="true"'. Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateUnlabelled")]
     pub mutate_unlabelled: Option<bool>,
+    /// Registry defines an image registry for the admission controller.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub registry: Option<String>,
     /// ServiceName corresponds to the webhook service name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
     /// WebhookName is a custom name for the MutatingWebhookConfiguration. Default: "datadog-webhook"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookName")]
     pub webhook_name: Option<String>,
+}
+
+/// AgentSidecarInjection contains Agent sidecar injection configurations.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjection {
+    /// ClusterAgentCommunicationEnabled enables communication between Agent sidecars and the Cluster Agent. Default : true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAgentCommunicationEnabled")]
+    pub cluster_agent_communication_enabled: Option<bool>,
+    /// Enabled enables Sidecar injections. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Image overrides the default Agent image name and tag for the Agent sidecar.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionImage>,
+    /// Profiles define the sidecar configuration override. Only one profile is supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub profiles: Option<Vec<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfiles>>,
+    /// Provider is used to add infrastructure provider-specific configurations to the Agent sidecar. Currently only "fargate" is supported. To use the feature in other environments (including local testing) omit the config. See also: https://docs.datadoghq.com/integrations/eks_fargate
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provider: Option<String>,
+    /// Registry overrides the default registry for the sidecar Agent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub registry: Option<String>,
+    /// Selectors define the pod selector for sidecar injection. Only one rule is supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<Vec<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionSelectors>>,
+}
+
+/// Image overrides the default Agent image name and tag for the Agent sidecar.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionImage {
+    /// Define whether the Agent image should support JMX. To be used if the Name field does not correspond to a full image string.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmxEnabled")]
+    pub jmx_enabled: Option<bool>,
+    /// Define the image to use: Use "gcr.io/datadoghq/agent:latest" for Datadog Agent 7. Use "datadog/dogstatsd:latest" for standalone Datadog Agent DogStatsD 7. Use "gcr.io/datadoghq/cluster-agent:latest" for Datadog Cluster Agent. Use "agent" with the registry and tag configurations for <registry>/agent:<tag>. Use "cluster-agent" with the registry and tag configurations for <registry>/cluster-agent:<tag>. If the name is the full image string—`<name>:<tag>` or `<registry>/<name>:<tag>`, then `tag`, `jmxEnabled`, and `global.registry` values are ignored. Otherwise, image string is created by overriding default settings with supplied `name`, `tag`, and `jmxEnabled` values; image string is created using default registry unless `global.registry` is configured.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The Kubernetes pull policy: Use Always, Never, or IfNotPresent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    /// It is possible to specify Docker registry credentials. See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecrets")]
+    pub pull_secrets: Option<Vec<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionImagePullSecrets>>,
+    /// Define the image tag to use. To be used if the Name field does not correspond to a full image string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionImagePullSecrets {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Profile defines a sidecar configuration override.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfiles {
+    /// EnvVars specifies the environment variables for the profile.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnv>>,
+    /// ResourceRequirements specifies the resource requirements for the profile.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesResources>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// ResourceRequirements specifies the resource requirements for the profile.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionProfilesResources {
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// Selectors define a pod selector for sidecar injection.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionSelectors {
+    /// NamespaceSelector specifies the label selector for namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionSelectorsNamespaceSelector>,
+    /// ObjectSelector specifies the label selector for objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSelector")]
+    pub object_selector: Option<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionSelectorsObjectSelector>,
+}
+
+/// NamespaceSelector specifies the label selector for namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionSelectorsNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionSelectorsNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionSelectorsNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// ObjectSelector specifies the label selector for objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionSelectorsObjectSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionSelectorsObjectSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerAgentSidecarInjectionSelectorsObjectSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// CWSInstrumentation holds the CWS Instrumentation endpoint configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAdmissionControllerCwsInstrumentation {
+    /// Enable the CWS Instrumentation admission controller endpoint. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Mode defines the behavior of the CWS Instrumentation endpoint, and can be either "init_container" or "remote_copy". Default: "remote_copy"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<String>,
 }
 
 /// APM (Application Performance Monitoring) configuration.
@@ -138,6 +377,9 @@ pub struct DatadogAgentFeaturesApm {
     /// HostPortConfig contains host port configuration. Enabled Default: false Port Default: 8126
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPortConfig")]
     pub host_port_config: Option<DatadogAgentFeaturesApmHostPortConfig>,
+    /// SingleStepInstrumentation allows the agent to inject the Datadog APM libraries into all pods in the cluster. Feature is in beta. See also: https://docs.datadoghq.com/tracing/trace_collection/single-step-apm Enabled Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub instrumentation: Option<DatadogAgentFeaturesApmInstrumentation>,
     /// UnixDomainSocketConfig contains socket configuration. See also: https://docs.datadoghq.com/agent/kubernetes/apm/?tab=helm#agent-environment-variables Enabled Default: true Path Default: `/var/run/datadog/apm.socket`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unixDomainSocketConfig")]
     pub unix_domain_socket_config: Option<DatadogAgentFeaturesApmUnixDomainSocketConfig>,
@@ -154,6 +396,23 @@ pub struct DatadogAgentFeaturesApmHostPortConfig {
     pub host_port: Option<i32>,
 }
 
+/// SingleStepInstrumentation allows the agent to inject the Datadog APM libraries into all pods in the cluster. Feature is in beta. See also: https://docs.datadoghq.com/tracing/trace_collection/single-step-apm Enabled Default: false
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesApmInstrumentation {
+    /// DisabledNamespaces disables injecting the Datadog APM libraries into pods in specific namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disabledNamespaces")]
+    pub disabled_namespaces: Option<Vec<String>>,
+    /// Enabled enables injecting the Datadog APM libraries into all pods in the cluster. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// EnabledNamespaces enables injecting the Datadog APM libraries into pods in specific namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledNamespaces")]
+    pub enabled_namespaces: Option<Vec<String>>,
+    /// LibVersions configures injection of specific tracing library versions with Single Step Instrumentation. <Library>: <Version> ex: "java": "v1.18.0"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "libVersions")]
+    pub lib_versions: Option<BTreeMap<String, String>>,
+}
+
 /// UnixDomainSocketConfig contains socket configuration. See also: https://docs.datadoghq.com/agent/kubernetes/apm/?tab=helm#agent-environment-variables Enabled Default: true Path Default: `/var/run/datadog/apm.socket`
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesApmUnixDomainSocketConfig {
@@ -163,6 +422,44 @@ pub struct DatadogAgentFeaturesApmUnixDomainSocketConfig {
     /// Path defines the socket path used when enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+}
+
+/// ASM (Application Security Management) configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAsm {
+    /// IAST configures Interactive Application Security Testing. Enabled Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub iast: Option<DatadogAgentFeaturesAsmIast>,
+    /// SCA configures Software Composition Analysis. Enabled Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sca: Option<DatadogAgentFeaturesAsmSca>,
+    /// Threats configures ASM App & API Protection. Enabled Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub threats: Option<DatadogAgentFeaturesAsmThreats>,
+}
+
+/// IAST configures Interactive Application Security Testing. Enabled Default: false
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAsmIast {
+    /// Enabled enables Interactive Application Security Testing (IAST). Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// SCA configures Software Composition Analysis. Enabled Default: false
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAsmSca {
+    /// Enabled enables Software Composition Analysis (SCA). Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// Threats configures ASM App & API Protection. Enabled Default: false
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAsmThreats {
+    /// Enabled enables ASM App & API Protection. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// ClusterChecks configuration.
@@ -218,12 +515,12 @@ pub struct DatadogAgentFeaturesCspmCustomBenchmarksConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesCspmCustomBenchmarksConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
@@ -280,12 +577,12 @@ pub struct DatadogAgentFeaturesCwsCustomPoliciesConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesCwsCustomPoliciesConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
@@ -366,12 +663,12 @@ pub struct DatadogAgentFeaturesDogstatsdMapperProfilesConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesDogstatsdMapperProfilesConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
@@ -475,6 +772,20 @@ pub struct DatadogAgentFeaturesExternalMetricsServerEndpointCredentialsAppSecret
     pub secret_name: String,
 }
 
+/// HelmCheck configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesHelmCheck {
+    /// CollectEvents set to `true` enables event collection in the Helm check (Requires Agent 7.36.0+ and Cluster Agent 1.20.0+) Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectEvents")]
+    pub collect_events: Option<bool>,
+    /// Enabled enables the Helm check. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// ValuesAsTags collects Helm values from a release and uses them as tags (Requires Agent and Cluster Agent 7.40.0+). Default: {}
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesAsTags")]
+    pub values_as_tags: Option<BTreeMap<String, String>>,
+}
+
 /// KubeStateMetricsCore check configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesKubeStateMetricsCore {
@@ -511,12 +822,12 @@ pub struct DatadogAgentFeaturesKubeStateMetricsCoreConfConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesKubeStateMetricsCoreConfConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
@@ -641,12 +952,12 @@ pub struct DatadogAgentFeaturesOrchestratorExplorerConfConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesOrchestratorExplorerConfConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
@@ -814,6 +1125,9 @@ pub struct DatadogAgentGlobal {
     /// Endpoint is the Datadog intake URL the Agent data are sent to. Only set this option if you need the Agent to send data to a custom URL. Overrides the site setting defined in `Site`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<DatadogAgentGlobalEndpoint>,
+    /// FIPS contains configuration used to customize the FIPS proxy sidecar.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fips: Option<DatadogAgentGlobalFips>,
     /// Kubelet contains the kubelet configuration parameters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubelet: Option<DatadogAgentGlobalKubelet>,
@@ -832,6 +1146,9 @@ pub struct DatadogAgentGlobal {
     /// Provide a mapping of Kubernetes Node Labels to Datadog Tags. <KUBERNETES_NODE_LABEL>: <DATADOG_TAG_KEY>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLabelsAsTags")]
     pub node_labels_as_tags: Option<BTreeMap<String, String>>,
+    /// OriginDetectionUnified defines the origin detection unified mechanism behavior.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originDetectionUnified")]
+    pub origin_detection_unified: Option<DatadogAgentGlobalOriginDetectionUnified>,
     /// Provide a mapping of Kubernetes Annotations to Datadog Tags. <KUBERNETES_ANNOTATIONS>: <DATADOG_TAG_KEY>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAnnotationsAsTags")]
     pub pod_annotations_as_tags: Option<BTreeMap<String, String>>,
@@ -947,6 +1264,108 @@ pub struct DatadogAgentGlobalEndpointCredentialsAppSecret {
     /// SecretName is the name of the secret.
     #[serde(rename = "secretName")]
     pub secret_name: String,
+}
+
+/// FIPS contains configuration used to customize the FIPS proxy sidecar.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalFips {
+    /// CustomFIPSConfig configures a custom configMap to provide the FIPS configuration. Specify custom contents for the FIPS proxy sidecar container config (/etc/datadog-fips-proxy/datadog-fips-proxy.cfg). If empty, the default FIPS proxy sidecar container config is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customFIPSConfig")]
+    pub custom_fips_config: Option<DatadogAgentGlobalFipsCustomFipsConfig>,
+    /// Enable FIPS sidecar.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The container image of the FIPS sidecar.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<DatadogAgentGlobalFipsImage>,
+    /// Set the local IP address. Default: `127.0.0.1`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localAddress")]
+    pub local_address: Option<String>,
+    /// Port specifies which port is used by the containers to communicate to the FIPS sidecar. Default: 9803
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// PortRange specifies the number of ports used. Default: 15
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portRange")]
+    pub port_range: Option<i32>,
+    /// Resources is the requests and limits for the FIPS sidecar container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<DatadogAgentGlobalFipsResources>,
+    /// UseHTTPS enables HTTPS. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useHTTPS")]
+    pub use_https: Option<bool>,
+}
+
+/// CustomFIPSConfig configures a custom configMap to provide the FIPS configuration. Specify custom contents for the FIPS proxy sidecar container config (/etc/datadog-fips-proxy/datadog-fips-proxy.cfg). If empty, the default FIPS proxy sidecar container config is used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalFipsCustomFipsConfig {
+    /// ConfigData corresponds to the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
+    pub config_data: Option<String>,
+    /// ConfigMap references an existing ConfigMap with the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<DatadogAgentGlobalFipsCustomFipsConfigConfigMap>,
+}
+
+/// ConfigMap references an existing ConfigMap with the configuration file content.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalFipsCustomFipsConfigConfigMap {
+    /// Items maps a ConfigMap data `key` to a file `path` mount.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<DatadogAgentGlobalFipsCustomFipsConfigConfigMapItems>>,
+    /// Name is the name of the ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalFipsCustomFipsConfigConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
+}
+
+/// The container image of the FIPS sidecar.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalFipsImage {
+    /// Define whether the Agent image should support JMX. To be used if the Name field does not correspond to a full image string.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmxEnabled")]
+    pub jmx_enabled: Option<bool>,
+    /// Define the image to use: Use "gcr.io/datadoghq/agent:latest" for Datadog Agent 7. Use "datadog/dogstatsd:latest" for standalone Datadog Agent DogStatsD 7. Use "gcr.io/datadoghq/cluster-agent:latest" for Datadog Cluster Agent. Use "agent" with the registry and tag configurations for <registry>/agent:<tag>. Use "cluster-agent" with the registry and tag configurations for <registry>/cluster-agent:<tag>. If the name is the full image string—`<name>:<tag>` or `<registry>/<name>:<tag>`, then `tag`, `jmxEnabled`, and `global.registry` values are ignored. Otherwise, image string is created by overriding default settings with supplied `name`, `tag`, and `jmxEnabled` values; image string is created using default registry unless `global.registry` is configured.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The Kubernetes pull policy: Use Always, Never, or IfNotPresent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    /// It is possible to specify Docker registry credentials. See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecrets")]
+    pub pull_secrets: Option<Vec<DatadogAgentGlobalFipsImagePullSecrets>>,
+    /// Define the image tag to use. To be used if the Name field does not correspond to a full image string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalFipsImagePullSecrets {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Resources is the requests and limits for the FIPS sidecar container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalFipsResources {
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 /// Kubelet contains the kubelet configuration parameters.
@@ -1079,6 +1498,14 @@ pub struct DatadogAgentGlobalNetworkPolicyDnsSelectorEndpointsMatchExpressions {
     /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// OriginDetectionUnified defines the origin detection unified mechanism behavior.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalOriginDetectionUnified {
+    /// Enabled enables unified mechanism for origin detection. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// Override the default configurations of the agents
@@ -1288,10 +1715,10 @@ pub struct DatadogAgentOverrideAffinityPodAffinityPreferredDuringSchedulingIgnor
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<DatadogAgentOverrideAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<DatadogAgentOverrideAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
@@ -1322,7 +1749,7 @@ pub struct DatadogAgentOverrideAffinityPodAffinityPreferredDuringSchedulingIgnor
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1351,10 +1778,10 @@ pub struct DatadogAgentOverrideAffinityPodAffinityRequiredDuringSchedulingIgnore
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<DatadogAgentOverrideAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<DatadogAgentOverrideAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
@@ -1385,7 +1812,7 @@ pub struct DatadogAgentOverrideAffinityPodAffinityRequiredDuringSchedulingIgnore
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1435,10 +1862,10 @@ pub struct DatadogAgentOverrideAffinityPodAntiAffinityPreferredDuringSchedulingI
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<DatadogAgentOverrideAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<DatadogAgentOverrideAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
@@ -1469,7 +1896,7 @@ pub struct DatadogAgentOverrideAffinityPodAntiAffinityPreferredDuringSchedulingI
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1498,10 +1925,10 @@ pub struct DatadogAgentOverrideAffinityPodAntiAffinityRequiredDuringSchedulingIg
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<DatadogAgentOverrideAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<DatadogAgentOverrideAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
@@ -1532,7 +1959,7 @@ pub struct DatadogAgentOverrideAffinityPodAntiAffinityRequiredDuringSchedulingIg
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1688,7 +2115,7 @@ pub struct DatadogAgentOverrideContainersLivenessProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port. This is an alpha field and requires enabling GRPCContainerProbe feature gate.
+    /// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<DatadogAgentOverrideContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -1722,7 +2149,7 @@ pub struct DatadogAgentOverrideContainersLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port. This is an alpha field and requires enabling GRPCContainerProbe feature gate.
+/// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1780,7 +2207,7 @@ pub struct DatadogAgentOverrideContainersReadinessProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port. This is an alpha field and requires enabling GRPCContainerProbe feature gate.
+    /// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<DatadogAgentOverrideContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -1814,7 +2241,7 @@ pub struct DatadogAgentOverrideContainersReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port. This is an alpha field and requires enabling GRPCContainerProbe feature gate.
+/// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1910,12 +2337,12 @@ pub struct DatadogAgentOverrideContainersSeccompConfigCustomProfileConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideContainersSeccompConfigCustomProfileConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
@@ -2061,12 +2488,12 @@ pub struct DatadogAgentOverrideCustomConfigurationsConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideCustomConfigurationsConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
@@ -2175,12 +2602,12 @@ pub struct DatadogAgentOverrideExtraChecksdConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideExtraChecksdConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
@@ -2209,12 +2636,12 @@ pub struct DatadogAgentOverrideExtraConfdConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideExtraConfdConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
@@ -2361,178 +2788,178 @@ pub struct DatadogAgentOverrideTolerations {
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumes {
-    /// AWSElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<DatadogAgentOverrideVolumesAwsElasticBlockStore>,
-    /// AzureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<DatadogAgentOverrideVolumesAzureDisk>,
-    /// AzureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
     pub azure_file: Option<DatadogAgentOverrideVolumesAzureFile>,
-    /// CephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<DatadogAgentOverrideVolumesCephfs>,
-    /// Cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<DatadogAgentOverrideVolumesCinder>,
-    /// ConfigMap represents a configMap that should populate this volume
+    /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<DatadogAgentOverrideVolumesConfigMap>,
-    /// CSI (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<DatadogAgentOverrideVolumesCsi>,
-    /// DownwardAPI represents downward API about the pod that should populate this volume
+    /// downwardAPI represents downward API about the pod that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<DatadogAgentOverrideVolumesDownwardApi>,
-    /// EmptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<DatadogAgentOverrideVolumesEmptyDir>,
-    /// Ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
+    /// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
     ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity    tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through    a PersistentVolumeClaim (see EphemeralVolumeSource for more    information on the connection between this volume type    and PersistentVolumeClaim). 
     ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
     ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
     ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<DatadogAgentOverrideVolumesEphemeral>,
-    /// FC represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
+    /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<DatadogAgentOverrideVolumesFc>,
-    /// FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+    /// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<DatadogAgentOverrideVolumesFlexVolume>,
-    /// Flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<DatadogAgentOverrideVolumesFlocker>,
-    /// GCEPersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<DatadogAgentOverrideVolumesGcePersistentDisk>,
-    /// GitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+    /// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<DatadogAgentOverrideVolumesGitRepo>,
-    /// Glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<DatadogAgentOverrideVolumesGlusterfs>,
-    /// HostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+    /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<DatadogAgentOverrideVolumesHostPath>,
-    /// ISCSI represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+    /// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<DatadogAgentOverrideVolumesIscsi>,
-    /// Volume's name. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// name of the volume. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
-    /// NFS represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<DatadogAgentOverrideVolumesNfs>,
-    /// PersistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<DatadogAgentOverrideVolumesPersistentVolumeClaim>,
-    /// PhotonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<DatadogAgentOverrideVolumesPhotonPersistentDisk>,
-    /// PortworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<DatadogAgentOverrideVolumesPortworxVolume>,
-    /// Items for all in one resources secrets, configmaps, and downward API
+    /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<DatadogAgentOverrideVolumesProjected>,
-    /// Quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<DatadogAgentOverrideVolumesQuobyte>,
-    /// RBD represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<DatadogAgentOverrideVolumesRbd>,
-    /// ScaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<DatadogAgentOverrideVolumesScaleIo>,
-    /// Secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    /// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<DatadogAgentOverrideVolumesSecret>,
-    /// StorageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<DatadogAgentOverrideVolumesStorageos>,
-    /// VsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<DatadogAgentOverrideVolumesVsphereVolume>,
 }
 
-/// AWSElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+/// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesAwsElasticBlockStore {
-    /// Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// The partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// partition is the partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// Specify "true" to force and set the ReadOnly property in VolumeMounts to "true". If omitted, the default is "false". More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// readOnly value true will force the readOnly setting in VolumeMounts. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Unique ID of the persistent disk resource in AWS (Amazon EBS volume). More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume). More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
 
-/// AzureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+/// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesAzureDisk {
-    /// Host Caching mode: None, Read Only, Read Write.
+    /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
-    /// The Name of the data disk in the blob storage
+    /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
     pub disk_name: String,
-    /// The URI the data disk in the blob storage
+    /// diskURI is the URI of data disk in the blob storage
     #[serde(rename = "diskURI")]
     pub disk_uri: String,
-    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Expected values Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
+    /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// AzureFile represents an Azure File Service mount on the host and bind mount to the pod.
+/// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesAzureFile {
-    /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// the name of secret that contains Azure Storage Account Name and Key
+    /// secretName is the  name of secret that contains Azure Storage Account Name and Key
     #[serde(rename = "secretName")]
     pub secret_name: String,
-    /// Share Name
+    /// shareName is the azure share Name
     #[serde(rename = "shareName")]
     pub share_name: String,
 }
 
-/// CephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesCephfs {
-    /// Required: Monitors is a collection of Ceph monitors More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// monitors is Required: Monitors is a collection of Ceph monitors More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     pub monitors: Vec<String>,
-    /// Optional: Used as the mounted root, rather than the full Ceph tree, default is /
+    /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
-    /// Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<DatadogAgentOverrideVolumesCephfsSecretRef>,
-    /// Optional: User is the rados user name, default is admin More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// user is optional: User is the rados user name, default is admin More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesCephfsSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -2540,24 +2967,24 @@ pub struct DatadogAgentOverrideVolumesCephfsSecretRef {
     pub name: Option<String>,
 }
 
-/// Cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+/// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesCinder {
-    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Optional: points to a secret object containing parameters used to connect to OpenStack.
+    /// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<DatadogAgentOverrideVolumesCinderSecretRef>,
-    /// volume id used to identify the volume in cinder. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// volumeID used to identify the volume in cinder. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
 
-/// Optional: points to a secret object containing parameters used to connect to OpenStack.
+/// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesCinderSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -2565,19 +2992,19 @@ pub struct DatadogAgentOverrideVolumesCinderSecretRef {
     pub name: Option<String>,
 }
 
-/// ConfigMap represents a configMap that should populate this volume
+/// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesConfigMap {
-    /// Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<DatadogAgentOverrideVolumesConfigMapItems>>,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its keys must be defined
+    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -2585,35 +3012,35 @@ pub struct DatadogAgentOverrideVolumesConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
-/// CSI (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesCsi {
-    /// Driver is the name of the CSI driver that handles this volume. Consult with your admin for the correct name as registered in the cluster.
+    /// driver is the name of the CSI driver that handles this volume. Consult with your admin for the correct name as registered in the cluster.
     pub driver: String,
-    /// Filesystem type to mount. Ex. "ext4", "xfs", "ntfs". If not provided, the empty value is passed to the associated CSI driver which will determine the default filesystem to apply.
+    /// fsType to mount. Ex. "ext4", "xfs", "ntfs". If not provided, the empty value is passed to the associated CSI driver which will determine the default filesystem to apply.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// NodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+    /// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<DatadogAgentOverrideVolumesCsiNodePublishSecretRef>,
-    /// Specifies a read-only configuration for the volume. Defaults to false (read/write).
+    /// readOnly specifies a read-only configuration for the volume. Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// VolumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
+    /// volumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
-/// NodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+/// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesCsiNodePublishSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -2621,7 +3048,7 @@ pub struct DatadogAgentOverrideVolumesCsiNodePublishSecretRef {
     pub name: Option<String>,
 }
 
-/// DownwardAPI represents downward API about the pod that should populate this volume
+/// downwardAPI represents downward API about the pod that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesDownwardApi {
     /// Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
@@ -2672,18 +3099,18 @@ pub struct DatadogAgentOverrideVolumesDownwardApiItemsResourceFieldRef {
     pub resource: String,
 }
 
-/// EmptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+/// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesEmptyDir {
-    /// What type of storage medium should back this directory. The default is "" which means to use the node's default medium. Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// medium represents what type of storage medium should back this directory. The default is "" which means to use the node's default medium. Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// Total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: http://kubernetes.io/docs/user-guide/volumes#emptydir
+    /// sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: http://kubernetes.io/docs/user-guide/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
 
-/// Ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
+/// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
 ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity    tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through    a PersistentVolumeClaim (see EphemeralVolumeSource for more    information on the connection between this volume type    and PersistentVolumeClaim). 
 ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
 ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
@@ -2719,33 +3146,33 @@ pub struct DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateMetadata {
 /// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpec {
-    /// AccessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// This field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. If the AnyVolumeDataSource feature gate is enabled, this field will always have the same contents as the DataSourceRef field.
+    /// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. If the AnyVolumeDataSource feature gate is enabled, this field will always have the same contents as the DataSourceRef field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
-    /// Specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any local object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the DataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, both fields (DataSource and DataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. There are two important differences between DataSource and DataSourceRef: * While DataSource only allows two specific types of objects, DataSourceRef   allows any non-core object, as well as PersistentVolumeClaim objects. * While DataSource ignores disallowed values (dropping them), DataSourceRef   preserves all values, and generates an error if a disallowed value is   specified. (Alpha) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any local object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the DataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, both fields (DataSource and DataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. There are two important differences between DataSource and DataSourceRef: * While DataSource only allows two specific types of objects, DataSourceRef   allows any non-core object, as well as PersistentVolumeClaim objects. * While DataSource ignores disallowed values (dropping them), DataSourceRef   preserves all values, and generates an error if a disallowed value is   specified. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
-    /// Resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecResources>,
-    /// A label query over volumes to consider for binding.
+    /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecSelector>,
-    /// Name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
-    /// VolumeName is the binding reference to the PersistentVolume backing this claim.
+    /// volumeName is the binding reference to the PersistentVolume backing this claim.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
-/// This field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. If the AnyVolumeDataSource feature gate is enabled, this field will always have the same contents as the DataSourceRef field.
+/// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. If the AnyVolumeDataSource feature gate is enabled, this field will always have the same contents as the DataSourceRef field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
@@ -2757,7 +3184,7 @@ pub struct DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecDataSource
     pub name: String,
 }
 
-/// Specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any local object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the DataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, both fields (DataSource and DataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. There are two important differences between DataSource and DataSourceRef: * While DataSource only allows two specific types of objects, DataSourceRef   allows any non-core object, as well as PersistentVolumeClaim objects. * While DataSource ignores disallowed values (dropping them), DataSourceRef   preserves all values, and generates an error if a disallowed value is   specified. (Alpha) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any local object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the DataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, both fields (DataSource and DataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. There are two important differences between DataSource and DataSourceRef: * While DataSource only allows two specific types of objects, DataSourceRef   allows any non-core object, as well as PersistentVolumeClaim objects. * While DataSource ignores disallowed values (dropping them), DataSourceRef   preserves all values, and generates an error if a disallowed value is   specified. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
@@ -2769,7 +3196,7 @@ pub struct DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecDataSource
     pub name: String,
 }
 
-/// Resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+/// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -2780,7 +3207,7 @@ pub struct DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecResources 
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// A label query over volumes to consider for binding.
+/// selector is a label query over volumes to consider for binding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -2803,46 +3230,46 @@ pub struct DatadogAgentOverrideVolumesEphemeralVolumeClaimTemplateSpecSelectorMa
     pub values: Option<Vec<String>>,
 }
 
-/// FC represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
+/// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesFc {
-    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Optional: FC target lun number
+    /// lun is Optional: FC target lun number
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
-    /// Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Optional: FC target worldwide names (WWNs)
+    /// targetWWNs is Optional: FC target worldwide names (WWNs)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
-    /// Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+    /// wwids Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
 }
 
-/// FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+/// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesFlexVolume {
-    /// Driver is the name of the driver to use for this volume.
+    /// driver is the name of the driver to use for this volume.
     pub driver: String,
-    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
+    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Optional: Extra command options if any.
+    /// options is Optional: this field holds extra command options if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
-    /// Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Optional: SecretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+    /// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<DatadogAgentOverrideVolumesFlexVolumeSecretRef>,
 }
 
-/// Optional: SecretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+/// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesFlexVolumeSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -2850,106 +3277,106 @@ pub struct DatadogAgentOverrideVolumesFlexVolumeSecretRef {
     pub name: Option<String>,
 }
 
-/// Flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesFlocker {
-    /// Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
+    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
-    /// UUID of the dataset. This is unique identifier of a Flocker dataset
+    /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
-/// GCEPersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+/// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesGcePersistentDisk {
-    /// Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// The partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty). More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// partition is the partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty). More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// Unique name of the PD resource in GCE. Used to identify the disk in GCE. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(rename = "pdName")]
     pub pd_name: String,
-    /// ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// GitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+/// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesGitRepo {
-    /// Target directory name. Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the git repository.  Otherwise, if specified, the volume will contain the git repository in the subdirectory with the given name.
+    /// directory is the target directory name. Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the git repository.  Otherwise, if specified, the volume will contain the git repository in the subdirectory with the given name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub directory: Option<String>,
-    /// Repository URL
+    /// repository is the URL
     pub repository: String,
-    /// Commit hash for the specified revision.
+    /// revision is the commit hash for the specified revision.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,
 }
 
-/// Glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesGlusterfs {
-    /// EndpointsName is the endpoint name that details Glusterfs topology. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// endpoints is the endpoint name that details Glusterfs topology. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub endpoints: String,
-    /// Path is the Glusterfs volume path. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// path is the Glusterfs volume path. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub path: String,
-    /// ReadOnly here will force the Glusterfs volume to be mounted with read-only permissions. Defaults to false. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions. Defaults to false. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// HostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+/// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesHostPath {
-    /// Path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     pub path: String,
-    /// Type for HostPath Volume Defaults to "" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// type for HostPath Volume Defaults to "" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// ISCSI represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+/// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesIscsi {
-    /// whether support iSCSI Discovery CHAP authentication
+    /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
-    /// whether support iSCSI Session CHAP authentication
+    /// chapAuthSession defines whether support iSCSI Session CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
-    /// Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface <target portal>:<volume name> will be created for the connection.
+    /// initiatorName is the custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface <target portal>:<volume name> will be created for the connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
-    /// Target iSCSI Qualified Name.
+    /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
-    /// iSCSI Interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
+    /// iscsiInterface is the interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
-    /// iSCSI Target Lun number.
+    /// lun represents iSCSI Target Lun number.
     pub lun: i32,
-    /// iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub portals: Option<Vec<String>>,
-    /// ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false.
+    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// CHAP Secret for iSCSI target and initiator authentication
+    /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<DatadogAgentOverrideVolumesIscsiSecretRef>,
-    /// iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
     pub target_portal: String,
 }
 
-/// CHAP Secret for iSCSI target and initiator authentication
+/// secretRef is the CHAP Secret for iSCSI target and initiator authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesIscsiSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -2957,61 +3384,61 @@ pub struct DatadogAgentOverrideVolumesIscsiSecretRef {
     pub name: Option<String>,
 }
 
-/// NFS represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+/// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesNfs {
-    /// Path that is exported by the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// path that is exported by the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub path: String,
-    /// ReadOnly here will force the NFS export to be mounted with read-only permissions. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// readOnly here will force the NFS export to be mounted with read-only permissions. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Server is the hostname or IP address of the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// server is the hostname or IP address of the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub server: String,
 }
 
-/// PersistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+/// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesPersistentVolumeClaim {
-    /// ClaimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// Will force the ReadOnly setting in VolumeMounts. Default false.
+    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// PhotonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesPhotonPersistentDisk {
-    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// ID that identifies Photon Controller persistent disk
+    /// pdID is the ID that identifies Photon Controller persistent disk
     #[serde(rename = "pdID")]
     pub pd_id: String,
 }
 
-/// PortworxVolume represents a portworx volume attached and mounted on kubelets host machine
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesPortworxVolume {
-    /// FSType represents the filesystem type to mount Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fSType represents the filesystem type to mount Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// VolumeID uniquely identifies a Portworx volume
+    /// volumeID uniquely identifies a Portworx volume
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
 
-/// Items for all in one resources secrets, configmaps, and downward API
+/// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesProjected {
-    /// Mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// list of volume projections
+    /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<DatadogAgentOverrideVolumesProjectedSources>>,
 }
@@ -3019,30 +3446,30 @@ pub struct DatadogAgentOverrideVolumesProjected {
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesProjectedSources {
-    /// information about the configMap data to project
+    /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<DatadogAgentOverrideVolumesProjectedSourcesConfigMap>,
-    /// information about the downwardAPI data to project
+    /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<DatadogAgentOverrideVolumesProjectedSourcesDownwardApi>,
-    /// information about the secret data to project
+    /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<DatadogAgentOverrideVolumesProjectedSourcesSecret>,
-    /// information about the serviceAccountToken data to project
+    /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<DatadogAgentOverrideVolumesProjectedSourcesServiceAccountToken>,
 }
 
-/// information about the configMap data to project
+/// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesProjectedSourcesConfigMap {
-    /// If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<DatadogAgentOverrideVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its keys must be defined
+    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -3050,16 +3477,16 @@ pub struct DatadogAgentOverrideVolumesProjectedSourcesConfigMap {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesProjectedSourcesConfigMapItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
-/// information about the downwardAPI data to project
+/// downwardAPI information about the downwardAPI data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
@@ -3107,16 +3534,16 @@ pub struct DatadogAgentOverrideVolumesProjectedSourcesDownwardApiItemsResourceFi
     pub resource: String,
 }
 
-/// information about the secret data to project
+/// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesProjectedSourcesSecret {
-    /// If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<DatadogAgentOverrideVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
+    /// optional field specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -3124,77 +3551,77 @@ pub struct DatadogAgentOverrideVolumesProjectedSourcesSecret {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesProjectedSourcesSecretItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
-/// information about the serviceAccountToken data to project
+/// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesProjectedSourcesServiceAccountToken {
-    /// Audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
+    /// audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// ExpirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
+    /// expirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// Path is the path relative to the mount point of the file to project the token into.
+    /// path is the path relative to the mount point of the file to project the token into.
     pub path: String,
 }
 
-/// Quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesQuobyte {
-    /// Group to map volume access to Default is no group
+    /// group to map volume access to Default is no group
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// ReadOnly here will force the Quobyte volume to be mounted with read-only permissions. Defaults to false.
+    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Registry represents a single or multiple Quobyte Registry services specified as a string as host:port pair (multiple entries are separated with commas) which acts as the central registry for volumes
+    /// registry represents a single or multiple Quobyte Registry services specified as a string as host:port pair (multiple entries are separated with commas) which acts as the central registry for volumes
     pub registry: String,
-    /// Tenant owning the given Quobyte volume in the Backend Used with dynamically provisioned Quobyte volumes, value is set by the plugin
+    /// tenant owning the given Quobyte volume in the Backend Used with dynamically provisioned Quobyte volumes, value is set by the plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
-    /// User to map volume access to Defaults to serivceaccount user
+    /// user to map volume access to Defaults to serivceaccount user
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
-    /// Volume is a string that references an already created Quobyte volume by name.
+    /// volume is a string that references an already created Quobyte volume by name.
     pub volume: String,
 }
 
-/// RBD represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesRbd {
-    /// Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// The rados image name. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// image is the rados image name. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub image: String,
-    /// Keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyring: Option<String>,
-    /// A collection of Ceph monitors. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// monitors is a collection of Ceph monitors. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub monitors: Vec<String>,
-    /// The rados pool name. Default is rbd. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// pool is the rados pool name. Default is rbd. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pool: Option<String>,
-    /// ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// SecretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<DatadogAgentOverrideVolumesRbdSecretRef>,
-    /// The rados user name. Default is admin. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// user is the rados user name. Default is admin. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// SecretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+/// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesRbdSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -3202,40 +3629,40 @@ pub struct DatadogAgentOverrideVolumesRbdSecretRef {
     pub name: Option<String>,
 }
 
-/// ScaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+/// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesScaleIo {
-    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Default is "xfs".
+    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Default is "xfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// The host address of the ScaleIO API Gateway.
+    /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
-    /// The name of the ScaleIO Protection Domain for the configured storage.
+    /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
-    /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// SecretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+    /// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
     #[serde(rename = "secretRef")]
     pub secret_ref: DatadogAgentOverrideVolumesScaleIoSecretRef,
-    /// Flag to enable/disable SSL communication with Gateway, default false
+    /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    /// Indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned. Default is ThinProvisioned.
+    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned. Default is ThinProvisioned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
-    /// The ScaleIO Storage Pool associated with the protection domain.
+    /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
-    /// The name of the storage system as configured in ScaleIO.
+    /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
-    /// The name of a volume already created in the ScaleIO system that is associated with this volume source.
+    /// volumeName is the name of a volume already created in the ScaleIO system that is associated with this volume source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
-/// SecretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+/// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesScaleIoSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -3243,19 +3670,19 @@ pub struct DatadogAgentOverrideVolumesScaleIoSecretRef {
     pub name: Option<String>,
 }
 
-/// Secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+/// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesSecret {
-    /// Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<DatadogAgentOverrideVolumesSecretItems>>,
-    /// Specify whether the Secret or its keys must be defined
+    /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// Name of the secret in the pod's namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
@@ -3263,36 +3690,36 @@ pub struct DatadogAgentOverrideVolumesSecret {
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesSecretItems {
-    /// The key to project.
+    /// key is the key to project.
     pub key: String,
-    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
     pub path: String,
 }
 
-/// StorageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+/// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesStorageos {
-    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// SecretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+    /// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<DatadogAgentOverrideVolumesStorageosSecretRef>,
-    /// VolumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
+    /// volumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    /// VolumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
+    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
-/// SecretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+/// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesStorageosSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -3300,19 +3727,19 @@ pub struct DatadogAgentOverrideVolumesStorageosSecretRef {
     pub name: Option<String>,
 }
 
-/// VsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverrideVolumesVsphereVolume {
-    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
+    /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
-    /// Storage Policy Based Management (SPBM) profile name.
+    /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
-    /// Path that identifies vSphere volume vmdk
+    /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
     pub volume_path: String,
 }
@@ -3335,6 +3762,9 @@ pub struct DatadogAgentStatus {
     /// Conditions Represents the latest available observations of a DatadogAgent's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// RemoteConfigConfiguration stores the configuration received from RemoteConfig.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteConfigConfiguration")]
+    pub remote_config_configuration: Option<DatadogAgentStatusRemoteConfigConfiguration>,
 }
 
 /// The combined actual state of all Agents as daemonsets or extended daemonsets.
@@ -3473,5 +3903,1076 @@ pub struct DatadogAgentStatusClusterChecksRunner {
     /// Total number of non-terminated pods targeted by this Deployment that have the desired template spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
+}
+
+/// RemoteConfigConfiguration stores the configuration received from RemoteConfig.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfiguration {
+    /// DatadogFeatures are features running on the Agent and Cluster Agent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub features: Option<DatadogAgentStatusRemoteConfigConfigurationFeatures>,
+}
+
+/// DatadogFeatures are features running on the Agent and Cluster Agent.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeatures {
+    /// AdmissionController configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionController")]
+    pub admission_controller: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionController>,
+    /// APM (Application Performance Monitoring) configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub apm: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesApm>,
+    /// ASM (Application Security Management) configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub asm: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAsm>,
+    /// ClusterChecks configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterChecks")]
+    pub cluster_checks: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesClusterChecks>,
+    /// CSPM (Cloud Security Posture Management) configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cspm: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCspm>,
+    /// CWS (Cloud Workload Security) configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cws: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCws>,
+    /// Dogstatsd configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dogstatsd: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsd>,
+    /// EBPFCheck configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ebpfCheck")]
+    pub ebpf_check: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesEbpfCheck>,
+    /// EventCollection configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventCollection")]
+    pub event_collection: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesEventCollection>,
+    /// ExternalMetricsServer configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalMetricsServer")]
+    pub external_metrics_server: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesExternalMetricsServer>,
+    /// HelmCheck configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmCheck")]
+    pub helm_check: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesHelmCheck>,
+    /// KubeStateMetricsCore check configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeStateMetricsCore")]
+    pub kube_state_metrics_core: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCore>,
+    /// LiveContainerCollection configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "liveContainerCollection")]
+    pub live_container_collection: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesLiveContainerCollection>,
+    /// LiveProcessCollection configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "liveProcessCollection")]
+    pub live_process_collection: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesLiveProcessCollection>,
+    /// LogCollection configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logCollection")]
+    pub log_collection: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesLogCollection>,
+    /// NPM (Network Performance Monitoring) configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub npm: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesNpm>,
+    /// OOMKill configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomKill")]
+    pub oom_kill: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOomKill>,
+    /// OrchestratorExplorer check configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orchestratorExplorer")]
+    pub orchestrator_explorer: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOrchestratorExplorer>,
+    /// OTLP ingest configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub otlp: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlp>,
+    /// ProcessDiscovery configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "processDiscovery")]
+    pub process_discovery: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesProcessDiscovery>,
+    /// PrometheusScrape configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusScrape")]
+    pub prometheus_scrape: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesPrometheusScrape>,
+    /// Remote Configuration configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteConfiguration")]
+    pub remote_configuration: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesRemoteConfiguration>,
+    /// SBOM collection configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sbom: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesSbom>,
+    /// TCPQueueLength configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpQueueLength")]
+    pub tcp_queue_length: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesTcpQueueLength>,
+    /// USM (Universal Service Monitoring) configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub usm: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesUsm>,
+}
+
+/// AdmissionController configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionController {
+    /// AgentCommunicationMode corresponds to the mode used by the Datadog application libraries to communicate with the Agent. It can be "hostip", "service", or "socket".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentCommunicationMode")]
+    pub agent_communication_mode: Option<String>,
+    /// AgentSidecarInjection contains Agent sidecar injection configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentSidecarInjection")]
+    pub agent_sidecar_injection: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjection>,
+    /// CWSInstrumentation holds the CWS Instrumentation endpoint configuration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cwsInstrumentation")]
+    pub cws_instrumentation: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerCwsInstrumentation>,
+    /// Enabled enables the Admission Controller. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// FailurePolicy determines how unrecognized and timeout errors are handled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
+    pub failure_policy: Option<String>,
+    /// MutateUnlabelled enables config injection without the need of pod label 'admission.datadoghq.com/enabled="true"'. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateUnlabelled")]
+    pub mutate_unlabelled: Option<bool>,
+    /// Registry defines an image registry for the admission controller.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub registry: Option<String>,
+    /// ServiceName corresponds to the webhook service name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
+    /// WebhookName is a custom name for the MutatingWebhookConfiguration. Default: "datadog-webhook"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookName")]
+    pub webhook_name: Option<String>,
+}
+
+/// AgentSidecarInjection contains Agent sidecar injection configurations.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjection {
+    /// ClusterAgentCommunicationEnabled enables communication between Agent sidecars and the Cluster Agent. Default : true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAgentCommunicationEnabled")]
+    pub cluster_agent_communication_enabled: Option<bool>,
+    /// Enabled enables Sidecar injections. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Image overrides the default Agent image name and tag for the Agent sidecar.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionImage>,
+    /// Profiles define the sidecar configuration override. Only one profile is supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub profiles: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfiles>>,
+    /// Provider is used to add infrastructure provider-specific configurations to the Agent sidecar. Currently only "fargate" is supported. To use the feature in other environments (including local testing) omit the config. See also: https://docs.datadoghq.com/integrations/eks_fargate
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provider: Option<String>,
+    /// Registry overrides the default registry for the sidecar Agent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub registry: Option<String>,
+    /// Selectors define the pod selector for sidecar injection. Only one rule is supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionSelectors>>,
+}
+
+/// Image overrides the default Agent image name and tag for the Agent sidecar.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionImage {
+    /// Define whether the Agent image should support JMX. To be used if the Name field does not correspond to a full image string.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmxEnabled")]
+    pub jmx_enabled: Option<bool>,
+    /// Define the image to use: Use "gcr.io/datadoghq/agent:latest" for Datadog Agent 7. Use "datadog/dogstatsd:latest" for standalone Datadog Agent DogStatsD 7. Use "gcr.io/datadoghq/cluster-agent:latest" for Datadog Cluster Agent. Use "agent" with the registry and tag configurations for <registry>/agent:<tag>. Use "cluster-agent" with the registry and tag configurations for <registry>/cluster-agent:<tag>. If the name is the full image string—`<name>:<tag>` or `<registry>/<name>:<tag>`, then `tag`, `jmxEnabled`, and `global.registry` values are ignored. Otherwise, image string is created by overriding default settings with supplied `name`, `tag`, and `jmxEnabled` values; image string is created using default registry unless `global.registry` is configured.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The Kubernetes pull policy: Use Always, Never, or IfNotPresent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    /// It is possible to specify Docker registry credentials. See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecrets")]
+    pub pull_secrets: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionImagePullSecrets>>,
+    /// Define the image tag to use. To be used if the Name field does not correspond to a full image string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionImagePullSecrets {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Profile defines a sidecar configuration override.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfiles {
+    /// EnvVars specifies the environment variables for the profile.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnv>>,
+    /// ResourceRequirements specifies the resource requirements for the profile.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesResources>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// ResourceRequirements specifies the resource requirements for the profile.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionProfilesResources {
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// Selectors define a pod selector for sidecar injection.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionSelectors {
+    /// NamespaceSelector specifies the label selector for namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionSelectorsNamespaceSelector>,
+    /// ObjectSelector specifies the label selector for objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSelector")]
+    pub object_selector: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionSelectorsObjectSelector>,
+}
+
+/// NamespaceSelector specifies the label selector for namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionSelectorsNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionSelectorsNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionSelectorsNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// ObjectSelector specifies the label selector for objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionSelectorsObjectSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionSelectorsObjectSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerAgentSidecarInjectionSelectorsObjectSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// CWSInstrumentation holds the CWS Instrumentation endpoint configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAdmissionControllerCwsInstrumentation {
+    /// Enable the CWS Instrumentation admission controller endpoint. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Mode defines the behavior of the CWS Instrumentation endpoint, and can be either "init_container" or "remote_copy". Default: "remote_copy"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<String>,
+}
+
+/// APM (Application Performance Monitoring) configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesApm {
+    /// Enabled enables Application Performance Monitoring. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// HostPortConfig contains host port configuration. Enabled Default: false Port Default: 8126
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPortConfig")]
+    pub host_port_config: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesApmHostPortConfig>,
+    /// SingleStepInstrumentation allows the agent to inject the Datadog APM libraries into all pods in the cluster. Feature is in beta. See also: https://docs.datadoghq.com/tracing/trace_collection/single-step-apm Enabled Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub instrumentation: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesApmInstrumentation>,
+    /// UnixDomainSocketConfig contains socket configuration. See also: https://docs.datadoghq.com/agent/kubernetes/apm/?tab=helm#agent-environment-variables Enabled Default: true Path Default: `/var/run/datadog/apm.socket`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unixDomainSocketConfig")]
+    pub unix_domain_socket_config: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesApmUnixDomainSocketConfig>,
+}
+
+/// HostPortConfig contains host port configuration. Enabled Default: false Port Default: 8126
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesApmHostPortConfig {
+    /// Enabled enables host port configuration Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Port takes a port number (0 < x < 65536) to expose on the host. (Most containers do not need this.) If HostNetwork is enabled, this value must match the ContainerPort.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
+}
+
+/// SingleStepInstrumentation allows the agent to inject the Datadog APM libraries into all pods in the cluster. Feature is in beta. See also: https://docs.datadoghq.com/tracing/trace_collection/single-step-apm Enabled Default: false
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesApmInstrumentation {
+    /// DisabledNamespaces disables injecting the Datadog APM libraries into pods in specific namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disabledNamespaces")]
+    pub disabled_namespaces: Option<Vec<String>>,
+    /// Enabled enables injecting the Datadog APM libraries into all pods in the cluster. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// EnabledNamespaces enables injecting the Datadog APM libraries into pods in specific namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledNamespaces")]
+    pub enabled_namespaces: Option<Vec<String>>,
+    /// LibVersions configures injection of specific tracing library versions with Single Step Instrumentation. <Library>: <Version> ex: "java": "v1.18.0"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "libVersions")]
+    pub lib_versions: Option<BTreeMap<String, String>>,
+}
+
+/// UnixDomainSocketConfig contains socket configuration. See also: https://docs.datadoghq.com/agent/kubernetes/apm/?tab=helm#agent-environment-variables Enabled Default: true Path Default: `/var/run/datadog/apm.socket`
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesApmUnixDomainSocketConfig {
+    /// Enabled enables Unix Domain Socket. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Path defines the socket path used when enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+}
+
+/// ASM (Application Security Management) configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAsm {
+    /// IAST configures Interactive Application Security Testing. Enabled Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub iast: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAsmIast>,
+    /// SCA configures Software Composition Analysis. Enabled Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sca: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAsmSca>,
+    /// Threats configures ASM App & API Protection. Enabled Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub threats: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAsmThreats>,
+}
+
+/// IAST configures Interactive Application Security Testing. Enabled Default: false
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAsmIast {
+    /// Enabled enables Interactive Application Security Testing (IAST). Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// SCA configures Software Composition Analysis. Enabled Default: false
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAsmSca {
+    /// Enabled enables Software Composition Analysis (SCA). Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// Threats configures ASM App & API Protection. Enabled Default: false
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAsmThreats {
+    /// Enabled enables ASM App & API Protection. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// ClusterChecks configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesClusterChecks {
+    /// Enables Cluster Checks scheduling in the Cluster Agent. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Enabled enables Cluster Checks Runners to run all Cluster Checks. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useClusterChecksRunners")]
+    pub use_cluster_checks_runners: Option<bool>,
+}
+
+/// CSPM (Cloud Security Posture Management) configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCspm {
+    /// CheckInterval defines the check interval.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkInterval")]
+    pub check_interval: Option<String>,
+    /// CustomBenchmarks contains CSPM benchmarks. The content of the ConfigMap will be merged with the benchmarks bundled with the agent. Any benchmarks with the same name as those existing in the agent will take precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customBenchmarks")]
+    pub custom_benchmarks: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCspmCustomBenchmarks>,
+    /// Enabled enables Cloud Security Posture Management. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// HostBenchmarks contains configuration for host benchmarks.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostBenchmarks")]
+    pub host_benchmarks: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCspmHostBenchmarks>,
+}
+
+/// CustomBenchmarks contains CSPM benchmarks. The content of the ConfigMap will be merged with the benchmarks bundled with the agent. Any benchmarks with the same name as those existing in the agent will take precedence.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCspmCustomBenchmarks {
+    /// ConfigData corresponds to the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
+    pub config_data: Option<String>,
+    /// ConfigMap references an existing ConfigMap with the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCspmCustomBenchmarksConfigMap>,
+}
+
+/// ConfigMap references an existing ConfigMap with the configuration file content.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCspmCustomBenchmarksConfigMap {
+    /// Items maps a ConfigMap data `key` to a file `path` mount.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesCspmCustomBenchmarksConfigMapItems>>,
+    /// Name is the name of the ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCspmCustomBenchmarksConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
+}
+
+/// HostBenchmarks contains configuration for host benchmarks.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCspmHostBenchmarks {
+    /// Enabled enables host benchmarks. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// CWS (Cloud Workload Security) configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCws {
+    /// CustomPolicies contains security policies. The content of the ConfigMap will be merged with the policies bundled with the agent. Any policies with the same name as those existing in the agent will take precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPolicies")]
+    pub custom_policies: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsCustomPolicies>,
+    /// Enabled enables Cloud Workload Security. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub network: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsNetwork>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteConfiguration")]
+    pub remote_configuration: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsRemoteConfiguration>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityProfiles")]
+    pub security_profiles: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsSecurityProfiles>,
+    /// SyscallMonitorEnabled enables Syscall Monitoring (recommended for troubleshooting only). Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syscallMonitorEnabled")]
+    pub syscall_monitor_enabled: Option<bool>,
+}
+
+/// CustomPolicies contains security policies. The content of the ConfigMap will be merged with the policies bundled with the agent. Any policies with the same name as those existing in the agent will take precedence.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsCustomPolicies {
+    /// ConfigData corresponds to the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
+    pub config_data: Option<String>,
+    /// ConfigMap references an existing ConfigMap with the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsCustomPoliciesConfigMap>,
+}
+
+/// ConfigMap references an existing ConfigMap with the configuration file content.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsCustomPoliciesConfigMap {
+    /// Items maps a ConfigMap data `key` to a file `path` mount.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsCustomPoliciesConfigMapItems>>,
+    /// Name is the name of the ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsCustomPoliciesConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsNetwork {
+    /// Enabled enables Cloud Workload Security Network detections. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsRemoteConfiguration {
+    /// Enabled enables Remote Configuration for Cloud Workload Security. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsSecurityProfiles {
+    /// Enabled enables Security Profiles collection for Cloud Workload Security. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// Dogstatsd configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsd {
+    /// HostPortConfig contains host port configuration. Enabled Default: false Port Default: 8125
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPortConfig")]
+    pub host_port_config: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdHostPortConfig>,
+    /// Configure the Dogstasd Mapper Profiles. Can be passed as raw data or via a json encoded string in a config map. See also: https://docs.datadoghq.com/developers/dogstatsd/dogstatsd_mapper/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mapperProfiles")]
+    pub mapper_profiles: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdMapperProfiles>,
+    /// OriginDetectionEnabled enables origin detection for container tagging. See also: https://docs.datadoghq.com/developers/dogstatsd/unix_socket/#using-origin-detection-for-container-tagging
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originDetectionEnabled")]
+    pub origin_detection_enabled: Option<bool>,
+    /// TagCardinality configures tag cardinality for the metrics collected using origin detection (`low`, `orchestrator` or `high`). See also: https://docs.datadoghq.com/getting_started/tagging/assigning_tags/?tab=containerizedenvironments#environment-variables Cardinality default: low
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagCardinality")]
+    pub tag_cardinality: Option<String>,
+    /// UnixDomainSocketConfig contains socket configuration. See also: https://docs.datadoghq.com/agent/kubernetes/apm/?tab=helm#agent-environment-variables Enabled Default: true Path Default: `/var/run/datadog/dsd.socket`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unixDomainSocketConfig")]
+    pub unix_domain_socket_config: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdUnixDomainSocketConfig>,
+}
+
+/// HostPortConfig contains host port configuration. Enabled Default: false Port Default: 8125
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdHostPortConfig {
+    /// Enabled enables host port configuration Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Port takes a port number (0 < x < 65536) to expose on the host. (Most containers do not need this.) If HostNetwork is enabled, this value must match the ContainerPort.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
+}
+
+/// Configure the Dogstasd Mapper Profiles. Can be passed as raw data or via a json encoded string in a config map. See also: https://docs.datadoghq.com/developers/dogstatsd/dogstatsd_mapper/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdMapperProfiles {
+    /// ConfigData corresponds to the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
+    pub config_data: Option<String>,
+    /// ConfigMap references an existing ConfigMap with the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdMapperProfilesConfigMap>,
+}
+
+/// ConfigMap references an existing ConfigMap with the configuration file content.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdMapperProfilesConfigMap {
+    /// Items maps a ConfigMap data `key` to a file `path` mount.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdMapperProfilesConfigMapItems>>,
+    /// Name is the name of the ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdMapperProfilesConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
+}
+
+/// UnixDomainSocketConfig contains socket configuration. See also: https://docs.datadoghq.com/agent/kubernetes/apm/?tab=helm#agent-environment-variables Enabled Default: true Path Default: `/var/run/datadog/dsd.socket`
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdUnixDomainSocketConfig {
+    /// Enabled enables Unix Domain Socket. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Path defines the socket path used when enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+}
+
+/// EBPFCheck configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesEbpfCheck {
+    /// Enables the eBPF check. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// EventCollection configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesEventCollection {
+    /// CollectKubernetesEvents enables Kubernetes event collection. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectKubernetesEvents")]
+    pub collect_kubernetes_events: Option<bool>,
+}
+
+/// ExternalMetricsServer configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesExternalMetricsServer {
+    /// Enabled enables the External Metrics Server. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Override the API endpoint for the External Metrics Server. URL Default: "https://app.datadoghq.com".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesExternalMetricsServerEndpoint>,
+    /// Port specifies the metricsProvider External Metrics Server service port. Default: 8443
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// RegisterAPIService registers the External Metrics endpoint as an APIService Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registerAPIService")]
+    pub register_api_service: Option<bool>,
+    /// UseDatadogMetrics enables usage of the DatadogMetrics CRD (allowing one to scale on arbitrary Datadog metric queries). Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDatadogMetrics")]
+    pub use_datadog_metrics: Option<bool>,
+    /// WPAController enables the informer and controller of the Watermark Pod Autoscaler. NOTE: The Watermark Pod Autoscaler controller needs to be installed. See also: https://github.com/DataDog/watermarkpodautoscaler. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wpaController")]
+    pub wpa_controller: Option<bool>,
+}
+
+/// Override the API endpoint for the External Metrics Server. URL Default: "https://app.datadoghq.com".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesExternalMetricsServerEndpoint {
+    /// Credentials defines the Datadog credentials used to submit data to/query data from Datadog.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesExternalMetricsServerEndpointCredentials>,
+    /// URL defines the endpoint URL.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+/// Credentials defines the Datadog credentials used to submit data to/query data from Datadog.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesExternalMetricsServerEndpointCredentials {
+    /// APIKey configures your Datadog API key. See also: https://app.datadoghq.com/account/settings#agent/kubernetes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
+    pub api_key: Option<String>,
+    /// APISecret references an existing Secret which stores the API key instead of creating a new one. If set, this parameter takes precedence over "APIKey".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiSecret")]
+    pub api_secret: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesExternalMetricsServerEndpointCredentialsApiSecret>,
+    /// AppKey configures your Datadog application key. If you are using features.externalMetricsServer.enabled = true, you must set a Datadog application key for read access to your metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appKey")]
+    pub app_key: Option<String>,
+    /// AppSecret references an existing Secret which stores the application key instead of creating a new one. If set, this parameter takes precedence over "AppKey".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appSecret")]
+    pub app_secret: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesExternalMetricsServerEndpointCredentialsAppSecret>,
+}
+
+/// APISecret references an existing Secret which stores the API key instead of creating a new one. If set, this parameter takes precedence over "APIKey".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesExternalMetricsServerEndpointCredentialsApiSecret {
+    /// KeyName is the key of the secret to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyName")]
+    pub key_name: Option<String>,
+    /// SecretName is the name of the secret.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// AppSecret references an existing Secret which stores the application key instead of creating a new one. If set, this parameter takes precedence over "AppKey".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesExternalMetricsServerEndpointCredentialsAppSecret {
+    /// KeyName is the key of the secret to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyName")]
+    pub key_name: Option<String>,
+    /// SecretName is the name of the secret.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// HelmCheck configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesHelmCheck {
+    /// CollectEvents set to `true` enables event collection in the Helm check (Requires Agent 7.36.0+ and Cluster Agent 1.20.0+) Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectEvents")]
+    pub collect_events: Option<bool>,
+    /// Enabled enables the Helm check. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// ValuesAsTags collects Helm values from a release and uses them as tags (Requires Agent and Cluster Agent 7.40.0+). Default: {}
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesAsTags")]
+    pub values_as_tags: Option<BTreeMap<String, String>>,
+}
+
+/// KubeStateMetricsCore check configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCore {
+    /// Conf overrides the configuration for the default Kubernetes State Metrics Core check. This must point to a ConfigMap containing a valid cluster check configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conf: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreConf>,
+    /// Enabled enables Kube State Metrics Core. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// Conf overrides the configuration for the default Kubernetes State Metrics Core check. This must point to a ConfigMap containing a valid cluster check configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreConf {
+    /// ConfigData corresponds to the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
+    pub config_data: Option<String>,
+    /// ConfigMap references an existing ConfigMap with the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreConfConfigMap>,
+}
+
+/// ConfigMap references an existing ConfigMap with the configuration file content.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreConfConfigMap {
+    /// Items maps a ConfigMap data `key` to a file `path` mount.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreConfConfigMapItems>>,
+    /// Name is the name of the ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreConfConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
+}
+
+/// LiveContainerCollection configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesLiveContainerCollection {
+    /// Enables container collection for the Live Container View. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// LiveProcessCollection configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesLiveProcessCollection {
+    /// Enabled enables Process monitoring. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// ScrubProcessArguments enables scrubbing of sensitive data in process command-lines (passwords, tokens, etc. ). Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrubProcessArguments")]
+    pub scrub_process_arguments: Option<bool>,
+    /// StripProcessArguments enables stripping of all process arguments. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stripProcessArguments")]
+    pub strip_process_arguments: Option<bool>,
+}
+
+/// LogCollection configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesLogCollection {
+    /// ContainerCollectAll enables Log collection from all containers. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerCollectAll")]
+    pub container_collect_all: Option<bool>,
+    /// ContainerCollectUsingFiles enables log collection from files in `/var/log/pods instead` of using the container runtime API. Collecting logs from files is usually the most efficient way of collecting logs. See also: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerCollectUsingFiles")]
+    pub container_collect_using_files: Option<bool>,
+    /// ContainerLogsPath allows log collection from the container log path. Set to a different path if you are not using the Docker runtime. See also: https://docs.datadoghq.com/agent/kubernetes/daemonset_setup/?tab=k8sfile#create-manifest Default: `/var/lib/docker/containers`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerLogsPath")]
+    pub container_logs_path: Option<String>,
+    /// ContainerSymlinksPath allows log collection to use symbolic links in this directory to validate container ID -> pod. Default: `/var/log/containers`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSymlinksPath")]
+    pub container_symlinks_path: Option<String>,
+    /// Enabled enables Log collection. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// OpenFilesLimit sets the maximum number of log files that the Datadog Agent tails. Increasing this limit can increase resource consumption of the Agent. See also: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup Default: 100
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openFilesLimit")]
+    pub open_files_limit: Option<i32>,
+    /// PodLogsPath allows log collection from a pod log path. Default: `/var/log/pods`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podLogsPath")]
+    pub pod_logs_path: Option<String>,
+    /// TempStoragePath (always mounted from the host) is used by the Agent to store information about processed log files. If the Agent is restarted, it starts tailing the log files immediately. Default: `/var/lib/datadog-agent/logs`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tempStoragePath")]
+    pub temp_storage_path: Option<String>,
+}
+
+/// NPM (Network Performance Monitoring) configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesNpm {
+    /// CollectDNSStats enables DNS stat collection. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectDNSStats")]
+    pub collect_dns_stats: Option<bool>,
+    /// EnableConntrack enables the system-probe agent to connect to the netlink/conntrack subsystem to add NAT information to connection data. See also: http://conntrack-tools.netfilter.org/ Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableConntrack")]
+    pub enable_conntrack: Option<bool>,
+    /// Enabled enables Network Performance Monitoring. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// OOMKill configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOomKill {
+    /// Enables the OOMKill eBPF-based check. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// OrchestratorExplorer check configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOrchestratorExplorer {
+    /// Conf overrides the configuration for the default Orchestrator Explorer check. This must point to a ConfigMap containing a valid cluster check configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conf: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOrchestratorExplorerConf>,
+    /// `CustomResources` defines custom resources for the orchestrator explorer to collect. Each item should follow the convention `group/version/kind`. For example, `datadoghq.com/v1alpha1/datadogmetrics`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customResources")]
+    pub custom_resources: Option<Vec<String>>,
+    /// Override the API endpoint for the Orchestrator Explorer. URL Default: "https://orchestrator.datadoghq.com".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ddUrl")]
+    pub dd_url: Option<String>,
+    /// Enabled enables the Orchestrator Explorer. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Additional tags to associate with the collected data in the form of `a b c`. This is a Cluster Agent option distinct from DD_TAGS that is used in the Orchestrator Explorer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraTags")]
+    pub extra_tags: Option<Vec<String>>,
+    /// ScrubContainers enables scrubbing of sensitive container data (passwords, tokens, etc. ). Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrubContainers")]
+    pub scrub_containers: Option<bool>,
+}
+
+/// Conf overrides the configuration for the default Orchestrator Explorer check. This must point to a ConfigMap containing a valid cluster check configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOrchestratorExplorerConf {
+    /// ConfigData corresponds to the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
+    pub config_data: Option<String>,
+    /// ConfigMap references an existing ConfigMap with the configuration file content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOrchestratorExplorerConfConfigMap>,
+}
+
+/// ConfigMap references an existing ConfigMap with the configuration file content.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOrchestratorExplorerConfConfigMap {
+    /// Items maps a ConfigMap data `key` to a file `path` mount.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesOrchestratorExplorerConfConfigMapItems>>,
+    /// Name is the name of the ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOrchestratorExplorerConfConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
+}
+
+/// OTLP ingest configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlp {
+    /// Receiver contains configuration for the OTLP ingest receiver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub receiver: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiver>,
+}
+
+/// Receiver contains configuration for the OTLP ingest receiver.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiver {
+    /// Protocols contains configuration for the OTLP ingest receiver protocols.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocols: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocols>,
+}
+
+/// Protocols contains configuration for the OTLP ingest receiver protocols.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocols {
+    /// GRPC contains configuration for the OTLP ingest OTLP/gRPC receiver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocolsGrpc>,
+    /// HTTP contains configuration for the OTLP ingest OTLP/HTTP receiver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocolsHttp>,
+}
+
+/// GRPC contains configuration for the OTLP ingest OTLP/gRPC receiver.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocolsGrpc {
+    /// Enable the OTLP/gRPC endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Endpoint for OTLP/gRPC. gRPC supports several naming schemes: https://github.com/grpc/grpc/blob/master/doc/naming.md The Datadog Operator supports only 'host:port' (usually `0.0.0.0:port`). Default: `0.0.0.0:4317`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+}
+
+/// HTTP contains configuration for the OTLP ingest OTLP/HTTP receiver.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocolsHttp {
+    /// Enable the OTLP/HTTP endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Endpoint for OTLP/HTTP. Default: '0.0.0.0:4318'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+}
+
+/// ProcessDiscovery configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesProcessDiscovery {
+    /// Enabled enables the Process Discovery check in the Agent. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// PrometheusScrape configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesPrometheusScrape {
+    /// AdditionalConfigs allows adding advanced Prometheus check configurations with custom discovery rules.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalConfigs")]
+    pub additional_configs: Option<String>,
+    /// EnableServiceEndpoints enables generating dedicated checks for service endpoints. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceEndpoints")]
+    pub enable_service_endpoints: Option<bool>,
+    /// Enable autodiscovery of pods and services exposing Prometheus metrics. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Version specifies the version of the OpenMetrics check. Default: 2
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<i64>,
+}
+
+/// Remote Configuration configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesRemoteConfiguration {
+    /// Enable this option to activate Remote Configuration. Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// SBOM collection configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesSbom {
+    /// SBOMTypeConfig contains configuration for a SBOM collection type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerImage")]
+    pub container_image: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomContainerImage>,
+    /// Enable this option to activate SBOM collection. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// SBOMTypeConfig contains configuration for a SBOM collection type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomHost>,
+}
+
+/// SBOMTypeConfig contains configuration for a SBOM collection type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomContainerImage {
+    /// Analyzers to use for SBOM collection.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub analyzers: Option<Vec<String>>,
+    /// Enable this option to activate SBOM collection. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// SBOMTypeConfig contains configuration for a SBOM collection type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomHost {
+    /// Analyzers to use for SBOM collection.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub analyzers: Option<Vec<String>>,
+    /// Enable this option to activate SBOM collection. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// TCPQueueLength configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesTcpQueueLength {
+    /// Enables the TCP queue length eBPF-based check. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// USM (Universal Service Monitoring) configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesUsm {
+    /// Enabled enables Universal Service Monitoring. Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 

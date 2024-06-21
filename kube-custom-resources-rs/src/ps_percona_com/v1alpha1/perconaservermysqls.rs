@@ -20,8 +20,6 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PerconaServerMySQLSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowUnsafeConfigurations")]
-    pub allow_unsafe_configurations: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<PerconaServerMySQLBackup>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crVersion")]
@@ -52,6 +50,8 @@ pub struct PerconaServerMySQLSpec {
     pub tls: Option<PerconaServerMySQLTls>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub toolkit: Option<PerconaServerMySQLToolkit>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unsafeFlags")]
+    pub unsafe_flags: Option<PerconaServerMySQLUnsafeFlags>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeOptions")]
@@ -6580,6 +6580,20 @@ pub struct PerconaServerMySQLToolkitStartupProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLUnsafeFlags {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlSize")]
+    pub mysql_size: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub orchestrator: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orchestratorSize")]
+    pub orchestrator_size: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub proxy: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySize")]
+    pub proxy_size: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

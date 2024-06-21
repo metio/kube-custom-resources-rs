@@ -23,6 +23,9 @@ pub struct PolicySpec {
     /// AccessControl defines an access policy based on the source IP of a request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessControl")]
     pub access_control: Option<PolicyAccessControl>,
+    /// APIKey defines an API Key policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
+    pub api_key: Option<PolicyApiKey>,
     /// BasicAuth holds HTTP Basic authentication configuration
     /// policy status: preview
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
@@ -56,6 +59,25 @@ pub struct PolicyAccessControl {
     pub allow: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deny: Option<Vec<String>>,
+}
+
+/// APIKey defines an API Key policy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyApiKey {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
+    pub client_secret: Option<String>,
+    /// SuppliedIn defines the locations API Key should be supplied in.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suppliedIn")]
+    pub supplied_in: Option<PolicyApiKeySuppliedIn>,
+}
+
+/// SuppliedIn defines the locations API Key should be supplied in.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyApiKeySuppliedIn {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub header: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub query: Option<Vec<String>>,
 }
 
 /// BasicAuth holds HTTP Basic authentication configuration

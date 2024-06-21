@@ -142,6 +142,15 @@ pub struct ComponentDefinitionSpec {
     /// monitor is monitoring config which provided by provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<ComponentDefinitionMonitor>,
+    /// InstanceSet controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.
+    /// 
+    /// 
+    /// - `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod
+    /// is ready before continuing. Pods are removed in reverse order when scaling down.
+    /// - `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once
+    /// when scaling down.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
+    pub pod_management_policy: Option<String>,
     /// Defines the namespaced policy rules required by the Component.
     /// 
     /// 
@@ -13233,8 +13242,7 @@ pub struct ComponentDefinitionServicesSpecSessionAffinityConfigClientIp {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionSystemAccounts {
-    /// Indicates if this account is the unique system initialization account (e.g., MySQL root).
-    /// Only one system initialization account is permitted.
+    /// Indicates if this account is a system initialization account (e.g., MySQL root).
     /// 
     /// 
     /// This field is immutable once set.

@@ -68,6 +68,9 @@ pub struct DatadogMonitorOptions {
     /// Time (in seconds) to delay evaluation, as a non-negative integer. For example, if the value is set to 300 (5min), the timeframe is set to last_5m and the time is 7:00, the monitor evaluates data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor always has data during evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationDelay")]
     pub evaluation_delay: Option<i64>,
+    /// A Boolean indicating whether the log alert monitor triggers a single alert or multiple alerts when any group breaches a threshold.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupbySimpleMonitor")]
+    pub groupby_simple_monitor: Option<bool>,
     /// A Boolean indicating whether notifications from this monitor automatically inserts its triggering tags into the title.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeTags")]
     pub include_tags: Option<bool>,
@@ -86,12 +89,21 @@ pub struct DatadogMonitorOptions {
     /// A Boolean indicating whether tagged users are notified on changes to this monitor.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notifyAudit")]
     pub notify_audit: Option<bool>,
+    /// A string indicating the granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by cluster, namespace, and pod can be configured to only notify on each new cluster violating the alert conditions by setting notify_by to ["cluster"]. Tags mentioned in notify_by must be a subset of the grouping tags in the query. For example, a query grouped by cluster and namespace cannot notify on region. Setting notify_by to [*] configures the monitor to notify as a simple-alert.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notifyBy")]
+    pub notify_by: Option<Vec<String>>,
     /// A Boolean indicating whether this monitor notifies when data stops reporting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notifyNoData")]
     pub notify_no_data: Option<bool>,
+    /// An enum that controls how groups or monitors are treated if an evaluation does not return data points. The default option results in different behavior depending on the monitor query type. For monitors using Count queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitors using any query type other than Count, for example Gauge, Measure, or Rate, the monitor shows the last known status. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onMissingData")]
+    pub on_missing_data: Option<String>,
     /// The number of minutes after the last notification before a monitor re-notifies on the current status. It only re-notifies if it’s not resolved.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "renotifyInterval")]
     pub renotify_interval: Option<i64>,
+    /// The number of times re-notification messages should be sent on the current status at the provided re-notification interval.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "renotifyOccurrences")]
+    pub renotify_occurrences: Option<i64>,
     /// A Boolean indicating whether this monitor needs a full window of data before it’s evaluated. We highly recommend you set this to false for sparse metrics, otherwise some evaluations are skipped. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireFullWindow")]
     pub require_full_window: Option<bool>,

@@ -1874,6 +1874,11 @@ pub struct ClusterIssuerVaultAuth {
     /// with the role and secret stored in a Kubernetes Secret resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appRole")]
     pub app_role: Option<ClusterIssuerVaultAuthAppRole>,
+    /// ClientCertificate authenticates with Vault by presenting a client
+    /// certificate during the request's TLS handshake.
+    /// Works only when using HTTPS protocol.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
+    pub client_certificate: Option<ClusterIssuerVaultAuthClientCertificate>,
     /// Kubernetes authenticates with Vault by passing the ServiceAccount
     /// token stored in the named Secret resource to the Vault server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1916,6 +1921,28 @@ pub struct ClusterIssuerVaultAuthAppRoleSecretRef {
     /// Name of the resource being referred to.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
+}
+
+/// ClientCertificate authenticates with Vault by presenting a client
+/// certificate during the request's TLS handshake.
+/// Works only when using HTTPS protocol.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterIssuerVaultAuthClientCertificate {
+    /// The Vault mountPath here is the mount path to use when authenticating with
+    /// Vault. For example, setting a value to `/v1/auth/foo`, will use the path
+    /// `/v1/auth/foo/login` to authenticate with Vault. If unspecified, the
+    /// default value "/v1/auth/cert" will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    /// Name of the certificate role to authenticate against.
+    /// If not set, matching any certificate role, if available.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Reference to Kubernetes Secret of type "kubernetes.io/tls" (hence containing
+    /// tls.crt and tls.key) used to authenticate to Vault using TLS client
+    /// authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
 }
 
 /// Kubernetes authenticates with Vault by passing the ServiceAccount

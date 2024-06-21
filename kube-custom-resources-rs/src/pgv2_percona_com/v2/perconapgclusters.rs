@@ -6403,8 +6403,7 @@ pub struct PerconaPGClusterExtensions {
     pub builtin: Option<PerconaPGClusterExtensionsBuiltin>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<Vec<PerconaPGClusterExtensionsCustom>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
+    pub image: String,
     /// PullPolicy describes a policy for if/when to pull a container image
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,

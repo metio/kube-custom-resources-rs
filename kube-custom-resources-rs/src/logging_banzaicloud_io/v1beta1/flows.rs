@@ -1039,6 +1039,8 @@ pub struct FlowMatchExclude {
     pub hosts: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

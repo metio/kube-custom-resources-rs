@@ -2333,6 +2333,9 @@ pub struct AlertmanagerConfigReceiversPushoverConfigs {
     /// It requires Alertmanager >= v0.26.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenFile")]
     pub token_file: Option<String>,
+    /// The time to live definition for the alert notification
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ttl: Option<String>,
     /// A supplementary URL shown alongside the message.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,

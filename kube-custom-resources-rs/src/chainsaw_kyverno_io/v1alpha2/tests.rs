@@ -111,12 +111,31 @@ pub struct TestError {
     pub catch: Option<Vec<TestErrorCatch>>,
 }
 
-/// CatchFinally defines actions to be executed in catch, finally and cleanup blocks.
+/// Operation defines operation elements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestErrorCatch {
+    /// Apply represents resources that should be applied for this test step. This can include things
+    /// like configuration settings or any other resources that need to be available during the test.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub apply: Option<TestErrorCatchApply>,
+    /// Assert represents an assertion to be made. It checks whether the conditions specified in the assertion hold true.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub assert: Option<TestErrorCatchAssert>,
+    /// Bindings defines additional binding key/values.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bindings: Option<Vec<TestErrorCatchBindings>>,
+    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<String>,
+    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<BTreeMap<String, TestErrorCatchClusters>>,
     /// Command defines a command to run.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<TestErrorCatchCommand>,
+    /// Create represents a creation operation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub create: Option<TestErrorCatchCreate>,
     /// Delete represents a deletion operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delete: Option<TestErrorCatchDelete>,
@@ -126,12 +145,22 @@ pub struct TestErrorCatch {
     /// Description contains a description of the operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// Error represents the expected errors for this test step. If any of these errors occur, the test
+    /// will consider them as expected; otherwise, they will be treated as test failures.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<TestErrorCatchError>,
     /// Events determines the events collector to execute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<TestErrorCatchEvents>,
     /// Get determines the resource get collector to execute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub get: Option<TestErrorCatchGet>,
+    /// Outputs defines output bindings.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub outputs: Option<Vec<TestErrorCatchOutputs>>,
+    /// Patch represents a patch operation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<TestErrorCatchPatch>,
     /// PodLogs determines the pod logs collector to execute.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podLogs")]
     pub pod_logs: Option<TestErrorCatchPodLogs>,
@@ -141,40 +170,65 @@ pub struct TestErrorCatch {
     /// Sleep defines zzzz.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<TestErrorCatchSleep>,
+    /// Update represents an update operation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub update: Option<TestErrorCatchUpdate>,
     /// Wait determines the resource wait collector to execute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wait: Option<TestErrorCatchWait>,
 }
 
-/// Command defines a command to run.
+/// Apply represents resources that should be applied for this test step. This can include things
+/// like configuration settings or any other resources that need to be available during the test.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchCommand {
-    /// Args is the command arguments.
+pub struct TestErrorCatchApply {
+    /// DryRun determines whether the file should be applied in dry run mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
+    pub dry_run: Option<bool>,
+    /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub args: Option<Vec<String>>,
-    /// Bindings defines additional binding key/values.
+    pub expect: Option<Vec<TestErrorCatchApplyExpect>>,
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bindings: Option<Vec<TestErrorCatchCommandBindings>>,
-    /// Check is an assertion tree to validate the operation outcome.
+    pub file: Option<String>,
+    /// Resource provides a resource to be applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub check: Option<BTreeMap<String, serde_json::Value>>,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    pub resource: Option<BTreeMap<String, serde_json::Value>>,
+    /// Template determines whether resources should be considered for templating.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<String>,
-    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    pub template: Option<bool>,
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub clusters: Option<BTreeMap<String, TestErrorCatchCommandClusters>>,
-    /// Entrypoint is the command entry point to run.
-    pub entrypoint: String,
-    /// Env defines additional environment variables.
+    pub timeout: Option<String>,
+}
+
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestErrorCatchApplyExpect {
+    /// Check defines the verification statement.
+    pub check: BTreeMap<String, serde_json::Value>,
+    /// Match defines the matching statement.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
+    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Assert represents an assertion to be made. It checks whether the conditions specified in the assertion hold true.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestErrorCatchAssert {
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<TestErrorCatchCommandEnv>>,
-    /// Outputs defines output bindings.
+    pub file: Option<String>,
+    /// Check provides a check used in assertions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub outputs: Option<Vec<TestErrorCatchCommandOutputs>>,
-    /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
-    pub skip_log_output: Option<bool>,
+    pub resource: Option<BTreeMap<String, serde_json::Value>>,
+    /// Template determines whether resources should be considered for templating.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
@@ -182,7 +236,7 @@ pub struct TestErrorCatchCommand {
 
 /// Binding represents a key/value set as a binding in an executing test.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchCommandBindings {
+pub struct TestErrorCatchBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
@@ -191,13 +245,35 @@ pub struct TestErrorCatchCommandBindings {
 
 /// Clusters holds a registry to clusters to support multi-cluster tests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchCommandClusters {
+pub struct TestErrorCatchClusters {
     /// Context is the name of the context to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<String>,
     /// Kubeconfig is the path to the referenced file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubeconfig: Option<String>,
+}
+
+/// Command defines a command to run.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestErrorCatchCommand {
+    /// Args is the command arguments.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Check is an assertion tree to validate the operation outcome.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub check: Option<BTreeMap<String, serde_json::Value>>,
+    /// Entrypoint is the command entry point to run.
+    pub entrypoint: String,
+    /// Env defines additional environment variables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<TestErrorCatchCommandEnv>>,
+    /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
+    pub skip_log_output: Option<bool>,
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -209,30 +285,45 @@ pub struct TestErrorCatchCommandEnv {
     pub value: serde_json::Value,
 }
 
-/// Output represents an output binding with a match to determine if the binding must be considered or not.
+/// Create represents a creation operation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchCommandOutputs {
+pub struct TestErrorCatchCreate {
+    /// DryRun determines whether the file should be applied in dry run mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
+    pub dry_run: Option<bool>,
+    /// Expect defines a list of matched checks to validate the operation outcome.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expect: Option<Vec<TestErrorCatchCreateExpect>>,
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<String>,
+    /// Resource provides a resource to be applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resource: Option<BTreeMap<String, serde_json::Value>>,
+    /// Template determines whether resources should be considered for templating.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<bool>,
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
+}
+
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestErrorCatchCreateExpect {
+    /// Check defines the verification statement.
+    pub check: BTreeMap<String, serde_json::Value>,
     /// Match defines the matching statement.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<BTreeMap<String, serde_json::Value>>,
-    /// Name the name of the binding.
-    pub name: String,
-    /// Value value of the binding.
-    pub value: serde_json::Value,
 }
 
 /// Delete represents a deletion operation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestErrorCatchDelete {
-    /// Bindings defines additional binding key/values.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bindings: Option<Vec<TestErrorCatchDeleteBindings>>,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<String>,
-    /// Clusters holds a registry to clusters to support multi-cluster tests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub clusters: Option<BTreeMap<String, TestErrorCatchDeleteClusters>>,
     /// DeletionPropagationPolicy decides if a deletion will propagate to the dependents of
     /// the object, and how the garbage collector will handle the propagation.
     /// Overrides the deletion propagation policy set in the Configuration, the Test and the TestStep.
@@ -255,26 +346,6 @@ pub struct TestErrorCatchDelete {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
-}
-
-/// Binding represents a key/value set as a binding in an executing test.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchDeleteBindings {
-    /// Name the name of the binding.
-    pub name: String,
-    /// Value value of the binding.
-    pub value: serde_json::Value,
-}
-
-/// Clusters holds a registry to clusters to support multi-cluster tests.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchDeleteClusters {
-    /// Context is the name of the context to use.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub context: Option<String>,
-    /// Kubeconfig is the path to the referenced file.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubeconfig: Option<String>,
 }
 
 /// Delete represents a deletion operation.
@@ -306,8 +377,8 @@ pub struct TestErrorCatchDeleteRef {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TestErrorCatchDeleteRefLabelSelector>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -318,18 +389,42 @@ pub struct TestErrorCatchDeleteRef {
     pub namespace: Option<String>,
 }
 
+/// Label selector to match objects to delete
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestErrorCatchDeleteRefLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TestErrorCatchDeleteRefLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestErrorCatchDeleteRefLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
 /// Describe determines the resource describe collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestErrorCatchDescribe {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<String>,
-    /// Clusters holds a registry to clusters to support multi-cluster tests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub clusters: Option<BTreeMap<String, TestErrorCatchDescribeClusters>>,
     /// Kind of the referent.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
@@ -352,26 +447,29 @@ pub struct TestErrorCatchDescribe {
     pub timeout: Option<String>,
 }
 
-/// Clusters holds a registry to clusters to support multi-cluster tests.
+/// Error represents the expected errors for this test step. If any of these errors occur, the test
+/// will consider them as expected; otherwise, they will be treated as test failures.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchDescribeClusters {
-    /// Context is the name of the context to use.
+pub struct TestErrorCatchError {
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub context: Option<String>,
-    /// Kubeconfig is the path to the referenced file.
+    pub file: Option<String>,
+    /// Check provides a check used in assertions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubeconfig: Option<String>,
+    pub resource: Option<BTreeMap<String, serde_json::Value>>,
+    /// Template determines whether resources should be considered for templating.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<bool>,
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
 }
 
 /// Events determines the events collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestErrorCatchEvents {
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<String>,
-    /// Clusters holds a registry to clusters to support multi-cluster tests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub clusters: Option<BTreeMap<String, TestErrorCatchEventsClusters>>,
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
@@ -391,29 +489,12 @@ pub struct TestErrorCatchEvents {
     pub timeout: Option<String>,
 }
 
-/// Clusters holds a registry to clusters to support multi-cluster tests.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchEventsClusters {
-    /// Context is the name of the context to use.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub context: Option<String>,
-    /// Kubeconfig is the path to the referenced file.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubeconfig: Option<String>,
-}
-
 /// Get determines the resource get collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestErrorCatchGet {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<String>,
-    /// Clusters holds a registry to clusters to support multi-cluster tests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub clusters: Option<BTreeMap<String, TestErrorCatchGetClusters>>,
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
@@ -436,26 +517,57 @@ pub struct TestErrorCatchGet {
     pub timeout: Option<String>,
 }
 
-/// Clusters holds a registry to clusters to support multi-cluster tests.
+/// Output represents an output binding with a match to determine if the binding must be considered or not.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchGetClusters {
-    /// Context is the name of the context to use.
+pub struct TestErrorCatchOutputs {
+    /// Match defines the matching statement.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
+    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
+}
+
+/// Patch represents a patch operation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestErrorCatchPatch {
+    /// DryRun determines whether the file should be applied in dry run mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
+    pub dry_run: Option<bool>,
+    /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub context: Option<String>,
-    /// Kubeconfig is the path to the referenced file.
+    pub expect: Option<Vec<TestErrorCatchPatchExpect>>,
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubeconfig: Option<String>,
+    pub file: Option<String>,
+    /// Resource provides a resource to be applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resource: Option<BTreeMap<String, serde_json::Value>>,
+    /// Template determines whether resources should be considered for templating.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<bool>,
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
+}
+
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestErrorCatchPatchExpect {
+    /// Check defines the verification statement.
+    pub check: BTreeMap<String, serde_json::Value>,
+    /// Match defines the matching statement.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
+    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// PodLogs determines the pod logs collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestErrorCatchPodLogs {
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<String>,
-    /// Clusters holds a registry to clusters to support multi-cluster tests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub clusters: Option<BTreeMap<String, TestErrorCatchPodLogsClusters>>,
     /// Container in pod to get logs from else --all-containers is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
@@ -480,41 +592,18 @@ pub struct TestErrorCatchPodLogs {
     pub timeout: Option<String>,
 }
 
-/// Clusters holds a registry to clusters to support multi-cluster tests.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchPodLogsClusters {
-    /// Context is the name of the context to use.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub context: Option<String>,
-    /// Kubeconfig is the path to the referenced file.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubeconfig: Option<String>,
-}
-
 /// Script defines a script to run.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestErrorCatchScript {
-    /// Bindings defines additional binding key/values.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bindings: Option<Vec<TestErrorCatchScriptBindings>>,
     /// Check is an assertion tree to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub check: Option<BTreeMap<String, serde_json::Value>>,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<String>,
-    /// Clusters holds a registry to clusters to support multi-cluster tests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub clusters: Option<BTreeMap<String, TestErrorCatchScriptClusters>>,
     /// Content defines a shell script (run with "sh -c ...").
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     /// Env defines additional environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TestErrorCatchScriptEnv>>,
-    /// Outputs defines output bindings.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub outputs: Option<Vec<TestErrorCatchScriptOutputs>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -525,39 +614,7 @@ pub struct TestErrorCatchScript {
 
 /// Binding represents a key/value set as a binding in an executing test.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchScriptBindings {
-    /// Name the name of the binding.
-    pub name: String,
-    /// Value value of the binding.
-    pub value: serde_json::Value,
-}
-
-/// Clusters holds a registry to clusters to support multi-cluster tests.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchScriptClusters {
-    /// Context is the name of the context to use.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub context: Option<String>,
-    /// Kubeconfig is the path to the referenced file.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubeconfig: Option<String>,
-}
-
-/// Binding represents a key/value set as a binding in an executing test.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestErrorCatchScriptEnv {
-    /// Name the name of the binding.
-    pub name: String,
-    /// Value value of the binding.
-    pub value: serde_json::Value,
-}
-
-/// Output represents an output binding with a match to determine if the binding must be considered or not.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchScriptOutputs {
-    /// Match defines the matching statement.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
-    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
@@ -571,18 +628,48 @@ pub struct TestErrorCatchSleep {
     pub duration: String,
 }
 
+/// Update represents an update operation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestErrorCatchUpdate {
+    /// DryRun determines whether the file should be applied in dry run mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
+    pub dry_run: Option<bool>,
+    /// Expect defines a list of matched checks to validate the operation outcome.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expect: Option<Vec<TestErrorCatchUpdateExpect>>,
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<String>,
+    /// Resource provides a resource to be applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resource: Option<BTreeMap<String, serde_json::Value>>,
+    /// Template determines whether resources should be considered for templating.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<bool>,
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
+}
+
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestErrorCatchUpdateExpect {
+    /// Check defines the verification statement.
+    pub check: BTreeMap<String, serde_json::Value>,
+    /// Match defines the matching statement.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
+    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
+}
+
 /// Wait determines the resource wait collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestErrorCatchWait {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<String>,
-    /// Clusters holds a registry to clusters to support multi-cluster tests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub clusters: Option<BTreeMap<String, TestErrorCatchWaitClusters>>,
     /// WaitFor specifies the condition to wait for.
     #[serde(rename = "for")]
     pub r#for: TestErrorCatchWaitFor,
@@ -606,17 +693,6 @@ pub struct TestErrorCatchWait {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
-}
-
-/// Clusters holds a registry to clusters to support multi-cluster tests.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchWaitClusters {
-    /// Context is the name of the context to use.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub context: Option<String>,
-    /// Kubeconfig is the path to the referenced file.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubeconfig: Option<String>,
 }
 
 /// WaitFor specifies the condition to wait for.
@@ -1005,8 +1081,8 @@ pub struct TestStepsCatchDeleteRef {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TestStepsCatchDeleteRefLabelSelector>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1015,6 +1091,36 @@ pub struct TestStepsCatchDeleteRef {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Label selector to match objects to delete
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsCatchDeleteRefLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TestStepsCatchDeleteRefLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsCatchDeleteRefLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// Describe determines the resource describe collector to execute.
@@ -1597,8 +1703,8 @@ pub struct TestStepsCleanupDeleteRef {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TestStepsCleanupDeleteRefLabelSelector>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1607,6 +1713,36 @@ pub struct TestStepsCleanupDeleteRef {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Label selector to match objects to delete
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsCleanupDeleteRefLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TestStepsCleanupDeleteRefLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsCleanupDeleteRefLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// Describe determines the resource describe collector to execute.
@@ -2208,8 +2344,8 @@ pub struct TestStepsFinallyDeleteRef {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TestStepsFinallyDeleteRefLabelSelector>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2218,6 +2354,36 @@ pub struct TestStepsFinallyDeleteRef {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Label selector to match objects to delete
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsFinallyDeleteRefLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TestStepsFinallyDeleteRefLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsFinallyDeleteRefLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// Describe determines the resource describe collector to execute.
@@ -2827,8 +2993,8 @@ pub struct TestStepsTryDeleteRef {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TestStepsTryDeleteRefLabelSelector>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2837,6 +3003,36 @@ pub struct TestStepsTryDeleteRef {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Label selector to match objects to delete
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsTryDeleteRefLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TestStepsTryDeleteRefLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsTryDeleteRefLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// Describe determines the resource describe collector to execute.

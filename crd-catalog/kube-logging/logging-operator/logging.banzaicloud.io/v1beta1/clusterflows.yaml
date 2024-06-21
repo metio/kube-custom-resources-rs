@@ -1030,6 +1030,10 @@ spec:
                             additionalProperties:
                               type: "string"
                             type: "object"
+                          namespace_labels:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
                           namespaces:
                             items:
                               type: "string"
@@ -1046,6 +1050,10 @@ spec:
                               type: "string"
                             type: "array"
                           labels:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          namespace_labels:
                             additionalProperties:
                               type: "string"
                             type: "object"

@@ -37,6 +37,9 @@ pub struct ClusterInputSpec {
     /// HTTP defines the HTTP input plugin configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ClusterInputHttp>,
+    /// KubernetesEvents defines the KubernetesEvents input plugin configuration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesEvents")]
+    pub kubernetes_events: Option<ClusterInputKubernetesEvents>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ClusterInputLogLevel>,
     /// MQTT defines the MQTT input plugin configuration
@@ -254,6 +257,59 @@ pub struct ClusterInputHttpTlsKeyPasswordValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// KubernetesEvents defines the KubernetesEvents input plugin configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterInputKubernetesEvents {
+    /// Set a database file to keep track of recorded Kubernetes events
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub db: Option<String>,
+    /// Set a database sync method. values: extra, full, normal and off
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbSync")]
+    pub db_sync: Option<String>,
+    /// Set the polling interval for each channel (sub seconds: nanoseconds).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalNsec")]
+    pub interval_nsec: Option<i64>,
+    /// Set the polling interval for each channel.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSec")]
+    pub interval_sec: Option<i32>,
+    /// CA certificate file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeCAFile")]
+    pub kube_ca_file: Option<String>,
+    /// Absolute path to scan for certificate files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeCAPath")]
+    pub kube_ca_path: Option<String>,
+    /// Kubernetes namespace to query events from. Gets events from all namespaces by default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeNamespace")]
+    pub kube_namespace: Option<String>,
+    /// kubernetes limit parameter for events query, no limit applied when set to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeRequestLimit")]
+    pub kube_request_limit: Option<i32>,
+    /// Kubernetes retention time for events.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeRetentionTime")]
+    pub kube_retention_time: Option<String>,
+    /// Token file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTokenFile")]
+    pub kube_token_file: Option<String>,
+    /// configurable 'time to live' for the K8s token. By default, it is set to 600 seconds. After this time, the token is reloaded from Kube_Token_File or the Kube_Token_Command.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTokenTTL")]
+    pub kube_token_ttl: Option<String>,
+    /// API Server end-point
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeURL")]
+    pub kube_url: Option<String>,
+    /// Tag name associated to all records comming from this plugin.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+    /// Debug level between 0 (nothing) and 4 (every detail).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsDebug")]
+    pub tls_debug: Option<i32>,
+    /// When enabled, turns on certificate validation when connecting to the Kubernetes API server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsVerify")]
+    pub tls_verify: Option<bool>,
+    /// Set optional TLS virtual host.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsVhost")]
+    pub tls_vhost: Option<String>,
 }
 
 /// InputSpec defines the desired state of ClusterInput
