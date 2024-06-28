@@ -1685,10 +1685,17 @@ apiVersion `kamaji.clastix.io/v1alpha1`:
 
 ## karpenter_k8s_aws
 
+apiVersion `karpenter.k8s.aws/v1`:
+- `EC2NodeClass`
+
 apiVersion `karpenter.k8s.aws/v1beta1`:
 - `EC2NodeClass`
 
 ## karpenter_sh
+
+apiVersion `karpenter.sh/v1`:
+- `NodeClaim`
+- `NodePool`
 
 apiVersion `karpenter.sh/v1beta1`:
 - `NodeClaim`
@@ -1921,6 +1928,11 @@ apiVersion `lerentis.uploadfilter24.eu/v1beta5`:
 - `RegistryCredential`
 
 apiVersion `lerentis.uploadfilter24.eu/v1beta6`:
+- `BitwardenSecret`
+- `BitwardenTemplate`
+- `RegistryCredential`
+
+apiVersion `lerentis.uploadfilter24.eu/v1beta7`:
 - `BitwardenSecret`
 - `BitwardenTemplate`
 - `RegistryCredential`

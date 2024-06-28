@@ -17,13 +17,13 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct SelfNodeRemediationConfigSpec {
-    /// the frequency for api-server connectivity check
+    /// The frequency for api-server connectivity check.
     /// Valid time units are "ms", "s", "m", "h".
     /// the frequency for api-server connectivity check
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCheckInterval")]
     pub api_check_interval: Option<String>,
+    /// Timeout for each api-connectivity check.
     /// Valid time units are "ms", "s", "m", "h".
-    /// timeout for each api-connectivity check
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerTimeout")]
     pub api_server_timeout: Option<String>,
     /// CustomDsTolerations allows to add custom tolerations snr agents that are running on the ds in order to support remediation for different types of nodes.
@@ -39,23 +39,25 @@ pub struct SelfNodeRemediationConfigSpec {
     pub host_port: Option<i64>,
     /// IsSoftwareRebootEnabled indicates whether self node remediation agent will do software reboot,
     /// if the watchdog device can not be used or will use watchdog only,
-    /// without a fallback to software reboot
+    /// without a fallback to software reboot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isSoftwareRebootEnabled")]
     pub is_software_reboot_enabled: Option<bool>,
-    /// after this threshold, the node will start contacting its peers
+    /// After this threshold, the node will start contacting its peers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxApiErrorThreshold")]
     pub max_api_error_threshold: Option<i64>,
+    /// The timeout for api-server connectivity check.
     /// Valid time units are "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerApiServerTimeout")]
     pub peer_api_server_timeout: Option<String>,
+    /// Timeout for establishing connection to peer.
     /// Valid time units are "ms", "s", "m", "h".
-    /// timeout for establishing connection to peer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerDialTimeout")]
     pub peer_dial_timeout: Option<String>,
+    /// Timeout for each peer request.
     /// Valid time units are "ms", "s", "m", "h".
-    /// timeout for each peer request
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerRequestTimeout")]
     pub peer_request_timeout: Option<String>,
+    /// The frequency for updating peers.
     /// Valid time units are "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerUpdateInterval")]
     pub peer_update_interval: Option<String>,
@@ -64,10 +66,11 @@ pub struct SelfNodeRemediationConfigSpec {
     /// This is extremely important as starting replacement Pods while they are still running on the failed
     /// node will likely lead to data corruption and violation of run-once semantics.
     /// In an effort to prevent this, the operator ignores values lower than a minimum calculated from the
-    /// ApiCheckInterval, ApiServerTimeout, MaxApiErrorThreshold, PeerDialTimeout, and PeerRequestTimeout fields.
+    /// ApiCheckInterval, ApiServerTimeout, MaxApiErrorThreshold, PeerDialTimeout, and PeerRequestTimeout fields,
+    /// and the unhealthy node's individual watchdog timeout.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "safeTimeToAssumeNodeRebootedSeconds")]
     pub safe_time_to_assume_node_rebooted_seconds: Option<i64>,
-    /// WatchdogFilePath is the watchdog file path that should be available on each node, e.g. /dev/watchdog
+    /// WatchdogFilePath is the watchdog file path that should be available on each node, e.g. /dev/watchdog.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "watchdogFilePath")]
     pub watchdog_file_path: Option<String>,
 }

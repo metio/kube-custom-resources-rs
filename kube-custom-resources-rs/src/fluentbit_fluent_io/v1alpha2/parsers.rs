@@ -17,7 +17,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ParserSpec {
-    /// Decoders are a built-in feature available through the Parsers file, each Parser definition can optionally set one or multiple decoders. There are two type of decoders type: Decode_Field and Decode_Field_As.
+    /// Decoders are a built-in feature available through the Parsers file, each Parser definition can optionally set one or multiple decoders.
+    /// There are two type of decoders type: Decode_Field and Decode_Field_As.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub decoders: Option<Vec<ParserDecoders>>,
     /// JSON defines json parser configuration.
@@ -36,10 +37,12 @@ pub struct ParserSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ParserDecoders {
-    /// If the content can be decoded in a structured message, append that structure message (keys and values) to the original log message.
+    /// If the content can be decoded in a structured message,
+    /// append that structure message (keys and values) to the original log message.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "decodeField")]
     pub decode_field: Option<String>,
-    /// Any content decoded (unstructured or structured) will be replaced in the same key/value, no extra keys are added.
+    /// Any content decoded (unstructured or structured) will be replaced in the same key/value,
+    /// no extra keys are added.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "decodeFieldAs")]
     pub decode_field_as: Option<String>,
 }

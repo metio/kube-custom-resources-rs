@@ -105,7 +105,8 @@ pub struct InputInputsForward {
     /// The field name of the client's hostname. If set, the client's hostname will be set to its key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceHostnameKey")]
     pub source_hostname_key: Option<String>,
-    /// in_forward uses incoming event's tag by default (See Protocol Section). If the tag parameter is set, its value is used instead.
+    /// in_forward uses incoming event's tag by default (See Protocol Section).
+    /// If the tag parameter is set, its value is used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
     /// The transport section of forward plugin
@@ -185,7 +186,9 @@ pub struct InputInputsForwardSecurityUserPasswordValueFrom {
 pub struct InputInputsForwardSecurityUserPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -214,7 +217,9 @@ pub struct InputInputsForwardSecurityUserUsernameValueFrom {
 pub struct InputInputsForwardSecurityUserUsernameValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -289,7 +294,9 @@ pub struct InputInputsForwardUserPasswordValueFrom {
 pub struct InputInputsForwardUserPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -318,7 +325,9 @@ pub struct InputInputsForwardUserUsernameValueFrom {
 pub struct InputInputsForwardUserUsernameValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -332,7 +341,8 @@ pub struct InputInputsHttp {
     /// Adds HTTP_ prefix headers to the record.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addHttpHeaders")]
     pub add_http_headers: Option<bool>,
-    /// Adds REMOTE_ADDR field to the record. The value of REMOTE_ADDR is the client's address. i.e: X-Forwarded-For: host1, host2
+    /// Adds REMOTE_ADDR field to the record. The value of REMOTE_ADDR is the client's address.
+    /// i.e: X-Forwarded-For: host1, host2
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addRemoteAddr")]
     pub add_remote_addr: Option<String>,
     /// The port to listen to, default is "0.0.0.0"
@@ -582,13 +592,17 @@ pub struct InputInputsTail {
     /// Emits unmatched lines when <parse> format is not matched for incoming logs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitUnmatchedLines")]
     pub emit_unmatched_lines: Option<bool>,
-    /// Enables the additional inotify-based watcher. Setting this parameter to false will disable the inotify events and use only timer watcher for file tailing. This option is mainly for avoiding the stuck issue with inotify.
+    /// Enables the additional inotify-based watcher. Setting this parameter to false will disable the inotify events and use only timer watcher for file tailing.
+    /// This option is mainly for avoiding the stuck issue with inotify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableStatWatcher")]
     pub enable_stat_watcher: Option<bool>,
-    /// Enables the additional watch timer. Setting this parameter to false will significantly reduce CPU and I/O consumption when tailing a large number of files on systems with inotify support. The default is true which results in an additional 1 second timer being used.
+    /// Enables the additional watch timer. Setting this parameter to false will significantly reduce CPU and I/O consumption when tailing a large number of files on systems with inotify support.
+    /// The default is true which results in an additional 1 second timer being used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableWatchTimer")]
     pub enable_watch_timer: Option<bool>,
-    /// Specifies the encoding of reading lines. By default, in_tail emits string value as ASCII-8BIT encoding. If encoding is specified, in_tail changes string to encoding. If encoding and fromEncoding both are specified, in_tail tries to encode string from fromEncoding to encoding.
+    /// Specifies the encoding of reading lines. By default, in_tail emits string value as ASCII-8BIT encoding.
+    /// If encoding is specified, in_tail changes string to encoding.
+    /// If encoding and fromEncoding both are specified, in_tail tries to encode string from fromEncoding to encoding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub encoding: Option<String>,
     /// The paths excluded from the watcher list.
@@ -597,10 +611,13 @@ pub struct InputInputsTail {
     /// Avoid to read rotated files duplicately. You should set true when you use * or strftime format in path.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followInodes")]
     pub follow_inodes: Option<bool>,
-    /// Specifies the encoding of reading lines. By default, in_tail emits string value as ASCII-8BIT encoding. If encoding is specified, in_tail changes string to encoding. If encoding and fromEncoding both are specified, in_tail tries to encode string from fromEncoding to encoding.
+    /// Specifies the encoding of reading lines. By default, in_tail emits string value as ASCII-8BIT encoding.
+    /// If encoding is specified, in_tail changes string to encoding.
+    /// If encoding and fromEncoding both are specified, in_tail tries to encode string from fromEncoding to encoding.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEncoding")]
     pub from_encoding: Option<String>,
-    /// The in_tail plugin can assign each log file to a group, based on user defined rules. The limit parameter controls the total number of lines collected for a group within a rate_period time interval.
+    /// The in_tail plugin can assign each log file to a group, based on user defined rules.
+    /// The limit parameter controls the total number of lines collected for a group within a rate_period time interval.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<InputInputsTailGroup>,
     /// If you have to exclude the non-permission files from the watch list, set this parameter to true. It suppresses the repeated permission error logs.
@@ -628,7 +645,9 @@ pub struct InputInputsTail {
     /// This parameter is for strftime formatted path like /path/to/%Y/%m/%d/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathTimezone")]
     pub path_timezone: Option<String>,
-    /// (recommended) Fluentd will record the position it last read from this file. pos_file handles multiple positions in one file so no need to have multiple pos_file parameters per source. Don't share pos_file between in_tail configurations. It causes unexpected behavior e.g. corrupt pos_file content.
+    /// (recommended) Fluentd will record the position it last read from this file.
+    /// pos_file handles multiple positions in one file so no need to have multiple pos_file parameters per source.
+    /// Don't share pos_file between in_tail configurations. It causes unexpected behavior e.g. corrupt pos_file content.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "posFile")]
     pub pos_file: Option<String>,
     /// The interval of doing compaction of pos file.
@@ -646,7 +665,10 @@ pub struct InputInputsTail {
     /// The interval to refresh the list of watch files. This is used when the path includes *.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<i32>,
-    /// in_tail actually does a bit more than tail -F itself. When rotating a file, some data may still need to be written to the old file as opposed to the new one. in_tail takes care of this by keeping a reference to the old file (even after it has been rotated) for some time before transitioning completely to the new file. This helps prevent data designated for the old file from getting lost. By default, this time interval is 5 seconds. The rotate_wait parameter accepts a single integer representing the number of seconds you want this time interval to be.
+    /// in_tail actually does a bit more than tail -F itself. When rotating a file, some data may still need to be written to the old file as opposed to the new one.
+    /// in_tail takes care of this by keeping a reference to the old file (even after it has been rotated) for some time before transitioning completely to the new file.
+    /// This helps prevent data designated for the old file from getting lost. By default, this time interval is 5 seconds.
+    /// The rotate_wait parameter accepts a single integer representing the number of seconds you want this time interval to be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotateWait")]
     pub rotate_wait: Option<i32>,
     /// Skips the refresh of the watch list on startup. This reduces the startup time when * is used in path.
@@ -656,10 +678,12 @@ pub struct InputInputsTail {
     pub tag: String,
 }
 
-/// The in_tail plugin can assign each log file to a group, based on user defined rules. The limit parameter controls the total number of lines collected for a group within a rate_period time interval.
+/// The in_tail plugin can assign each log file to a group, based on user defined rules.
+/// The limit parameter controls the total number of lines collected for a group within a rate_period time interval.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsTailGroup {
-    /// Specifies the regular expression for extracting metadata (namespace, podname) from log file path. Default value of the pattern regexp extracts information about namespace, podname, docker_id, container of the log (K8s specific).
+    /// Specifies the regular expression for extracting metadata (namespace, podname) from log file path.
+    /// Default value of the pattern regexp extracts information about namespace, podname, docker_id, container of the log (K8s specific).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
     /// Time period in which the group line limit is applied. in_tail resets the counter after every rate_period interval.

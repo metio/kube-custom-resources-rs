@@ -92,10 +92,14 @@ pub struct OutputOutputsBuffer {
     /// The max number of events that each chunks can store in it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkLimitRecords")]
     pub chunk_limit_records: Option<String>,
-    /// Buffer parameters The max size of each chunks: events will be written into chunks until the size of chunks become this size Default: 8MB (memory) / 256MB (file)
+    /// Buffer parameters
+    /// The max size of each chunks: events will be written into chunks until the size of chunks become this size
+    /// Default: 8MB (memory) / 256MB (file)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkLimitSize")]
     pub chunk_limit_size: Option<String>,
-    /// Fluentd will decompress these compressed chunks automatically before passing them to the output plugin If gzip is set, Fluentd compresses data records before writing to buffer chunks. Default:text.
+    /// Fluentd will decompress these compressed chunks automatically before passing them to the output plugin
+    /// If gzip is set, Fluentd compresses data records before writing to buffer chunks.
+    /// Default:text.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compress: Option<OutputOutputsBufferCompress>,
     /// The timeout (seconds) until output plugin decides if the async write operation has failed. Default is 60s
@@ -104,13 +108,18 @@ pub struct OutputOutputsBuffer {
     /// Instead of storing unrecoverable chunks in the backup directory, just discard them. This option is new in Fluentd v1.2.6.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableChunkBackup")]
     pub disable_chunk_backup: Option<bool>,
-    /// Flush parameters This specifies whether to flush/write all buffer chunks on shutdown or not.
+    /// Flush parameters
+    /// This specifies whether to flush/write all buffer chunks on shutdown or not.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushAtShutdown")]
     pub flush_at_shutdown: Option<bool>,
     /// FlushInterval defines the flush interval
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushInterval")]
     pub flush_interval: Option<String>,
-    /// FlushMode defines the flush mode: lazy: flushes/writes chunks once per timekey interval: flushes/writes chunks per specified time via flush_interval immediate: flushes/writes chunks immediately after events are appended into chunks default: equals to lazy if time is specified as chunk key, interval otherwise
+    /// FlushMode defines the flush mode:
+    /// lazy: flushes/writes chunks once per timekey
+    /// interval: flushes/writes chunks per specified time via flush_interval
+    /// immediate: flushes/writes chunks immediately after events are appended into chunks
+    /// default: equals to lazy if time is specified as chunk key, interval otherwise
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushMode")]
     pub flush_mode: Option<OutputOutputsBufferFlushMode>,
     /// The number of threads to flush/write chunks in parallel
@@ -125,7 +134,8 @@ pub struct OutputOutputsBuffer {
     /// The @log_level parameter specifies the plugin-specific logging level
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
-    /// OverflowAtction defines the output plugin behave when its buffer queue is full. Default: throw_exception
+    /// OverflowAtction defines the output plugin behave when its buffer queue is full.
+    /// Default: throw_exception
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "overflowAction")]
     pub overflow_action: Option<String>,
     /// The path where buffer chunks are stored. This field would make no effect in memory buffer plugin.
@@ -137,7 +147,11 @@ pub struct OutputOutputsBuffer {
     /// The queue length limitation of this buffer plugin instance. Default: 0.95
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueLimitLength")]
     pub queue_limit_length: Option<String>,
-    /// Limit the number of queued chunks. Default: 1 If a smaller flush_interval is set, e.g. 1s, there are lots of small queued chunks in the buffer. With file buffer, it may consume a lot of fd resources when output destination has a problem. This parameter mitigates such situations.
+    /// Limit the number of queued chunks. Default: 1
+    /// If a smaller flush_interval is set, e.g. 1s,
+    /// there are lots of small queued chunks in the buffer.
+    /// With file buffer, it may consume a lot of fd resources when output destination has a problem.
+    /// This parameter mitigates such situations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuedChunksLimitSize")]
     pub queued_chunks_limit_size: Option<i64>,
     /// The base number of exponential backoff for retries.
@@ -158,7 +172,8 @@ pub struct OutputOutputsBuffer {
     /// The ratio of retry_timeout to switch to use the secondary while failing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retrySecondaryThreshold")]
     pub retry_secondary_threshold: Option<String>,
-    /// Retry parameters The maximum time (seconds) to retry to flush again the failed chunks, until the plugin discards the buffer chunks
+    /// Retry parameters
+    /// The maximum time (seconds) to retry to flush again the failed chunks, until the plugin discards the buffer chunks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryTimeout")]
     pub retry_timeout: Option<String>,
     /// Output plugin will retry periodically with fixed intervals.
@@ -167,7 +182,11 @@ pub struct OutputOutputsBuffer {
     /// Wait in seconds before the next retry to flush or constant factor of exponential backoff
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryWait")]
     pub retry_wait: Option<String>,
-    /// The output plugins group events into chunks. Chunk keys, specified as the argument of <buffer> section, control how to group events into chunks. If tag is empty, which means blank Chunk Keys. Tag also supports Nested Field, combination of Chunk Keys, placeholders, etc. See https://docs.fluentd.org/configuration/buffer-section.
+    /// The output plugins group events into chunks.
+    /// Chunk keys, specified as the argument of <buffer> section, control how to group events into chunks.
+    /// If tag is empty, which means blank Chunk Keys.
+    /// Tag also supports Nested Field, combination of Chunk Keys, placeholders, etc.
+    /// See https://docs.fluentd.org/configuration/buffer-section.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
     /// Process value according to the specified format. This is available only when time_type is string
@@ -188,7 +207,8 @@ pub struct OutputOutputsBuffer {
     /// Uses the specified timezone.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
-    /// The size limitation of this buffer plugin instance Default: 512MB (memory) / 64GB (file)
+    /// The size limitation of this buffer plugin instance
+    /// Default: 512MB (memory) / 64GB (file)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalLimitSize")]
     pub total_limit_size: Option<String>,
     /// The @type parameter specifies the type of the plugin.
@@ -379,7 +399,9 @@ pub struct OutputOutputsCloudWatchAwsKeyIdValueFrom {
 pub struct OutputOutputsCloudWatchAwsKeyIdValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -408,7 +430,9 @@ pub struct OutputOutputsCloudWatchAwsSecKeyValueFrom {
 pub struct OutputOutputsCloudWatchAwsSecKeyValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -532,7 +556,9 @@ pub struct OutputOutputsDatadogApiKeyValueFrom {
 pub struct OutputOutputsDatadogApiKeyValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -558,24 +584,46 @@ pub struct OutputOutputsElasticsearch {
     /// Authenticate towards Elastic Cloud using cloudAuth.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudAuth")]
     pub cloud_auth: Option<OutputOutputsElasticsearchCloudAuth>,
-    /// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must be set as well and host, port, user and password are ignored.
+    /// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must
+    /// be set as well and host, port, user and password are ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudId")]
     pub cloud_id: Option<OutputOutputsElasticsearchCloudId>,
+    /// Optional, Enable Index Lifecycle Management (ILM)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableIlm")]
+    pub enable_ilm: Option<bool>,
+    /// Optional, Indicates whether to fail when max_retry_putting_template is exceeded. If you have multiple output plugin, you could use this property to do not fail on fluentd statup (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOnPuttingTemplateRetryExceeded")]
+    pub fail_on_putting_template_retry_exceeded: Option<bool>,
     /// The hostname of your Elasticsearch node (default: localhost).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Hosts defines a list of hosts if you want to connect to more than one Elasticsearch nodes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<String>,
+    /// Optional, Specify ILM policy contents as Hash
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicy")]
+    pub ilm_policy: Option<String>,
+    /// Optional, Specify ILM policy id
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicyId")]
+    pub ilm_policy_id: Option<String>,
+    /// Optional, Specify whether overwriting ilm policy or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicyOverride")]
+    pub ilm_policy_override: Option<bool>,
     /// IndexName defines the placeholder syntax of Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexName")]
     pub index_name: Option<String>,
+    /// Optional, Enable logging of 400 reason without enabling debug log level
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logEs400Reason")]
+    pub log_es400_reason: Option<bool>,
     /// If true, Fluentd uses the conventional index name format logstash-%Y.%m.%d (default: false). This option supersedes the index_name option.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashFormat")]
     pub logstash_format: Option<bool>,
     /// LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashPrefix")]
     pub logstash_prefix: Option<String>,
+    /// Optional, You can specify times of retry putting template (default: 10)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryPuttingTemplate")]
+    pub max_retry_putting_template: Option<i32>,
     /// Optional, The login credentials to connect to Elasticsearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<OutputOutputsElasticsearchPassword>,
@@ -585,12 +633,30 @@ pub struct OutputOutputsElasticsearch {
     /// The port number of your Elasticsearch node (default: 9200).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
+    /// Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconnectOnError")]
+    pub reconnect_on_error: Option<bool>,
+    /// Optional, Automatically reload connection after 10000 documents (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadConnections")]
+    pub reload_connections: Option<bool>,
+    /// Optional, Indicates that the elasticsearch-transport will try to reload the nodes addresses if there is a failure while making the request, this can be useful to quickly remove a dead node from the list of addresses (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadOnFailure")]
+    pub reload_on_failure: Option<bool>,
+    /// Optional, HTTP Timeout (default: 5)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
+    pub request_timeout: Option<String>,
     /// Specify https if your Elasticsearch endpoint supports SSL (default: http).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
     /// Optional, Force certificate validation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerify")]
     pub ssl_verify: Option<bool>,
+    /// Optional, Suppress '[types removal]' warnings on elasticsearch 7.x
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suppressTypeName")]
+    pub suppress_type_name: Option<bool>,
+    /// Optional, Always update the template, even if it already exists (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateOverwrite")]
+    pub template_overwrite: Option<bool>,
     /// Optional, The login credentials to connect to Elasticsearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<OutputOutputsElasticsearchUser>,
@@ -617,7 +683,9 @@ pub struct OutputOutputsElasticsearchClientKeyPasswordValueFrom {
 pub struct OutputOutputsElasticsearchClientKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -646,7 +714,9 @@ pub struct OutputOutputsElasticsearchCloudAuthValueFrom {
 pub struct OutputOutputsElasticsearchCloudAuthValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -654,7 +724,8 @@ pub struct OutputOutputsElasticsearchCloudAuthValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must be set as well and host, port, user and password are ignored.
+/// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must
+/// be set as well and host, port, user and password are ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputOutputsElasticsearchCloudId {
     /// ValueSource defines how to find a value's key.
@@ -675,7 +746,9 @@ pub struct OutputOutputsElasticsearchCloudIdValueFrom {
 pub struct OutputOutputsElasticsearchCloudIdValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -704,7 +777,9 @@ pub struct OutputOutputsElasticsearchPasswordValueFrom {
 pub struct OutputOutputsElasticsearchPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -733,7 +808,9 @@ pub struct OutputOutputsElasticsearchUserValueFrom {
 pub struct OutputOutputsElasticsearchUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -759,18 +836,55 @@ pub struct OutputOutputsElasticsearchDataStream {
     /// Authenticate towards Elastic Cloud using cloudAuth.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudAuth")]
     pub cloud_auth: Option<OutputOutputsElasticsearchDataStreamCloudAuth>,
-    /// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must be set as well and host, port, user and password are ignored.
+    /// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must
+    /// be set as well and host, port, user and password are ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudId")]
     pub cloud_id: Option<OutputOutputsElasticsearchDataStreamCloudId>,
+    /// Optional, You can specify the name of an existing ILM policy, which will be applied to the data stream. If not present, it creates a new ILM default policy (unless data_stream_template_name is defined, in that case the ILM will be set to the one specified in the matching index template)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStreamIlmName")]
+    pub data_stream_ilm_name: Option<String>,
+    /// Optional, You can specify the ILM policy contents as hash. If not present, it will apply the ILM default policy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStreamIlmPolicy")]
+    pub data_stream_ilm_policy: Option<String>,
+    /// Optional, Specify whether the data stream ILM policy should be overwritten
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStreamIlmPolicyOverwrite")]
+    pub data_stream_ilm_policy_overwrite: Option<bool>,
     /// You can specify Elasticsearch data stream name by this parameter. This parameter is mandatory for elasticsearch_data_stream
     #[serde(rename = "dataStreamName")]
     pub data_stream_name: String,
+    /// Optional, You can specify an existing matching index template for the data stream. If not present, it creates a new matching index template
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStreamTemplateName")]
+    pub data_stream_template_name: Option<String>,
+    /// Optional, Specify whether index patterns should include a wildcard (*) when creating an index template. This is particularly useful to prevent errors in scenarios where index templates are generated automatically, and multiple services with distinct suffixes are in use
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStreamTemplateUseIndexPatternsWildcard")]
+    pub data_stream_template_use_index_patterns_wildcard: Option<bool>,
+    /// Optional, Enable Index Lifecycle Management (ILM)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableIlm")]
+    pub enable_ilm: Option<bool>,
+    /// Optional, Indicates whether to fail when max_retry_putting_template is exceeded. If you have multiple output plugin, you could use this property to do not fail on fluentd statup (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOnPuttingTemplateRetryExceeded")]
+    pub fail_on_putting_template_retry_exceeded: Option<bool>,
     /// The hostname of your Elasticsearch node (default: localhost).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Hosts defines a list of hosts if you want to connect to more than one Elasticsearch nodes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<String>,
+    /// Optional, Specify ILM policy contents as Hash
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicy")]
+    pub ilm_policy: Option<String>,
+    /// Optional, Specify ILM policy id
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicyId")]
+    pub ilm_policy_id: Option<String>,
+    /// Optional, Specify whether overwriting ilm policy or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicyOverride")]
+    pub ilm_policy_override: Option<bool>,
+    /// Optional, Enable logging of 400 reason without enabling debug log level
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logEs400Reason")]
+    pub log_es400_reason: Option<bool>,
+    /// Optional, You can specify times of retry putting template (default: 10)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryPuttingTemplate")]
+    pub max_retry_putting_template: Option<i32>,
     /// Optional, The login credentials to connect to Elasticsearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<OutputOutputsElasticsearchDataStreamPassword>,
@@ -780,12 +894,30 @@ pub struct OutputOutputsElasticsearchDataStream {
     /// The port number of your Elasticsearch node (default: 9200).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
+    /// Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconnectOnError")]
+    pub reconnect_on_error: Option<bool>,
+    /// Optional, Automatically reload connection after 10000 documents (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadConnections")]
+    pub reload_connections: Option<bool>,
+    /// Optional, Indicates that the elasticsearch-transport will try to reload the nodes addresses if there is a failure while making the request, this can be useful to quickly remove a dead node from the list of addresses (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadOnFailure")]
+    pub reload_on_failure: Option<bool>,
+    /// Optional, HTTP Timeout (default: 5)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
+    pub request_timeout: Option<String>,
     /// Specify https if your Elasticsearch endpoint supports SSL (default: http).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
     /// Optional, Force certificate validation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerify")]
     pub ssl_verify: Option<bool>,
+    /// Optional, Suppress '[types removal]' warnings on elasticsearch 7.x
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suppressTypeName")]
+    pub suppress_type_name: Option<bool>,
+    /// Optional, Always update the template, even if it already exists (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateOverwrite")]
+    pub template_overwrite: Option<bool>,
     /// Optional, The login credentials to connect to Elasticsearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<OutputOutputsElasticsearchDataStreamUser>,
@@ -812,7 +944,9 @@ pub struct OutputOutputsElasticsearchDataStreamClientKeyPasswordValueFrom {
 pub struct OutputOutputsElasticsearchDataStreamClientKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -841,7 +975,9 @@ pub struct OutputOutputsElasticsearchDataStreamCloudAuthValueFrom {
 pub struct OutputOutputsElasticsearchDataStreamCloudAuthValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -849,7 +985,8 @@ pub struct OutputOutputsElasticsearchDataStreamCloudAuthValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must be set as well and host, port, user and password are ignored.
+/// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must
+/// be set as well and host, port, user and password are ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputOutputsElasticsearchDataStreamCloudId {
     /// ValueSource defines how to find a value's key.
@@ -870,7 +1007,9 @@ pub struct OutputOutputsElasticsearchDataStreamCloudIdValueFrom {
 pub struct OutputOutputsElasticsearchDataStreamCloudIdValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -899,7 +1038,9 @@ pub struct OutputOutputsElasticsearchDataStreamPasswordValueFrom {
 pub struct OutputOutputsElasticsearchDataStreamPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -928,7 +1069,9 @@ pub struct OutputOutputsElasticsearchDataStreamUserValueFrom {
 pub struct OutputOutputsElasticsearchDataStreamUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1030,7 +1173,8 @@ pub struct OutputOutputsForward {
     /// The connection timeout for the socket. When the connection is timed out during the connection establishment, Errno::ETIMEDOUT error is raised.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
-    /// Enable client-side DNS round robin. Uniform randomly pick an IP address to send data when a hostname has several IP addresses. heartbeat_type udp is not available with dns_round_robintrue. Use heartbeat_type tcp or heartbeat_type none.
+    /// Enable client-side DNS round robin. Uniform randomly pick an IP address to send data when a hostname has several IP addresses.
+    /// heartbeat_type udp is not available with dns_round_robintrue. Use heartbeat_type tcp or heartbeat_type none.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsRoundRobin")]
     pub dns_round_robin: Option<bool>,
     /// Sets TTL to expire DNS cache in seconds. Set 0 not to use DNS Cache.
@@ -1183,7 +1327,9 @@ pub struct OutputOutputsForwardSecurityUserPasswordValueFrom {
 pub struct OutputOutputsForwardSecurityUserPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1212,7 +1358,9 @@ pub struct OutputOutputsForwardSecurityUserUsernameValueFrom {
 pub struct OutputOutputsForwardSecurityUserUsernameValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1279,7 +1427,9 @@ pub struct OutputOutputsForwardServersPasswordValueFrom {
 pub struct OutputOutputsForwardServersPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1308,7 +1458,9 @@ pub struct OutputOutputsForwardServersUsernameValueFrom {
 pub struct OutputOutputsForwardServersUsernameValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1416,7 +1568,9 @@ pub struct OutputOutputsForwardServiceDiscoveryServerPasswordValueFrom {
 pub struct OutputOutputsForwardServiceDiscoveryServerPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1445,7 +1599,9 @@ pub struct OutputOutputsForwardServiceDiscoveryServerUsernameValueFrom {
 pub struct OutputOutputsForwardServiceDiscoveryServerUsernameValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1573,7 +1729,9 @@ pub struct OutputOutputsHttpAuthPasswordValueFrom {
 pub struct OutputOutputsHttpAuthPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1602,7 +1760,9 @@ pub struct OutputOutputsHttpAuthUsernameValueFrom {
 pub struct OutputOutputsHttpAuthUsernameValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1737,7 +1897,8 @@ pub struct OutputOutputsLoki {
     /// If set to true, it will add all Kubernetes labels to the Stream labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extractKubernetesLabels")]
     pub extract_kubernetes_labels: Option<bool>,
-    /// Password for user defined in HTTP_User Set HTTP basic authentication password
+    /// Password for user defined in HTTP_User
+    /// Set HTTP basic authentication password
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpPassword")]
     pub http_password: Option<OutputOutputsLokiHttpPassword>,
     /// Set HTTP basic authentication user name.
@@ -1749,19 +1910,25 @@ pub struct OutputOutputsLoki {
     /// Disable certificate validation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
-    /// Optional list of record keys that will be placed as stream labels. This configuration property is for records key only.
+    /// Optional list of record keys that will be placed as stream labels.
+    /// This configuration property is for records key only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelKeys")]
     pub label_keys: Option<Vec<String>>,
-    /// Stream labels for API request. It can be multiple comma separated of strings specifying  key=value pairs. In addition to fixed parameters, it also allows to add custom record keys (similar to label_keys property).
+    /// Stream labels for API request. It can be multiple comma separated of strings specifying  key=value pairs.
+    /// In addition to fixed parameters, it also allows to add custom record keys (similar to label_keys property).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<String>>,
-    /// Format to use when flattening the record to a log line. Valid values are json or key_value. If set to json,  the log line sent to Loki will be the Fluentd record dumped as JSON. If set to key_value, the log line will be each item in the record concatenated together (separated by a single space) in the format.
+    /// Format to use when flattening the record to a log line. Valid values are json or key_value.
+    /// If set to json,  the log line sent to Loki will be the Fluentd record dumped as JSON.
+    /// If set to key_value, the log line will be each item in the record concatenated together (separated by a single space) in the format.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lineFormat")]
     pub line_format: Option<OutputOutputsLokiLineFormat>,
-    /// Optional list of record keys that will be removed from stream labels. This configuration property is for records key only.
+    /// Optional list of record keys that will be removed from stream labels.
+    /// This configuration property is for records key only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeKeys")]
     pub remove_keys: Option<Vec<String>>,
-    /// Tenant ID used by default to push logs to Loki. If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
+    /// Tenant ID used by default to push logs to Loki.
+    /// If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
     pub tenant_id: Option<OutputOutputsLokiTenantId>,
     /// TlsCaCert defines the CA certificate file for TLS.
@@ -1777,7 +1944,8 @@ pub struct OutputOutputsLoki {
     pub url: String,
 }
 
-/// Password for user defined in HTTP_User Set HTTP basic authentication password
+/// Password for user defined in HTTP_User
+/// Set HTTP basic authentication password
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputOutputsLokiHttpPassword {
     /// ValueSource defines how to find a value's key.
@@ -1798,7 +1966,9 @@ pub struct OutputOutputsLokiHttpPasswordValueFrom {
 pub struct OutputOutputsLokiHttpPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1827,7 +1997,9 @@ pub struct OutputOutputsLokiHttpUserValueFrom {
 pub struct OutputOutputsLokiHttpUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1844,7 +2016,8 @@ pub enum OutputOutputsLokiLineFormat {
     KeyValue,
 }
 
-/// Tenant ID used by default to push logs to Loki. If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
+/// Tenant ID used by default to push logs to Loki.
+/// If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputOutputsLokiTenantId {
     /// ValueSource defines how to find a value's key.
@@ -1865,7 +2038,9 @@ pub struct OutputOutputsLokiTenantIdValueFrom {
 pub struct OutputOutputsLokiTenantIdValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1929,7 +2104,9 @@ pub struct OutputOutputsOpensearchPasswordValueFrom {
 pub struct OutputOutputsOpensearchPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1958,7 +2135,9 @@ pub struct OutputOutputsOpensearchUserValueFrom {
 pub struct OutputOutputsOpensearchUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined

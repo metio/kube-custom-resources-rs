@@ -105,6 +105,10 @@ pub struct CassandraDatacenterSpec {
     /// Config for the Management API certificates
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementApiAuth")]
     pub management_api_auth: Option<CassandraDatacenterManagementApiAuth>,
+    /// MinReadySeconds sets the minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available. Defaults to 5 seconds and is set in the StatefulSet spec.
+    /// Setting to 0 might cause multiple Cassandra pods to restart at the same time despite PodDisruptionBudget settings.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
+    pub min_ready_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub networking: Option<CassandraDatacenterNetworking>,
     /// NodeAffinityLabels to pin the Datacenter, using node affinity

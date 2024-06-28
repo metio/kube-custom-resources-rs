@@ -59,7 +59,7 @@ pub struct PatternGitSpec {
     /// Optional. FQDN of the git server if automatic parsing from TargetRepo is broken
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// Enable in-cluster git server (avoids the need of forking the upstream repository)
+    /// (EXPERIMENTAL) Enable in-cluster git server (avoids the need of forking the upstream repository)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inClusterGitServer")]
     pub in_cluster_git_server: Option<bool>,
     /// Upstream git repo containing the pattern to deploy. Used when in-cluster fork to point to the upstream pattern repository.

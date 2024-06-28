@@ -98,8 +98,8 @@ spec:
                     - "name"
                   type: "object"
                 ownerID:
-                  description: "ownerID is a unique string used to identify the owner of this record."
-                  maxLength: 12
+                  description: "ownerID is a unique string used to identify the owner of this record.\nIf unset or set to an empty string the record UID will be used."
+                  maxLength: 36
                   minLength: 6
                   type: "string"
                   x-kubernetes-validations:
@@ -111,9 +111,13 @@ spec:
                   type: "string"
               required:
                 - "managedZone"
-                - "ownerID"
                 - "rootHost"
               type: "object"
+              x-kubernetes-validations:
+                - message: "OwnerID can't be unset if it was previously set"
+                  rule: "!has(oldSelf.ownerID) || has(self.ownerID)"
+                - message: "OwnerID can't be set if it was previously unset"
+                  rule: "has(oldSelf.ownerID) || !has(self.ownerID)"
             status:
               description: "DNSRecordStatus defines the observed state of DNSRecord"
               properties:
@@ -312,6 +316,9 @@ spec:
                   description: "observedGeneration is the most recently observed generation of the\nDNSRecord.  When the DNSRecord is updated, the controller updates the\ncorresponding record in each managed zone.  If an update for a\nparticular zone fails, that failure is recorded in the status\ncondition for the zone so that the controller can determine that it\nneeds to retry the update for that specific zone."
                   format: "int64"
                   type: "integer"
+                ownerID:
+                  description: "ownerID is a unique string used to identify the owner of this record."
+                  type: "string"
                 queuedAt:
                   description: "QueuedAt is a time when DNS record was received for the reconciliation"
                   format: "date-time"

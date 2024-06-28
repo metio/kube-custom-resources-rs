@@ -134,6 +134,9 @@ pub struct ScrapeConfigSpec {
     /// OpenStackSDConfigs defines a list of OpenStack service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openstackSDConfigs")]
     pub openstack_sd_configs: Option<Vec<ScrapeConfigOpenstackSdConfigs>>,
+    /// OVHCloudSDConfigs defines a list of OVHcloud service discovery configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ovhcloudSDConfigs")]
+    pub ovhcloud_sd_configs: Option<Vec<ScrapeConfigOvhcloudSdConfigs>>,
     /// Optional HTTP URL parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
@@ -1779,10 +1782,12 @@ pub struct ScrapeConfigDockerSdConfigsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// DockerFilter is the configuration to limit the discovery process to a subset of available resources.
+/// Filter name and value pairs to limit the discovery process to a subset of available resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigsFilters {
+    /// Name of the Filter.
     pub name: String,
+    /// Value to filter on.
     pub values: Vec<String>,
 }
 
@@ -2036,6 +2041,8 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
+/// DockerSwarmSDConfig configurations allow retrieving scrape targets from Docker Swarm engine.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#dockerswarm_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSwarmSdConfigs {
     /// Authorization header configuration to authenticate against the target HTTP endpoint.
@@ -2195,12 +2202,12 @@ pub struct ScrapeConfigDockerSwarmSdConfigsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// Filter is the configuration to limit the discovery process to a subset of available resources.
+/// Filter name and value pairs to limit the discovery process to a subset of available resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigDockerSwarmSdConfigsFilters {
-    /// Name is the key of the field to check against.
+    /// Name of the Filter.
     pub name: String,
-    /// Values is the value or set of values to check for a match.
+    /// Value to filter on.
     pub values: Vec<String>,
 }
 
@@ -2317,6 +2324,8 @@ pub struct ScrapeConfigDockerSwarmSdConfigsProxyConnectHeader {
     pub optional: Option<bool>,
 }
 
+/// DockerSwarmSDConfig configurations allow retrieving scrape targets from Docker Swarm engine.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#dockerswarm_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigDockerSwarmSdConfigsRole {
     Services,
@@ -2513,10 +2522,12 @@ pub struct ScrapeConfigEc2SdConfigsAccessKey {
     pub optional: Option<bool>,
 }
 
-/// EC2Filter is the configuration for filtering EC2 instances.
+/// Filter name and value pairs to limit the discovery process to a subset of available resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigEc2SdConfigsFilters {
+    /// Name of the Filter.
     pub name: String,
+    /// Value to filter on.
     pub values: Vec<String>,
 }
 
@@ -4607,6 +4618,8 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
+/// LightSailSDConfig configurations allow retrieving scrape targets from AWS Lightsail instances.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#lightsail_sd_config
 /// TODO: Need to document that we will not be supporting the `_file` fields.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigLightSailSdConfigs {
@@ -5062,6 +5075,8 @@ pub struct ScrapeConfigLightSailSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
+/// LinodeSDConfig configurations allow retrieving scrape targets from Linode's Linode APIv4.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#linode_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigLinodeSdConfigs {
     /// Authorization header configuration.
@@ -5785,6 +5800,67 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
+/// OVHCloudSDConfig configurations allow retrieving scrape targets from OVHcloud's dedicated servers and VPS using their API.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ovhcloud_sd_config
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigOvhcloudSdConfigs {
+    /// Access key to use. https://api.ovh.com.
+    #[serde(rename = "applicationKey")]
+    pub application_key: String,
+    /// SecretKeySelector selects a key of a Secret.
+    #[serde(rename = "applicationSecret")]
+    pub application_secret: ScrapeConfigOvhcloudSdConfigsApplicationSecret,
+    /// SecretKeySelector selects a key of a Secret.
+    #[serde(rename = "consumerKey")]
+    pub consumer_key: ScrapeConfigOvhcloudSdConfigsConsumerKey,
+    /// Custom endpoint to be used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+    /// Refresh interval to re-read the resources list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
+    pub refresh_interval: Option<String>,
+    /// Service of the targets to retrieve. Must be `VPS` or `DedicatedServer`.
+    pub service: String,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigOvhcloudSdConfigsApplicationSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigOvhcloudSdConfigsConsumerKey {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigProxyConnectHeader {
@@ -5804,6 +5880,8 @@ pub struct ScrapeConfigProxyConnectHeader {
     pub optional: Option<bool>,
 }
 
+/// PuppetDBSDConfig configurations allow retrieving scrape targets from PuppetDB resources.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#puppetdb_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigPuppetDbsdConfigs {
     /// Optional `authorization` HTTP header configuration.

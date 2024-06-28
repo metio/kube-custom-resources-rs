@@ -1170,6 +1170,9 @@ pub struct CheClusterDevEnvironments {
     /// User configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<CheClusterDevEnvironmentsUser>,
+    /// WorkspacesPodAnnotations defines additional annotations for workspace pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspacesPodAnnotations")]
+    pub workspaces_pod_annotations: Option<BTreeMap<String, String>>,
 }
 
 /// Container build configuration.

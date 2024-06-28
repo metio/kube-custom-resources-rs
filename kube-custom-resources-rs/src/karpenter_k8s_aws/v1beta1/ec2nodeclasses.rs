@@ -61,7 +61,7 @@ pub struct EC2NodeClassSpec {
     /// (https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)
     /// for limiting exposure of Instance Metadata and User Data to pods.
     /// If omitted, defaults to httpEndpoint enabled, with httpProtocolIPv6
-    /// disabled, with httpPutResponseLimit of 2, and with httpTokens
+    /// disabled, with httpPutResponseLimit of 1, and with httpTokens
     /// required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataOptions")]
     pub metadata_options: Option<EC2NodeClassMetadataOptions>,
@@ -251,7 +251,7 @@ pub enum EC2NodeClassInstanceStorePolicy {
 /// (https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)
 /// for limiting exposure of Instance Metadata and User Data to pods.
 /// If omitted, defaults to httpEndpoint enabled, with httpProtocolIPv6
-/// disabled, with httpPutResponseLimit of 2, and with httpTokens
+/// disabled, with httpPutResponseLimit of 1, and with httpTokens
 /// required.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EC2NodeClassMetadataOptions {
@@ -310,7 +310,7 @@ pub struct EC2NodeClassMetadataOptions {
 /// (https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)
 /// for limiting exposure of Instance Metadata and User Data to pods.
 /// If omitted, defaults to httpEndpoint enabled, with httpProtocolIPv6
-/// disabled, with httpPutResponseLimit of 2, and with httpTokens
+/// disabled, with httpPutResponseLimit of 1, and with httpTokens
 /// required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum EC2NodeClassMetadataOptionsHttpEndpoint {
@@ -334,7 +334,7 @@ pub enum EC2NodeClassMetadataOptionsHttpEndpoint {
 /// (https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)
 /// for limiting exposure of Instance Metadata and User Data to pods.
 /// If omitted, defaults to httpEndpoint enabled, with httpProtocolIPv6
-/// disabled, with httpPutResponseLimit of 2, and with httpTokens
+/// disabled, with httpPutResponseLimit of 1, and with httpTokens
 /// required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum EC2NodeClassMetadataOptionsHttpProtocolIPv6 {
@@ -358,7 +358,7 @@ pub enum EC2NodeClassMetadataOptionsHttpProtocolIPv6 {
 /// (https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)
 /// for limiting exposure of Instance Metadata and User Data to pods.
 /// If omitted, defaults to httpEndpoint enabled, with httpProtocolIPv6
-/// disabled, with httpPutResponseLimit of 2, and with httpTokens
+/// disabled, with httpPutResponseLimit of 1, and with httpTokens
 /// required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum EC2NodeClassMetadataOptionsHttpTokens {

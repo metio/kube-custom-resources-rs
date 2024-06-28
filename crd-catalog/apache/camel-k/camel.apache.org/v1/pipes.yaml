@@ -3954,10 +3954,10 @@ spec:
                                 - "IfNotPresent"
                               type: "string"
                             limitCPU:
-                              description: "The maximum amount of CPU required."
+                              description: "The maximum amount of CPU to be provided (default 500 millicores)."
                               type: "string"
                             limitMemory:
-                              description: "The maximum amount of memory required."
+                              description: "The maximum amount of memory to be provided (default 512 Mi)."
                               type: "string"
                             name:
                               description: "The main container name. It's named `integration` by default."
@@ -3969,10 +3969,10 @@ spec:
                               description: "To configure a different port name for the port exposed by the container. It defaults to `http` only when the `expose` parameter is true."
                               type: "string"
                             requestCPU:
-                              description: "The minimum amount of CPU required."
+                              description: "The minimum amount of CPU required (default 125 millicores)."
                               type: "string"
                             requestMemory:
-                              description: "The minimum amount of memory required."
+                              description: "The minimum amount of memory required (default 128 Mi)."
                               type: "string"
                             runAsNonRoot:
                               description: "Security Context RunAsNonRoot configuration (default false)."
@@ -4035,6 +4035,9 @@ spec:
                               description: "Optional deadline in seconds for starting the job if it misses scheduled time for any reason.  Missed jobs executions will be counted as failed ones."
                               format: "int64"
                               type: "integer"
+                            timeZone:
+                              description: "The timezone that the CronJob will run on"
+                              type: "string"
                           type: "object"
                         dependencies:
                           description: "The configuration of Dependencies trait"

@@ -59,14 +59,10 @@ pub struct PolicySpec {
     /// Defaults to "false" if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useServerSideApply")]
     pub use_server_side_apply: Option<bool>,
-    /// ValidationFailureAction defines if a validation policy rule violation should block
-    /// the admission review request (enforce), or allow (audit) the admission review request
-    /// and report an error in a policy report. Optional.
-    /// Allowed values are audit or enforce. The default value is "Audit".
+    /// Deprecated, use validationFailureAction under the validate rule instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
     pub validation_failure_action: Option<PolicyValidationFailureAction>,
-    /// ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction
-    /// namespace-wise. It overrides ValidationFailureAction for the specified namespaces.
+    /// Deprecated, use validationFailureActionOverrides under the validate rule instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureActionOverrides")]
     pub validation_failure_action_overrides: Option<Vec<PolicyValidationFailureActionOverrides>>,
     /// WebhookConfiguration specifies the custom configuration for Kubernetes admission webhookconfiguration.
@@ -1739,6 +1735,16 @@ pub struct PolicyRulesValidate {
     /// by specifying exclusions for Pod Security Standards controls.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<PolicyRulesValidatePodSecurity>,
+    /// ValidationFailureAction defines if a validation policy rule violation should block
+    /// the admission review request (enforce), or allow (audit) the admission review request
+    /// and report an error in a policy report. Optional.
+    /// Allowed values are audit or enforce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
+    pub validation_failure_action: Option<PolicyRulesValidateValidationFailureAction>,
+    /// ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction
+    /// namespace-wise. It overrides ValidationFailureAction for the specified namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureActionOverrides")]
+    pub validation_failure_action_overrides: Option<Vec<PolicyRulesValidateValidationFailureActionOverrides>>,
 }
 
 /// CEL allows validation checks using the Common Expression Language (https://kubernetes.io/docs/reference/using-api/cel/).
@@ -2814,6 +2820,77 @@ pub enum PolicyRulesValidatePodSecurityVersion {
     V129,
     #[serde(rename = "latest")]
     Latest,
+}
+
+/// Validation is used to validate matching resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyRulesValidateValidationFailureAction {
+    #[serde(rename = "audit")]
+    Audit,
+    #[serde(rename = "enforce")]
+    Enforce,
+    #[serde(rename = "Audit")]
+    AuditX,
+    #[serde(rename = "Enforce")]
+    EnforceX,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesValidateValidationFailureActionOverrides {
+    /// ValidationFailureAction defines the policy validation failure action
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<PolicyRulesValidateValidationFailureActionOverridesAction>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and
+    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
+    /// label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<PolicyRulesValidateValidationFailureActionOverridesNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyRulesValidateValidationFailureActionOverridesAction {
+    #[serde(rename = "audit")]
+    Audit,
+    #[serde(rename = "enforce")]
+    Enforce,
+    #[serde(rename = "Audit")]
+    AuditX,
+    #[serde(rename = "Enforce")]
+    EnforceX,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesValidateValidationFailureActionOverridesNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PolicyRulesValidateValidationFailureActionOverridesNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesValidateValidationFailureActionOverridesNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// ImageVerification validates that images that match the specified pattern
@@ -5480,6 +5557,16 @@ pub struct PolicyStatusAutogenRulesValidate {
     /// by specifying exclusions for Pod Security Standards controls.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<PolicyStatusAutogenRulesValidatePodSecurity>,
+    /// ValidationFailureAction defines if a validation policy rule violation should block
+    /// the admission review request (enforce), or allow (audit) the admission review request
+    /// and report an error in a policy report. Optional.
+    /// Allowed values are audit or enforce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
+    pub validation_failure_action: Option<PolicyStatusAutogenRulesValidateValidationFailureAction>,
+    /// ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction
+    /// namespace-wise. It overrides ValidationFailureAction for the specified namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureActionOverrides")]
+    pub validation_failure_action_overrides: Option<Vec<PolicyStatusAutogenRulesValidateValidationFailureActionOverrides>>,
 }
 
 /// CEL allows validation checks using the Common Expression Language (https://kubernetes.io/docs/reference/using-api/cel/).
@@ -6463,6 +6550,77 @@ pub enum PolicyStatusAutogenRulesValidatePodSecurityVersion {
     V129,
     #[serde(rename = "latest")]
     Latest,
+}
+
+/// Validation is used to validate matching resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyStatusAutogenRulesValidateValidationFailureAction {
+    #[serde(rename = "audit")]
+    Audit,
+    #[serde(rename = "enforce")]
+    Enforce,
+    #[serde(rename = "Audit")]
+    AuditX,
+    #[serde(rename = "Enforce")]
+    EnforceX,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesValidateValidationFailureActionOverrides {
+    /// ValidationFailureAction defines the policy validation failure action
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<PolicyStatusAutogenRulesValidateValidationFailureActionOverridesAction>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and
+    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
+    /// label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<PolicyStatusAutogenRulesValidateValidationFailureActionOverridesNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyStatusAutogenRulesValidateValidationFailureActionOverridesAction {
+    #[serde(rename = "audit")]
+    Audit,
+    #[serde(rename = "enforce")]
+    Enforce,
+    #[serde(rename = "Audit")]
+    AuditX,
+    #[serde(rename = "Enforce")]
+    EnforceX,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesValidateValidationFailureActionOverridesNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PolicyStatusAutogenRulesValidateValidationFailureActionOverridesNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesValidateValidationFailureActionOverridesNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// ImageVerification validates that images that match the specified pattern

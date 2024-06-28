@@ -144,7 +144,8 @@ pub struct ClusterFilterFiltersGrepRegexp {
 /// The filter_parser filter plugin
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterFilterFiltersParser {
-    /// Emits invalid record to @ERROR label. Invalid cases are: key does not exist;the format is not matched;an unexpected error. If you want to ignore these errors, set false.
+    /// Emits invalid record to @ERROR label. Invalid cases are: key does not exist;the format is not matched;an unexpected error.
+    /// If you want to ignore these errors, set false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitInvalidRecordToError")]
     pub emit_invalid_record_to_error: Option<bool>,
     /// Stores the parsed values as a hash value in a field.
@@ -153,7 +154,8 @@ pub struct ClusterFilterFiltersParser {
     /// Stores the parsed values with the specified key name prefix.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "injectKeyPrefix")]
     pub inject_key_prefix: Option<String>,
-    /// Specifies the field name in the record to parse. Required parameter. i.e: If set keyName to log, {"key":"value","log":"{\"time\":1622473200,\"user\":1}"} => {"user":1}
+    /// Specifies the field name in the record to parse. Required parameter.
+    /// i.e: If set keyName to log, {"key":"value","log":"{\"time\":1622473200,\"user\":1}"} => {"user":1}
     #[serde(rename = "keyName")]
     pub key_name: String,
     /// Parse defines various parameters for the parse plugin
@@ -164,7 +166,9 @@ pub struct ClusterFilterFiltersParser {
     /// If true, invalid string is replaced with safe characters and re-parse it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceInvalidSequence")]
     pub replace_invalid_sequence: Option<bool>,
-    /// Keeps the original key-value pair in the parsed result. Default is false. i.e: If set keyName to log, reverseData to true, {"key":"value","log":"{\"user\":1,\"num\":2}"} => {"key":"value","log":"{\"user\":1,\"num\":2}","user":1,"num":2}
+    /// Keeps the original key-value pair in the parsed result. Default is false.
+    /// i.e: If set keyName to log, reverseData to true,
+    /// {"key":"value","log":"{\"user\":1,\"num\":2}"} => {"key":"value","log":"{\"user\":1,\"num\":2}","user":1,"num":2}
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reserveData")]
     pub reserve_data: Option<bool>,
     /// Keeps the original event time in the parsed result. Default is false.
@@ -309,10 +313,12 @@ pub enum ClusterFilterFiltersParserParseType {
 /// The filter_record_transformer filter plugin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFilterFiltersRecordTransformer {
-    /// Automatically casts the field types. Default is false. This option is effective only for field values comprised of a single placeholder.
+    /// Automatically casts the field types. Default is false.
+    /// This option is effective only for field values comprised of a single placeholder.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoTypecast")]
     pub auto_typecast: Option<bool>,
-    /// When set to true, the full Ruby syntax is enabled in the ${...} expression. The default value is false. i.e: jsonized_record ${record.to_json}
+    /// When set to true, the full Ruby syntax is enabled in the ${...} expression. The default value is false.
+    /// i.e: jsonized_record ${record.to_json}
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRuby")]
     pub enable_ruby: Option<bool>,
     /// A list of keys to keep. Only relevant if renew_record is set to true.
@@ -336,7 +342,8 @@ pub struct ClusterFilterFiltersRecordTransformer {
 pub struct ClusterFilterFiltersRecordTransformerRecords {
     /// New field can be defined as key
     pub key: String,
-    /// The value must from Record properties. See https://docs.fluentd.org/filter/record_transformer#less-than-record-greater-than-directive
+    /// The value must from Record properties.
+    /// See https://docs.fluentd.org/filter/record_transformer#less-than-record-greater-than-directive
     pub value: String,
 }
 

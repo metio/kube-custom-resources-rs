@@ -21,6 +21,12 @@ pub struct DataplaneSpec {
     /// Scheduling constraints.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DataplaneAffinity>,
+    /// Custom annotations to add to dataplane pods. Note that this does not affect the
+    /// annotations added to the Deployment (this come from the correspnding Gateway), just the
+    /// pods. Note also that mandatory pod annotations override whatever you set here on
+    /// conflict, and the annotations set here override annotations manually added to the pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Arguments to the entrypoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -64,6 +70,12 @@ pub struct DataplaneSpec {
     /// secrets per each namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<DataplaneImagePullSecrets>>,
+    /// Custom labels to add to dataplane pods. Note that this does not affect the labels added
+    /// to the Deployment (those come from the Gateway), just the pods. Note also that mandatory
+    /// pod labels override whatever you set here on conflict. The only way to set pod labels is
+    /// here: whatever you set manually on the dataplane pod will be reset by the opetator.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Number of desired pods. If empty or set to 1, use whatever is in the target Deployment.
     /// Otherwise, enforce this setting, overwiting whatever is set in the Deployment (this may
     /// block autoscaling the dataplane though). Defaults to 1.
