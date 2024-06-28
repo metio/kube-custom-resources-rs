@@ -108,6 +108,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// when omitted system will dynamically create the service instance with name CLUSTER_NAME-serviceInstance.
     /// when ServiceInstance.ID is set, its expected that there exist a service instance in PowerVS workspace with id or else system will give error.
     /// when ServiceInstance.Name is set, system will first check for service instance with Name in PowerVS workspace, if not exist system will create new instance.
+    /// if there are more than one service instance exist with the ServiceInstance.Name in given Zone, installation fails with an error. Use ServiceInstance.ID in those situations to use the specific service instance.
     /// ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IBMPowerVSClusterTemplateTemplateSpecServiceInstance>,
@@ -305,6 +306,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecResourceGroup {
 /// when omitted system will dynamically create the service instance with name CLUSTER_NAME-serviceInstance.
 /// when ServiceInstance.ID is set, its expected that there exist a service instance in PowerVS workspace with id or else system will give error.
 /// when ServiceInstance.Name is set, system will first check for service instance with Name in PowerVS workspace, if not exist system will create new instance.
+/// if there are more than one service instance exist with the ServiceInstance.Name in given Zone, installation fails with an error. Use ServiceInstance.ID in those situations to use the specific service instance.
 /// ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecServiceInstance {

@@ -28,6 +28,9 @@ pub struct TestTriggerSpec {
     /// Delay is a duration string which specifies how long should the test be delayed after a trigger is matched
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delay: Option<String>,
+    /// whether test trigger is disabled
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
     /// On which Event for a Resource should an Action be triggered
     pub event: TestTriggerEvent,
     /// Execution identifies for which test execution should an Action be executed

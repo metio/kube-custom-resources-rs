@@ -45,6 +45,9 @@ pub struct TeleportUserGithubIdentities {
     /// ConnectorID is id of registered OIDC connector, e.g. 'google-example.com'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connector_id: Option<String>,
+    /// SAMLSingleLogoutURL is the SAML Single log-out URL to initiate SAML SLO (single log-out), if applicable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "samlSingleLogoutUrl")]
+    pub saml_single_logout_url: Option<String>,
     /// Username is username supplied by external identity provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
@@ -55,6 +58,9 @@ pub struct TeleportUserOidcIdentities {
     /// ConnectorID is id of registered OIDC connector, e.g. 'google-example.com'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connector_id: Option<String>,
+    /// SAMLSingleLogoutURL is the SAML Single log-out URL to initiate SAML SLO (single log-out), if applicable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "samlSingleLogoutUrl")]
+    pub saml_single_logout_url: Option<String>,
     /// Username is username supplied by external identity provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
@@ -65,6 +71,9 @@ pub struct TeleportUserSamlIdentities {
     /// ConnectorID is id of registered OIDC connector, e.g. 'google-example.com'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connector_id: Option<String>,
+    /// SAMLSingleLogoutURL is the SAML Single log-out URL to initiate SAML SLO (single log-out), if applicable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "samlSingleLogoutUrl")]
+    pub saml_single_logout_url: Option<String>,
     /// Username is username supplied by external identity provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,

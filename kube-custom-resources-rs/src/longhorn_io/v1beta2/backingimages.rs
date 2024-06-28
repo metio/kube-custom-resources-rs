@@ -23,6 +23,10 @@ pub struct BackingImageSpec {
     pub checksum: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disks: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
+    pub secret_namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceParameters")]
     pub source_parameters: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
@@ -40,6 +44,8 @@ pub enum BackingImageSourceType {
     ExportFromVolume,
     #[serde(rename = "restore")]
     Restore,
+    #[serde(rename = "clone")]
+    Clone,
 }
 
 /// BackingImageStatus defines the observed state of the Longhorn backing image status

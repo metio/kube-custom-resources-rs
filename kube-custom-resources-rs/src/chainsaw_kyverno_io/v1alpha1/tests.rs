@@ -53,6 +53,9 @@ pub struct TestSpec {
     /// NamespaceTemplate defines a template to create the test namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceTemplate")]
     pub namespace_template: Option<BTreeMap<String, serde_json::Value>>,
+    /// Scenarios defines test scenarios.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scenarios: Option<Vec<TestScenarios>>,
     /// Skip determines whether the test should skipped.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub skip: Option<bool>,
@@ -641,6 +644,23 @@ pub enum TestDeletionPropagationPolicy {
     Orphan,
     Background,
     Foreground,
+}
+
+/// Scenario defines per scenario bindings.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestScenarios {
+    /// Bindings defines binding key/values.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bindings: Option<Vec<TestScenariosBindings>>,
+}
+
+/// Binding represents a key/value set as a binding in an executing test.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestScenariosBindings {
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
 }
 
 /// TestStep contains the test step definition used in a test spec.
@@ -2423,6 +2443,9 @@ pub struct TestStepsTry {
     /// PodLogs determines the pod logs collector to execute.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podLogs")]
     pub pod_logs: Option<TestStepsTryPodLogs>,
+    /// Proxy runs a proxy request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub proxy: Option<TestStepsTryProxy>,
     /// Script defines a script to run.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub script: Option<TestStepsTryScript>,
@@ -3118,6 +3141,66 @@ pub struct TestStepsTryPodLogsClusters {
     /// Kubeconfig is the path to the referenced file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubeconfig: Option<String>,
+}
+
+/// Proxy runs a proxy request.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsTryProxy {
+    /// API version of the referent.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<String>,
+    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<BTreeMap<String, TestStepsTryProxyClusters>>,
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    pub kind: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Outputs defines output bindings.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub outputs: Option<Vec<TestStepsTryProxyOutputs>>,
+    /// TargetPath defines the target path to proxy the request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// TargetPort defines the target port to proxy the request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
+}
+
+/// Clusters holds a registry to clusters to support multi-cluster tests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsTryProxyClusters {
+    /// Context is the name of the context to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<String>,
+    /// Kubeconfig is the path to the referenced file.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubeconfig: Option<String>,
+}
+
+/// Output represents an output binding with a match to determine if the binding must be considered or not.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsTryProxyOutputs {
+    /// Match defines the matching statement.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
+    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
 }
 
 /// Script defines a script to run.

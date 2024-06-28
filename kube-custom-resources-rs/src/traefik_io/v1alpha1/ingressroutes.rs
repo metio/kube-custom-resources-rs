@@ -21,14 +21,14 @@ use self::prelude::*;
 pub struct IngressRouteSpec {
     /// EntryPoints defines the list of entry point names to bind to.
     /// Entry points have to be configured in the static configuration.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/entrypoints/
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/entrypoints/
     /// Default: all.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoints")]
     pub entry_points: Option<Vec<String>>,
     /// Routes defines the list of routes.
     pub routes: Vec<IngressRouteRoutes>,
     /// TLS defines the TLS configuration.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/routers/#tls
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/routers/#tls
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<IngressRouteTls>,
 }
@@ -40,15 +40,15 @@ pub struct IngressRouteRoutes {
     /// Rule is the only supported kind.
     pub kind: IngressRouteRoutesKind,
     /// Match defines the router's rule.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/routers/#rule
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/routers/#rule
     #[serde(rename = "match")]
     pub r#match: String,
     /// Middlewares defines the list of references to Middleware resources.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/providers/kubernetes-crd/#kind-middleware
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/providers/kubernetes-crd/#kind-middleware
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub middlewares: Option<Vec<IngressRouteRoutesMiddlewares>>,
     /// Priority defines the router's priority.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/routers/#priority
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/routers/#priority
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,
     /// Services defines the list of Service.
@@ -56,7 +56,7 @@ pub struct IngressRouteRoutes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<IngressRouteRoutesServices>>,
     /// Syntax defines the router's rule syntax.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/routers/#rulesyntax
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/routers/#rulesyntax
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub syntax: Option<String>,
 }
@@ -125,7 +125,7 @@ pub struct IngressRouteRoutesServices {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversTransport")]
     pub servers_transport: Option<String>,
     /// Sticky defines the sticky sessions configuration.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/services/#sticky-sessions
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/services/#sticky-sessions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<IngressRouteRoutesServicesSticky>,
     /// Strategy defines the load balancing strategy between the servers.
@@ -201,7 +201,7 @@ pub struct IngressRouteRoutesServicesResponseForwarding {
 }
 
 /// Sticky defines the sticky sessions configuration.
-/// More info: https://doc.traefik.io/traefik/v3.0/routing/services/#sticky-sessions
+/// More info: https://doc.traefik.io/traefik/v3.1/routing/services/#sticky-sessions
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteRoutesServicesSticky {
     /// Cookie defines the sticky cookie configuration.
@@ -233,21 +233,21 @@ pub struct IngressRouteRoutesServicesStickyCookie {
 }
 
 /// TLS defines the TLS configuration.
-/// More info: https://doc.traefik.io/traefik/v3.0/routing/routers/#tls
+/// More info: https://doc.traefik.io/traefik/v3.1/routing/routers/#tls
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteTls {
     /// CertResolver defines the name of the certificate resolver to use.
     /// Cert resolvers have to be configured in the static configuration.
-    /// More info: https://doc.traefik.io/traefik/v3.0/https/acme/#certificate-resolvers
+    /// More info: https://doc.traefik.io/traefik/v3.1/https/acme/#certificate-resolvers
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certResolver")]
     pub cert_resolver: Option<String>,
     /// Domains defines the list of domains that will be used to issue certificates.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/routers/#domains
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/routers/#domains
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub domains: Option<Vec<IngressRouteTlsDomains>>,
     /// Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection.
     /// If not defined, the `default` TLSOption is used.
-    /// More info: https://doc.traefik.io/traefik/v3.0/https/tls/#tls-options
+    /// More info: https://doc.traefik.io/traefik/v3.1/https/tls/#tls-options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<IngressRouteTlsOptions>,
     /// SecretName is the name of the referenced Kubernetes Secret to specify the certificate details.
@@ -272,14 +272,14 @@ pub struct IngressRouteTlsDomains {
 
 /// Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection.
 /// If not defined, the `default` TLSOption is used.
-/// More info: https://doc.traefik.io/traefik/v3.0/https/tls/#tls-options
+/// More info: https://doc.traefik.io/traefik/v3.1/https/tls/#tls-options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteTlsOptions {
     /// Name defines the name of the referenced TLSOption.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/providers/kubernetes-crd/#kind-tlsoption
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/providers/kubernetes-crd/#kind-tlsoption
     pub name: String,
     /// Namespace defines the namespace of the referenced TLSOption.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/providers/kubernetes-crd/#kind-tlsoption
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/providers/kubernetes-crd/#kind-tlsoption
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -289,10 +289,10 @@ pub struct IngressRouteTlsOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteTlsStore {
     /// Name defines the name of the referenced TLSStore.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/providers/kubernetes-crd/#kind-tlsstore
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/providers/kubernetes-crd/#kind-tlsstore
     pub name: String,
     /// Namespace defines the namespace of the referenced TLSStore.
-    /// More info: https://doc.traefik.io/traefik/v3.0/routing/providers/kubernetes-crd/#kind-tlsstore
+    /// More info: https://doc.traefik.io/traefik/v3.1/routing/providers/kubernetes-crd/#kind-tlsstore
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }

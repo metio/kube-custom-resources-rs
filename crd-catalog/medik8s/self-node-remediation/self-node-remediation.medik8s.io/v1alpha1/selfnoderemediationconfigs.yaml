@@ -34,13 +34,13 @@ spec:
               properties:
                 apiCheckInterval:
                   default: "15s"
-                  description: "the frequency for api-server connectivity check\nValid time units are \"ms\", \"s\", \"m\", \"h\".\nthe frequency for api-server connectivity check"
-                  pattern: "^(0|([0-9]+(\\.[0-9]+)?(ms|s|m|h)))$"
+                  description: "The frequency for api-server connectivity check.\nValid time units are \"ms\", \"s\", \"m\", \"h\".\nthe frequency for api-server connectivity check"
+                  pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 apiServerTimeout:
                   default: "5s"
-                  description: "Valid time units are \"ms\", \"s\", \"m\", \"h\".\ntimeout for each api-connectivity check"
-                  pattern: "^(0|([0-9]+(\\.[0-9]+)?(ms|s|m|h)))$"
+                  description: "Timeout for each api-connectivity check.\nValid time units are \"ms\", \"s\", \"m\", \"h\"."
+                  pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 customDsTolerations:
                   description: "CustomDsTolerations allows to add custom tolerations snr agents that are running on the ds in order to support remediation for different types of nodes."
@@ -75,41 +75,39 @@ spec:
                   type: "integer"
                 isSoftwareRebootEnabled:
                   default: true
-                  description: "IsSoftwareRebootEnabled indicates whether self node remediation agent will do software reboot,\nif the watchdog device can not be used or will use watchdog only,\nwithout a fallback to software reboot"
+                  description: "IsSoftwareRebootEnabled indicates whether self node remediation agent will do software reboot,\nif the watchdog device can not be used or will use watchdog only,\nwithout a fallback to software reboot."
                   type: "boolean"
                 maxApiErrorThreshold:
                   default: 3
-                  description: "after this threshold, the node will start contacting its peers"
+                  description: "After this threshold, the node will start contacting its peers."
                   minimum: 1.0
                   type: "integer"
                 peerApiServerTimeout:
                   default: "5s"
-                  description: "Valid time units are \"ms\", \"s\", \"m\", \"h\"."
-                  pattern: "^(0|([0-9]+(\\.[0-9]+)?(ms|s|m|h)))$"
+                  description: "The timeout for api-server connectivity check.\nValid time units are \"ms\", \"s\", \"m\", \"h\"."
+                  pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 peerDialTimeout:
                   default: "5s"
-                  description: "Valid time units are \"ms\", \"s\", \"m\", \"h\".\ntimeout for establishing connection to peer"
-                  pattern: "^(0|([0-9]+(\\.[0-9]+)?(ms|s|m|h)))$"
+                  description: "Timeout for establishing connection to peer.\nValid time units are \"ms\", \"s\", \"m\", \"h\"."
+                  pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 peerRequestTimeout:
                   default: "5s"
-                  description: "Valid time units are \"ms\", \"s\", \"m\", \"h\".\ntimeout for each peer request"
-                  pattern: "^(0|([0-9]+(\\.[0-9]+)?(ms|s|m|h)))$"
+                  description: "Timeout for each peer request.\nValid time units are \"ms\", \"s\", \"m\", \"h\"."
+                  pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 peerUpdateInterval:
                   default: "15m"
-                  description: "Valid time units are \"ms\", \"s\", \"m\", \"h\"."
-                  pattern: "^(0|([0-9]+(\\.[0-9]+)?(ms|s|m|h)))$"
+                  description: "The frequency for updating peers.\nValid time units are \"ms\", \"s\", \"m\", \"h\"."
+                  pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 safeTimeToAssumeNodeRebootedSeconds:
-                  default: 180
-                  description: "SafeTimeToAssumeNodeRebootedSeconds is the time after which the healthy self node remediation\nagents will assume the unhealthy node has been rebooted, and it is safe to recover affected workloads.\nThis is extremely important as starting replacement Pods while they are still running on the failed\nnode will likely lead to data corruption and violation of run-once semantics.\nIn an effort to prevent this, the operator ignores values lower than a minimum calculated from the\nApiCheckInterval, ApiServerTimeout, MaxApiErrorThreshold, PeerDialTimeout, and PeerRequestTimeout fields."
-                  minimum: 0.0
+                  description: "SafeTimeToAssumeNodeRebootedSeconds is the time after which the healthy self node remediation\nagents will assume the unhealthy node has been rebooted, and it is safe to recover affected workloads.\nThis is extremely important as starting replacement Pods while they are still running on the failed\nnode will likely lead to data corruption and violation of run-once semantics.\nIn an effort to prevent this, the operator ignores values lower than a minimum calculated from the\nApiCheckInterval, ApiServerTimeout, MaxApiErrorThreshold, PeerDialTimeout, and PeerRequestTimeout fields,\nand the unhealthy node's individual watchdog timeout."
                   type: "integer"
                 watchdogFilePath:
                   default: "/dev/watchdog"
-                  description: "WatchdogFilePath is the watchdog file path that should be available on each node, e.g. /dev/watchdog"
+                  description: "WatchdogFilePath is the watchdog file path that should be available on each node, e.g. /dev/watchdog."
                   type: "string"
               type: "object"
             status:

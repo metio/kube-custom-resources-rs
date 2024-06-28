@@ -79,7 +79,7 @@ spec:
                       type: "string"
                     inClusterGitServer:
                       default: false
-                      description: "Enable in-cluster git server (avoids the need of forking the upstream repository)"
+                      description: "(EXPERIMENTAL) Enable in-cluster git server (avoids the need of forking the upstream repository)"
                       type: "boolean"
                     originRepo:
                       description: "Upstream git repo containing the pattern to deploy. Used when in-cluster fork to point to the upstream pattern repository.\nTakes precedence over TargetRepo"

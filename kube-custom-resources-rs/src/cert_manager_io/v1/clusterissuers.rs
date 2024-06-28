@@ -2116,6 +2116,13 @@ pub struct ClusterIssuerVenafiTpp {
     /// is used to validate the chain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
+    /// Reference to a Secret containing a base64-encoded bundle of PEM CAs
+    /// which will be used to validate the certificate chain presented by the TPP server.
+    /// Only used if using HTTPS; ignored for HTTP. Mutually exclusive with CABundle.
+    /// If neither CABundle nor CABundleSecretRef is defined, the certificate bundle in
+    /// the cert-manager controller container is used to validate the TLS connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundleSecretRef")]
+    pub ca_bundle_secret_ref: Option<ClusterIssuerVenafiTppCaBundleSecretRef>,
     /// CredentialsRef is a reference to a Secret containing the username and
     /// password for the TPP server.
     /// The secret must contain two keys, 'username' and 'password'.
@@ -2124,6 +2131,23 @@ pub struct ClusterIssuerVenafiTpp {
     /// URL is the base URL for the vedsdk endpoint of the Venafi TPP instance,
     /// for example: "https://tpp.example.com/vedsdk".
     pub url: String,
+}
+
+/// Reference to a Secret containing a base64-encoded bundle of PEM CAs
+/// which will be used to validate the certificate chain presented by the TPP server.
+/// Only used if using HTTPS; ignored for HTTP. Mutually exclusive with CABundle.
+/// If neither CABundle nor CABundleSecretRef is defined, the certificate bundle in
+/// the cert-manager controller container is used to validate the TLS connection.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterIssuerVenafiTppCaBundleSecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used.
+    /// Some instances of this field may be defaulted, in others it may be
+    /// required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Name of the resource being referred to.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    pub name: String,
 }
 
 /// CredentialsRef is a reference to a Secret containing the username and

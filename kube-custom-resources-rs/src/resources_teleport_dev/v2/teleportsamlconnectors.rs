@@ -61,6 +61,9 @@ pub struct TeleportSAMLConnectorSpec {
     /// SigningKeyPair is an x509 key pair used to sign AuthnRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub signing_key_pair: Option<TeleportSAMLConnectorSigningKeyPair>,
+    /// SingleLogoutURL is the SAML Single log-out URL to initiate SAML SLO (single log-out). If this is not provided, SLO is disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub single_logout_url: Option<String>,
     /// SSO is the URL of the identity provider's SSO service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sso: Option<String>,

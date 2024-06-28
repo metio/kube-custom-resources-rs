@@ -97,6 +97,9 @@ spec:
                   description: "Delay is a duration string which specifies how long should the test be delayed after a trigger is matched"
                   format: "duration"
                   type: "string"
+                disabled:
+                  description: "whether test trigger is disabled"
+                  type: "boolean"
                 event:
                   description: "On which Event for a Resource should an Action be triggered"
                   enum:

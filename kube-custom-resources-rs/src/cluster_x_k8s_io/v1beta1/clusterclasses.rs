@@ -640,6 +640,10 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
+    /// MaxProperties is the maximum amount of entries in a map or properties in an object.
+    /// NOTE: Can only be set if type is object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProperties")]
+    pub max_properties: Option<i64>,
     /// Maximum is the maximum of an integer or number variable.
     /// If ExclusiveMaximum is false, the variable is valid if it is lower than, or equal to, the value of Maximum.
     /// If ExclusiveMaximum is true, the variable is valid if it is strictly lower than the value of Maximum.
@@ -654,6 +658,10 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLength")]
     pub min_length: Option<i64>,
+    /// MinProperties is the minimum amount of entries in a map or properties in an object.
+    /// NOTE: Can only be set if type is object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProperties")]
+    pub min_properties: Option<i64>,
     /// Minimum is the minimum of an integer or number variable.
     /// If ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum.
     /// If ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum.
@@ -688,6 +696,109 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     /// except if nested properties or additionalProperties are specified in the schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-kubernetes-preserve-unknown-fields")]
     pub x_kubernetes_preserve_unknown_fields: Option<bool>,
+    /// XValidations describes a list of validation rules written in the CEL expression language.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-kubernetes-validations")]
+    pub x_kubernetes_validations: Option<Vec<ClusterClassVariablesSchemaOpenApiv3SchemaXKubernetesValidations>>,
+}
+
+/// ValidationRule describes a validation rule written in the CEL expression language.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassVariablesSchemaOpenApiv3SchemaXKubernetesValidations {
+    /// FieldPath represents the field path returned when the validation fails.
+    /// It must be a relative JSON path (i.e. with array notation) scoped to the location of this x-kubernetes-validations extension in the schema and refer to an existing field.
+    /// e.g. when validation checks if a specific attribute `foo` under a map `testMap`, the fieldPath could be set to `.testMap.foo`
+    /// If the validation checks two lists must have unique attributes, the fieldPath could be set to either of the list: e.g. `.testList`
+    /// It does not support list numeric index.
+    /// It supports child operation to refer to an existing field currently. Refer to [JSONPath support in Kubernetes](https://kubernetes.io/docs/reference/kubectl/jsonpath/) for more info.
+    /// Numeric index of array is not supported.
+    /// For field name which contains special characters, use `['specialName']` to refer the field name.
+    /// e.g. for attribute `foo.34$` appears in a list `testList`, the fieldPath could be set to `.testList['foo.34$']`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
+    pub field_path: Option<String>,
+    /// Message represents the message displayed when validation fails. The message is required if the Rule contains
+    /// line breaks. The message must not contain line breaks.
+    /// If unset, the message is "failed rule: {Rule}".
+    /// e.g. "must be a URL with the host matching spec.host"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// MessageExpression declares a CEL expression that evaluates to the validation failure message that is returned when this rule fails.
+    /// Since messageExpression is used as a failure message, it must evaluate to a string.
+    /// If both message and messageExpression are present on a rule, then messageExpression will be used if validation
+    /// fails. If messageExpression results in a runtime error, the validation failure message is produced
+    /// as if the messageExpression field were unset. If messageExpression evaluates to an empty string, a string with only spaces, or a string
+    /// that contains line breaks, then the validation failure message will also be produced as if the messageExpression field were unset.
+    /// messageExpression has access to all the same variables as the rule; the only difference is the return type.
+    /// Example:
+    /// "x must be less than max ("+string(self.max)+")"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageExpression")]
+    pub message_expression: Option<String>,
+    /// Reason provides a machine-readable validation failure reason that is returned to the caller when a request fails this validation rule.
+    /// The currently supported reasons are: "FieldValueInvalid", "FieldValueForbidden", "FieldValueRequired", "FieldValueDuplicate".
+    /// If not set, default to use "FieldValueInvalid".
+    /// All future added reasons must be accepted by clients when reading this value and unknown reasons should be treated as FieldValueInvalid.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason: Option<ClusterClassVariablesSchemaOpenApiv3SchemaXKubernetesValidationsReason>,
+    /// Rule represents the expression which will be evaluated by CEL.
+    /// ref: https://github.com/google/cel-spec
+    /// The Rule is scoped to the location of the x-kubernetes-validations extension in the schema.
+    /// The `self` variable in the CEL expression is bound to the scoped value.
+    /// If the Rule is scoped to an object with properties, the accessible properties of the object are field selectable
+    /// via `self.field` and field presence can be checked via `has(self.field)`.
+    /// If the Rule is scoped to an object with additionalProperties (i.e. a map) the value of the map
+    /// are accessible via `self[mapKey]`, map containment can be checked via `mapKey in self` and all entries of the map
+    /// are accessible via CEL macros and functions such as `self.all(...)`.
+    /// If the Rule is scoped to an array, the elements of the array are accessible via `self[i]` and also by macros and
+    /// functions.
+    /// If the Rule is scoped to a scalar, `self` is bound to the scalar value.
+    /// Examples:
+    /// - Rule scoped to a map of objects: {"rule": "self.components['Widget'].priority < 10"}
+    /// - Rule scoped to a list of integers: {"rule": "self.values.all(value, value >= 0 && value < 100)"}
+    /// - Rule scoped to a string value: {"rule": "self.startsWith('kube')"}
+    /// 
+    /// 
+    /// Unknown data preserved in custom resources via x-kubernetes-preserve-unknown-fields is not accessible in CEL
+    /// expressions. This includes:
+    /// - Unknown field values that are preserved by object schemas with x-kubernetes-preserve-unknown-fields.
+    /// - Object properties where the property schema is of an "unknown type". An "unknown type" is recursively defined as:
+    ///   - A schema with no type and x-kubernetes-preserve-unknown-fields set to true
+    ///   - An array where the items schema is of an "unknown type"
+    ///   - An object where the additionalProperties schema is of an "unknown type"
+    /// 
+    /// 
+    /// Only property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible.
+    /// Accessible property names are escaped according to the following rules when accessed in the expression:
+    /// - '__' escapes to '__underscores__'
+    /// - '.' escapes to '__dot__'
+    /// - '-' escapes to '__dash__'
+    /// - '/' escapes to '__slash__'
+    /// - Property names that exactly match a CEL RESERVED keyword escape to '__{keyword}__'. The keywords are:
+    /// 	  "true", "false", "null", "in", "as", "break", "const", "continue", "else", "for", "function", "if",
+    /// 	  "import", "let", "loop", "package", "namespace", "return".
+    /// Examples:
+    ///   - Rule accessing a property named "namespace": {"rule": "self.__namespace__ > 0"}
+    ///   - Rule accessing a property named "x-prop": {"rule": "self.x__dash__prop > 0"}
+    ///   - Rule accessing a property named "redact__d": {"rule": "self.redact__underscores__d > 0"}
+    /// 
+    /// 
+    /// If `rule` makes use of the `oldSelf` variable it is implicitly a
+    /// `transition rule`.
+    /// 
+    /// 
+    /// By default, the `oldSelf` variable is the same type as `self`.
+    /// 
+    /// 
+    /// Transition rules by default are applied only on UPDATE requests and are
+    /// skipped if an old value could not be found.
+    pub rule: String,
+}
+
+/// ValidationRule describes a validation rule written in the CEL expression language.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterClassVariablesSchemaOpenApiv3SchemaXKubernetesValidationsReason {
+    FieldValueInvalid,
+    FieldValueForbidden,
+    FieldValueRequired,
+    FieldValueDuplicate,
 }
 
 /// Workers describes the worker nodes for the cluster.
@@ -1428,6 +1539,10 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
+    /// MaxProperties is the maximum amount of entries in a map or properties in an object.
+    /// NOTE: Can only be set if type is object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProperties")]
+    pub max_properties: Option<i64>,
     /// Maximum is the maximum of an integer or number variable.
     /// If ExclusiveMaximum is false, the variable is valid if it is lower than, or equal to, the value of Maximum.
     /// If ExclusiveMaximum is true, the variable is valid if it is strictly lower than the value of Maximum.
@@ -1442,6 +1557,10 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLength")]
     pub min_length: Option<i64>,
+    /// MinProperties is the minimum amount of entries in a map or properties in an object.
+    /// NOTE: Can only be set if type is object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProperties")]
+    pub min_properties: Option<i64>,
     /// Minimum is the minimum of an integer or number variable.
     /// If ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum.
     /// If ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum.
@@ -1476,5 +1595,108 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     /// except if nested properties or additionalProperties are specified in the schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-kubernetes-preserve-unknown-fields")]
     pub x_kubernetes_preserve_unknown_fields: Option<bool>,
+    /// XValidations describes a list of validation rules written in the CEL expression language.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-kubernetes-validations")]
+    pub x_kubernetes_validations: Option<Vec<ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3SchemaXKubernetesValidations>>,
+}
+
+/// ValidationRule describes a validation rule written in the CEL expression language.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3SchemaXKubernetesValidations {
+    /// FieldPath represents the field path returned when the validation fails.
+    /// It must be a relative JSON path (i.e. with array notation) scoped to the location of this x-kubernetes-validations extension in the schema and refer to an existing field.
+    /// e.g. when validation checks if a specific attribute `foo` under a map `testMap`, the fieldPath could be set to `.testMap.foo`
+    /// If the validation checks two lists must have unique attributes, the fieldPath could be set to either of the list: e.g. `.testList`
+    /// It does not support list numeric index.
+    /// It supports child operation to refer to an existing field currently. Refer to [JSONPath support in Kubernetes](https://kubernetes.io/docs/reference/kubectl/jsonpath/) for more info.
+    /// Numeric index of array is not supported.
+    /// For field name which contains special characters, use `['specialName']` to refer the field name.
+    /// e.g. for attribute `foo.34$` appears in a list `testList`, the fieldPath could be set to `.testList['foo.34$']`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
+    pub field_path: Option<String>,
+    /// Message represents the message displayed when validation fails. The message is required if the Rule contains
+    /// line breaks. The message must not contain line breaks.
+    /// If unset, the message is "failed rule: {Rule}".
+    /// e.g. "must be a URL with the host matching spec.host"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// MessageExpression declares a CEL expression that evaluates to the validation failure message that is returned when this rule fails.
+    /// Since messageExpression is used as a failure message, it must evaluate to a string.
+    /// If both message and messageExpression are present on a rule, then messageExpression will be used if validation
+    /// fails. If messageExpression results in a runtime error, the validation failure message is produced
+    /// as if the messageExpression field were unset. If messageExpression evaluates to an empty string, a string with only spaces, or a string
+    /// that contains line breaks, then the validation failure message will also be produced as if the messageExpression field were unset.
+    /// messageExpression has access to all the same variables as the rule; the only difference is the return type.
+    /// Example:
+    /// "x must be less than max ("+string(self.max)+")"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageExpression")]
+    pub message_expression: Option<String>,
+    /// Reason provides a machine-readable validation failure reason that is returned to the caller when a request fails this validation rule.
+    /// The currently supported reasons are: "FieldValueInvalid", "FieldValueForbidden", "FieldValueRequired", "FieldValueDuplicate".
+    /// If not set, default to use "FieldValueInvalid".
+    /// All future added reasons must be accepted by clients when reading this value and unknown reasons should be treated as FieldValueInvalid.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason: Option<ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3SchemaXKubernetesValidationsReason>,
+    /// Rule represents the expression which will be evaluated by CEL.
+    /// ref: https://github.com/google/cel-spec
+    /// The Rule is scoped to the location of the x-kubernetes-validations extension in the schema.
+    /// The `self` variable in the CEL expression is bound to the scoped value.
+    /// If the Rule is scoped to an object with properties, the accessible properties of the object are field selectable
+    /// via `self.field` and field presence can be checked via `has(self.field)`.
+    /// If the Rule is scoped to an object with additionalProperties (i.e. a map) the value of the map
+    /// are accessible via `self[mapKey]`, map containment can be checked via `mapKey in self` and all entries of the map
+    /// are accessible via CEL macros and functions such as `self.all(...)`.
+    /// If the Rule is scoped to an array, the elements of the array are accessible via `self[i]` and also by macros and
+    /// functions.
+    /// If the Rule is scoped to a scalar, `self` is bound to the scalar value.
+    /// Examples:
+    /// - Rule scoped to a map of objects: {"rule": "self.components['Widget'].priority < 10"}
+    /// - Rule scoped to a list of integers: {"rule": "self.values.all(value, value >= 0 && value < 100)"}
+    /// - Rule scoped to a string value: {"rule": "self.startsWith('kube')"}
+    /// 
+    /// 
+    /// Unknown data preserved in custom resources via x-kubernetes-preserve-unknown-fields is not accessible in CEL
+    /// expressions. This includes:
+    /// - Unknown field values that are preserved by object schemas with x-kubernetes-preserve-unknown-fields.
+    /// - Object properties where the property schema is of an "unknown type". An "unknown type" is recursively defined as:
+    ///   - A schema with no type and x-kubernetes-preserve-unknown-fields set to true
+    ///   - An array where the items schema is of an "unknown type"
+    ///   - An object where the additionalProperties schema is of an "unknown type"
+    /// 
+    /// 
+    /// Only property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible.
+    /// Accessible property names are escaped according to the following rules when accessed in the expression:
+    /// - '__' escapes to '__underscores__'
+    /// - '.' escapes to '__dot__'
+    /// - '-' escapes to '__dash__'
+    /// - '/' escapes to '__slash__'
+    /// - Property names that exactly match a CEL RESERVED keyword escape to '__{keyword}__'. The keywords are:
+    /// 	  "true", "false", "null", "in", "as", "break", "const", "continue", "else", "for", "function", "if",
+    /// 	  "import", "let", "loop", "package", "namespace", "return".
+    /// Examples:
+    ///   - Rule accessing a property named "namespace": {"rule": "self.__namespace__ > 0"}
+    ///   - Rule accessing a property named "x-prop": {"rule": "self.x__dash__prop > 0"}
+    ///   - Rule accessing a property named "redact__d": {"rule": "self.redact__underscores__d > 0"}
+    /// 
+    /// 
+    /// If `rule` makes use of the `oldSelf` variable it is implicitly a
+    /// `transition rule`.
+    /// 
+    /// 
+    /// By default, the `oldSelf` variable is the same type as `self`.
+    /// 
+    /// 
+    /// Transition rules by default are applied only on UPDATE requests and are
+    /// skipped if an old value could not be found.
+    pub rule: String,
+}
+
+/// ValidationRule describes a validation rule written in the CEL expression language.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3SchemaXKubernetesValidationsReason {
+    FieldValueInvalid,
+    FieldValueForbidden,
+    FieldValueRequired,
+    FieldValueDuplicate,
 }
 

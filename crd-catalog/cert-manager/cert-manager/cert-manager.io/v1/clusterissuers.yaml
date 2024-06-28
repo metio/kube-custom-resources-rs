@@ -1388,6 +1388,18 @@ spec:
                           description: "Base64-encoded bundle of PEM CAs which will be used to validate the certificate\nchain presented by the TPP server. Only used if using HTTPS; ignored for HTTP.\nIf undefined, the certificate bundle in the cert-manager controller container\nis used to validate the chain."
                           format: "byte"
                           type: "string"
+                        caBundleSecretRef:
+                          description: "Reference to a Secret containing a base64-encoded bundle of PEM CAs\nwhich will be used to validate the certificate chain presented by the TPP server.\nOnly used if using HTTPS; ignored for HTTP. Mutually exclusive with CABundle.\nIf neither CABundle nor CABundleSecretRef is defined, the certificate bundle in\nthe cert-manager controller container is used to validate the TLS connection."
+                          properties:
+                            key:
+                              description: "The key of the entry in the Secret resource's `data` field to be used.\nSome instances of this field may be defaulted, in others it may be\nrequired."
+                              type: "string"
+                            name:
+                              description: "Name of the resource being referred to.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              type: "string"
+                          required:
+                            - "name"
+                          type: "object"
                         credentialsRef:
                           description: "CredentialsRef is a reference to a Secret containing the username and\npassword for the TPP server.\nThe secret must contain two keys, 'username' and 'password'."
                           properties:

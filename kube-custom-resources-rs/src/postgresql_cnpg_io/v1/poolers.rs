@@ -399,6 +399,9 @@ pub struct PoolerServiceTemplateMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+    /// The name of the resource. Only supported for certain types
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Specification of the desired behavior of the service.
@@ -728,6 +731,9 @@ pub struct PoolerTemplateMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+    /// The name of the resource. Only supported for certain types
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Specification of the desired behavior of the pod.

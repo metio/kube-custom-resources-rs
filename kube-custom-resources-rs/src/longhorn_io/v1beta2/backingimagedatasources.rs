@@ -48,6 +48,8 @@ pub enum BackingImageDataSourceSourceType {
     ExportFromVolume,
     #[serde(rename = "restore")]
     Restore,
+    #[serde(rename = "clone")]
+    Clone,
 }
 
 /// BackingImageDataSourceStatus defines the observed state of the Longhorn backing image data source

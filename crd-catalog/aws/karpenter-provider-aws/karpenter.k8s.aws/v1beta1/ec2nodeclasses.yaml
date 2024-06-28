@@ -159,9 +159,9 @@ spec:
                   default:
                     httpEndpoint: "enabled"
                     httpProtocolIPv6: "disabled"
-                    httpPutResponseHopLimit: 2
+                    httpPutResponseHopLimit: 1
                     httpTokens: "required"
-                  description: "MetadataOptions for the generated launch template of provisioned nodes.\n\n\nThis specifies the exposure of the Instance Metadata Service to\nprovisioned EC2 nodes. For more information,\nsee Instance Metadata and User Data\n(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)\nin the Amazon Elastic Compute Cloud User Guide.\n\n\nRefer to recommended, security best practices\n(https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)\nfor limiting exposure of Instance Metadata and User Data to pods.\nIf omitted, defaults to httpEndpoint enabled, with httpProtocolIPv6\ndisabled, with httpPutResponseLimit of 2, and with httpTokens\nrequired."
+                  description: "MetadataOptions for the generated launch template of provisioned nodes.\n\n\nThis specifies the exposure of the Instance Metadata Service to\nprovisioned EC2 nodes. For more information,\nsee Instance Metadata and User Data\n(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)\nin the Amazon Elastic Compute Cloud User Guide.\n\n\nRefer to recommended, security best practices\n(https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)\nfor limiting exposure of Instance Metadata and User Data to pods.\nIf omitted, defaults to httpEndpoint enabled, with httpProtocolIPv6\ndisabled, with httpPutResponseLimit of 1, and with httpTokens\nrequired."
                   properties:
                     httpEndpoint:
                       default: "enabled"

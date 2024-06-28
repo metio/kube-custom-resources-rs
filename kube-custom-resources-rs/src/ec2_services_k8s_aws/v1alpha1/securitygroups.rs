@@ -129,7 +129,7 @@ pub struct SecurityGroupEgressRulesUserIdGroupPairs {
     pub group_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupName")]
     pub group_name: Option<String>,
-    /// Reference field for GroupName
+    /// Reference field for GroupID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupRef")]
     pub group_ref: Option<SecurityGroupEgressRulesUserIdGroupPairsGroupRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peeringStatus")]
@@ -145,7 +145,7 @@ pub struct SecurityGroupEgressRulesUserIdGroupPairs {
     pub vpc_ref: Option<SecurityGroupEgressRulesUserIdGroupPairsVpcRef>,
 }
 
-/// Reference field for GroupName
+/// Reference field for GroupID
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityGroupEgressRulesUserIdGroupPairsGroupRef {
     /// AWSResourceReference provides all the values necessary to reference another
@@ -240,7 +240,7 @@ pub struct SecurityGroupIngressRulesUserIdGroupPairs {
     pub group_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupName")]
     pub group_name: Option<String>,
-    /// Reference field for GroupName
+    /// Reference field for GroupID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupRef")]
     pub group_ref: Option<SecurityGroupIngressRulesUserIdGroupPairsGroupRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peeringStatus")]
@@ -256,7 +256,7 @@ pub struct SecurityGroupIngressRulesUserIdGroupPairs {
     pub vpc_ref: Option<SecurityGroupIngressRulesUserIdGroupPairsVpcRef>,
 }
 
-/// Reference field for GroupName
+/// Reference field for GroupID
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityGroupIngressRulesUserIdGroupPairsGroupRef {
     /// AWSResourceReference provides all the values necessary to reference another

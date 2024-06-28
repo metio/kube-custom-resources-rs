@@ -96,6 +96,9 @@ pub struct ClusterSecretStoreProvider {
     /// AzureKV configures this store to sync secrets using Azure Key Vault provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub azurekv: Option<ClusterSecretStoreProviderAzurekv>,
+    /// BitwardenSecretsManager configures this store to sync secrets using BitwardenSecretsManager provider
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bitwardensecretsmanager: Option<ClusterSecretStoreProviderBitwardensecretsmanager>,
     /// Chef configures this store to sync secrets with chef server
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub chef: Option<ClusterSecretStoreProviderChef>,
@@ -747,6 +750,62 @@ pub struct ClusterSecretStoreProviderAzurekvServiceAccountRef {
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// BitwardenSecretsManager configures this store to sync secrets using BitwardenSecretsManager provider
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderBitwardensecretsmanager {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
+    pub api_url: Option<String>,
+    /// Auth configures how secret-manager authenticates with a bitwarden machine account instance.
+    /// Make sure that the token being used has permissions on the given secret.
+    pub auth: ClusterSecretStoreProviderBitwardensecretsmanagerAuth,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bitwardenServerSDKURL")]
+    pub bitwarden_server_sdkurl: Option<String>,
+    /// Base64 encoded certificate for the bitwarden server sdk. The sdk MUST run with HTTPS to make sure no MITM attack
+    /// can be performed.
+    #[serde(rename = "caBundle")]
+    pub ca_bundle: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityURL")]
+    pub identity_url: Option<String>,
+    /// OrganizationID determines which organization this secret store manages.
+    #[serde(rename = "organizationID")]
+    pub organization_id: String,
+    /// ProjectID determines which project this secret store manages.
+    #[serde(rename = "projectID")]
+    pub project_id: String,
+}
+
+/// Auth configures how secret-manager authenticates with a bitwarden machine account instance.
+/// Make sure that the token being used has permissions on the given secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderBitwardensecretsmanagerAuth {
+    /// BitwardenSecretsManagerSecretRef contains the credential ref to the bitwarden instance.
+    #[serde(rename = "secretRef")]
+    pub secret_ref: ClusterSecretStoreProviderBitwardensecretsmanagerAuthSecretRef,
+}
+
+/// BitwardenSecretsManagerSecretRef contains the credential ref to the bitwarden instance.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderBitwardensecretsmanagerAuthSecretRef {
+    /// AccessToken used for the bitwarden instance.
+    pub credentials: ClusterSecretStoreProviderBitwardensecretsmanagerAuthSecretRefCredentials,
+}
+
+/// AccessToken used for the bitwarden instance.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderBitwardensecretsmanagerAuthSecretRefCredentials {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
     /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]

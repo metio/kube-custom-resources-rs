@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
@@ -16,7 +17,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterInputSpec {
-    /// A user friendly alias name for this input plugin. Used in metrics for distinction of each configured input.
+    /// A user friendly alias name for this input plugin.
+    /// Used in metrics for distinction of each configured input.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alias: Option<String>,
     /// Collectd defines the Collectd input plugin configuration
@@ -54,6 +56,9 @@ pub struct ClusterInputSpec {
     /// OpenTelemetry defines the OpenTelemetry input plugin configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
     pub open_telemetry: Option<ClusterInputOpenTelemetry>,
+    /// Processors defines the processors configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub processors: Option<BTreeMap<String, serde_json::Value>>,
     /// PrometheusScrapeMetrics  defines Prometheus Scrape Metrics Input configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusScrapeMetrics")]
     pub prometheus_scrape_metrics: Option<ClusterInputPrometheusScrapeMetrics>,
@@ -91,8 +96,13 @@ pub struct ClusterInputCollectd {
 /// CustomPlugin defines Custom Input configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInputCustomPlugin {
+    /// Config holds any unsupported plugins classic configurations,
+    /// if ConfigFileFormat is set to yaml, this filed will be ignored
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
+    /// YamlConfig holds the unsupported plugins yaml configurations, it only works when the ConfigFileFormat is yaml
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "yamlConfig")]
+    pub yaml_config: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Dummy defines Dummy Input configuration.
@@ -128,10 +138,13 @@ pub struct ClusterInputFluentBitMetrics {
 /// Forward defines forward  input plugin configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInputForward {
-    /// Specify maximum buffer memory size used to recieve a forward message. The value must be according to the Unit Size specification.
+    /// Specify maximum buffer memory size used to recieve a forward message.
+    /// The value must be according to the Unit Size specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferMaxSize")]
     pub buffer_max_size: Option<String>,
-    /// Set the initial buffer size to store incoming data. This value is used too to increase buffer size as required. The value must be according to the Unit Size specification.
+    /// Set the initial buffer size to store incoming data.
+    /// This value is used too to increase buffer size as required.
+    /// The value must be according to the Unit Size specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferchunkSize")]
     pub bufferchunk_size: Option<String>,
     /// Listener network interface.
@@ -160,7 +173,8 @@ pub struct ClusterInputForward {
 /// HTTP defines the HTTP input plugin configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInputHttp {
-    /// This sets the chunk size for incoming incoming JSON messages. These chunks are then stored/managed in the space available by buffer_max_size,default 512K.
+    /// This sets the chunk size for incoming incoming JSON messages.
+    /// These chunks are then stored/managed in the space available by buffer_max_size,default 512K.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferChunkSize")]
     pub buffer_chunk_size: Option<String>,
     /// Specify the maximum buffer size in KB to receive a JSON message,default 4M.
@@ -198,7 +212,8 @@ pub struct ClusterInputHttpTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -251,7 +266,9 @@ pub struct ClusterInputHttpTlsKeyPasswordValueFrom {
 pub struct ClusterInputHttpTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -292,7 +309,8 @@ pub struct ClusterInputKubernetesEvents {
     /// Token file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTokenFile")]
     pub kube_token_file: Option<String>,
-    /// configurable 'time to live' for the K8s token. By default, it is set to 600 seconds. After this time, the token is reloaded from Kube_Token_File or the Kube_Token_Command.
+    /// configurable 'time to live' for the K8s token. By default, it is set to 600 seconds.
+    /// After this time, the token is reloaded from Kube_Token_File or the Kube_Token_Command.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTokenTTL")]
     pub kube_token_ttl: Option<String>,
     /// API Server end-point
@@ -440,7 +458,8 @@ pub struct ClusterInputStatsd {
 /// Syslog defines the Syslog input plugin configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInputSyslog {
-    /// By default the buffer to store the incoming Syslog messages, do not allocate the maximum memory allowed, instead it allocate memory when is required. The rounds of allocations are set by Buffer_Chunk_Size. If not set, Buffer_Chunk_Size is equal to 32000 bytes (32KB).
+    /// By default the buffer to store the incoming Syslog messages, do not allocate the maximum memory allowed, instead it allocate memory when is required.
+    /// The rounds of allocations are set by Buffer_Chunk_Size. If not set, Buffer_Chunk_Size is equal to 32000 bytes (32KB).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferChunkSize")]
     pub buffer_chunk_size: Option<String>,
     /// Specify the maximum buffer size to receive a Syslog message. If not set, the default size will be the value of Buffer_Chunk_Size.
@@ -452,7 +471,8 @@ pub struct ClusterInputSyslog {
     /// Defines transport protocol mode: unix_udp (UDP over Unix socket), unix_tcp (TCP over Unix socket), tcp or udp
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<ClusterInputSyslogMode>,
-    /// Specify an alternative parser for the message. If Mode is set to tcp or udp then the default parser is syslog-rfc5424 otherwise syslog-rfc3164-local is used. If your syslog messages have fractional seconds set this Parser value to syslog-rfc5424 instead.
+    /// Specify an alternative parser for the message. If Mode is set to tcp or udp then the default parser is syslog-rfc5424 otherwise syslog-rfc3164-local is used.
+    /// If your syslog messages have fractional seconds set this Parser value to syslog-rfc5424 instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parser: Option<String>,
     /// If Mode is set to unix_tcp or unix_udp, set the absolute path to the Unix socket file.
@@ -461,7 +481,8 @@ pub struct ClusterInputSyslog {
     /// If Mode is set to tcp or udp, specify the TCP port to listen for incoming connections.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-    /// Specify the maximum socket receive buffer size. If not set, the default value is OS-dependant, but generally too low to accept thousands of syslog messages per second without loss on udp or unix_udp sockets. Note that on Linux the value is capped by sysctl net.core.rmem_max.
+    /// Specify the maximum socket receive buffer size. If not set, the default value is OS-dependant,
+    /// but generally too low to accept thousands of syslog messages per second without loss on udp or unix_udp sockets. Note that on Linux the value is capped by sysctl net.core.rmem_max.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "receiveBufferSize")]
     pub receive_buffer_size: Option<String>,
     /// Specify the key where the source address will be injected.
@@ -491,16 +512,22 @@ pub struct ClusterInputSystemd {
     /// Specify the database file to keep track of monitored files and offsets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub db: Option<String>,
-    /// Set a default synchronization (I/O) method. values: Extra, Full, Normal, Off. This flag affects how the internal SQLite engine do synchronization to disk, for more details about each option please refer to this section. note: this option was introduced on Fluent Bit v1.4.6.
+    /// Set a default synchronization (I/O) method. values: Extra, Full, Normal, Off.
+    /// This flag affects how the internal SQLite engine do synchronization to disk,
+    /// for more details about each option please refer to this section.
+    /// note: this option was introduced on Fluent Bit v1.4.6.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbSync")]
     pub db_sync: Option<ClusterInputSystemdDbSync>,
-    /// When Fluent Bit starts, the Journal might have a high number of logs in the queue. In order to avoid delays and reduce memory usage, this option allows to specify the maximum number of log entries that can be processed per round. Once the limit is reached, Fluent Bit will continue processing the remaining log entries once Journald performs the notification.
+    /// When Fluent Bit starts, the Journal might have a high number of logs in the queue.
+    /// In order to avoid delays and reduce memory usage, this option allows to specify the maximum number of log entries that can be processed per round.
+    /// Once the limit is reached, Fluent Bit will continue processing the remaining log entries once Journald performs the notification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEntries")]
     pub max_entries: Option<i64>,
     /// Set a maximum number of fields (keys) allowed per record.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxFields")]
     pub max_fields: Option<i64>,
-    /// Optional path to the Systemd journal directory, if not set, the plugin will use default paths to read local-only logs.
+    /// Optional path to the Systemd journal directory,
+    /// if not set, the plugin will use default paths to read local-only logs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached.
@@ -515,13 +542,17 @@ pub struct ClusterInputSystemd {
     /// Remove the leading underscore of the Journald field (key). For example the Journald field _PID becomes the key PID.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stripUnderscores")]
     pub strip_underscores: Option<ClusterInputSystemdStripUnderscores>,
-    /// Allows to perform a query over logs that contains a specific Journald key/value pairs, e.g: _SYSTEMD_UNIT=UNIT. The Systemd_Filter option can be specified multiple times in the input section to apply multiple filters as required.
+    /// Allows to perform a query over logs that contains a specific Journald key/value pairs, e.g: _SYSTEMD_UNIT=UNIT.
+    /// The Systemd_Filter option can be specified multiple times in the input section to apply multiple filters as required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemdFilter")]
     pub systemd_filter: Option<Vec<String>>,
-    /// Define the filter type when Systemd_Filter is specified multiple times. Allowed values are And and Or. With And a record is matched only when all of the Systemd_Filter have a match. With Or a record is matched when any of the Systemd_Filter has a match.
+    /// Define the filter type when Systemd_Filter is specified multiple times. Allowed values are And and Or.
+    /// With And a record is matched only when all of the Systemd_Filter have a match.
+    /// With Or a record is matched when any of the Systemd_Filter has a match.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemdFilterType")]
     pub systemd_filter_type: Option<ClusterInputSystemdSystemdFilterType>,
-    /// The tag is used to route messages but on Systemd plugin there is an extra functionality: if the tag includes a star/wildcard, it will be expanded with the Systemd Unit file (e.g: host.* => host.UNIT_NAME).
+    /// The tag is used to route messages but on Systemd plugin there is an extra functionality:
+    /// if the tag includes a star/wildcard, it will be expanded with the Systemd Unit file (e.g: host.* => host.UNIT_NAME).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
 }
@@ -581,10 +612,16 @@ pub enum ClusterInputSystemdSystemdFilterType {
 /// Tail defines Tail Input configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInputTail {
-    /// Set the initial buffer size to read files data. This value is used too to increase buffer size. The value must be according to the Unit Size specification.
+    /// Set the initial buffer size to read files data.
+    /// This value is used too to increase buffer size.
+    /// The value must be according to the Unit Size specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferChunkSize")]
     pub buffer_chunk_size: Option<String>,
-    /// Set the limit of the buffer size per monitored file. When a buffer needs to be increased (e.g: very long lines), this value is used to restrict how much the memory buffer can grow. If reading a file exceed this limit, the file is removed from the monitored file list The value must be according to the Unit Size specification.
+    /// Set the limit of the buffer size per monitored file.
+    /// When a buffer needs to be increased (e.g: very long lines),
+    /// this value is used to restrict how much the memory buffer can grow.
+    /// If reading a file exceed this limit, the file is removed from the monitored file list
+    /// The value must be according to the Unit Size specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferMaxSize")]
     pub buffer_max_size: Option<String>,
     /// Specify the database file to keep track of monitored files and offsets.
@@ -596,7 +633,8 @@ pub struct ClusterInputTail {
     /// DisableInotifyWatcher will disable inotify and use the file stat watcher instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableInotifyWatcher")]
     pub disable_inotify_watcher: Option<bool>,
-    /// If enabled, the plugin will recombine split Docker log lines before passing them to any parser as configured above. This mode cannot be used at the same time as Multiline.
+    /// If enabled, the plugin will recombine split Docker log lines before passing them to any parser as configured above.
+    /// This mode cannot be used at the same time as Multiline.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerMode")]
     pub docker_mode: Option<bool>,
     /// Wait period time in seconds to flush queued unfinished split lines.
@@ -605,46 +643,59 @@ pub struct ClusterInputTail {
     /// Specify an optional parser for the first line of the docker multiline mode. The parser name to be specified must be registered in the parsers.conf file.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerModeParser")]
     pub docker_mode_parser: Option<String>,
-    /// Set one or multiple shell patterns separated by commas to exclude files matching a certain criteria, e.g: exclude_path=*.gz,*.zip
+    /// Set one or multiple shell patterns separated by commas to exclude files matching a certain criteria,
+    /// e.g: exclude_path=*.gz,*.zip
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludePath")]
     pub exclude_path: Option<String>,
-    /// Ignores records which are older than this time in seconds. Supports m,h,d (minutes, hours, days) syntax. Default behavior is to read all records from specified files. Only available when a Parser is specificied and it can parse the time of a record.
+    /// Ignores records which are older than this time in seconds.
+    /// Supports m,h,d (minutes, hours, days) syntax.
+    /// Default behavior is to read all records from specified files.
+    /// Only available when a Parser is specificied and it can parse the time of a record.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoredOlder")]
     pub ignored_older: Option<String>,
-    /// When a message is unstructured (no parser applied), it's appended as a string under the key name log. This option allows to define an alternative name for that key.
+    /// When a message is unstructured (no parser applied), it's appended as a string under the key name log.
+    /// This option allows to define an alternative name for that key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Set a limit of memory that Tail plugin can use when appending data to the Engine. If the limit is reach, it will be paused; when the data is flushed it resumes.
+    /// Set a limit of memory that Tail plugin can use when appending data to the Engine.
+    /// If the limit is reach, it will be paused; when the data is flushed it resumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memBufLimit")]
     pub mem_buf_limit: Option<String>,
-    /// If enabled, the plugin will try to discover multiline messages and use the proper parsers to compose the outgoing messages. Note that when this option is enabled the Parser option is not used.
+    /// If enabled, the plugin will try to discover multiline messages
+    /// and use the proper parsers to compose the outgoing messages.
+    /// Note that when this option is enabled the Parser option is not used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub multiline: Option<bool>,
     /// Wait period time in seconds to process queued multiline messages
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multilineFlushSeconds")]
     pub multiline_flush_seconds: Option<i64>,
-    /// This will help to reassembly multiline messages originally split by Docker or CRI Specify one or Multiline Parser definition to apply to the content.
+    /// This will help to reassembly multiline messages originally split by Docker or CRI
+    /// Specify one or Multiline Parser definition to apply to the content.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multilineParser")]
     pub multiline_parser: Option<String>,
     /// Specify the name of a parser to interpret the entry as a structured message.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parser: Option<String>,
-    /// Name of the parser that matchs the beginning of a multiline message. Note that the regular expression defined in the parser must include a group name (named capture)
+    /// Name of the parser that matchs the beginning of a multiline message.
+    /// Note that the regular expression defined in the parser must include a group name (named capture)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parserFirstline")]
     pub parser_firstline: Option<String>,
-    /// Optional-extra parser to interpret and structure multiline entries. This option can be used to define multiple parsers.
+    /// Optional-extra parser to interpret and structure multiline entries.
+    /// This option can be used to define multiple parsers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parserN")]
     pub parser_n: Option<Vec<String>>,
     /// Pattern specifying a specific log files or multiple ones through the use of common wildcards.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// If enabled, it appends the name of the monitored file as part of the record. The value assigned becomes the key in the map.
+    /// If enabled, it appends the name of the monitored file as part of the record.
+    /// The value assigned becomes the key in the map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathKey")]
     pub path_key: Option<String>,
     /// Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pauseOnChunksOverlimit")]
     pub pause_on_chunks_overlimit: Option<ClusterInputTailPauseOnChunksOverlimit>,
-    /// For new discovered files on start (without a database offset/position), read the content from the head of the file, not tail.
+    /// For new discovered files on start (without a database offset/position),
+    /// read the content from the head of the file, not tail.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readFromHead")]
     pub read_from_head: Option<bool>,
     /// The interval of refreshing the list of watched files in seconds.
@@ -653,13 +704,17 @@ pub struct ClusterInputTail {
     /// Specify the number of extra time in seconds to monitor a file once is rotated in case some pending data is flushed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotateWaitSeconds")]
     pub rotate_wait_seconds: Option<i64>,
-    /// When a monitored file reach it buffer capacity due to a very long line (Buffer_Max_Size), the default behavior is to stop monitoring that file. Skip_Long_Lines alter that behavior and instruct Fluent Bit to skip long lines and continue processing other lines that fits into the buffer size.
+    /// When a monitored file reach it buffer capacity due to a very long line (Buffer_Max_Size),
+    /// the default behavior is to stop monitoring that file.
+    /// Skip_Long_Lines alter that behavior and instruct Fluent Bit to skip long lines
+    /// and continue processing other lines that fits into the buffer size.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLongLines")]
     pub skip_long_lines: Option<bool>,
     /// Specify the buffering mechanism to use. It can be memory or filesystem
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageType")]
     pub storage_type: Option<ClusterInputTailStorageType>,
-    /// Set a tag (with regex-extract fields) that will be placed on lines read. E.g. kube.<namespace_name>.<pod_name>.<container_name>
+    /// Set a tag (with regex-extract fields) that will be placed on lines read.
+    /// E.g. kube.<namespace_name>.<pod_name>.<container_name>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
     /// Set a regex to exctract fields from the file
@@ -700,10 +755,12 @@ pub struct ClusterInputTcp {
     /// Specify the maximum buffer size in KB to receive a JSON message. If not set, the default size will be the value of Chunk_Size.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferSize")]
     pub buffer_size: Option<String>,
-    /// By default the buffer to store the incoming JSON messages, do not allocate the maximum memory allowed, instead it allocate memory when is required. The rounds of allocations are set by Chunk_Size in KB. If not set, Chunk_Size is equal to 32 (32KB).
+    /// By default the buffer to store the incoming JSON messages, do not allocate the maximum memory allowed, instead it allocate memory when is required.
+    /// The rounds of allocations are set by Chunk_Size in KB. If not set, Chunk_Size is equal to 32 (32KB).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkSize")]
     pub chunk_size: Option<String>,
-    /// Specify the expected payload format. It support the options json and none. When using json, it expects JSON maps, when is set to none, it will split every record using the defined Separator (option below).
+    /// Specify the expected payload format. It support the options json and none.
+    /// When using json, it expects JSON maps, when is set to none, it will split every record using the defined Separator (option below).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
     /// Listener network interface,default 0.0.0.0

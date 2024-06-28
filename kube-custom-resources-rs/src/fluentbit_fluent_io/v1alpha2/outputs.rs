@@ -18,7 +18,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct OutputSpec {
-    /// A user friendly alias name for this output plugin. Used in metrics for distinction of each configured output.
+    /// A user friendly alias name for this output plugin.
+    /// Used in metrics for distinction of each configured output.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alias: Option<String>,
     /// AzureBlob defines AzureBlob Output Configuration
@@ -69,10 +70,12 @@ pub struct OutputSpec {
     /// Loki defines Loki Output configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loki: Option<OutputLoki>,
-    /// A pattern to match against the tags of incoming records. It's case sensitive and support the star (*) character as a wildcard.
+    /// A pattern to match against the tags of incoming records.
+    /// It's case sensitive and support the star (*) character as a wildcard.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<String>,
-    /// A regular expression to match against the tags of incoming records. Use this option if you want to use the full regex syntax.
+    /// A regular expression to match against the tags of incoming records.
+    /// Use this option if you want to use the full regex syntax.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchRegex")]
     pub match_regex: Option<String>,
     /// Null defines Null Output configuration.
@@ -84,13 +87,17 @@ pub struct OutputSpec {
     /// OpenTelemetry defines OpenTelemetry Output configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opentelemetry: Option<OutputOpentelemetry>,
+    /// Processors defines the processors configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub processors: Option<BTreeMap<String, serde_json::Value>>,
     /// PrometheusExporter_types defines Prometheus exporter configuration to expose metrics from Fluent Bit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusExporter")]
     pub prometheus_exporter: Option<OutputPrometheusExporter>,
     /// PrometheusRemoteWrite_types defines Prometheus Remote Write configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusRemoteWrite")]
     pub prometheus_remote_write: Option<OutputPrometheusRemoteWrite>,
-    /// RetryLimit represents configuration for the scheduler which can be set independently on each output section. This option allows to disable retries or impose a limit to try N times and then discard the data after reaching that limit.
+    /// RetryLimit represents configuration for the scheduler which can be set independently on each output section.
+    /// This option allows to disable retries or impose a limit to try N times and then discard the data after reaching that limit.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry_limit: Option<String>,
     /// S3 defines S3 Output configuration.
@@ -134,6 +141,9 @@ pub struct OutputAzureBlob {
     /// HTTP Service of the endpoint (if using EmulatorMode)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputAzureBlobNetworking>,
     /// Optional path to store the blobs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -172,6 +182,68 @@ pub enum OutputAzureBlobEmulatorMode {
     Off,
 }
 
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputAzureBlobNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputAzureBlobNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputAzureBlobNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputAzureBlobNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputAzureBlobNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputAzureBlobNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputAzureBlobNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+}
+
 /// Specify the Azure Storage Shared Key to authenticate against the storage account
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputAzureBlobSharedKey {
@@ -193,7 +265,9 @@ pub struct OutputAzureBlobSharedKeyValueFrom {
 pub struct OutputAzureBlobSharedKeyValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -213,7 +287,8 @@ pub struct OutputAzureBlobTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -266,7 +341,9 @@ pub struct OutputAzureBlobTlsKeyPasswordValueFrom {
 pub struct OutputAzureBlobTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -315,7 +392,9 @@ pub struct OutputAzureLogAnalyticsCustomerIdValueFrom {
 pub struct OutputAzureLogAnalyticsCustomerIdValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -344,7 +423,9 @@ pub struct OutputAzureLogAnalyticsSharedKeyValueFrom {
 pub struct OutputAzureLogAnalyticsSharedKeyValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -391,7 +472,8 @@ pub struct OutputCloudWatch {
     /// Template for Log Stream name. Overrides LogStreamPrefix and LogStreamName if set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logStreamTemplate")]
     pub log_stream_template: Option<String>,
-    /// Optional lists of lists for dimension keys to be added to all metrics. Use comma separated strings for one list of dimensions and semicolon separated strings for list of lists dimensions.
+    /// Optional lists of lists for dimension keys to be added to all metrics. Use comma separated strings
+    /// for one list of dimensions and semicolon separated strings for list of lists dimensions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricDimensions")]
     pub metric_dimensions: Option<String>,
     /// Optional string to represent the CloudWatch namespace.
@@ -449,8 +531,13 @@ pub enum OutputCloudWatchLogRetentionDays {
 /// CustomPlugin defines Custom Output configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputCustomPlugin {
+    /// Config holds any unsupported plugins classic configurations,
+    /// if ConfigFileFormat is set to yaml, this filed will be ignored
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
+    /// YamlConfig holds the unsupported plugins yaml configurations, it only works when the ConfigFileFormat is yaml
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "yamlConfig")]
+    pub yaml_config: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// DataDog defines DataDog Output configuration.
@@ -459,7 +546,8 @@ pub struct OutputDatadog {
     /// Your Datadog API key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub apikey: Option<OutputDatadogApikey>,
-    /// Compress  the payload in GZIP format. Datadog supports and recommends setting this to gzip.
+    /// Compress  the payload in GZIP format.
+    /// Datadog supports and recommends setting this to gzip.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compress: Option<String>,
     /// By default, the plugin searches for the key 'log' and remap the value to the key 'message'. If the property is set, the plugin will search the property name key.
@@ -492,7 +580,8 @@ pub struct OutputDatadog {
     /// The key name of tag. If include_tag_key is false, This property is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag_key: Option<String>,
-    /// TLS controls whether to use end-to-end security communications security protocol. Datadog recommends setting this to on.
+    /// TLS controls whether to use end-to-end security communications security protocol.
+    /// Datadog recommends setting this to on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<bool>,
 }
@@ -518,7 +607,9 @@ pub struct OutputDatadogApikeyValueFrom {
 pub struct OutputDatadogApikeyValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -544,7 +635,11 @@ pub struct OutputEs {
     /// Specify the custom sts endpoint to be used with STS API for Amazon ElasticSearch Service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsSTSEndpoint")]
     pub aws_sts_endpoint: Option<String>,
-    /// Specify the buffer size used to read the response from the Elasticsearch HTTP service. This option is useful for debugging purposes where is required to read full responses, note that response size grows depending of the number of records inserted. To set an unlimited amount of memory set this value to False, otherwise the value must be according to the Unit Size specification.
+    /// Specify the buffer size used to read the response from the Elasticsearch HTTP service.
+    /// This option is useful for debugging purposes where is required to read full responses,
+    /// note that response size grows depending of the number of records inserted.
+    /// To set an unlimited amount of memory set this value to False,
+    /// otherwise the value must be according to the Unit Size specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferSize")]
     pub buffer_size: Option<String>,
     /// Specify the credentials to use to connect to Elastic's Elasticsearch Service running on Elastic Cloud.
@@ -559,7 +654,8 @@ pub struct OutputEs {
     /// Use current time for index generation instead of message record
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentTimeIndex")]
     pub current_time_index: Option<bool>,
-    /// When enabled, generate _id for outgoing records. This prevents duplicate records when retrying ES.
+    /// When enabled, generate _id for outgoing records.
+    /// This prevents duplicate records when retrying ES.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateID")]
     pub generate_id: Option<bool>,
     /// IP address or hostname of the target Elasticsearch instance
@@ -583,19 +679,31 @@ pub struct OutputEs {
     /// Time format (based on strftime) to generate the second part of the Index name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashDateFormat")]
     pub logstash_date_format: Option<String>,
-    /// Enable Logstash format compatibility. This option takes a boolean value: True/False, On/Off
+    /// Enable Logstash format compatibility.
+    /// This option takes a boolean value: True/False, On/Off
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashFormat")]
     pub logstash_format: Option<bool>,
-    /// When Logstash_Format is enabled, the Index name is composed using a prefix and the date, e.g: If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. The last string appended belongs to the date when the data is being generated.
+    /// When Logstash_Format is enabled, the Index name is composed using a prefix and the date,
+    /// e.g: If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'.
+    /// The last string appended belongs to the date when the data is being generated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashPrefix")]
     pub logstash_prefix: Option<String>,
     /// Prefix keys with this string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashPrefixKey")]
     pub logstash_prefix_key: Option<String>,
-    /// Elasticsearch accepts new data on HTTP query path "/_bulk". But it is also possible to serve Elasticsearch behind a reverse proxy on a subpath. This option defines such path on the fluent-bit side. It simply adds a path prefix in the indexing HTTP POST URI.
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputEsNetworking>,
+    /// Elasticsearch accepts new data on HTTP query path "/_bulk".
+    /// But it is also possible to serve Elasticsearch behind a reverse proxy on a subpath.
+    /// This option defines such path on the fluent-bit side.
+    /// It simply adds a path prefix in the indexing HTTP POST URI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Newer versions of Elasticsearch allows setting up filters called pipelines. This option allows defining which pipeline the database should use. For performance reasons is strongly suggested parsing and filtering on Fluent Bit side, avoid pipelines.
+    /// Newer versions of Elasticsearch allows setting up filters called pipelines.
+    /// This option allows defining which pipeline the database should use.
+    /// For performance reasons is strongly suggested parsing
+    /// and filtering on Fluent Bit side, avoid pipelines.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pipeline: Option<String>,
     /// TCP port of the target Elasticsearch instance
@@ -610,7 +718,8 @@ pub struct OutputEs {
     /// When Include_Tag_Key is enabled, this property defines the key name for the tag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagKey")]
     pub tag_key: Option<String>,
-    /// When Logstash_Format is enabled, each record will get a new timestamp field. The Time_Key property defines the name of that field.
+    /// When Logstash_Format is enabled, each record will get a new timestamp field.
+    /// The Time_Key property defines the name of that field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
     pub time_key: Option<String>,
     /// When Logstash_Format is enabled, this property defines the format of the timestamp.
@@ -667,7 +776,9 @@ pub struct OutputEsHttpPasswordValueFrom {
 pub struct OutputEsHttpPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -696,12 +807,76 @@ pub struct OutputEsHttpUserValueFrom {
 pub struct OutputEsHttpUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputEsNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputEsNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputEsNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputEsNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputEsNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputEsNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputEsNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
 }
 
 /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
@@ -716,7 +891,8 @@ pub struct OutputEsTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -769,7 +945,9 @@ pub struct OutputEsTlsKeyPasswordValueFrom {
 pub struct OutputEsTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -858,13 +1036,18 @@ pub struct OutputForward {
     /// Target host where Fluent-Bit or Fluentd are listening for Forward messages.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputForwardNetworking>,
     /// Specify the password corresponding to the username.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<OutputForwardPassword>,
     /// TCP Port of the target service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-    /// Send "chunk"-option and wait for "ack" response from server. Enables at-least-once and receiving server can control rate of traffic. (Requires Fluentd v0.14.0+ server)
+    /// Send "chunk"-option and wait for "ack" response from server.
+    /// Enables at-least-once and receiving server can control rate of traffic.
+    /// (Requires Fluentd v0.14.0+ server)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAckResponse")]
     pub require_ack_response: Option<bool>,
     /// Default value of the auto-generated certificate common name (CN).
@@ -876,7 +1059,8 @@ pub struct OutputForward {
     /// A key string known by the remote Fluentd used for authorization.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedKey")]
     pub shared_key: Option<String>,
-    /// Overwrite the tag as we transmit. This allows the receiving pipeline start fresh, or to attribute source.
+    /// Overwrite the tag as we transmit. This allows the receiving pipeline start
+    /// fresh, or to attribute source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
     /// Set timestamps in integer format, it enable compatibility mode for Fluentd v0.12 series.
@@ -888,6 +1072,68 @@ pub struct OutputForward {
     /// Specify the username to present to a Fluentd server that enables user_auth.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<OutputForwardUsername>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputForwardNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputForwardNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputForwardNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputForwardNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputForwardNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputForwardNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputForwardNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
 }
 
 /// Specify the password corresponding to the username.
@@ -911,7 +1157,9 @@ pub struct OutputForwardPasswordValueFrom {
 pub struct OutputForwardPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -931,7 +1179,8 @@ pub struct OutputForwardTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -984,7 +1233,9 @@ pub struct OutputForwardTlsKeyPasswordValueFrom {
 pub struct OutputForwardTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1013,7 +1264,9 @@ pub struct OutputForwardUsernameValueFrom {
 pub struct OutputForwardUsernameValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1042,6 +1295,9 @@ pub struct OutputGelf {
     /// The protocol to use (tls, tcp or udp).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<OutputGelfMode>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputGelfNetworking>,
     /// If transport protocol is udp, it sets the size of packets to be sent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "packetSize")]
     pub packet_size: Option<i32>,
@@ -1070,6 +1326,68 @@ pub enum OutputGelfMode {
     Udp,
 }
 
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputGelfNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputGelfNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputGelfNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputGelfNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputGelfNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputGelfNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputGelfNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+}
+
 /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputGelfTls {
@@ -1082,7 +1400,8 @@ pub struct OutputGelfTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -1135,7 +1454,9 @@ pub struct OutputGelfTlsKeyPasswordValueFrom {
 pub struct OutputGelfTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1146,13 +1467,15 @@ pub struct OutputGelfTlsKeyPasswordValueFromSecretKeyRef {
 /// HTTP defines HTTP Output configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputHttp {
-    /// Specify if duplicated headers are allowed. If a duplicated header is found, the latest key/value set is preserved.
+    /// Specify if duplicated headers are allowed.
+    /// If a duplicated header is found, the latest key/value set is preserved.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowDuplicatedHeaders")]
     pub allow_duplicated_headers: Option<bool>,
     /// Set payload compression mechanism. Option available is 'gzip'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compress: Option<String>,
-    /// Specify the data format to be used in the HTTP request body, by default it uses msgpack. Other supported formats are json, json_stream and json_lines and gelf.
+    /// Specify the data format to be used in the HTTP request body, by default it uses msgpack.
+    /// Other supported formats are json, json_stream and json_lines and gelf.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<OutputHttpFormat>,
     /// Specify the key to use for the full message in gelf format
@@ -1185,19 +1508,26 @@ pub struct OutputHttp {
     /// Basic Auth Username
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpUser")]
     pub http_user: Option<OutputHttpHttpUser>,
-    /// Specify the format of the date. Supported formats are double, epoch and iso8601 (eg: 2018-05-30T09:39:52.000681Z)
+    /// Specify the format of the date. Supported formats are double, epoch
+    /// and iso8601 (eg: 2018-05-30T09:39:52.000681Z)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonDateFormat")]
     pub json_date_format: Option<String>,
-    /// Specify the name of the time key in the output record. To disable the time key just set the value to false.
+    /// Specify the name of the time key in the output record.
+    /// To disable the time key just set the value to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonDateKey")]
     pub json_date_key: Option<String>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputHttpNetworking>,
     /// TCP port of the target HTTP Server
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-    /// Specify an HTTP Proxy. The expected format of this value is http://host:port. Note that https is not supported yet.
+    /// Specify an HTTP Proxy. The expected format of this value is http://host:port.
+    /// Note that https is not supported yet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<String>,
-    /// HTTP output plugin supports TTL/SSL, for more details about the properties available and general configuration, please refer to the TLS/SSL section.
+    /// HTTP output plugin supports TTL/SSL, for more details about the properties available
+    /// and general configuration, please refer to the TLS/SSL section.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<OutputHttpTls>,
     /// Specify an optional HTTP URI for the target web server, e.g: /something
@@ -1241,7 +1571,9 @@ pub struct OutputHttpHttpPasswordValueFrom {
 pub struct OutputHttpHttpPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1270,7 +1602,9 @@ pub struct OutputHttpHttpUserValueFrom {
 pub struct OutputHttpHttpUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1278,7 +1612,70 @@ pub struct OutputHttpHttpUserValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// HTTP output plugin supports TTL/SSL, for more details about the properties available and general configuration, please refer to the TLS/SSL section.
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputHttpNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputHttpNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputHttpNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputHttpNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputHttpNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputHttpNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputHttpNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+}
+
+/// HTTP output plugin supports TTL/SSL, for more details about the properties available
+/// and general configuration, please refer to the TLS/SSL section.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputHttpTls {
     /// Absolute path to CA certificate file
@@ -1290,7 +1687,8 @@ pub struct OutputHttpTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -1307,7 +1705,8 @@ pub struct OutputHttpTls {
     pub vhost: Option<String>,
 }
 
-/// HTTP output plugin supports TTL/SSL, for more details about the properties available and general configuration, please refer to the TLS/SSL section.
+/// HTTP output plugin supports TTL/SSL, for more details about the properties available
+/// and general configuration, please refer to the TLS/SSL section.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OutputHttpTlsDebug {
     #[serde(rename = "0")]
@@ -1343,7 +1742,9 @@ pub struct OutputHttpTlsKeyPasswordValueFrom {
 pub struct OutputHttpTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1374,6 +1775,9 @@ pub struct OutputInfluxDb {
     /// Optional username for HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpUser")]
     pub http_user: Option<OutputInfluxDbHttpUser>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputInfluxDbNetworking>,
     /// InfluxDB organization name where the bucket is (v2 only)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub org: Option<String>,
@@ -1418,7 +1822,9 @@ pub struct OutputInfluxDbHttpPasswordValueFrom {
 pub struct OutputInfluxDbHttpPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1447,7 +1853,9 @@ pub struct OutputInfluxDbHttpTokenValueFrom {
 pub struct OutputInfluxDbHttpTokenValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1476,12 +1884,76 @@ pub struct OutputInfluxDbHttpUserValueFrom {
 pub struct OutputInfluxDbHttpUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputInfluxDbNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputInfluxDbNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputInfluxDbNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputInfluxDbNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputInfluxDbNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputInfluxDbNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputInfluxDbNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
 }
 
 /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
@@ -1496,7 +1968,8 @@ pub struct OutputInfluxDbTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -1549,7 +2022,9 @@ pub struct OutputInfluxDbTlsKeyPasswordValueFrom {
 pub struct OutputInfluxDbTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1572,10 +2047,15 @@ pub struct OutputKafka {
     /// Optional key to store the message
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageKey")]
     pub message_key: Option<String>,
-    /// If set, the value of Message_Key_Field in the record will indicate the message key. If not set nor found in the record, Message_Key will be used (if set).
+    /// If set, the value of Message_Key_Field in the record will indicate the message key.
+    /// If not set nor found in the record, Message_Key will be used (if set).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageKeyField")]
     pub message_key_field: Option<String>,
-    /// Fluent Bit queues data into rdkafka library, if for some reason the underlying library cannot flush the records the queue might fills up blocking new addition of records. The queue_full_retries option set the number of local retries to enqueue the data. The default value is 10 times, the interval between each retry is 1 second. Setting the queue_full_retries value to 0 set's an unlimited number of retries.
+    /// Fluent Bit queues data into rdkafka library,
+    /// if for some reason the underlying library cannot flush the records the queue might fills up blocking new addition of records.
+    /// The queue_full_retries option set the number of local retries to enqueue the data.
+    /// The default value is 10 times, the interval between each retry is 1 second.
+    /// Setting the queue_full_retries value to 0 set's an unlimited number of retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueFullRetries")]
     pub queue_full_retries: Option<i64>,
     /// {property} can be any librdkafka properties
@@ -1587,10 +2067,15 @@ pub struct OutputKafka {
     /// Set the key to store the record timestamp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timestampKey")]
     pub timestamp_key: Option<String>,
-    /// If multiple Topics exists, the value of Topic_Key in the record will indicate the topic to use. E.g: if Topic_Key is router and the record is {"key1": 123, "router": "route_2"}, Fluent Bit will use topic route_2. Note that if the value of Topic_Key is not present in Topics, then by default the first topic in the Topics list will indicate the topic to be used.
+    /// If multiple Topics exists, the value of Topic_Key in the record will indicate the topic to use.
+    /// E.g: if Topic_Key is router and the record is {"key1": 123, "router": "route_2"},
+    /// Fluent Bit will use topic route_2. Note that if the value of Topic_Key is not present in Topics,
+    /// then by default the first topic in the Topics list will indicate the topic to be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicKey")]
     pub topic_key: Option<String>,
-    /// Single entry or list of topics separated by comma (,) that Fluent Bit will use to send messages to Kafka. If only one topic is set, that one will be used for all records. Instead if multiple topics exists, the one set in the record by Topic_Key will be used.
+    /// Single entry or list of topics separated by comma (,) that Fluent Bit will use to send messages to Kafka.
+    /// If only one topic is set, that one will be used for all records.
+    /// Instead if multiple topics exists, the one set in the record by Topic_Key will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topics: Option<String>,
 }
@@ -1656,34 +2141,44 @@ pub struct OutputLoki {
     pub drop_single_key: Option<OutputLokiDropSingleKey>,
     /// Loki hostname or IP address.
     pub host: String,
-    /// Password for user defined in HTTP_User Set HTTP basic authentication password
+    /// Password for user defined in HTTP_User
+    /// Set HTTP basic authentication password
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpPassword")]
     pub http_password: Option<OutputLokiHttpPassword>,
     /// Set HTTP basic authentication user name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpUser")]
     pub http_user: Option<OutputLokiHttpUser>,
-    /// Optional list of record keys that will be placed as stream labels. This configuration property is for records key only.
+    /// Optional list of record keys that will be placed as stream labels.
+    /// This configuration property is for records key only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelKeys")]
     pub label_keys: Option<Vec<String>>,
     /// Specify the label map file path. The file defines how to extract labels from each record.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelMapPath")]
     pub label_map_path: Option<String>,
-    /// Stream labels for API request. It can be multiple comma separated of strings specifying  key=value pairs. In addition to fixed parameters, it also allows to add custom record keys (similar to label_keys property).
+    /// Stream labels for API request. It can be multiple comma separated of strings specifying  key=value pairs.
+    /// In addition to fixed parameters, it also allows to add custom record keys (similar to label_keys property).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<String>>,
-    /// Format to use when flattening the record to a log line. Valid values are json or key_value. If set to json,  the log line sent to Loki will be the Fluent Bit record dumped as JSON. If set to key_value, the log line will be each item in the record concatenated together (separated by a single space) in the format.
+    /// Format to use when flattening the record to a log line. Valid values are json or key_value.
+    /// If set to json,  the log line sent to Loki will be the Fluent Bit record dumped as JSON.
+    /// If set to key_value, the log line will be each item in the record concatenated together (separated by a single space) in the format.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lineFormat")]
     pub line_format: Option<OutputLokiLineFormat>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputLokiNetworking>,
     /// Loki TCP port
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// Optional list of keys to remove.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeKeys")]
     pub remove_keys: Option<Vec<String>>,
-    /// Tenant ID used by default to push logs to Loki. If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
+    /// Tenant ID used by default to push logs to Loki.
+    /// If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
     pub tenant_id: Option<OutputLokiTenantId>,
-    /// Specify the name of the key from the original record that contains the Tenant ID. The value of the key is set as X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically.
+    /// Specify the name of the key from the original record that contains the Tenant ID.
+    /// The value of the key is set as X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantIDKey")]
     pub tenant_id_key: Option<String>,
     /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
@@ -1709,7 +2204,8 @@ pub enum OutputLokiDropSingleKey {
     Off,
 }
 
-/// Password for user defined in HTTP_User Set HTTP basic authentication password
+/// Password for user defined in HTTP_User
+/// Set HTTP basic authentication password
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputLokiHttpPassword {
     /// ValueSource defines how to find a value's key.
@@ -1730,7 +2226,9 @@ pub struct OutputLokiHttpPasswordValueFrom {
 pub struct OutputLokiHttpPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1759,7 +2257,9 @@ pub struct OutputLokiHttpUserValueFrom {
 pub struct OutputLokiHttpUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1776,7 +2276,70 @@ pub enum OutputLokiLineFormat {
     KeyValue,
 }
 
-/// Tenant ID used by default to push logs to Loki. If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLokiNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputLokiNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputLokiNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputLokiNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputLokiNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputLokiNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputLokiNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+}
+
+/// Tenant ID used by default to push logs to Loki.
+/// If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputLokiTenantId {
     /// ValueSource defines how to find a value's key.
@@ -1797,7 +2360,9 @@ pub struct OutputLokiTenantIdValueFrom {
 pub struct OutputLokiTenantIdValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1817,7 +2382,8 @@ pub struct OutputLokiTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -1870,7 +2436,9 @@ pub struct OutputLokiTlsKeyPasswordValueFrom {
 pub struct OutputLokiTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1904,13 +2472,18 @@ pub struct OutputOpensearch {
     /// Specify the custom sts endpoint to be used with STS API for Amazon OpenSearch Service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsSTSEndpoint")]
     pub aws_sts_endpoint: Option<String>,
-    /// Specify the buffer size used to read the response from the OpenSearch HTTP service. This option is useful for debugging purposes where is required to read full responses, note that response size grows depending of the number of records inserted. To set an unlimited amount of memory set this value to False, otherwise the value must be according to the Unit Size specification.
+    /// Specify the buffer size used to read the response from the OpenSearch HTTP service.
+    /// This option is useful for debugging purposes where is required to read full responses,
+    /// note that response size grows depending of the number of records inserted.
+    /// To set an unlimited amount of memory set this value to False,
+    /// otherwise the value must be according to the Unit Size specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferSize")]
     pub buffer_size: Option<String>,
     /// Use current time for index generation instead of message record
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentTimeIndex")]
     pub current_time_index: Option<bool>,
-    /// When enabled, generate _id for outgoing records. This prevents duplicate records when retrying OpenSearch.
+    /// When enabled, generate _id for outgoing records.
+    /// This prevents duplicate records when retrying OpenSearch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateID")]
     pub generate_id: Option<bool>,
     /// IP address or hostname of the target OpenSearch instance, default `127.0.0.1`
@@ -1934,19 +2507,31 @@ pub struct OutputOpensearch {
     /// Time format (based on strftime) to generate the second part of the Index name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashDateFormat")]
     pub logstash_date_format: Option<String>,
-    /// Enable Logstash format compatibility. This option takes a boolean value: True/False, On/Off
+    /// Enable Logstash format compatibility.
+    /// This option takes a boolean value: True/False, On/Off
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashFormat")]
     pub logstash_format: Option<bool>,
-    /// When Logstash_Format is enabled, the Index name is composed using a prefix and the date, e.g: If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. The last string appended belongs to the date when the data is being generated.
+    /// When Logstash_Format is enabled, the Index name is composed using a prefix and the date,
+    /// e.g: If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'.
+    /// The last string appended belongs to the date when the data is being generated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashPrefix")]
     pub logstash_prefix: Option<String>,
     /// Prefix keys with this string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashPrefixKey")]
     pub logstash_prefix_key: Option<String>,
-    /// OpenSearch accepts new data on HTTP query path "/_bulk". But it is also possible to serve OpenSearch behind a reverse proxy on a subpath. This option defines such path on the fluent-bit side. It simply adds a path prefix in the indexing HTTP POST URI.
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputOpensearchNetworking>,
+    /// OpenSearch accepts new data on HTTP query path "/_bulk".
+    /// But it is also possible to serve OpenSearch behind a reverse proxy on a subpath.
+    /// This option defines such path on the fluent-bit side.
+    /// It simply adds a path prefix in the indexing HTTP POST URI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// OpenSearch allows to setup filters called pipelines. This option allows to define which pipeline the database should use. For performance reasons is strongly suggested to do parsing and filtering on Fluent Bit side, avoid pipelines.
+    /// OpenSearch allows to setup filters called pipelines.
+    /// This option allows to define which pipeline the database should use.
+    /// For performance reasons is strongly suggested to do parsing
+    /// and filtering on Fluent Bit side, avoid pipelines.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pipeline: Option<String>,
     /// TCP port of the target OpenSearch instance, default `9200`
@@ -1961,7 +2546,8 @@ pub struct OutputOpensearch {
     /// When Include_Tag_Key is enabled, this property defines the key name for the tag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagKey")]
     pub tag_key: Option<String>,
-    /// When Logstash_Format is enabled, each record will get a new timestamp field. The Time_Key property defines the name of that field.
+    /// When Logstash_Format is enabled, each record will get a new timestamp field.
+    /// The Time_Key property defines the name of that field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
     pub time_key: Option<String>,
     /// When Logstash_Format is enabled, this property defines the format of the timestamp.
@@ -2011,7 +2597,9 @@ pub struct OutputOpensearchHttpPasswordValueFrom {
 pub struct OutputOpensearchHttpPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2040,12 +2628,76 @@ pub struct OutputOpensearchHttpUserValueFrom {
 pub struct OutputOpensearchHttpUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputOpensearchNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputOpensearchNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputOpensearchNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputOpensearchNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputOpensearchNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputOpensearchNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
 }
 
 /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
@@ -2060,7 +2712,8 @@ pub struct OutputOpensearchTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -2113,7 +2766,9 @@ pub struct OutputOpensearchTlsKeyPasswordValueFrom {
 pub struct OutputOpensearchTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2148,10 +2803,14 @@ pub struct OutputOpentelemetry {
     /// Specify an optional HTTP URI for the target web server listening for metrics, e.g: /v1/metrics
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsUri")]
     pub metrics_uri: Option<String>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputOpentelemetryNetworking>,
     /// TCP port of the target OpenSearch instance, default `80`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-    /// Specify an HTTP Proxy. The expected format of this value is http://HOST:PORT. Note that HTTPS is not currently supported. It is recommended not to set this and to configure the HTTP proxy environment variables instead as they support both HTTP and HTTPS.
+    /// Specify an HTTP Proxy. The expected format of this value is http://HOST:PORT. Note that HTTPS is not currently supported.
+    /// It is recommended not to set this and to configure the HTTP proxy environment variables instead as they support both HTTP and HTTPS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<String>,
     /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
@@ -2183,7 +2842,9 @@ pub struct OutputOpentelemetryHttpPasswordValueFrom {
 pub struct OutputOpentelemetryHttpPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2212,12 +2873,76 @@ pub struct OutputOpentelemetryHttpUserValueFrom {
 pub struct OutputOpentelemetryHttpUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpentelemetryNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputOpentelemetryNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputOpentelemetryNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputOpentelemetryNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputOpentelemetryNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputOpentelemetryNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputOpentelemetryNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
 }
 
 /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
@@ -2232,7 +2957,8 @@ pub struct OutputOpentelemetryTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -2285,7 +3011,9 @@ pub struct OutputOpentelemetryTlsKeyPasswordValueFrom {
 pub struct OutputOpentelemetryTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2317,7 +3045,8 @@ pub struct OutputPrometheusRemoteWrite {
     pub headers: Option<BTreeMap<String, String>>,
     /// IP address or hostname of the target HTTP Server, default: 127.0.0.1
     pub host: String,
-    /// Basic Auth Password. Requires HTTP_user to be se
+    /// Basic Auth Password.
+    /// Requires HTTP_user to be se
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpPasswd")]
     pub http_passwd: Option<OutputPrometheusRemoteWriteHttpPasswd>,
     /// Basic Auth Username
@@ -2326,6 +3055,9 @@ pub struct OutputPrometheusRemoteWrite {
     /// Log the response payload within the Fluent Bit log,default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logResponsePayload")]
     pub log_response_payload: Option<bool>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputPrometheusRemoteWriteNetworking>,
     /// TCP port of the target HTTP Serveri, default:80
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
@@ -2343,7 +3075,8 @@ pub struct OutputPrometheusRemoteWrite {
     pub workers: Option<i32>,
 }
 
-/// Basic Auth Password. Requires HTTP_user to be se
+/// Basic Auth Password.
+/// Requires HTTP_user to be se
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputPrometheusRemoteWriteHttpPasswd {
     /// ValueSource defines how to find a value's key.
@@ -2364,7 +3097,9 @@ pub struct OutputPrometheusRemoteWriteHttpPasswdValueFrom {
 pub struct OutputPrometheusRemoteWriteHttpPasswdValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2393,12 +3128,76 @@ pub struct OutputPrometheusRemoteWriteHttpUserValueFrom {
 pub struct OutputPrometheusRemoteWriteHttpUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputPrometheusRemoteWriteNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputPrometheusRemoteWriteNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputPrometheusRemoteWriteNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputPrometheusRemoteWriteNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputPrometheusRemoteWriteNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputPrometheusRemoteWriteNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputPrometheusRemoteWriteNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
 }
 
 /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
@@ -2413,7 +3212,8 @@ pub struct OutputPrometheusRemoteWriteTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -2466,7 +3266,9 @@ pub struct OutputPrometheusRemoteWriteTlsKeyPasswordValueFrom {
 pub struct OutputPrometheusRemoteWriteTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2575,7 +3377,8 @@ pub struct OutputS3Tls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -2628,7 +3431,9 @@ pub struct OutputS3TlsKeyPasswordValueFrom {
 pub struct OutputS3TlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2648,7 +3453,8 @@ pub struct OutputSplunk {
     /// Set payload compression mechanism. The only available option is gzip.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compress: Option<String>,
-    /// Set event fields for the record. This option is an array and the format is "key_name record_accessor_pattern".
+    /// Set event fields for the record. This option is an array and the format is "key_name
+    /// record_accessor_pattern".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventFields")]
     pub event_fields: Option<Vec<String>>,
     /// Specify the key name that contains the host value. This option allows a record accessors pattern.
@@ -2657,7 +3463,8 @@ pub struct OutputSplunk {
     /// The name of the index by which the event data is to be indexed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventIndex")]
     pub event_index: Option<String>,
-    /// Set a record key that will populate the index field. If the key is found, it will have precedence over the value set in event_index.
+    /// Set a record key that will populate the index field. If the key is found, it will have precedence
+    /// over the value set in event_index.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventIndexKey")]
     pub event_index_key: Option<String>,
     /// Specify the key name that will be used to send a single value as part of the record.
@@ -2669,7 +3476,8 @@ pub struct OutputSplunk {
     /// Set the sourcetype value to assign to the event data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventSourcetype")]
     pub event_sourcetype: Option<String>,
-    /// Set a record key that will populate 'sourcetype'. If the key is found, it will have precedence over the value set in event_sourcetype.
+    /// Set a record key that will populate 'sourcetype'. If the key is found, it will have precedence
+    /// over the value set in event_sourcetype.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventSourcetypeKey")]
     pub event_sourcetype_key: Option<String>,
     /// IP address or hostname of the target OpenSearch instance, default `127.0.0.1`
@@ -2678,7 +3486,8 @@ pub struct OutputSplunk {
     /// Buffer size used to receive Splunk HTTP responses: Default `2M`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpBufferSize")]
     pub http_buffer_size: Option<String>,
-    /// If the HTTP server response code is 400 (bad request) and this flag is enabled, it will print the full HTTP request and response to the stdout interface. This feature is available for debugging purposes.
+    /// If the HTTP server response code is 400 (bad request) and this flag is enabled, it will print the full HTTP request
+    /// and response to the stdout interface. This feature is available for debugging purposes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpDebugBadRequest")]
     pub http_debug_bad_request: Option<bool>,
     /// Password for user defined in HTTP_User
@@ -2687,10 +3496,14 @@ pub struct OutputSplunk {
     /// Optional username credential for access
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpUser")]
     pub http_user: Option<OutputSplunkHttpUser>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputSplunkNetworking>,
     /// TCP port of the target Splunk instance, default `8088`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-    /// When enabled, the record keys and values are set in the top level of the map instead of under the event key. Refer to the Sending Raw Events section from the docs more details to make this option work properly.
+    /// When enabled, the record keys and values are set in the top level of the map instead of under the event key. Refer to
+    /// the Sending Raw Events section from the docs more details to make this option work properly.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "splunkSendRaw")]
     pub splunk_send_raw: Option<bool>,
     /// Specify the Authentication Token for the HTTP Event Collector interface.
@@ -2722,7 +3535,9 @@ pub struct OutputSplunkHttpPasswordValueFrom {
 pub struct OutputSplunkHttpPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2751,12 +3566,76 @@ pub struct OutputSplunkHttpUserValueFrom {
 pub struct OutputSplunkHttpUserValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputSplunkNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputSplunkNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputSplunkNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputSplunkNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputSplunkNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputSplunkNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputSplunkNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
 }
 
 /// Specify the Authentication Token for the HTTP Event Collector interface.
@@ -2780,7 +3659,9 @@ pub struct OutputSplunkSplunkTokenValueFrom {
 pub struct OutputSplunkSplunkTokenValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2800,7 +3681,8 @@ pub struct OutputSplunkTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -2853,7 +3735,9 @@ pub struct OutputSplunkTlsKeyPasswordValueFrom {
 pub struct OutputSplunkTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2953,7 +3837,9 @@ pub struct OutputStackdriverServiceAccountEmailValueFrom {
 pub struct OutputStackdriverServiceAccountEmailValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2982,7 +3868,9 @@ pub struct OutputStackdriverServiceAccountSecretValueFrom {
 pub struct OutputStackdriverServiceAccountSecretValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3037,6 +3925,9 @@ pub struct OutputSyslog {
     /// Mode of the desired transport type, the available options are tcp, tls and udp.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputSyslogNetworking>,
     /// TCP or UDP port of the remote Syslog server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
@@ -3070,12 +3961,76 @@ pub struct OutputSyslog {
     /// Key from the original record that contains the Syslog severity number.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syslogSeverityKey")]
     pub syslog_severity_key: Option<String>,
-    /// Syslog output plugin supports TTL/SSL, for more details about the properties available and general configuration, please refer to the TLS/SSL section.
+    /// Syslog output plugin supports TTL/SSL, for more details about the properties available
+    /// and general configuration, please refer to the TLS/SSL section.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<OutputSyslogTls>,
 }
 
-/// Syslog output plugin supports TTL/SSL, for more details about the properties available and general configuration, please refer to the TLS/SSL section.
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputSyslogNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputSyslogNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputSyslogNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputSyslogNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputSyslogNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputSyslogNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputSyslogNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+}
+
+/// Syslog output plugin supports TTL/SSL, for more details about the properties available
+/// and general configuration, please refer to the TLS/SSL section.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputSyslogTls {
     /// Absolute path to CA certificate file
@@ -3087,7 +4042,8 @@ pub struct OutputSyslogTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -3104,7 +4060,8 @@ pub struct OutputSyslogTls {
     pub vhost: Option<String>,
 }
 
-/// Syslog output plugin supports TTL/SSL, for more details about the properties available and general configuration, please refer to the TLS/SSL section.
+/// Syslog output plugin supports TTL/SSL, for more details about the properties available
+/// and general configuration, please refer to the TLS/SSL section.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OutputSyslogTlsDebug {
     #[serde(rename = "0")]
@@ -3140,7 +4097,9 @@ pub struct OutputSyslogTlsKeyPasswordValueFrom {
 pub struct OutputSyslogTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3157,12 +4116,17 @@ pub struct OutputTcp {
     /// Target host where Fluent-Bit or Fluentd are listening for Forward messages.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Specify the format of the date. Supported formats are double, epoch and iso8601 (eg: 2018-05-30T09:39:52.000681Z)
+    /// Specify the format of the date. Supported formats are double, epoch
+    /// and iso8601 (eg: 2018-05-30T09:39:52.000681Z)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonDateFormat")]
     pub json_date_format: Option<OutputTcpJsonDateFormat>,
-    /// TSpecify the name of the time key in the output record. To disable the time key just set the value to false.
+    /// TSpecify the name of the time key in the output record.
+    /// To disable the time key just set the value to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonDateKey")]
     pub json_date_key: Option<String>,
+    /// Include fluentbit networking options for this output-plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<OutputTcpNetworking>,
     /// TCP Port of the target service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
@@ -3195,6 +4159,68 @@ pub enum OutputTcpJsonDateFormat {
     Iso8601,
 }
 
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputTcpNetworking {
+    /// Select the primary DNS connection type (TCP or UDP).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSMode")]
+    pub dns_mode: Option<OutputTcpNetworkingDnsMode>,
+    /// Prioritize IPv4 DNS results when trying to establish a connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSPreferIPv4")]
+    pub dns_prefer_i_pv4: Option<bool>,
+    /// Select the primary DNS resolver type (LEGACY or ASYNC).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DNSResolver")]
+    pub dns_resolver: Option<OutputTcpNetworkingDnsResolver>,
+    /// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    /// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutLogError")]
+    pub connect_timeout_log_error: Option<bool>,
+    /// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keepalive: Option<OutputTcpNetworkingKeepalive>,
+    /// Set maximum time expressed in seconds for an idle keepalive connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveIdleTimeout")]
+    pub keepalive_idle_timeout: Option<i32>,
+    /// Set maximum number of times a keepalive connection can be used before it is retired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveMaxRecycle")]
+    pub keepalive_max_recycle: Option<i32>,
+    /// Set maximum number of TCP connections that can be established per worker.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWorkerConnections")]
+    pub max_worker_connections: Option<i32>,
+    /// Specify network address to bind for data traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
+    pub source_address: Option<String>,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputTcpNetworkingDnsMode {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputTcpNetworkingDnsResolver {
+    #[serde(rename = "LEGACY")]
+    Legacy,
+    #[serde(rename = "ASYNC")]
+    Async,
+}
+
+/// Include fluentbit networking options for this output-plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputTcpNetworkingKeepalive {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+}
+
 /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputTcpTls {
@@ -3207,7 +4233,8 @@ pub struct OutputTcpTls {
     /// Absolute path to Certificate file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
     pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level. It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+    /// Set TLS debug verbosity level.
+    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<i32>,
     /// Absolute path to private Key file
@@ -3260,7 +4287,9 @@ pub struct OutputTcpTlsKeyPasswordValueFrom {
 pub struct OutputTcpTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
