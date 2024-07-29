@@ -1393,6 +1393,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "GoogleCloudPlatform/gke-networking-recipes",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/GoogleCloudPlatform/gke-networking-recipes/blob/main/gateway-api/config/servicepolicies/crd/standard/gcpbackendpolicies.yaml",
+            "https://github.com/GoogleCloudPlatform/gke-networking-recipes/blob/main/gateway-api/config/servicepolicies/crd/standard/gcpgatewaypolicies.yaml",
+            "https://github.com/GoogleCloudPlatform/gke-networking-recipes/blob/main/gateway-api/config/servicepolicies/crd/standard/healthcheckpolicy.yaml",
+            "https://github.com/GoogleCloudPlatform/gke-networking-recipes/blob/main/gateway-api/config/servicepolicies/crd/standard/lbpolicy.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "GoogleCloudPlatform/spark-on-k8s-operator",
         license: APACHE_V2,
         urls: &[
