@@ -41,7 +41,6 @@ jobs:
           --token ${{ secrets.CRATES_IO_TOKEN }}
           --package kube-custom-resources-rs
           --all-features
-          --locked
           --jobs 1
           --no-verify
         env:
