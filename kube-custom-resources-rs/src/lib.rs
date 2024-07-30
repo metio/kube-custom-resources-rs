@@ -2216,6 +2216,10 @@ apiVersion `networkfirewall.services.k8s.aws/v1alpha1`:
 
 apiVersion `networking.gke.io/v1`:
 - `ManagedCertificate`
+- `GCPBackendPolicy`
+- `GCPGatewayPolicy`
+- `HealthCheckPolicy`
+- `LBPolicy`
 
 ## networking_istio_io
 
