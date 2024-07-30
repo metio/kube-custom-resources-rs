@@ -3,3 +3,4 @@
 
 target/
 crd-catalog/**/*.fixed
+Cargo.lock
