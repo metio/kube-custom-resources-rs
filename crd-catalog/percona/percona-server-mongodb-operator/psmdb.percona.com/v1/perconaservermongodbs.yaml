@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "perconaservermongodbs.psmdb.percona.com"
 spec:
   group: "psmdb.percona.com"
@@ -409,6 +409,7 @@ spec:
                   items:
                     properties:
                       name:
+                        default: ""
                         type: "string"
                     type: "object"
                     x-kubernetes-map-type: "atomic"
@@ -502,6 +503,78 @@ spec:
                   type: "string"
                 pmm:
                   properties:
+                    containerSecurityContext:
+                      properties:
+                        allowPrivilegeEscalation:
+                          type: "boolean"
+                        appArmorProfile:
+                          properties:
+                            localhostProfile:
+                              type: "string"
+                            type:
+                              type: "string"
+                          required:
+                            - "type"
+                          type: "object"
+                        capabilities:
+                          properties:
+                            add:
+                              items:
+                                type: "string"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                            drop:
+                              items:
+                                type: "string"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                          type: "object"
+                        privileged:
+                          type: "boolean"
+                        procMount:
+                          type: "string"
+                        readOnlyRootFilesystem:
+                          type: "boolean"
+                        runAsGroup:
+                          format: "int64"
+                          type: "integer"
+                        runAsNonRoot:
+                          type: "boolean"
+                        runAsUser:
+                          format: "int64"
+                          type: "integer"
+                        seLinuxOptions:
+                          properties:
+                            level:
+                              type: "string"
+                            role:
+                              type: "string"
+                            type:
+                              type: "string"
+                            user:
+                              type: "string"
+                          type: "object"
+                        seccompProfile:
+                          properties:
+                            localhostProfile:
+                              type: "string"
+                            type:
+                              type: "string"
+                          required:
+                            - "type"
+                          type: "object"
+                        windowsOptions:
+                          properties:
+                            gmsaCredentialSpec:
+                              type: "string"
+                            gmsaCredentialSpecName:
+                              type: "string"
+                            hostProcess:
+                              type: "boolean"
+                            runAsUserName:
+                              type: "string"
+                          type: "object"
+                      type: "object"
                     enabled:
                       type: "boolean"
                     image:
@@ -1736,6 +1809,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -1753,6 +1827,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -1783,6 +1858,7 @@ spec:
                                       type: "array"
                                       x-kubernetes-list-type: "atomic"
                                     name:
+                                      default: ""
                                       type: "string"
                                     optional:
                                       type: "boolean"
@@ -1797,6 +1873,7 @@ spec:
                                     nodePublishSecretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -1998,6 +2075,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -2084,6 +2162,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -2203,6 +2282,7 @@ spec:
                                                 type: "array"
                                                 x-kubernetes-list-type: "atomic"
                                               name:
+                                                default: ""
                                                 type: "string"
                                               optional:
                                                 type: "boolean"
@@ -2269,6 +2349,7 @@ spec:
                                                 type: "array"
                                                 x-kubernetes-list-type: "atomic"
                                               name:
+                                                default: ""
                                                 type: "string"
                                               optional:
                                                 type: "boolean"
@@ -2328,6 +2409,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -2350,6 +2432,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -2403,6 +2486,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -2455,6 +2539,7 @@ spec:
                                               key:
                                                 type: "string"
                                               name:
+                                                default: ""
                                                 type: "string"
                                               optional:
                                                 type: "boolean"
@@ -2493,6 +2578,7 @@ spec:
                                               key:
                                                 type: "string"
                                               name:
+                                                default: ""
                                                 type: "string"
                                               optional:
                                                 type: "boolean"
@@ -2514,6 +2600,7 @@ spec:
                                       configMapRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                           optional:
                                             type: "boolean"
@@ -2524,6 +2611,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                           optional:
                                             type: "boolean"
@@ -3306,6 +3394,8 @@ spec:
                               x-kubernetes-list-type: "atomic"
                             ip:
                               type: "string"
+                          required:
+                            - "ip"
                           type: "object"
                         type: "array"
                       labels:
@@ -4450,6 +4540,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4467,6 +4558,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4497,6 +4589,7 @@ spec:
                                       type: "array"
                                       x-kubernetes-list-type: "atomic"
                                     name:
+                                      default: ""
                                       type: "string"
                                     optional:
                                       type: "boolean"
@@ -4511,6 +4604,7 @@ spec:
                                     nodePublishSecretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4712,6 +4806,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4798,6 +4893,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4917,6 +5013,7 @@ spec:
                                                 type: "array"
                                                 x-kubernetes-list-type: "atomic"
                                               name:
+                                                default: ""
                                                 type: "string"
                                               optional:
                                                 type: "boolean"
@@ -4983,6 +5080,7 @@ spec:
                                                 type: "array"
                                                 x-kubernetes-list-type: "atomic"
                                               name:
+                                                default: ""
                                                 type: "string"
                                               optional:
                                                 type: "boolean"
@@ -5042,6 +5140,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -5064,6 +5163,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -5117,6 +5217,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -5169,6 +5270,7 @@ spec:
                                               key:
                                                 type: "string"
                                               name:
+                                                default: ""
                                                 type: "string"
                                               optional:
                                                 type: "boolean"
@@ -5207,6 +5309,7 @@ spec:
                                               key:
                                                 type: "string"
                                               name:
+                                                default: ""
                                                 type: "string"
                                               optional:
                                                 type: "boolean"
@@ -5228,6 +5331,7 @@ spec:
                                       configMapRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                           optional:
                                             type: "boolean"
@@ -5238,6 +5342,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                           optional:
                                             type: "boolean"
@@ -6446,6 +6551,7 @@ spec:
                                 secretRef:
                                   properties:
                                     name:
+                                      default: ""
                                       type: "string"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
@@ -6463,6 +6569,7 @@ spec:
                                 secretRef:
                                   properties:
                                     name:
+                                      default: ""
                                       type: "string"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
@@ -6493,6 +6600,7 @@ spec:
                                   type: "array"
                                   x-kubernetes-list-type: "atomic"
                                 name:
+                                  default: ""
                                   type: "string"
                                 optional:
                                   type: "boolean"
@@ -6507,6 +6615,7 @@ spec:
                                 nodePublishSecretRef:
                                   properties:
                                     name:
+                                      default: ""
                                       type: "string"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
@@ -6708,6 +6817,7 @@ spec:
                                 secretRef:
                                   properties:
                                     name:
+                                      default: ""
                                       type: "string"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
@@ -6794,6 +6904,7 @@ spec:
                                 secretRef:
                                   properties:
                                     name:
+                                      default: ""
                                       type: "string"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
@@ -6913,6 +7024,7 @@ spec:
                                             type: "array"
                                             x-kubernetes-list-type: "atomic"
                                           name:
+                                            default: ""
                                             type: "string"
                                           optional:
                                             type: "boolean"
@@ -6979,6 +7091,7 @@ spec:
                                             type: "array"
                                             x-kubernetes-list-type: "atomic"
                                           name:
+                                            default: ""
                                             type: "string"
                                           optional:
                                             type: "boolean"
@@ -7038,6 +7151,7 @@ spec:
                                 secretRef:
                                   properties:
                                     name:
+                                      default: ""
                                       type: "string"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
@@ -7060,6 +7174,7 @@ spec:
                                 secretRef:
                                   properties:
                                     name:
+                                      default: ""
                                       type: "string"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
@@ -7113,6 +7228,7 @@ spec:
                                 secretRef:
                                   properties:
                                     name:
+                                      default: ""
                                       type: "string"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
@@ -7165,6 +7281,7 @@ spec:
                                           key:
                                             type: "string"
                                           name:
+                                            default: ""
                                             type: "string"
                                           optional:
                                             type: "boolean"
@@ -7203,6 +7320,7 @@ spec:
                                           key:
                                             type: "string"
                                           name:
+                                            default: ""
                                             type: "string"
                                           optional:
                                             type: "boolean"
@@ -7224,6 +7342,7 @@ spec:
                                   configMapRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                       optional:
                                         type: "boolean"
@@ -7234,6 +7353,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                       optional:
                                         type: "boolean"
@@ -9275,6 +9395,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -9292,6 +9413,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -9322,6 +9444,7 @@ spec:
                                         type: "array"
                                         x-kubernetes-list-type: "atomic"
                                       name:
+                                        default: ""
                                         type: "string"
                                       optional:
                                         type: "boolean"
@@ -9336,6 +9459,7 @@ spec:
                                       nodePublishSecretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -9537,6 +9661,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -9623,6 +9748,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -9742,6 +9868,7 @@ spec:
                                                   type: "array"
                                                   x-kubernetes-list-type: "atomic"
                                                 name:
+                                                  default: ""
                                                   type: "string"
                                                 optional:
                                                   type: "boolean"
@@ -9808,6 +9935,7 @@ spec:
                                                   type: "array"
                                                   x-kubernetes-list-type: "atomic"
                                                 name:
+                                                  default: ""
                                                   type: "string"
                                                 optional:
                                                   type: "boolean"
@@ -9867,6 +9995,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -9889,6 +10018,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -9942,6 +10072,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -9994,6 +10125,7 @@ spec:
                                                 key:
                                                   type: "string"
                                                 name:
+                                                  default: ""
                                                   type: "string"
                                                 optional:
                                                   type: "boolean"
@@ -10032,6 +10164,7 @@ spec:
                                                 key:
                                                   type: "string"
                                                 name:
+                                                  default: ""
                                                   type: "string"
                                                 optional:
                                                   type: "boolean"
@@ -10053,6 +10186,7 @@ spec:
                                         configMapRef:
                                           properties:
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -10063,6 +10197,7 @@ spec:
                                         secretRef:
                                           properties:
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -10845,6 +10980,8 @@ spec:
                                 x-kubernetes-list-type: "atomic"
                               ip:
                                 type: "string"
+                            required:
+                              - "ip"
                             type: "object"
                           type: "array"
                         labels:
@@ -11989,6 +12126,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -12006,6 +12144,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -12036,6 +12175,7 @@ spec:
                                         type: "array"
                                         x-kubernetes-list-type: "atomic"
                                       name:
+                                        default: ""
                                         type: "string"
                                       optional:
                                         type: "boolean"
@@ -12050,6 +12190,7 @@ spec:
                                       nodePublishSecretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -12251,6 +12392,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -12337,6 +12479,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -12456,6 +12599,7 @@ spec:
                                                   type: "array"
                                                   x-kubernetes-list-type: "atomic"
                                                 name:
+                                                  default: ""
                                                   type: "string"
                                                 optional:
                                                   type: "boolean"
@@ -12522,6 +12666,7 @@ spec:
                                                   type: "array"
                                                   x-kubernetes-list-type: "atomic"
                                                 name:
+                                                  default: ""
                                                   type: "string"
                                                 optional:
                                                   type: "boolean"
@@ -12581,6 +12726,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -12603,6 +12749,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -12656,6 +12803,7 @@ spec:
                                       secretRef:
                                         properties:
                                           name:
+                                            default: ""
                                             type: "string"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
@@ -12708,6 +12856,7 @@ spec:
                                                 key:
                                                   type: "string"
                                                 name:
+                                                  default: ""
                                                   type: "string"
                                                 optional:
                                                   type: "boolean"
@@ -12746,6 +12895,7 @@ spec:
                                                 key:
                                                   type: "string"
                                                 name:
+                                                  default: ""
                                                   type: "string"
                                                 optional:
                                                   type: "boolean"
@@ -12767,6 +12917,7 @@ spec:
                                         configMapRef:
                                           properties:
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -12777,6 +12928,7 @@ spec:
                                         secretRef:
                                           properties:
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -13985,6 +14137,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -14002,6 +14155,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -14032,6 +14186,7 @@ spec:
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   name:
+                                    default: ""
                                     type: "string"
                                   optional:
                                     type: "boolean"
@@ -14046,6 +14201,7 @@ spec:
                                   nodePublishSecretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -14247,6 +14403,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -14333,6 +14490,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -14452,6 +14610,7 @@ spec:
                                               type: "array"
                                               x-kubernetes-list-type: "atomic"
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -14518,6 +14677,7 @@ spec:
                                               type: "array"
                                               x-kubernetes-list-type: "atomic"
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -14577,6 +14737,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -14599,6 +14760,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -14652,6 +14814,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -14704,6 +14867,7 @@ spec:
                                             key:
                                               type: "string"
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -14742,6 +14906,7 @@ spec:
                                             key:
                                               type: "string"
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -14763,6 +14928,7 @@ spec:
                                     configMapRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                         optional:
                                           type: "boolean"
@@ -14773,6 +14939,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                         optional:
                                           type: "boolean"
@@ -16156,6 +16323,8 @@ spec:
                                 x-kubernetes-list-type: "atomic"
                               ip:
                                 type: "string"
+                            required:
+                              - "ip"
                             type: "object"
                           type: "array"
                         hostPort:
@@ -16693,6 +16862,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -16710,6 +16880,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -16740,6 +16911,7 @@ spec:
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   name:
+                                    default: ""
                                     type: "string"
                                   optional:
                                     type: "boolean"
@@ -16754,6 +16926,7 @@ spec:
                                   nodePublishSecretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -16955,6 +17128,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -17041,6 +17215,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -17160,6 +17335,7 @@ spec:
                                               type: "array"
                                               x-kubernetes-list-type: "atomic"
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -17226,6 +17402,7 @@ spec:
                                               type: "array"
                                               x-kubernetes-list-type: "atomic"
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -17285,6 +17462,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -17307,6 +17485,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -17360,6 +17539,7 @@ spec:
                                   secretRef:
                                     properties:
                                       name:
+                                        default: ""
                                         type: "string"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
@@ -17412,6 +17592,7 @@ spec:
                                             key:
                                               type: "string"
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -17450,6 +17631,7 @@ spec:
                                             key:
                                               type: "string"
                                             name:
+                                              default: ""
                                               type: "string"
                                             optional:
                                               type: "boolean"
@@ -17471,6 +17653,7 @@ spec:
                                     configMapRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                         optional:
                                           type: "boolean"
@@ -17481,6 +17664,7 @@ spec:
                                     secretRef:
                                       properties:
                                         name:
+                                          default: ""
                                           type: "string"
                                         optional:
                                           type: "boolean"
@@ -18184,6 +18368,45 @@ spec:
                     versionServiceEndpoint:
                       type: "string"
                   type: "object"
+                users:
+                  items:
+                    properties:
+                      db:
+                        type: "string"
+                      name:
+                        type: "string"
+                      passwordSecretRef:
+                        properties:
+                          key:
+                            type: "string"
+                          name:
+                            default: ""
+                            type: "string"
+                          optional:
+                            type: "boolean"
+                        required:
+                          - "key"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      roles:
+                        items:
+                          properties:
+                            db:
+                              type: "string"
+                            name:
+                              type: "string"
+                          required:
+                            - "db"
+                            - "name"
+                          type: "object"
+                        type: "array"
+                    required:
+                      - "db"
+                      - "name"
+                      - "passwordSecretRef"
+                      - "roles"
+                    type: "object"
+                  type: "array"
               required:
                 - "image"
               type: "object"

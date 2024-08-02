@@ -20,7 +20,7 @@ spec:
     - name: "v1"
       schema:
         openAPIV3Schema:
-          description: "PodMonitor defines monitoring for a set of pods."
+          description: "The `PodMonitor` custom resource definition (CRD) defines how `Prometheus` and `PrometheusAgent` can scrape metrics from a group of pods.\nAmong other things, it allows to specify:\n* The pods to scrape via label selectors.\n* The container ports to scrape.\n* Authentication credentials to use.\n* Target and metric relabeling.\n\n\n`Prometheus` and `PrometheusAgent` objects select `PodMonitor` objects using label and namespace selectors."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -34,10 +34,10 @@ spec:
               description: "Specification of desired Pod selection for target discovery by Prometheus."
               properties:
                 attachMetadata:
-                  description: "`attachMetadata` defines additional metadata which is added to the\ndiscovered targets.\n\n\nIt requires Prometheus >= v2.37.0."
+                  description: "`attachMetadata` defines additional metadata which is added to the\ndiscovered targets.\n\n\nIt requires Prometheus >= v2.35.0."
                   properties:
                     node:
-                      description: "When set to true, Prometheus must have the `get` permission on the\n`Nodes` objects."
+                      description: "When set to true, Prometheus attaches node metadata to the discovered\ntargets.\n\n\nThe Prometheus service account must have the `list` and `watch`\npermissions on the `Nodes` objects."
                       type: "boolean"
                   type: "object"
                 bodySizeLimit:
@@ -64,7 +64,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 namespaceSelector:
-                  description: "Selector to select which namespaces the Kubernetes `Pods` objects\nare discovered from."
+                  description: "`namespaceSelector` defines in which namespace(s) Prometheus should discover the pods.\nBy default, the pods are discovered in the same namespace as the `PodMonitor` object but it is possible to select pods across different/all namespaces."
                   properties:
                     any:
                       description: "Boolean describing whether all namespaces are selected in contrast to a\nlist restricting them."
@@ -76,7 +76,7 @@ spec:
                       type: "array"
                   type: "object"
                 podMetricsEndpoints:
-                  description: "List of endpoints part of this PodMonitor."
+                  description: "Defines how to scrape metrics from the selected pods."
                   items:
                     description: "PodMetricsEndpoint defines an endpoint serving Prometheus metrics to be scraped by\nPrometheus."
                     properties:
@@ -500,6 +500,22 @@ spec:
                               - "key"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
+                          maxVersion:
+                            description: "Maximum acceptable TLS version.\n\n\nIt requires Prometheus >= v2.41.0."
+                            enum:
+                              - "TLS10"
+                              - "TLS11"
+                              - "TLS12"
+                              - "TLS13"
+                            type: "string"
+                          minVersion:
+                            description: "Minimum acceptable TLS version.\n\n\nIt requires Prometheus >= v2.35.0."
+                            enum:
+                              - "TLS10"
+                              - "TLS11"
+                              - "TLS12"
+                              - "TLS13"
+                            type: "string"
                           serverName:
                             description: "Used to verify the hostname for the targets."
                             type: "string"
@@ -535,7 +551,7 @@ spec:
                   type: "array"
                   x-kubernetes-list-type: "set"
                 selector:
-                  description: "Label selector to select the Kubernetes `Pod` objects."
+                  description: "Label selector to select the Kubernetes `Pod` objects to scrape metrics from."
                   properties:
                     matchExpressions:
                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."

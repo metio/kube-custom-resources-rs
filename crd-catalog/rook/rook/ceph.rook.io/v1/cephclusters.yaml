@@ -299,6 +299,7 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               failureThreshold:
                                 description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
@@ -339,6 +340,7 @@ spec:
                                         - "value"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   path:
                                     description: "Path to access on the HTTP server."
                                     type: "string"
@@ -410,6 +412,7 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               failureThreshold:
                                 description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
@@ -450,6 +453,7 @@ spec:
                                         - "value"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   path:
                                     description: "Path to access on the HTTP server."
                                     type: "string"
@@ -565,6 +569,7 @@ spec:
                                   - ""
                                   - "crush-compat"
                                   - "upmap"
+                                  - "read"
                                   - "upmap-read"
                                 type: "string"
                             type: "object"
@@ -637,6 +642,7 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       dataSource:
                                         description: "dataSource field can be used to specify either:\n* An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)\n* An existing PVC (PersistentVolumeClaim)\nIf the provisioner or an external controller can support the specified data source,\nit will create a new volume based on the contents of the specified data source.\nWhen the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,\nand dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.\nIf the namespace is specified, then dataSourceRef will not be copied to dataSource."
                                         properties:
@@ -714,11 +720,13 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -730,7 +738,7 @@ spec:
                                         description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                         type: "string"
                                       volumeAttributesClassName:
-                                        description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                                        description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
                                         type: "string"
                                       volumeMode:
                                         description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -776,6 +784,7 @@ spec:
                               items:
                                 type: "string"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                             dataSource:
                               description: "dataSource field can be used to specify either:\n* An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)\n* An existing PVC (PersistentVolumeClaim)\nIf the provisioner or an external controller can support the specified data source,\nit will create a new volume based on the contents of the specified data source.\nWhen the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,\nand dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.\nIf the namespace is specified, then dataSourceRef will not be copied to dataSource."
                               properties:
@@ -853,11 +862,13 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     required:
                                       - "key"
                                       - "operator"
                                     type: "object"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                                 matchLabels:
                                   additionalProperties:
                                     type: "string"
@@ -869,7 +880,7 @@ spec:
                               description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                               type: "string"
                             volumeAttributesClassName:
-                              description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                              description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
                               type: "string"
                             volumeMode:
                               description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -922,6 +933,7 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   dataSource:
                                     description: "dataSource field can be used to specify either:\n* An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)\n* An existing PVC (PersistentVolumeClaim)\nIf the provisioner or an external controller can support the specified data source,\nit will create a new volume based on the contents of the specified data source.\nWhen the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,\nand dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.\nIf the namespace is specified, then dataSourceRef will not be copied to dataSource."
                                     properties:
@@ -999,11 +1011,13 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -1015,7 +1029,7 @@ spec:
                                     description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                     type: "string"
                                   volumeAttributesClassName:
-                                    description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                                    description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
                                     type: "string"
                                   volumeMode:
                                     description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -1219,11 +1233,13 @@ spec:
                                             items:
                                               type: "string"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                         required:
                                           - "key"
                                           - "operator"
                                         type: "object"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     matchFields:
                                       items:
                                         properties:
@@ -1235,11 +1251,13 @@ spec:
                                             items:
                                               type: "string"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                         required:
                                           - "key"
                                           - "operator"
                                         type: "object"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
                                 weight:
@@ -1250,6 +1268,7 @@ spec:
                                 - "weight"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           requiredDuringSchedulingIgnoredDuringExecution:
                             properties:
                               nodeSelectorTerms:
@@ -1266,11 +1285,13 @@ spec:
                                             items:
                                               type: "string"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                         required:
                                           - "key"
                                           - "operator"
                                         type: "object"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     matchFields:
                                       items:
                                         properties:
@@ -1282,14 +1303,17 @@ spec:
                                             items:
                                               type: "string"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                         required:
                                           - "key"
                                           - "operator"
                                         type: "object"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                             required:
                               - "nodeSelectorTerms"
                             type: "object"
@@ -1315,11 +1339,13 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
+                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -1349,11 +1375,13 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
+                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -1364,6 +1392,7 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     topologyKey:
                                       type: "string"
                                   required:
@@ -1377,6 +1406,7 @@ spec:
                                 - "weight"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           requiredDuringSchedulingIgnoredDuringExecution:
                             items:
                               properties:
@@ -1393,11 +1423,13 @@ spec:
                                             items:
                                               type: "string"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                         required:
                                           - "key"
                                           - "operator"
                                         type: "object"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
@@ -1427,11 +1459,13 @@ spec:
                                             items:
                                               type: "string"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                         required:
                                           - "key"
                                           - "operator"
                                         type: "object"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
@@ -1442,12 +1476,14 @@ spec:
                                   items:
                                     type: "string"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                                 topologyKey:
                                   type: "string"
                               required:
                                 - "topologyKey"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                         type: "object"
                       podAntiAffinity:
                         properties:
@@ -1469,11 +1505,13 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
+                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -1503,11 +1541,13 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
+                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -1518,6 +1558,7 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     topologyKey:
                                       type: "string"
                                   required:
@@ -1531,6 +1572,7 @@ spec:
                                 - "weight"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           requiredDuringSchedulingIgnoredDuringExecution:
                             items:
                               properties:
@@ -1547,11 +1589,13 @@ spec:
                                             items:
                                               type: "string"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                         required:
                                           - "key"
                                           - "operator"
                                         type: "object"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
@@ -1581,11 +1625,13 @@ spec:
                                             items:
                                               type: "string"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                         required:
                                           - "key"
                                           - "operator"
                                         type: "object"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
@@ -1596,12 +1642,14 @@ spec:
                                   items:
                                     type: "string"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                                 topologyKey:
                                   type: "string"
                               required:
                                 - "topologyKey"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                         type: "object"
                       tolerations:
                         items:
@@ -1635,11 +1683,13 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     required:
                                       - "key"
                                       - "operator"
                                     type: "object"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                                 matchLabels:
                                   additionalProperties:
                                     type: "string"
@@ -1766,6 +1816,9 @@ spec:
                   description: "A spec for available storage in the cluster and how it should be used"
                   nullable: true
                   properties:
+                    allowDeviceClassUpdate:
+                      description: "Whether to allow updating the device class after the OSD is initially provisioned"
+                      type: "boolean"
                     backfillFullRatio:
                       description: "BackfillFullRatio is the ratio at which the cluster is too full for backfill. Backfill will be disabled if above this threshold. Default is 0.90."
                       maximum: 1.0
@@ -1930,6 +1983,7 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     dataSource:
                                       description: "dataSource field can be used to specify either:\n* An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)\n* An existing PVC (PersistentVolumeClaim)\nIf the provisioner or an external controller can support the specified data source,\nit will create a new volume based on the contents of the specified data source.\nWhen the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,\nand dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.\nIf the namespace is specified, then dataSourceRef will not be copied to dataSource."
                                       properties:
@@ -2007,11 +2061,13 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
+                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -2023,7 +2079,7 @@ spec:
                                       description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                       type: "string"
                                     volumeAttributesClassName:
-                                      description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                                      description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
                                       type: "string"
                                     volumeMode:
                                       description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -2081,11 +2137,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchFields:
                                               items:
                                                 properties:
@@ -2097,11 +2155,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           type: "object"
                                           x-kubernetes-map-type: "atomic"
                                         weight:
@@ -2112,6 +2172,7 @@ spec:
                                         - "weight"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   requiredDuringSchedulingIgnoredDuringExecution:
                                     properties:
                                       nodeSelectorTerms:
@@ -2128,11 +2189,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchFields:
                                               items:
                                                 properties:
@@ -2144,14 +2207,17 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           type: "object"
                                           x-kubernetes-map-type: "atomic"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     required:
                                       - "nodeSelectorTerms"
                                     type: "object"
@@ -2177,11 +2243,13 @@ spec:
                                                         items:
                                                           type: "string"
                                                         type: "array"
+                                                        x-kubernetes-list-type: "atomic"
                                                     required:
                                                       - "key"
                                                       - "operator"
                                                     type: "object"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                                 matchLabels:
                                                   additionalProperties:
                                                     type: "string"
@@ -2211,11 +2279,13 @@ spec:
                                                         items:
                                                           type: "string"
                                                         type: "array"
+                                                        x-kubernetes-list-type: "atomic"
                                                     required:
                                                       - "key"
                                                       - "operator"
                                                     type: "object"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                                 matchLabels:
                                                   additionalProperties:
                                                     type: "string"
@@ -2226,6 +2296,7 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             topologyKey:
                                               type: "string"
                                           required:
@@ -2239,6 +2310,7 @@ spec:
                                         - "weight"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   requiredDuringSchedulingIgnoredDuringExecution:
                                     items:
                                       properties:
@@ -2255,11 +2327,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -2289,11 +2363,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -2304,12 +2380,14 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         topologyKey:
                                           type: "string"
                                       required:
                                         - "topologyKey"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               podAntiAffinity:
                                 properties:
@@ -2331,11 +2409,13 @@ spec:
                                                         items:
                                                           type: "string"
                                                         type: "array"
+                                                        x-kubernetes-list-type: "atomic"
                                                     required:
                                                       - "key"
                                                       - "operator"
                                                     type: "object"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                                 matchLabels:
                                                   additionalProperties:
                                                     type: "string"
@@ -2365,11 +2445,13 @@ spec:
                                                         items:
                                                           type: "string"
                                                         type: "array"
+                                                        x-kubernetes-list-type: "atomic"
                                                     required:
                                                       - "key"
                                                       - "operator"
                                                     type: "object"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                                 matchLabels:
                                                   additionalProperties:
                                                     type: "string"
@@ -2380,6 +2462,7 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             topologyKey:
                                               type: "string"
                                           required:
@@ -2393,6 +2476,7 @@ spec:
                                         - "weight"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   requiredDuringSchedulingIgnoredDuringExecution:
                                     items:
                                       properties:
@@ -2409,11 +2493,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -2443,11 +2529,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -2458,12 +2546,14 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         topologyKey:
                                           type: "string"
                                       required:
                                         - "topologyKey"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               tolerations:
                                 items:
@@ -2497,11 +2587,13 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
+                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -2559,11 +2651,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchFields:
                                               items:
                                                 properties:
@@ -2575,11 +2669,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           type: "object"
                                           x-kubernetes-map-type: "atomic"
                                         weight:
@@ -2590,6 +2686,7 @@ spec:
                                         - "weight"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   requiredDuringSchedulingIgnoredDuringExecution:
                                     properties:
                                       nodeSelectorTerms:
@@ -2606,11 +2703,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchFields:
                                               items:
                                                 properties:
@@ -2622,14 +2721,17 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           type: "object"
                                           x-kubernetes-map-type: "atomic"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     required:
                                       - "nodeSelectorTerms"
                                     type: "object"
@@ -2655,11 +2757,13 @@ spec:
                                                         items:
                                                           type: "string"
                                                         type: "array"
+                                                        x-kubernetes-list-type: "atomic"
                                                     required:
                                                       - "key"
                                                       - "operator"
                                                     type: "object"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                                 matchLabels:
                                                   additionalProperties:
                                                     type: "string"
@@ -2689,11 +2793,13 @@ spec:
                                                         items:
                                                           type: "string"
                                                         type: "array"
+                                                        x-kubernetes-list-type: "atomic"
                                                     required:
                                                       - "key"
                                                       - "operator"
                                                     type: "object"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                                 matchLabels:
                                                   additionalProperties:
                                                     type: "string"
@@ -2704,6 +2810,7 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             topologyKey:
                                               type: "string"
                                           required:
@@ -2717,6 +2824,7 @@ spec:
                                         - "weight"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   requiredDuringSchedulingIgnoredDuringExecution:
                                     items:
                                       properties:
@@ -2733,11 +2841,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -2767,11 +2877,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -2782,12 +2894,14 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         topologyKey:
                                           type: "string"
                                       required:
                                         - "topologyKey"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               podAntiAffinity:
                                 properties:
@@ -2809,11 +2923,13 @@ spec:
                                                         items:
                                                           type: "string"
                                                         type: "array"
+                                                        x-kubernetes-list-type: "atomic"
                                                     required:
                                                       - "key"
                                                       - "operator"
                                                     type: "object"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                                 matchLabels:
                                                   additionalProperties:
                                                     type: "string"
@@ -2843,11 +2959,13 @@ spec:
                                                         items:
                                                           type: "string"
                                                         type: "array"
+                                                        x-kubernetes-list-type: "atomic"
                                                     required:
                                                       - "key"
                                                       - "operator"
                                                     type: "object"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                                 matchLabels:
                                                   additionalProperties:
                                                     type: "string"
@@ -2858,6 +2976,7 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             topologyKey:
                                               type: "string"
                                           required:
@@ -2871,6 +2990,7 @@ spec:
                                         - "weight"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   requiredDuringSchedulingIgnoredDuringExecution:
                                     items:
                                       properties:
@@ -2887,11 +3007,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -2921,11 +3043,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -2936,12 +3060,14 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         topologyKey:
                                           type: "string"
                                       required:
                                         - "topologyKey"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               tolerations:
                                 items:
@@ -2975,11 +3101,13 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
+                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -3095,6 +3223,7 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     dataSource:
                                       description: "dataSource field can be used to specify either:\n* An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)\n* An existing PVC (PersistentVolumeClaim)\nIf the provisioner or an external controller can support the specified data source,\nit will create a new volume based on the contents of the specified data source.\nWhen the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,\nand dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.\nIf the namespace is specified, then dataSourceRef will not be copied to dataSource."
                                       properties:
@@ -3172,11 +3301,13 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
+                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -3188,7 +3319,7 @@ spec:
                                       description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                       type: "string"
                                     volumeAttributesClassName:
-                                      description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                                      description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
                                       type: "string"
                                     volumeMode:
                                       description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -3258,6 +3389,7 @@ spec:
                                 items:
                                   type: "string"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               dataSource:
                                 description: "dataSource field can be used to specify either:\n* An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)\n* An existing PVC (PersistentVolumeClaim)\nIf the provisioner or an external controller can support the specified data source,\nit will create a new volume based on the contents of the specified data source.\nWhen the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,\nand dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.\nIf the namespace is specified, then dataSourceRef will not be copied to dataSource."
                                 properties:
@@ -3335,11 +3467,13 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                       required:
                                         - "key"
                                         - "operator"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   matchLabels:
                                     additionalProperties:
                                       type: "string"
@@ -3351,7 +3485,7 @@ spec:
                                 description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                 type: "string"
                               volumeAttributesClassName:
-                                description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                                description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
                                 type: "string"
                               volumeMode:
                                 description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."

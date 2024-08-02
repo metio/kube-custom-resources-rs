@@ -292,11 +292,13 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       matchFields:
                                         items:
                                           properties:
@@ -308,11 +310,13 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   weight:
@@ -323,6 +327,7 @@ spec:
                                   - "weight"
                                 type: "object"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                             requiredDuringSchedulingIgnoredDuringExecution:
                               properties:
                                 nodeSelectorTerms:
@@ -339,11 +344,13 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       matchFields:
                                         items:
                                           properties:
@@ -355,14 +362,17 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                               required:
                                 - "nodeSelectorTerms"
                               type: "object"
@@ -388,11 +398,13 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -422,11 +434,13 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -437,6 +451,7 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       topologyKey:
                                         type: "string"
                                     required:
@@ -450,6 +465,7 @@ spec:
                                   - "weight"
                                 type: "object"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                             requiredDuringSchedulingIgnoredDuringExecution:
                               items:
                                 properties:
@@ -466,11 +482,13 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -500,11 +518,13 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -515,12 +535,14 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   topologyKey:
                                     type: "string"
                                 required:
                                   - "topologyKey"
                                 type: "object"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                           type: "object"
                         podAntiAffinity:
                           properties:
@@ -542,11 +564,13 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -576,11 +600,13 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -591,6 +617,7 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       topologyKey:
                                         type: "string"
                                     required:
@@ -604,6 +631,7 @@ spec:
                                   - "weight"
                                 type: "object"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                             requiredDuringSchedulingIgnoredDuringExecution:
                               items:
                                 properties:
@@ -620,11 +648,13 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -654,11 +684,13 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -669,12 +701,14 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   topologyKey:
                                     type: "string"
                                 required:
                                   - "topologyKey"
                                 type: "object"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                           type: "object"
                         tolerations:
                           items:
@@ -708,11 +742,13 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                       required:
                                         - "key"
                                         - "operator"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   matchLabels:
                                     additionalProperties:
                                       type: "string"
@@ -835,6 +871,7 @@ spec:
                                   items:
                                     type: "string"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                               type: "object"
                             failureThreshold:
                               description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
@@ -875,6 +912,7 @@ spec:
                                       - "value"
                                     type: "object"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                                 path:
                                   description: "Path to access on the HTTP server."
                                   type: "string"
@@ -944,6 +982,7 @@ spec:
                                   items:
                                     type: "string"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                               type: "object"
                             failureThreshold:
                               description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
@@ -984,6 +1023,7 @@ spec:
                                       - "value"
                                     type: "object"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                                 path:
                                   description: "Path to access on the HTTP server."
                                   type: "string"
@@ -1037,10 +1077,33 @@ spec:
                       type: "object"
                   type: "object"
                 hosting:
-                  description: "Hosting settings for the object store"
+                  description: "Hosting settings for the object store.\nA common use case for hosting configuration is to inform Rook of endpoints that support DNS\nwildcards, which in turn allows virtual host-style bucket addressing."
+                  nullable: true
                   properties:
+                    advertiseEndpoint:
+                      description: "AdvertiseEndpoint is the default endpoint Rook will return for resources dependent on this\nobject store. This endpoint will be returned to CephObjectStoreUsers, Object Bucket Claims,\nand COSI Buckets/Accesses.\nBy default, Rook returns the endpoint for the object store's Kubernetes service using HTTPS\nwith `gateway.securePort` if it is defined (otherwise, HTTP with `gateway.port`)."
+                      nullable: true
+                      properties:
+                        dnsName:
+                          description: "DnsName is the DNS name (in RFC-1123 format) of the endpoint.\nIf the DNS name corresponds to an endpoint with DNS wildcard support, do not include the\nwildcard itself in the list of hostnames.\nE.g., use \"mystore.example.com\" instead of \"*.mystore.example.com\"."
+                          minLength: 1
+                          type: "string"
+                        port:
+                          description: "Port is the port on which S3 connections can be made for this endpoint."
+                          format: "int32"
+                          maximum: 65535.0
+                          minimum: 1.0
+                          type: "integer"
+                        useTls:
+                          description: "UseTls defines whether the endpoint uses TLS (HTTPS) or not (HTTP)."
+                          type: "boolean"
+                      required:
+                        - "dnsName"
+                        - "port"
+                        - "useTls"
+                      type: "object"
                     dnsNames:
-                      description: "A list of DNS names in which bucket can be accessed via virtual host path. These names need to valid according RFC-1123.\nEach domain requires wildcard support like ingress loadbalancer.\nDo not include the wildcard itself in the list of hostnames (e.g. use \"mystore.example.com\" instead of \"*.mystore.example.com\").\nAdd all hostnames including user-created Kubernetes Service endpoints to the list.\nCephObjectStore Service Endpoints and CephObjectZone customEndpoints are automatically added to the list.\nThe feature is supported only for Ceph v18 and later versions."
+                      description: "A list of DNS host names on which object store gateways will accept client S3 connections.\nWhen specified, object store gateways will reject client S3 connections to hostnames that are\nnot present in this list, so include all endpoints.\nThe object store's advertiseEndpoint and Kubernetes service endpoint, plus CephObjectZone\n`customEndpoints` are automatically added to the list but may be set here again if desired.\nEach DNS name must be valid according RFC-1123.\nIf the DNS name corresponds to an endpoint with DNS wildcard support, do not include the\nwildcard itself in the list of hostnames.\nE.g., use \"mystore.example.com\" instead of \"*.mystore.example.com\".\nThe feature is supported only for Ceph v18 and later versions."
                       items:
                         type: "string"
                       type: "array"

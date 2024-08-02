@@ -9,7 +9,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// SettingStatus defines the observed state of the Longhorn setting
+/// The status of the setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SettingStatus {
     /// The setting is applied.

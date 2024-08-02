@@ -2032,6 +2032,15 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                parallelPodManagementConcurrency:
+                  anyOf:
+                    - type: "integer"
+                    - type: "string"
+                  description: "Controls the concurrency of pods during initial scale up, when replacing pods on nodes,\nor when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.\nThe default Concurrency is 100%."
+                  x-kubernetes-int-or-string: true
+                podUpdatePolicy:
+                  description: "PodUpdatePolicy indicates how pods should be updated\n\n\n- `StrictInPlace` indicates that only allows in-place upgrades.\nAny attempt to modify other fields will be rejected.\n- `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.\nIf that fails, it will fall back to the ReCreate, where pod will be recreated.\nDefault value is \"PreferInPlace\""
+                  type: "string"
                 replicas:
                   default: 1
                   description: "Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing."
@@ -2874,6 +2883,9 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                stop:
+                  description: "Stop the Component.\nIf set, all the computing resources will be released."
+                  type: "boolean"
                 systemAccounts:
                   description: "Overrides system accounts defined in referenced ComponentDefinition."
                   items:

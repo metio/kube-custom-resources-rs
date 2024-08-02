@@ -80,9 +80,9 @@ spec:
                           description: "The name of the Secret containing the certificate."
                           type: "string"
                       required:
-                        - "key"
                         - "secretName"
                         - "certificate"
+                        - "key"
                       type: "object"
                     clientId:
                       description: "OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI."
@@ -156,16 +156,27 @@ spec:
                     tlsTrustedCertificates:
                       description: "Trusted certificates for TLS connection to the OAuth server."
                       items:
+                        oneOf:
+                          - properties:
+                              certificate: {}
+                            required:
+                              - "certificate"
+                          - properties:
+                              pattern: {}
+                            required:
+                              - "pattern"
                         properties:
                           certificate:
-                            description: "The name of the file certificate in the Secret."
+                            description: "The name of the file certificate in the secret."
+                            type: "string"
+                          pattern:
+                            description: "Pattern for the certificate files in the secret. Use the link:https://en.wikipedia.org/wiki/Glob_(programming)[_glob syntax_] for the pattern. All files in the secret that match the pattern are used."
                             type: "string"
                           secretName:
                             description: "The name of the Secret containing the certificate."
                             type: "string"
                         required:
                           - "secretName"
-                          - "certificate"
                         type: "object"
                       type: "array"
                     tokenEndpointUri:
@@ -674,6 +685,13 @@ spec:
                           properties:
                             allowPrivilegeEscalation:
                               type: "boolean"
+                            appArmorProfile:
+                              properties:
+                                localhostProfile:
+                                  type: "string"
+                                type:
+                                  type: "string"
+                              type: "object"
                             capabilities:
                               properties:
                                 add:
@@ -1106,6 +1124,13 @@ spec:
                         securityContext:
                           description: "Configures pod-level security attributes and common container settings."
                           properties:
+                            appArmorProfile:
+                              properties:
+                                localhostProfile:
+                                  type: "string"
+                                type:
+                                  type: "string"
+                              type: "object"
                             fsGroup:
                               type: "integer"
                             fsGroupChangePolicy:
@@ -1282,6 +1307,13 @@ spec:
                           properties:
                             allowPrivilegeEscalation:
                               type: "boolean"
+                            appArmorProfile:
+                              properties:
+                                localhostProfile:
+                                  type: "string"
+                                type:
+                                  type: "string"
+                              type: "object"
                             capabilities:
                               properties:
                                 add:
@@ -1413,6 +1445,13 @@ spec:
                           properties:
                             allowPrivilegeEscalation:
                               type: "boolean"
+                            appArmorProfile:
+                              properties:
+                                localhostProfile:
+                                  type: "string"
+                                type:
+                                  type: "string"
+                              type: "object"
                             capabilities:
                               properties:
                                 add:
@@ -1863,6 +1902,13 @@ spec:
                         securityContext:
                           description: "Configures pod-level security attributes and common container settings."
                           properties:
+                            appArmorProfile:
+                              properties:
+                                localhostProfile:
+                                  type: "string"
+                                type:
+                                  type: "string"
+                              type: "object"
                             fsGroup:
                               type: "integer"
                             fsGroupChangePolicy:
@@ -2048,16 +2094,27 @@ spec:
                     trustedCertificates:
                       description: "Trusted certificates for TLS connection."
                       items:
+                        oneOf:
+                          - properties:
+                              certificate: {}
+                            required:
+                              - "certificate"
+                          - properties:
+                              pattern: {}
+                            required:
+                              - "pattern"
                         properties:
                           certificate:
-                            description: "The name of the file certificate in the Secret."
+                            description: "The name of the file certificate in the secret."
+                            type: "string"
+                          pattern:
+                            description: "Pattern for the certificate files in the secret. Use the link:https://en.wikipedia.org/wiki/Glob_(programming)[_glob syntax_] for the pattern. All files in the secret that match the pattern are used."
                             type: "string"
                           secretName:
                             description: "The name of the Secret containing the certificate."
                             type: "string"
                         required:
                           - "secretName"
-                          - "certificate"
                         type: "object"
                       type: "array"
                   type: "object"

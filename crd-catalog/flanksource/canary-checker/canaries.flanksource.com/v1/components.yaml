@@ -26,6 +26,7 @@ spec:
             metadata:
               type: "object"
             spec:
+              description: "ComponentSpec defines the specification for a component."
               properties:
                 checks:
                   items:
@@ -63,6 +64,8 @@ spec:
                       name:
                         type: "string"
                       namespace:
+                        type: "string"
+                      scope:
                         type: "string"
                       statuses:
                         items:
@@ -182,6 +185,8 @@ spec:
                               name:
                                 type: "string"
                               namespace:
+                                type: "string"
+                              scope:
                                 type: "string"
                               statuses:
                                 items:
@@ -318,6 +323,8 @@ spec:
                         type: "string"
                       namespace:
                         type: "string"
+                      scope:
+                        type: "string"
                       statuses:
                         items:
                           type: "string"
@@ -330,7 +337,11 @@ spec:
                         type: "array"
                     type: "object"
                   type: "array"
+                statusExpr:
+                  description: "statusExpr allows defining a cel expression to evaluate the status of a component\nbased on the summary and the related config"
+                  type: "string"
                 summary:
+                  description: "Summary is the health, incidents, insights & check summary"
                   properties:
                     checks:
                       additionalProperties:

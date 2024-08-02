@@ -20,7 +20,11 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct GslbSpec {
     /// Gslb-enabled Ingress Spec
-    pub ingress: GslbIngress,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ingress: Option<GslbIngress>,
+    /// ResourceRef spec
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRef")]
+    pub resource_ref: Option<GslbResourceRef>,
     /// Gslb Strategy spec
     pub strategy: GslbStrategy,
 }
@@ -65,19 +69,19 @@ pub struct GslbIngress {
 /// specify a global default.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbIngressBackend {
-    /// Resource is an ObjectRef to another Kubernetes resource in the namespace
+    /// resource is an ObjectRef to another Kubernetes resource in the namespace
     /// of the Ingress object. If resource is specified, a service.Name and
     /// service.Port must not be specified.
     /// This is a mutually exclusive setting with "Service".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource: Option<GslbIngressBackendResource>,
-    /// Service references a Service as a Backend.
+    /// service references a service as a backend.
     /// This is a mutually exclusive setting with "Resource".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<GslbIngressBackendService>,
 }
 
-/// Resource is an ObjectRef to another Kubernetes resource in the namespace
+/// resource is an ObjectRef to another Kubernetes resource in the namespace
 /// of the Ingress object. If resource is specified, a service.Name and
 /// service.Port must not be specified.
 /// This is a mutually exclusive setting with "Service".
@@ -94,28 +98,28 @@ pub struct GslbIngressBackendResource {
     pub name: String,
 }
 
-/// Service references a Service as a Backend.
+/// service references a service as a backend.
 /// This is a mutually exclusive setting with "Resource".
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbIngressBackendService {
-    /// Name is the referenced service. The service must exist in
+    /// name is the referenced service. The service must exist in
     /// the same namespace as the Ingress object.
     pub name: String,
-    /// Port of the referenced service. A port name or port number
+    /// port of the referenced service. A port name or port number
     /// is required for a IngressServiceBackend.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<GslbIngressBackendServicePort>,
 }
 
-/// Port of the referenced service. A port name or port number
+/// port of the referenced service. A port name or port number
 /// is required for a IngressServiceBackend.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbIngressBackendServicePort {
-    /// Name is the name of the port on the Service.
+    /// name is the name of the port on the Service.
     /// This is a mutually exclusive setting with "Number".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Number is the numerical port number (e.g. 80) on the Service.
+    /// number is the numerical port number (e.g. 80) on the Service.
     /// This is a mutually exclusive setting with "Name".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub number: Option<i32>,
@@ -168,7 +172,7 @@ pub struct GslbIngressRules {
 /// or '#'.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbIngressRulesHttp {
-    /// A collection of paths that map requests to backends.
+    /// paths is a collection of paths that map requests to backends.
     pub paths: Vec<GslbIngressRulesHttpPaths>,
 }
 
@@ -176,16 +180,16 @@ pub struct GslbIngressRulesHttp {
 /// path are forwarded to the backend.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbIngressRulesHttpPaths {
-    /// Backend defines the referenced service endpoint to which the traffic
+    /// backend defines the referenced service endpoint to which the traffic
     /// will be forwarded to.
     pub backend: GslbIngressRulesHttpPathsBackend,
-    /// Path is matched against the path of an incoming request. Currently it can
+    /// path is matched against the path of an incoming request. Currently it can
     /// contain characters disallowed from the conventional "path" part of a URL
     /// as defined by RFC 3986. Paths must begin with a '/' and must be present
     /// when using PathType with value "Exact" or "Prefix".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// PathType determines the interpretation of the Path matching. PathType can
+    /// pathType determines the interpretation of the path matching. PathType can
     /// be one of the following values:
     /// * Exact: Matches the URL path exactly.
     /// * Prefix: Matches based on a URL path prefix split by '/'. Matching is
@@ -203,23 +207,23 @@ pub struct GslbIngressRulesHttpPaths {
     pub path_type: String,
 }
 
-/// Backend defines the referenced service endpoint to which the traffic
+/// backend defines the referenced service endpoint to which the traffic
 /// will be forwarded to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbIngressRulesHttpPathsBackend {
-    /// Resource is an ObjectRef to another Kubernetes resource in the namespace
+    /// resource is an ObjectRef to another Kubernetes resource in the namespace
     /// of the Ingress object. If resource is specified, a service.Name and
     /// service.Port must not be specified.
     /// This is a mutually exclusive setting with "Service".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource: Option<GslbIngressRulesHttpPathsBackendResource>,
-    /// Service references a Service as a Backend.
+    /// service references a service as a backend.
     /// This is a mutually exclusive setting with "Resource".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<GslbIngressRulesHttpPathsBackendService>,
 }
 
-/// Resource is an ObjectRef to another Kubernetes resource in the namespace
+/// resource is an ObjectRef to another Kubernetes resource in the namespace
 /// of the Ingress object. If resource is specified, a service.Name and
 /// service.Port must not be specified.
 /// This is a mutually exclusive setting with "Service".
@@ -236,49 +240,87 @@ pub struct GslbIngressRulesHttpPathsBackendResource {
     pub name: String,
 }
 
-/// Service references a Service as a Backend.
+/// service references a service as a backend.
 /// This is a mutually exclusive setting with "Resource".
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbIngressRulesHttpPathsBackendService {
-    /// Name is the referenced service. The service must exist in
+    /// name is the referenced service. The service must exist in
     /// the same namespace as the Ingress object.
     pub name: String,
-    /// Port of the referenced service. A port name or port number
+    /// port of the referenced service. A port name or port number
     /// is required for a IngressServiceBackend.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<GslbIngressRulesHttpPathsBackendServicePort>,
 }
 
-/// Port of the referenced service. A port name or port number
+/// port of the referenced service. A port name or port number
 /// is required for a IngressServiceBackend.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbIngressRulesHttpPathsBackendServicePort {
-    /// Name is the name of the port on the Service.
+    /// name is the name of the port on the Service.
     /// This is a mutually exclusive setting with "Number".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Number is the numerical port number (e.g. 80) on the Service.
+    /// number is the numerical port number (e.g. 80) on the Service.
     /// This is a mutually exclusive setting with "Name".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub number: Option<i32>,
 }
 
-/// IngressTLS describes the transport layer security associated with an Ingress.
+/// IngressTLS describes the transport layer security associated with an ingress.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbIngressTls {
-    /// Hosts are a list of hosts included in the TLS certificate. The values in
+    /// hosts is a list of hosts included in the TLS certificate. The values in
     /// this list must match the name/s used in the tlsSecret. Defaults to the
     /// wildcard host setting for the loadbalancer controller fulfilling this
     /// Ingress, if left unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
-    /// SecretName is the name of the secret used to terminate TLS traffic on
+    /// secretName is the name of the secret used to terminate TLS traffic on
     /// port 443. Field is left optional to allow TLS routing based on SNI
     /// hostname alone. If the SNI host in a listener conflicts with the "Host"
     /// header field used by an IngressRule, the SNI host is used for termination
-    /// and value of the Host header is used for routing.
+    /// and value of the "Host" header is used for routing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
+}
+
+/// ResourceRef spec
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GslbResourceRef {
+    /// Ingress selects a kubernetes.networking.k8s.io/v1.Ingress resource
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ingress: Option<GslbResourceRefIngress>,
+}
+
+/// Ingress selects a kubernetes.networking.k8s.io/v1.Ingress resource
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GslbResourceRefIngress {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GslbResourceRefIngressMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GslbResourceRefIngressMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// Gslb Strategy spec
@@ -310,11 +352,44 @@ pub struct GslbStatus {
     /// Current Healthy DNS record structure
     #[serde(rename = "healthyRecords")]
     pub healthy_records: BTreeMap<String, String>,
-    /// Comma-separated list of hosts. Duplicating the value from range .spec.ingress.rules[*].host for printer column
+    /// Comma-separated list of hosts
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<String>,
+    /// LoadBalancer configuration
+    #[serde(rename = "loadBalancer")]
+    pub load_balancer: GslbStatusLoadBalancer,
+    /// Servers configuration
+    pub servers: Vec<GslbStatusServers>,
     /// Associated Service status
     #[serde(rename = "serviceHealth")]
     pub service_health: BTreeMap<String, String>,
+}
+
+/// LoadBalancer configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GslbStatusLoadBalancer {
+    /// ExposedIPs on the local Load Balancer
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposedIps")]
+    pub exposed_ips: Option<Vec<String>>,
+}
+
+/// Servers holds the GSLB's servers' configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GslbStatusServers {
+    /// Hostname exposed by the GSLB
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Kubernetes Services backing the load balanced application
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub services: Option<Vec<GslbStatusServersServices>>,
+}
+
+/// NamespacedName holds a reference to a k8s resource
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GslbStatusServersServices {
+    /// Name of the resource
+    pub name: String,
+    /// Namespace where the resource can be found
+    pub namespace: String,
 }
 

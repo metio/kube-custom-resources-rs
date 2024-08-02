@@ -10,8 +10,13 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// UserSpec defines the desired state of User. 
-///  You create users and assign them specific permissions by using an access string. You assign the users to Access Control Lists aligned with a specific role (administrators, human resources) that are then deployed to one or more MemoryDB clusters.
+/// UserSpec defines the desired state of User.
+/// 
+/// 
+/// You create users and assign them specific permissions by using an access
+/// string. You assign the users to Access Control Lists aligned with a specific
+/// role (administrators, human resources) that are then deployed to one or more
+/// MemoryDB clusters.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "memorydb.services.k8s.aws", version = "v1alpha1", kind = "User", plural = "users")]
 #[kube(namespaced)]
@@ -23,17 +28,21 @@ pub struct UserSpec {
     /// Access permissions string used for this user.
     #[serde(rename = "accessString")]
     pub access_string: String,
-    /// Denotes the user's authentication properties, such as whether it requires a password to authenticate.
+    /// Denotes the user's authentication properties, such as whether it requires
+    /// a password to authenticate.
     #[serde(rename = "authenticationMode")]
     pub authentication_mode: UserAuthenticationMode,
-    /// The name of the user. This value must be unique as it also serves as the user identifier.
+    /// The name of the user. This value must be unique as it also serves as the
+    /// user identifier.
     pub name: String,
-    /// A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.
+    /// A list of tags to be added to this resource. A tag is a key-value pair. A
+    /// tag key must be accompanied by a tag value, although null is accepted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<UserTags>>,
 }
 
-/// Denotes the user's authentication properties, such as whether it requires a password to authenticate.
+/// Denotes the user's authentication properties, such as whether it requires
+/// a password to authenticate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserAuthenticationMode {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,7 +51,8 @@ pub struct UserAuthenticationMode {
     pub r#type: Option<String>,
 }
 
-/// SecretKeyReference combines a k8s corev1.SecretReference with a specific key within the referred-to Secret
+/// SecretKeyReference combines a k8s corev1.SecretReference with a
+/// specific key within the referred-to Secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserAuthenticationModePasswords {
     /// Key is the key within the secret
@@ -55,7 +65,11 @@ pub struct UserAuthenticationModePasswords {
     pub namespace: Option<String>,
 }
 
-/// A tag that can be added to an MemoryDB resource. Tags are composed of a Key/Value pair. You can use tags to categorize and track all your MemoryDB resources. When you add or remove tags on clusters, those actions will be replicated to all nodes in the cluster. A tag with a null Value is permitted. For more information, see Tagging your MemoryDB resources (https://docs.aws.amazon.com/MemoryDB/latest/devguide/tagging-resources.html)
+/// A tag that can be added to an MemoryDB resource. Tags are composed of a Key/Value
+/// pair. You can use tags to categorize and track all your MemoryDB resources.
+/// When you add or remove tags on clusters, those actions will be replicated
+/// to all nodes in the cluster. A tag with a null Value is permitted. For more
+/// information, see Tagging your MemoryDB resources (https://docs.aws.amazon.com/MemoryDB/latest/devguide/tagging-resources.html)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -67,7 +81,9 @@ pub struct UserTags {
 /// UserStatus defines the observed state of User
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<UserStatusAckResourceMetadata>,
     /// The names of the Access Control Lists to which the user belongs
@@ -76,10 +92,14 @@ pub struct UserStatus {
     /// Denotes whether the user requires a password to authenticate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<UserStatusAuthentication>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// A list of events. Each element in the list contains detailed information about one event.
+    /// A list of events. Each element in the list contains detailed information
+    /// about one event.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<UserStatusEvents>>,
     /// The minimum engine version supported for the user
@@ -90,13 +110,23 @@ pub struct UserStatus {
     pub status: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
@@ -112,7 +142,8 @@ pub struct UserStatusAuthentication {
     pub r#type: Option<String>,
 }
 
-/// Represents a single occurrence of something interesting within the system. Some examples of events are creating a cluster or adding or removing a node.
+/// Represents a single occurrence of something interesting within the system.
+/// Some examples of events are creating a cluster or adding or removing a node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserStatusEvents {
     #[serde(default, skip_serializing_if = "Option::is_none")]

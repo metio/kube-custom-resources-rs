@@ -1457,6 +1457,10 @@ spec:
                                   description: "The maximum number of parallel retries a single Envoy instance allows to the Kubernetes Service; defaults to 3."
                                   format: "int32"
                                   type: "integer"
+                                perHostMaxConnections:
+                                  description: "PerHostMaxConnections is the maximum number of connections\nthat Envoy will allow to each individual host in a cluster."
+                                  format: "int32"
+                                  type: "integer"
                               type: "object"
                             dnsLookupFamily:
                               description: "DNSLookupFamily defines how external names are looked up\nWhen configured as V4, the DNS resolver will only perform a lookup\nfor addresses in the IPv4 family. If V6 is configured, the DNS resolver\nwill only perform a lookup for addresses in the IPv6 family.\nIf AUTO is configured, the DNS resolver will first perform a lookup\nfor addresses in the IPv6 family and fallback to a lookup for addresses\nin the IPv4 family. If ALL is specified, the DNS resolver will perform a lookup for\nboth IPv4 and IPv6 families, and return all resolved addresses.\nWhen this is used, Happy Eyeballs will be enabled for upstream connections.\nRefer to Happy Eyeballs Support for more information.\nNote: This only applies to externalName clusters.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-enum-config-cluster-v3-cluster-dnslookupfamily\nfor more information.\nValues: `auto` (default), `v4`, `v6`, `all`.\nOther values will produce an error."
@@ -2082,7 +2086,7 @@ spec:
                               type: "string"
                           type: "object"
                         type:
-                          description: "Defines the XDSServer to use for `contour serve`.\nValues: `envoy` (default), `contour (deprecated)`.\nOther values will produce an error."
+                          description: "Defines the XDSServer to use for `contour serve`.\nValues: `envoy` (default), `contour (deprecated)`.\nOther values will produce an error.\nDeprecated: this field will be removed in a future release when\nthe `contour` xDS server implementation is removed."
                           type: "string"
                       type: "object"
                   type: "object"

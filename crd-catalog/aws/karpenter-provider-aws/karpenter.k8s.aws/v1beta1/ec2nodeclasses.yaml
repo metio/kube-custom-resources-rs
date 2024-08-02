@@ -5,6 +5,17 @@ metadata:
     controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "ec2nodeclasses.karpenter.k8s.aws"
 spec:
+  conversion:
+    strategy: "Webhook"
+    webhook:
+      clientConfig:
+        service:
+          name: "karpenter"
+          namespace: "kube-system"
+          port: 8443
+      conversionReviewVersions:
+        - "v1beta1"
+        - "v1"
   group: "karpenter.k8s.aws"
   names:
     categories:
@@ -419,6 +430,6 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

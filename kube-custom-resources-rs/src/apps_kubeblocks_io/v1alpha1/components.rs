@@ -113,6 +113,21 @@ pub struct ComponentSpec {
     /// The administrator must manually manage the cleanup and removal of these resources when they are no longer needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
+    /// Controls the concurrency of pods during initial scale up, when replacing pods on nodes,
+    /// or when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.
+    /// The default Concurrency is 100%.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelPodManagementConcurrency")]
+    pub parallel_pod_management_concurrency: Option<IntOrString>,
+    /// PodUpdatePolicy indicates how pods should be updated
+    /// 
+    /// 
+    /// - `StrictInPlace` indicates that only allows in-place upgrades.
+    /// Any attempt to modify other fields will be rejected.
+    /// - `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.
+    /// If that fails, it will fall back to the ReCreate, where pod will be recreated.
+    /// Default value is "PreferInPlace"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
+    pub pod_update_policy: Option<String>,
     /// Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing.
     pub replicas: i32,
     /// Specifies the resources required by the Component.
@@ -183,6 +198,10 @@ pub struct ComponentSpec {
     /// by clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ComponentServices>>,
+    /// Stop the Component.
+    /// If set, all the computing resources will be released.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stop: Option<bool>,
     /// Overrides system accounts defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemAccounts")]
     pub system_accounts: Option<Vec<ComponentSystemAccounts>>,

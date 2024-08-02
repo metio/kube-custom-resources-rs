@@ -39,6 +39,9 @@ pub struct TestSuiteExecutionExecutionRequest {
     /// cron job template extensions
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplate")]
     pub cron_job_template: Option<String>,
+    /// whether webhooks should be disabled for this execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// execution labels
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,
@@ -250,6 +253,9 @@ pub struct TestSuiteExecutionStatus {
 /// Important: Run "make" to regenerate code after modifying this file
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteExecutionStatusLatestExecution {
+    /// whether webhooks should be disabled for this execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// test duration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,

@@ -21,8 +21,17 @@ use self::prelude::*;
 pub struct BackingImageSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskFileSpecMap")]
+    pub disk_file_spec_map: Option<BTreeMap<String, BackingImageDiskFileSpecMap>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSelector")]
+    pub disk_selector: Option<Vec<String>>,
+    /// Deprecated. We are now using DiskFileSpecMap to assign different spec to the file on different disks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disks: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minNumberOfCopies")]
+    pub min_number_of_copies: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
@@ -31,6 +40,12 @@ pub struct BackingImageSpec {
     pub source_parameters: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<BackingImageSourceType>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackingImageDiskFileSpecMap {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
+    pub eviction_requested: Option<bool>,
 }
 
 /// BackingImageSpec defines the desired state of the Longhorn backing image

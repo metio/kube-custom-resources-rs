@@ -26,16 +26,20 @@ pub struct DatasetSpec {
     /// DataRestoreLocation is the location to load data of dataset  been backuped
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataRestoreLocation")]
     pub data_restore_location: Option<DatasetDataRestoreLocation>,
-    /// Mount Points to be mounted on cache runtime. <br> This field can be empty because some runtimes don't need to mount external storage (e.g. <a href="https://v6d.io/">Vineyard</a>).
+    /// Mount Points to be mounted on cache runtime. <br>
+    /// This field can be empty because some runtimes don't need to mount external storage (e.g.
+    /// <a href="https://v6d.io/">Vineyard</a>).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mounts: Option<Vec<DatasetMounts>>,
-    /// NodeAffinity defines constraints that limit what nodes this dataset can be cached to. This field influences the scheduling of pods that use the cached dataset.
+    /// NodeAffinity defines constraints that limit what nodes this dataset can be cached to.
+    /// This field influences the scheduling of pods that use the cached dataset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<DatasetNodeAffinity>,
     /// The owner of the dataset
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner: Option<DatasetOwner>,
-    /// Manage switch for opening Multiple datasets single node deployment or not TODO(xieydd) In future, evaluate node resources and runtime resources to decide whether to turn them on
+    /// Manage switch for opening Multiple datasets single node deployment or not
+    /// TODO(xieydd) In future, evaluate node resources and runtime resources to decide whether to turn them on
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placement: Option<DatasetPlacement>,
     /// Runtimes for supporting dataset (e.g. AlluxioRuntime)
@@ -63,7 +67,8 @@ pub struct DatasetDataRestoreLocation {
     pub path: Option<String>,
 }
 
-/// Mount describes a mounting. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">Alluxio Storage Integrations</a> for more info
+/// Mount describes a mounting. <br>
+/// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">Alluxio Storage Integrations</a> for more info
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetMounts {
     /// The secret information
@@ -75,7 +80,10 @@ pub struct DatasetMounts {
     /// The name of mount
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The Mount Options. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Mount Options</a>.  <br> The option has Prefix 'fs.' And you can Learn more from <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">The Storage Integrations</a>
+    /// The Mount Options. <br>
+    /// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Mount Options</a>.  <br>
+    /// The option has Prefix 'fs.' And you can Learn more from
+    /// <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">The Storage Integrations</a>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
     /// The path of mount, if not set will be /{Name}
@@ -116,7 +124,8 @@ pub struct DatasetMountsEncryptOptionsValueFromSecretKeyRef {
     pub name: String,
 }
 
-/// NodeAffinity defines constraints that limit what nodes this dataset can be cached to. This field influences the scheduling of pods that use the cached dataset.
+/// NodeAffinity defines constraints that limit what nodes this dataset can be cached to.
+/// This field influences the scheduling of pods that use the cached dataset.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetNodeAffinity {
     /// Required specifies hard node constraints that must be met.
@@ -132,7 +141,9 @@ pub struct DatasetNodeAffinityRequired {
     pub node_selector_terms: Vec<DatasetNodeAffinityRequiredNodeSelectorTerms>,
 }
 
-/// A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetNodeAffinityRequiredNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
@@ -143,26 +154,38 @@ pub struct DatasetNodeAffinityRequiredNodeSelectorTerms {
     pub match_fields: Option<Vec<DatasetNodeAffinityRequiredNodeSelectorTermsMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetNodeAffinityRequiredNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetNodeAffinityRequiredNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -236,22 +259,32 @@ pub struct DatasetSharedEncryptOptionsValueFromSecretKeyRef {
     pub name: String,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -264,10 +297,14 @@ pub struct DatasetStatus {
     pub cache_states: Option<BTreeMap<String, String>>,
     /// Conditions is an array of current observed conditions.
     pub conditions: Vec<Condition>,
-    /// DataBackupRef specifies the running Backup job that targets this Dataset. This is mainly used as a lock to prevent concurrent DataBackup jobs. Deprecated, use OperationRef instead
+    /// DataBackupRef specifies the running Backup job that targets this Dataset.
+    /// This is mainly used as a lock to prevent concurrent DataBackup jobs.
+    /// Deprecated, use OperationRef instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataBackupRef")]
     pub data_backup_ref: Option<String>,
-    /// DataLoadRef specifies the running DataLoad job that targets this Dataset. This is mainly used as a lock to prevent concurrent DataLoad jobs. Deprecated, use OperationRef instead
+    /// DataLoadRef specifies the running DataLoad job that targets this Dataset.
+    /// This is mainly used as a lock to prevent concurrent DataLoad jobs.
+    /// Deprecated, use OperationRef instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataLoadRef")]
     pub data_load_ref: Option<String>,
     /// DatasetRef specifies the datasets namespaced name mounting this Dataset.
@@ -282,7 +319,8 @@ pub struct DatasetStatus {
     /// the info of mount points have been mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mounts: Option<Vec<DatasetStatusMounts>>,
-    /// OperationRef specifies the Operation that targets this Dataset. This is mainly used as a lock to prevent concurrent same Operation jobs.
+    /// OperationRef specifies the Operation that targets this Dataset.
+    /// This is mainly used as a lock to prevent concurrent same Operation jobs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operationRef")]
     pub operation_ref: Option<BTreeMap<String, String>>,
     /// Dataset Phase. One of the four phases: `Pending`, `Bound`, `NotBound` and `Failed`
@@ -307,7 +345,8 @@ pub struct DatasetStatusHcfs {
     pub underlayer_file_system_version: Option<String>,
 }
 
-/// Mount describes a mounting. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">Alluxio Storage Integrations</a> for more info
+/// Mount describes a mounting. <br>
+/// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">Alluxio Storage Integrations</a> for more info
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetStatusMounts {
     /// The secret information
@@ -319,7 +358,10 @@ pub struct DatasetStatusMounts {
     /// The name of mount
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The Mount Options. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Mount Options</a>.  <br> The option has Prefix 'fs.' And you can Learn more from <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">The Storage Integrations</a>
+    /// The Mount Options. <br>
+    /// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Mount Options</a>.  <br>
+    /// The option has Prefix 'fs.' And you can Learn more from
+    /// <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">The Storage Integrations</a>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
     /// The path of mount, if not set will be /{Name}

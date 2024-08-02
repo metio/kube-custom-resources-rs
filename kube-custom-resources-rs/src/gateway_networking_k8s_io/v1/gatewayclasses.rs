@@ -113,9 +113,16 @@ pub struct GatewayClassStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// SupportedFeatures is the set of features the GatewayClass support.
-    /// It MUST be sorted in ascending alphabetical order.
+    /// It MUST be sorted in ascending alphabetical order by the Name key.
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedFeatures")]
-    pub supported_features: Option<Vec<String>>,
+    pub supported_features: Option<Vec<GatewayClassStatusSupportedFeatures>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayClassStatusSupportedFeatures {
+    /// FeatureName is used to describe distinct features that are covered by
+    /// conformance tests.
+    pub name: String,
 }
 

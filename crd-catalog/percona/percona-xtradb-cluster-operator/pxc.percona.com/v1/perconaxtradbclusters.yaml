@@ -1650,6 +1650,8 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        onlyReaders:
+                          type: "boolean"
                         trafficPolicy:
                           type: "string"
                         type:
@@ -10021,6 +10023,8 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                    enabled:
+                      type: "boolean"
                     issuerConf:
                       properties:
                         group:
@@ -10032,6 +10036,17 @@ spec:
                       required:
                         - "name"
                       type: "object"
+                  type: "object"
+                unsafeFlags:
+                  properties:
+                    backupIfUnhealthy:
+                      type: "boolean"
+                    proxySize:
+                      type: "boolean"
+                    pxcSize:
+                      type: "boolean"
+                    tls:
+                      type: "boolean"
                   type: "object"
                 updateStrategy:
                   type: "string"

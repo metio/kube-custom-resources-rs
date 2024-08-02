@@ -2,11 +2,11 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.7.0"
+    controller-gen.kubebuilder.io/version: "v0.15.0"
   labels:
     app.kubernetes.io/instance: "longhorn"
     app.kubernetes.io/name: "longhorn"
-    app.kubernetes.io/version: "v1.6.0-dev"
+    app.kubernetes.io/version: "v1.8.0-dev"
     longhorn-manager: ""
   name: "instancemanagers.longhorn.io"
 spec:
@@ -47,10 +47,10 @@ spec:
           description: "InstanceManager is where Longhorn stores instance manager object."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -85,7 +85,7 @@ spec:
                       spec:
                         properties:
                           backendStoreDriver:
-                            description: "Deprecated: Replaced by field `dataEngine`."
+                            description: "Deprecated:Replaced by field `dataEngine`."
                             type: "string"
                           dataEngine:
                             type: "string"
@@ -116,6 +116,12 @@ spec:
                             type: "integer"
                           state:
                             type: "string"
+                          targetPortEnd:
+                            format: "int32"
+                            type: "integer"
+                          targetPortStart:
+                            format: "int32"
+                            type: "integer"
                           type:
                             type: "string"
                         type: "object"
@@ -128,7 +134,7 @@ spec:
                       spec:
                         properties:
                           backendStoreDriver:
-                            description: "Deprecated: Replaced by field `dataEngine`."
+                            description: "Deprecated:Replaced by field `dataEngine`."
                             type: "string"
                           dataEngine:
                             type: "string"
@@ -159,6 +165,12 @@ spec:
                             type: "integer"
                           state:
                             type: "string"
+                          targetPortEnd:
+                            format: "int32"
+                            type: "integer"
+                          targetPortStart:
+                            format: "int32"
+                            type: "integer"
                           type:
                             type: "string"
                         type: "object"
@@ -171,7 +183,7 @@ spec:
                       spec:
                         properties:
                           backendStoreDriver:
-                            description: "Deprecated: Replaced by field `dataEngine`."
+                            description: "Deprecated:Replaced by field `dataEngine`."
                             type: "string"
                           dataEngine:
                             type: "string"
@@ -202,6 +214,12 @@ spec:
                             type: "integer"
                           state:
                             type: "string"
+                          targetPortEnd:
+                            format: "int32"
+                            type: "integer"
+                          targetPortStart:
+                            format: "int32"
+                            type: "integer"
                           type:
                             type: "string"
                         type: "object"
@@ -223,9 +241,3 @@ spec:
       storage: true
       subresources:
         status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

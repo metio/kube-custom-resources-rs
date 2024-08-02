@@ -922,7 +922,7 @@ spec:
                       description: "DesktopDirectorySharing indicates whether directory sharing is allowed between the user's workstation and the remote desktop. It defaults to false unless explicitly set to true."
                       type: "boolean"
                     device_trust_mode:
-                      description: "DeviceTrustMode is the device authorization mode used for the resources associated with the role. See DeviceTrust.Mode. Reserved for future use, not yet used by Teleport."
+                      description: "DeviceTrustMode is the device authorization mode used for the resources associated with the role. See DeviceTrust.Mode."
                       type: "string"
                     disconnect_expired_cert:
                       description: "DisconnectExpiredCert sets disconnect clients on expired certificates."
@@ -992,7 +992,7 @@ spec:
                           type: "string"
                       type: "object"
                     request_access:
-                      description: "RequestAccess defines the access request strategy (optional|note|always) where optional is the default."
+                      description: "RequestAccess defines the request strategy (optional|note|always) where optional is the default."
                       type: "string"
                     request_prompt:
                       description: "RequestPrompt is an optional message which tells users what they aught to request."

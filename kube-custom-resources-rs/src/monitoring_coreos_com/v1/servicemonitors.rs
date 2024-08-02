@@ -35,8 +35,9 @@ pub struct ServiceMonitorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodySizeLimit")]
     pub body_size_limit: Option<String>,
     /// List of endpoints part of this ServiceMonitor.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub endpoints: Option<Vec<ServiceMonitorEndpoints>>,
+    /// Defines how to scrape metrics from Kubernetes [Endpoints](https://kubernetes.io/docs/concepts/services-networking/service/#endpoints) objects.
+    /// In most cases, an Endpoints object is backed by a Kubernetes [Service](https://kubernetes.io/docs/concepts/services-networking/service/) object with the same name and labels.
+    pub endpoints: Vec<ServiceMonitorEndpoints>,
     /// `jobLabel` selects the label from the associated Kubernetes `Service`
     /// object which will be used as the `job` label for all metrics.
     /// 
@@ -76,8 +77,8 @@ pub struct ServiceMonitorSpec {
     /// It requires Prometheus >= v2.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelValueLengthLimit")]
     pub label_value_length_limit: Option<i64>,
-    /// Selector to select which namespaces the Kubernetes `Endpoints` objects
-    /// are discovered from.
+    /// `namespaceSelector` defines in which namespace(s) Prometheus should discover the services.
+    /// By default, the services are discovered in the same namespace as the `ServiceMonitor` object but it is possible to select pods across different/all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ServiceMonitorNamespaceSelector>,
     /// `podTargetLabels` defines the labels which are transferred from the
@@ -101,7 +102,7 @@ pub struct ServiceMonitorSpec {
     /// It requires Prometheus >= v2.49.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
     pub scrape_protocols: Option<Vec<String>>,
-    /// Label selector to select the Kubernetes `Endpoints` objects.
+    /// Label selector to select the Kubernetes `Endpoints` objects to scrape metrics from.
     pub selector: ServiceMonitorSelector,
     /// `targetLabels` defines the labels which are transferred from the
     /// associated Kubernetes `Service` object onto the ingested metrics.
@@ -120,8 +121,12 @@ pub struct ServiceMonitorSpec {
 /// It requires Prometheus >= v2.37.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorAttachMetadata {
-    /// When set to true, Prometheus must have the `get` permission on the
-    /// `Nodes` objects.
+    /// When set to true, Prometheus attaches node metadata to the discovered
+    /// targets.
+    /// 
+    /// 
+    /// The Prometheus service account must have the `list` and `watch`
+    /// permissions on the `Nodes` objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
 }
@@ -722,6 +727,18 @@ pub struct ServiceMonitorEndpointsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ServiceMonitorEndpointsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ServiceMonitorEndpointsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ServiceMonitorEndpointsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -844,8 +861,34 @@ pub struct ServiceMonitorEndpointsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// Selector to select which namespaces the Kubernetes `Endpoints` objects
-/// are discovered from.
+/// TLS configuration to use when scraping the target.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ServiceMonitorEndpointsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use when scraping the target.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ServiceMonitorEndpointsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// `namespaceSelector` defines in which namespace(s) Prometheus should discover the services.
+/// By default, the services are discovered in the same namespace as the `ServiceMonitor` object but it is possible to select pods across different/all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorNamespaceSelector {
     /// Boolean describing whether all namespaces are selected in contrast to a
@@ -857,7 +900,7 @@ pub struct ServiceMonitorNamespaceSelector {
     pub match_names: Option<Vec<String>>,
 }
 
-/// Label selector to select the Kubernetes `Endpoints` objects.
+/// Label selector to select the Kubernetes `Endpoints` objects to scrape metrics from.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

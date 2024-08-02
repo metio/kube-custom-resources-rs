@@ -33,10 +33,10 @@ pub struct TenantSpec {
     pub buckets: Option<Vec<TenantBuckets>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certConfig")]
     pub cert_config: Option<TenantCertConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certExpiryAlertThreshold")]
+    pub cert_expiry_alert_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<TenantConfiguration>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credsSecret")]
-    pub creds_secret: Option<TenantCredsSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TenantEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeServices")]
@@ -836,12 +836,6 @@ pub struct TenantCertConfig {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantConfiguration {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantCredsSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2352,8 +2346,6 @@ pub struct TenantPools {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reclaimStorage")]
-    pub reclaim_storage: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TenantPoolsResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]

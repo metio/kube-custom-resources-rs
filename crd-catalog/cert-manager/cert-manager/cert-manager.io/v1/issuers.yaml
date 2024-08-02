@@ -1402,7 +1402,7 @@ spec:
                             - "name"
                           type: "object"
                         credentialsRef:
-                          description: "CredentialsRef is a reference to a Secret containing the username and\npassword for the TPP server.\nThe secret must contain two keys, 'username' and 'password'."
+                          description: "CredentialsRef is a reference to a Secret containing the Venafi TPP API credentials.\nThe secret must contain the key 'access-token' for the Access Token Authentication,\nor two keys, 'username' and 'password' for the API Keys Authentication."
                           properties:
                             name:
                               description: "Name of the resource being referred to.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"

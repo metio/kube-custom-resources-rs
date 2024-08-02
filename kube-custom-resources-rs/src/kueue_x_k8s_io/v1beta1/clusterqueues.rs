@@ -496,8 +496,8 @@ pub struct ClusterQueueStatusFairSharing {
     /// If zero, it means that the usage of the ClusterQueue is below the nominal quota.
     /// If the ClusterQueue has a weight of zero, this will return 9223372036854775807,
     /// the maximum possible share value.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "weightedShare")]
-    pub weighted_share: Option<i64>,
+    #[serde(rename = "weightedShare")]
+    pub weighted_share: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

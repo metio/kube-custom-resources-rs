@@ -2,8 +2,11 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.7.0"
+    controller-gen.kubebuilder.io/version: "v0.15.0"
   labels:
+    app.kubernetes.io/instance: "longhorn"
+    app.kubernetes.io/name: "longhorn"
+    app.kubernetes.io/version: "v1.8.0-dev"
     longhorn-manager: ""
   name: "backupbackingimages.longhorn.io"
 spec:
@@ -44,10 +47,10 @@ spec:
           description: "BackupBackingImage is where Longhorn stores backing image backup object."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -65,7 +68,7 @@ spec:
                   nullable: true
                   type: "string"
                 userCreated:
-                  description: "Is this CR created by user through API or UI. Required"
+                  description: "Is this CR created by user through API or UI.\nRequired"
                   type: "boolean"
               required:
                 - "userCreated"
@@ -119,7 +122,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 state:
-                  description: "The backing image backup creation state. Can be \"\", \"InProgress\", \"Completed\", \"Error\", \"Unknown\"."
+                  description: "The backing image backup creation state.\nCan be \"\", \"InProgress\", \"Completed\", \"Error\", \"Unknown\"."
                   type: "string"
                 url:
                   description: "The backing image backup URL."
@@ -130,9 +133,3 @@ spec:
       storage: true
       subresources:
         status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

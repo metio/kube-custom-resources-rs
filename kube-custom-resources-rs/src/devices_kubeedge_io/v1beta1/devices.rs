@@ -259,6 +259,12 @@ pub struct DeviceProtocol {
 /// DeviceStatus reports the device state and the desired/reported values of twin attributes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceStatus {
+    /// Optional: The last time the device was online.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastOnlineTime")]
+    pub last_online_time: Option<String>,
+    /// Optional: The state of the device.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
     /// A list of device twins containing desired/reported desired/reported values of twin properties. Optional: A passive device won't have twin properties and this list could be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub twins: Option<Vec<DeviceStatusTwins>>,

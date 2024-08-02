@@ -67,7 +67,7 @@ spec:
                   description: "The Class for the Kafka Connector."
                   type: "string"
                 config:
-                  description: "The Kafka Connector configuration. The following properties cannot be set: connector.class, tasks.max."
+                  description: "The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max."
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 pause:

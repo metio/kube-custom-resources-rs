@@ -60,6 +60,8 @@ pub struct PerconaXtraDBClusterSpec {
     pub ssl_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<PerconaXtraDBClusterTls>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unsafeFlags")]
+    pub unsafe_flags: Option<PerconaXtraDBClusterUnsafeFlags>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeOptions")]
@@ -1407,6 +1409,8 @@ pub struct PerconaXtraDBClusterHaproxyExposeReplicas {
     pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlyReaders")]
+    pub only_readers: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]
     pub traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -8280,6 +8284,8 @@ pub struct PerconaXtraDBClusterPxcVolumeSpecPersistentVolumeClaimSelectorMatchEx
 pub struct PerconaXtraDBClusterTls {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "SANs")]
     pub sa_ns: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerConf")]
     pub issuer_conf: Option<PerconaXtraDBClusterTlsIssuerConf>,
 }
@@ -8291,6 +8297,18 @@ pub struct PerconaXtraDBClusterTlsIssuerConf {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterUnsafeFlags {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupIfUnhealthy")]
+    pub backup_if_unhealthy: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySize")]
+    pub proxy_size: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pxcSize")]
+    pub pxc_size: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

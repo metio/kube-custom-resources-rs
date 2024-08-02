@@ -213,8 +213,12 @@ pub struct KafkaMirrorMakerConsumerAuthenticationRefreshToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerConsumerAuthenticationTlsTrustedCertificates {
-    /// The name of the file certificate in the Secret.
-    pub certificate: String,
+    /// The name of the file certificate in the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    /// Pattern for the certificate files in the secret. Use the link:https://en.wikipedia.org/wiki/Glob_(programming)[_glob syntax_] for the pattern. All files in the secret that match the pattern are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
     pub secret_name: String,
@@ -245,8 +249,12 @@ pub struct KafkaMirrorMakerConsumerTls {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerConsumerTlsTrustedCertificates {
-    /// The name of the file certificate in the Secret.
-    pub certificate: String,
+    /// The name of the file certificate in the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    /// Pattern for the certificate files in the secret. Use the link:https://en.wikipedia.org/wiki/Glob_(programming)[_glob syntax_] for the pattern. All files in the secret that match the pattern are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
     pub secret_name: String,
@@ -523,8 +531,12 @@ pub struct KafkaMirrorMakerProducerAuthenticationRefreshToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerProducerAuthenticationTlsTrustedCertificates {
-    /// The name of the file certificate in the Secret.
-    pub certificate: String,
+    /// The name of the file certificate in the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    /// Pattern for the certificate files in the secret. Use the link:https://en.wikipedia.org/wiki/Glob_(programming)[_glob syntax_] for the pattern. All files in the secret that match the pattern are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
     pub secret_name: String,
@@ -555,8 +567,12 @@ pub struct KafkaMirrorMakerProducerTls {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerProducerTlsTrustedCertificates {
-    /// The name of the file certificate in the Secret.
-    pub certificate: String,
+    /// The name of the file certificate in the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    /// Pattern for the certificate files in the secret. Use the link:https://en.wikipedia.org/wiki/Glob_(programming)[_glob syntax_] for the pattern. All files in the secret that match the pattern are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
     pub secret_name: String,
@@ -674,6 +690,8 @@ pub struct KafkaMirrorMakerTemplateMirrorMakerContainerEnv {
 pub struct KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -694,6 +712,14 @@ pub struct KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContext {
     pub seccomp_profile: Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1134,6 +1160,8 @@ pub struct KafkaMirrorMakerTemplatePodMetadata {
 /// Configures pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<KafkaMirrorMakerTemplatePodSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
@@ -1154,6 +1182,14 @@ pub struct KafkaMirrorMakerTemplatePodSecurityContext {
     pub sysctls: Option<Vec<KafkaMirrorMakerTemplatePodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<KafkaMirrorMakerTemplatePodSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMakerTemplatePodSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

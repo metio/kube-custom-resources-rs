@@ -20,7 +20,8 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct TempoStackSpec {
-    /// ExtraConfigSpec defines extra configurations for tempo that will be merged with the operator generated, configurations defined here has precedence and could override generated config.
+    /// ExtraConfigSpec defines extra configurations for tempo that will be merged with the operator generated, configurations defined here
+    /// has precedence and could override generated config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraConfig")]
     pub extra_config: Option<TempoStackExtraConfig>,
     /// HashRing defines the spec for the distributed hash ring configuration.
@@ -32,7 +33,8 @@ pub struct TempoStackSpec {
     /// LimitSpec is used to limit ingestion and querying rates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<TempoStackLimits>,
-    /// ManagementState defines if the CR should be managed by the operator or not. Default is managed.
+    /// ManagementState defines if the CR should be managed by the operator or not.
+    /// Default is managed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementState")]
     pub management_state: Option<TempoStackManagementState>,
     /// ObservabilitySpec defines how telemetry data gets handled.
@@ -44,7 +46,8 @@ pub struct TempoStackSpec {
     /// Resources defines resources configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TempoStackResources>,
-    /// NOTE: currently this field is not considered. Retention period defined by dataset. User can specify how long data should be stored.
+    /// Retention period defined by dataset.
+    /// User can specify how long data should be stored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<TempoStackRetention>,
     /// SearchSpec control the configuration for the search capabilities.
@@ -53,7 +56,8 @@ pub struct TempoStackSpec {
     /// ServiceAccount defines the service account to use for all tempo components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    /// Storage defines the spec for the object storage endpoint to store traces. User is required to create secret and supply it.
+    /// Storage defines the spec for the object storage endpoint to store traces.
+    /// User is required to create secret and supply it.
     pub storage: TempoStackStorage,
     /// StorageClassName for PVCs used by ingester. Defaults to nil (default storage class in the cluster).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
@@ -69,7 +73,8 @@ pub struct TempoStackSpec {
     pub tenants: Option<TempoStackTenants>,
 }
 
-/// ExtraConfigSpec defines extra configurations for tempo that will be merged with the operator generated, configurations defined here has precedence and could override generated config.
+/// ExtraConfigSpec defines extra configurations for tempo that will be merged with the operator generated, configurations defined here
+/// has precedence and could override generated config.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackExtraConfig {
     /// Tempo defines any extra Tempo configuration, which will be merged with the operator's generated Tempo configuration
@@ -158,10 +163,13 @@ pub struct TempoStackLimitsGlobalQuery {
     /// MaxBytesPerTagValues defines the maximum size in bytes of a tag-values query.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytesPerTagValues")]
     pub max_bytes_per_tag_values: Option<i64>,
-    /// DEPRECATED. MaxSearchBytesPerTrace defines the maximum size of search data for a single trace in bytes. default: `0` to disable.
+    /// DEPRECATED. MaxSearchBytesPerTrace defines the maximum size of search data for a single
+    /// trace in bytes.
+    /// default: `0` to disable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSearchBytesPerTrace")]
     pub max_search_bytes_per_trace: Option<i64>,
-    /// MaxSearchDuration defines the maximum allowed time range for a search. If this value is not set, then spec.search.maxDuration is used.
+    /// MaxSearchDuration defines the maximum allowed time range for a search.
+    /// If this value is not set, then spec.search.maxDuration is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSearchDuration")]
     pub max_search_duration: Option<String>,
 }
@@ -200,10 +208,13 @@ pub struct TempoStackLimitsPerTenantQuery {
     /// MaxBytesPerTagValues defines the maximum size in bytes of a tag-values query.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytesPerTagValues")]
     pub max_bytes_per_tag_values: Option<i64>,
-    /// DEPRECATED. MaxSearchBytesPerTrace defines the maximum size of search data for a single trace in bytes. default: `0` to disable.
+    /// DEPRECATED. MaxSearchBytesPerTrace defines the maximum size of search data for a single
+    /// trace in bytes.
+    /// default: `0` to disable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSearchBytesPerTrace")]
     pub max_search_bytes_per_trace: Option<i64>,
-    /// MaxSearchDuration defines the maximum allowed time range for a search. If this value is not set, then spec.search.maxDuration is used.
+    /// MaxSearchDuration defines the maximum allowed time range for a search.
+    /// If this value is not set, then spec.search.maxDuration is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSearchDuration")]
     pub max_search_duration: Option<String>,
 }
@@ -246,19 +257,26 @@ pub struct TempoStackObservabilityGrafanaInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TempoStackObservabilityGrafanaInstanceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackObservabilityGrafanaInstanceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -288,23 +306,39 @@ pub struct TempoStackObservabilityTracing {
 /// Resources defines resources configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackResources {
-    /// The total amount of resources for Tempo instance. The operator autonomously splits resources between deployed Tempo components. Only limits are supported, the operator calculates requests automatically. See http://github.com/grafana/tempo/issues/1540.
+    /// The total amount of resources for Tempo instance.
+    /// The operator autonomously splits resources between deployed Tempo components.
+    /// Only limits are supported, the operator calculates requests automatically.
+    /// See http://github.com/grafana/tempo/issues/1540.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total: Option<TempoStackResourcesTotal>,
 }
 
-/// The total amount of resources for Tempo instance. The operator autonomously splits resources between deployed Tempo components. Only limits are supported, the operator calculates requests automatically. See http://github.com/grafana/tempo/issues/1540.
+/// The total amount of resources for Tempo instance.
+/// The operator autonomously splits resources between deployed Tempo components.
+/// Only limits are supported, the operator calculates requests automatically.
+/// See http://github.com/grafana/tempo/issues/1540.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackResourcesTotal {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackResourcesTotalClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -312,11 +346,14 @@ pub struct TempoStackResourcesTotal {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackResourcesTotalClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// NOTE: currently this field is not considered. Retention period defined by dataset. User can specify how long data should be stored.
+/// Retention period defined by dataset.
+/// User can specify how long data should be stored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackRetention {
     /// Global is used to configure global retention.
@@ -330,7 +367,9 @@ pub struct TempoStackRetention {
 /// Global is used to configure global retention.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackRetentionGlobal {
-    /// Traces defines retention period. Supported parameter suffixes are "s", "m" and "h". example: 336h default: value is 48h.
+    /// Traces defines retention period. Supported parameter suffixes are "s", "m" and "h".
+    /// example: 336h
+    /// default: value is 48h.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub traces: Option<String>,
 }
@@ -338,7 +377,9 @@ pub struct TempoStackRetentionGlobal {
 /// PerTenant is used to configure retention per tenant.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackRetentionPerTenant {
-    /// Traces defines retention period. Supported parameter suffixes are "s", "m" and "h". example: 336h default: value is 48h.
+    /// Traces defines retention period. Supported parameter suffixes are "s", "m" and "h".
+    /// example: 336h
+    /// default: value is 48h.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub traces: Option<String>,
 }
@@ -352,22 +393,27 @@ pub struct TempoStackSearch {
     /// The maximum allowed time range for a search, default: 0s which means unlimited.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxDuration")]
     pub max_duration: Option<String>,
-    /// The maximum allowed value of the limit parameter on search requests. If the search request limit parameter exceeds the value configured here it will be set to the value configured here. The default value of 0 disables this limit.
+    /// The maximum allowed value of the limit parameter on search requests. If the search request limit parameter
+    /// exceeds the value configured here it will be set to the value configured here.
+    /// The default value of 0 disables this limit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxResultLimit")]
     pub max_result_limit: Option<i64>,
 }
 
-/// Storage defines the spec for the object storage endpoint to store traces. User is required to create secret and supply it.
+/// Storage defines the spec for the object storage endpoint to store traces.
+/// User is required to create secret and supply it.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TempoStackStorage {
-    /// Secret for object storage authentication. Name of a secret in the same namespace as the TempoStack custom resource.
+    /// Secret for object storage authentication.
+    /// Name of a secret in the same namespace as the TempoStack custom resource.
     pub secret: TempoStackStorageSecret,
     /// TLS configuration for reaching the object storage endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TempoStackStorageTls>,
 }
 
-/// Secret for object storage authentication. Name of a secret in the same namespace as the TempoStack custom resource.
+/// Secret for object storage authentication.
+/// Name of a secret in the same namespace as the TempoStack custom resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TempoStackStorageSecret {
     /// Name of a secret in the namespace configured for object storage secrets.
@@ -377,7 +423,8 @@ pub struct TempoStackStorageSecret {
     pub r#type: TempoStackStorageSecretType,
 }
 
-/// Secret for object storage authentication. Name of a secret in the same namespace as the TempoStack custom resource.
+/// Secret for object storage authentication.
+/// Name of a secret in the same namespace as the TempoStack custom resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TempoStackStorageSecretType {
     #[serde(rename = "azure")]
@@ -391,10 +438,12 @@ pub enum TempoStackStorageSecretType {
 /// TLS configuration for reaching the object storage endpoint.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackStorageTls {
-    /// CA is the name of a ConfigMap containing a CA certificate (service-ca.crt). It needs to be in the same namespace as the Tempo custom resource.
+    /// CA is the name of a ConfigMap containing a CA certificate (service-ca.crt).
+    /// It needs to be in the same namespace as the Tempo custom resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caName")]
     pub ca_name: Option<String>,
-    /// Cert is the name of a Secret containing a certificate (tls.crt) and private key (tls.key). It needs to be in the same namespace as the Tempo custom resource.
+    /// Cert is the name of a Secret containing a certificate (tls.crt) and private key (tls.key).
+    /// It needs to be in the same namespace as the Tempo custom resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certName")]
     pub cert_name: Option<String>,
     /// Enabled defines if TLS is enabled.
@@ -448,15 +497,25 @@ pub struct TempoStackTemplateCompactor {
 /// Resources defines resources for this component, this will override the calculated resources derived from total
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateCompactorResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateCompactorResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -464,26 +523,38 @@ pub struct TempoStackTemplateCompactorResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateCompactorResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateCompactorTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -491,17 +562,27 @@ pub struct TempoStackTemplateCompactorTolerations {
 /// Distributor defines the distributor component spec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateDistributor {
-    /// TempoComponentSpec is embedded to extend this definition with further options. 
-    ///  Currently, there is no way to inline this field. See: https://github.com/golang/go/issues/6213
+    /// TempoComponentSpec is embedded to extend this definition with further options.
+    /// 
+    /// 
+    /// Currently, there is no way to inline this field.
+    /// See: https://github.com/golang/go/issues/6213
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub component: Option<TempoStackTemplateDistributorComponent>,
     /// TLS defines TLS configuration for distributor receivers
+    /// 
+    /// 
+    /// If openshift feature flag `servingCertsService` is enabled and TLS is enabled but no
+    /// certName or caName is specified, OpenShift service serving certificates will  be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TempoStackTemplateDistributorTls>,
 }
 
-/// TempoComponentSpec is embedded to extend this definition with further options. 
-///  Currently, there is no way to inline this field. See: https://github.com/golang/go/issues/6213
+/// TempoComponentSpec is embedded to extend this definition with further options.
+/// 
+/// 
+/// Currently, there is no way to inline this field.
+/// See: https://github.com/golang/go/issues/6213
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateDistributorComponent {
     /// NodeSelector defines the simple form of the node-selection constraint.
@@ -521,15 +602,25 @@ pub struct TempoStackTemplateDistributorComponent {
 /// Resources defines resources for this component, this will override the calculated resources derived from total
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateDistributorComponentResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateDistributorComponentResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -537,37 +628,55 @@ pub struct TempoStackTemplateDistributorComponentResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateDistributorComponentResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateDistributorComponentTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
 /// TLS defines TLS configuration for distributor receivers
+/// 
+/// 
+/// If openshift feature flag `servingCertsService` is enabled and TLS is enabled but no
+/// certName or caName is specified, OpenShift service serving certificates will  be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateDistributorTls {
-    /// CA is the name of a ConfigMap containing a CA certificate (service-ca.crt). It needs to be in the same namespace as the Tempo custom resource.
+    /// CA is the name of a ConfigMap containing a CA certificate (service-ca.crt).
+    /// It needs to be in the same namespace as the Tempo custom resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caName")]
     pub ca_name: Option<String>,
-    /// Cert is the name of a Secret containing a certificate (tls.crt) and private key (tls.key). It needs to be in the same namespace as the Tempo custom resource.
+    /// Cert is the name of a Secret containing a certificate (tls.crt) and private key (tls.key).
+    /// It needs to be in the same namespace as the Tempo custom resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certName")]
     pub cert_name: Option<String>,
     /// Enabled defines if TLS is enabled.
@@ -581,8 +690,11 @@ pub struct TempoStackTemplateDistributorTls {
 /// Gateway defines the tempo gateway spec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateGateway {
-    /// TempoComponentSpec is embedded to extend this definition with further options. 
-    ///  Currently there is no way to inline this field. See: https://github.com/golang/go/issues/6213
+    /// TempoComponentSpec is embedded to extend this definition with further options.
+    /// 
+    /// 
+    /// Currently there is no way to inline this field.
+    /// See: https://github.com/golang/go/issues/6213
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub component: Option<TempoStackTemplateGatewayComponent>,
     pub enabled: bool,
@@ -591,8 +703,11 @@ pub struct TempoStackTemplateGateway {
     pub ingress: Option<TempoStackTemplateGatewayIngress>,
 }
 
-/// TempoComponentSpec is embedded to extend this definition with further options. 
-///  Currently there is no way to inline this field. See: https://github.com/golang/go/issues/6213
+/// TempoComponentSpec is embedded to extend this definition with further options.
+/// 
+/// 
+/// Currently there is no way to inline this field.
+/// See: https://github.com/golang/go/issues/6213
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateGatewayComponent {
     /// NodeSelector defines the simple form of the node-selection constraint.
@@ -612,15 +727,25 @@ pub struct TempoStackTemplateGatewayComponent {
 /// Resources defines resources for this component, this will override the calculated resources derived from total
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateGatewayComponentResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateGatewayComponentResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -628,26 +753,38 @@ pub struct TempoStackTemplateGatewayComponentResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateGatewayComponentResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateGatewayComponentTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -661,13 +798,15 @@ pub struct TempoStackTemplateGatewayIngress {
     /// Host defines the hostname of the Ingress object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// IngressClassName defines the name of an IngressClass cluster resource. Defines which ingress controller serves this ingress resource.
+    /// IngressClassName defines the name of an IngressClass cluster resource.
+    /// Defines which ingress controller serves this ingress resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// Route defines the options for the OpenShift route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<TempoStackTemplateGatewayIngressRoute>,
-    /// Type defines the type of Ingress for the Jaeger Query UI. Currently ingress, route and none are supported.
+    /// Type defines the type of Ingress for the Jaeger Query UI.
+    /// Currently ingress, route and none are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<TempoStackTemplateGatewayIngressType>,
 }
@@ -675,7 +814,8 @@ pub struct TempoStackTemplateGatewayIngress {
 /// Route defines the options for the OpenShift route.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateGatewayIngressRoute {
-    /// Termination defines the termination type. The default is "edge".
+    /// Termination defines the termination type.
+    /// The default is "edge".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub termination: Option<TempoStackTemplateGatewayIngressRouteTermination>,
 }
@@ -722,15 +862,25 @@ pub struct TempoStackTemplateIngester {
 /// Resources defines resources for this component, this will override the calculated resources derived from total
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateIngesterResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateIngesterResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -738,26 +888,38 @@ pub struct TempoStackTemplateIngesterResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateIngesterResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateIngesterTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -782,15 +944,25 @@ pub struct TempoStackTemplateQuerier {
 /// Resources defines resources for this component, this will override the calculated resources derived from total
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQuerierResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateQuerierResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -798,26 +970,38 @@ pub struct TempoStackTemplateQuerierResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQuerierResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQuerierTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -825,8 +1009,11 @@ pub struct TempoStackTemplateQuerierTolerations {
 /// TempoQueryFrontendSpec defines the query frontend spec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontend {
-    /// TempoComponentSpec is embedded to extend this definition with further options. 
-    ///  Currently there is no way to inline this field. See: https://github.com/golang/go/issues/6213
+    /// TempoComponentSpec is embedded to extend this definition with further options.
+    /// 
+    /// 
+    /// Currently there is no way to inline this field.
+    /// See: https://github.com/golang/go/issues/6213
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub component: Option<TempoStackTemplateQueryFrontendComponent>,
     /// JaegerQuery defines options specific to the Jaeger Query component.
@@ -834,8 +1021,11 @@ pub struct TempoStackTemplateQueryFrontend {
     pub jaeger_query: Option<TempoStackTemplateQueryFrontendJaegerQuery>,
 }
 
-/// TempoComponentSpec is embedded to extend this definition with further options. 
-///  Currently there is no way to inline this field. See: https://github.com/golang/go/issues/6213
+/// TempoComponentSpec is embedded to extend this definition with further options.
+/// 
+/// 
+/// Currently there is no way to inline this field.
+/// See: https://github.com/golang/go/issues/6213
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendComponent {
     /// NodeSelector defines the simple form of the node-selection constraint.
@@ -855,15 +1045,25 @@ pub struct TempoStackTemplateQueryFrontendComponent {
 /// Resources defines resources for this component, this will override the calculated resources derived from total
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendComponentResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateQueryFrontendComponentResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -871,26 +1071,38 @@ pub struct TempoStackTemplateQueryFrontendComponentResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendComponentResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendComponentTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -924,26 +1136,39 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryAuthentication {
     /// Defines if the authentication will be enabled for jaeger UI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Resources defines the compute resource requirements of the OAuth Proxy container. The OAuth Proxy performs authentication and authorization of incoming requests to Jaeger UI when multi-tenancy is disabled.
+    /// Resources defines the compute resource requirements of the OAuth Proxy container.
+    /// The OAuth Proxy performs authentication and authorization of incoming requests to Jaeger UI when multi-tenancy is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TempoStackTemplateQueryFrontendJaegerQueryAuthenticationResources>,
-    /// SAR defines the SAR to be used in the oauth-proxy default is "{"namespace": "<tempo_stack_namespace>", "resource": "pods", "verb": "get"}
+    /// SAR defines the SAR to be used in the oauth-proxy
+    /// default is "{"namespace": "<tempo_stack_namespace>", "resource": "pods", "verb": "get"}
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sar: Option<String>,
 }
 
-/// Resources defines the compute resource requirements of the OAuth Proxy container. The OAuth Proxy performs authentication and authorization of incoming requests to Jaeger UI when multi-tenancy is disabled.
+/// Resources defines the compute resource requirements of the OAuth Proxy container.
+/// The OAuth Proxy performs authentication and authorization of incoming requests to Jaeger UI when multi-tenancy is disabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendJaegerQueryAuthenticationResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateQueryFrontendJaegerQueryAuthenticationResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -951,7 +1176,9 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryAuthenticationResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendJaegerQueryAuthenticationResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -964,13 +1191,15 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryIngress {
     /// Host defines the hostname of the Ingress object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// IngressClassName defines the name of an IngressClass cluster resource. Defines which ingress controller serves this ingress resource.
+    /// IngressClassName defines the name of an IngressClass cluster resource.
+    /// Defines which ingress controller serves this ingress resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// Route defines the options for the OpenShift route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<TempoStackTemplateQueryFrontendJaegerQueryIngressRoute>,
-    /// Type defines the type of Ingress for the Jaeger Query UI. Currently ingress, route and none are supported.
+    /// Type defines the type of Ingress for the Jaeger Query UI.
+    /// Currently ingress, route and none are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<TempoStackTemplateQueryFrontendJaegerQueryIngressType>,
 }
@@ -978,7 +1207,8 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryIngress {
 /// Route defines the options for the OpenShift route.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendJaegerQueryIngressRoute {
-    /// Termination defines the termination type. The default is "edge".
+    /// Termination defines the termination type.
+    /// The default is "edge".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub termination: Option<TempoStackTemplateQueryFrontendJaegerQueryIngressRouteTermination>,
 }
@@ -1008,10 +1238,12 @@ pub enum TempoStackTemplateQueryFrontendJaegerQueryIngressType {
 /// MonitorTab defines the monitor tab configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendJaegerQueryMonitorTab {
-    /// Enabled enables the monitor tab in the Jaeger console. The PrometheusEndpoint must be configured to enable this feature.
+    /// Enabled enables the monitor tab in the Jaeger console.
+    /// The PrometheusEndpoint must be configured to enable this feature.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// PrometheusEndpoint defines the endpoint to the Prometheus instance that contains the span rate, error, and duration (RED) metrics. For instance on OpenShift this is set to https://thanos-querier.openshift-monitoring.svc.cluster.local:9091
+    /// PrometheusEndpoint defines the endpoint to the Prometheus instance that contains the span rate, error, and duration (RED) metrics.
+    /// For instance on OpenShift this is set to https://thanos-querier.openshift-monitoring.svc.cluster.local:9091
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusEndpoint")]
     pub prometheus_endpoint: Option<String>,
 }
@@ -1019,15 +1251,25 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryMonitorTab {
 /// Resources defines resources for this component, this will override the calculated resources derived from total
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendJaegerQueryResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateQueryFrontendJaegerQueryResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -1035,7 +1277,9 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendJaegerQueryResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -1058,10 +1302,13 @@ pub struct TempoStackTenantsAuthentication {
     /// OIDC defines the spec for the OIDC tenant's authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oidc: Option<TempoStackTenantsAuthenticationOidc>,
-    /// TenantID defines a universally unique identifier of the tenant. Unlike the tenantName, which must be unique at a given time, the tenantId must be unique over the entire lifetime of the Tempo deployment. Tempo uses this ID to prefix objects in the object storage.
+    /// TenantID defines a universally unique identifier of the tenant.
+    /// Unlike the tenantName, which must be unique at a given time, the tenantId must be unique over the entire lifetime of the Tempo deployment.
+    /// Tempo uses this ID to prefix objects in the object storage.
     #[serde(rename = "tenantId")]
     pub tenant_id: String,
-    /// TenantName defines a human readable, unique name of the tenant. The value of this field must be specified in the X-Scope-OrgID header and in the resources field of a ClusterRole to identify the tenant.
+    /// TenantName defines a human readable, unique name of the tenant.
+    /// The value of this field must be specified in the X-Scope-OrgID header and in the resources field of a ClusterRole to identify the tenant.
     #[serde(rename = "tenantName")]
     pub tenant_name: String,
 }
@@ -1151,7 +1398,8 @@ pub enum TempoStackTenantsMode {
 /// TempoStackStatus defines the observed state of TempoStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackStatus {
-    /// Components provides summary of all Tempo pod status grouped per component.
+    /// Components provides summary of all Tempo pod status grouped
+    /// per component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<TempoStackStatusComponents>,
     /// Conditions of the Tempo deployment health.
@@ -1168,7 +1416,8 @@ pub struct TempoStackStatus {
     pub tempo_version: Option<String>,
 }
 
-/// Components provides summary of all Tempo pod status grouped per component.
+/// Components provides summary of all Tempo pod status grouped
+/// per component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackStatusComponents {
     /// Compactor is a map to the pod status of the compactor pod.

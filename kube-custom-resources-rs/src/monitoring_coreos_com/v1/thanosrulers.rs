@@ -2314,6 +2314,18 @@ pub struct ThanosRulerGrpcServerTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ThanosRulerGrpcServerTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ThanosRulerGrpcServerTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ThanosRulerGrpcServerTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -2434,6 +2446,38 @@ pub struct ThanosRulerGrpcServerTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// GRPCServerTLSConfig configures the gRPC server from which Thanos Querier reads
+/// recorded rule data.
+/// Note: Currently only the CAFile, CertFile, and KeyFile fields are supported.
+/// Maps to the '--grpc-server-tls-*' CLI args.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerGrpcServerTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// GRPCServerTLSConfig configures the gRPC server from which Thanos Querier reads
+/// recorded rule data.
+/// Note: Currently only the CAFile, CertFile, and KeyFile fields are supported.
+/// Maps to the '--grpc-server-tls-*' CLI args.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerGrpcServerTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the

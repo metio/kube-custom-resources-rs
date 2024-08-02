@@ -7,6 +7,8 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -14,6 +16,7 @@ use self::prelude::*;
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "security.istio.io", version = "v1beta1", kind = "RequestAuthentication", plural = "requestauthentications")]
 #[kube(namespaced)]
+#[kube(status = "RequestAuthenticationStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -121,5 +124,54 @@ pub struct RequestAuthenticationTargetRefs {
     /// namespace is the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RequestAuthenticationStatus {
+    /// Current service state of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// Resource Generation to which the Reconciled Condition refers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<IntOrString>,
+    /// Includes any errors or warnings detected by Istio's analyzers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationMessages")]
+    pub validation_messages: Option<Vec<RequestAuthenticationStatusValidationMessages>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RequestAuthenticationStatusValidationMessages {
+    /// A url pointing to the Istio documentation for this specific error type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "documentationUrl")]
+    pub documentation_url: Option<String>,
+    /// Represents how severe a message is.
+    /// 
+    /// Valid Options: UNKNOWN, ERROR, WARNING, INFO
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<RequestAuthenticationStatusValidationMessagesLevel>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<RequestAuthenticationStatusValidationMessagesType>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RequestAuthenticationStatusValidationMessagesLevel {
+    #[serde(rename = "UNKNOWN")]
+    Unknown,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "WARNING")]
+    Warning,
+    #[serde(rename = "INFO")]
+    Info,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RequestAuthenticationStatusValidationMessagesType {
+    /// A 7 character code matching `^IST[0-9]{4}$` intended to uniquely identify the message type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+    /// A human-readable name for the message type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 

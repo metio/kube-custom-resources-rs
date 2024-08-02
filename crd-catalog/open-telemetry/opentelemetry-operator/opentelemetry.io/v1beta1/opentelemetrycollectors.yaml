@@ -1348,7 +1348,6 @@ spec:
                                 type: "array"
                             required:
                               - "exporters"
-                              - "processors"
                               - "receivers"
                             type: "object"
                           type: "object"
@@ -2232,6 +2231,13 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                ipFamilies:
+                  items:
+                    type: "string"
+                  type: "array"
+                ipFamilyPolicy:
+                  default: "SingleStack"
+                  type: "string"
                 lifecycle:
                   properties:
                     postStart:

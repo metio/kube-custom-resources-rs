@@ -37,6 +37,7 @@ pub struct DNSRecordSpec {
     pub owner_id: Option<String>,
     /// rootHost is the single root for all endpoints in a DNSRecord.
     /// it is expected all defined endpoints are children of or equal to this rootHost
+    /// Must contain at least two groups of valid URL characters separated by a "."
     #[serde(rename = "rootHost")]
     pub root_host: String,
 }
@@ -81,12 +82,17 @@ pub struct DNSRecordEndpointsProviderSpecific {
 /// the listeners assigned to the target gateway
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSRecordHealthCheck {
+    /// Endpoint is the path to append to the host to reach the expected health check.
+    /// Must start with "?" or "/", contain only valid URL characters and end with alphanumeric char or "/". For example "/" or "/healthz" are common
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
+    /// FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
+    /// Port to connect to the host on. Must be either 80, 443 or 1024-49151
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
+    /// Protocol to use when connecting to the host, valid values are "HTTP" or "HTTPS"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }

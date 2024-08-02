@@ -38,7 +38,9 @@ pub struct CephObjectStoreSpec {
     /// The RGW health probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<CephObjectStoreHealthCheck>,
-    /// Hosting settings for the object store
+    /// Hosting settings for the object store.
+    /// A common use case for hosting configuration is to inform Rook of endpoints that support DNS
+    /// wildcards, which in turn allows virtual host-style bucket addressing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosting: Option<CephObjectStoreHosting>,
     /// The metadata pool settings
@@ -968,17 +970,50 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// Hosting settings for the object store
+/// Hosting settings for the object store.
+/// A common use case for hosting configuration is to inform Rook of endpoints that support DNS
+/// wildcards, which in turn allows virtual host-style bucket addressing.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHosting {
-    /// A list of DNS names in which bucket can be accessed via virtual host path. These names need to valid according RFC-1123.
-    /// Each domain requires wildcard support like ingress loadbalancer.
-    /// Do not include the wildcard itself in the list of hostnames (e.g. use "mystore.example.com" instead of "*.mystore.example.com").
-    /// Add all hostnames including user-created Kubernetes Service endpoints to the list.
-    /// CephObjectStore Service Endpoints and CephObjectZone customEndpoints are automatically added to the list.
+    /// AdvertiseEndpoint is the default endpoint Rook will return for resources dependent on this
+    /// object store. This endpoint will be returned to CephObjectStoreUsers, Object Bucket Claims,
+    /// and COSI Buckets/Accesses.
+    /// By default, Rook returns the endpoint for the object store's Kubernetes service using HTTPS
+    /// with `gateway.securePort` if it is defined (otherwise, HTTP with `gateway.port`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "advertiseEndpoint")]
+    pub advertise_endpoint: Option<CephObjectStoreHostingAdvertiseEndpoint>,
+    /// A list of DNS host names on which object store gateways will accept client S3 connections.
+    /// When specified, object store gateways will reject client S3 connections to hostnames that are
+    /// not present in this list, so include all endpoints.
+    /// The object store's advertiseEndpoint and Kubernetes service endpoint, plus CephObjectZone
+    /// `customEndpoints` are automatically added to the list but may be set here again if desired.
+    /// Each DNS name must be valid according RFC-1123.
+    /// If the DNS name corresponds to an endpoint with DNS wildcard support, do not include the
+    /// wildcard itself in the list of hostnames.
+    /// E.g., use "mystore.example.com" instead of "*.mystore.example.com".
     /// The feature is supported only for Ceph v18 and later versions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsNames")]
     pub dns_names: Option<Vec<String>>,
+}
+
+/// AdvertiseEndpoint is the default endpoint Rook will return for resources dependent on this
+/// object store. This endpoint will be returned to CephObjectStoreUsers, Object Bucket Claims,
+/// and COSI Buckets/Accesses.
+/// By default, Rook returns the endpoint for the object store's Kubernetes service using HTTPS
+/// with `gateway.securePort` if it is defined (otherwise, HTTP with `gateway.port`).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreHostingAdvertiseEndpoint {
+    /// DnsName is the DNS name (in RFC-1123 format) of the endpoint.
+    /// If the DNS name corresponds to an endpoint with DNS wildcard support, do not include the
+    /// wildcard itself in the list of hostnames.
+    /// E.g., use "mystore.example.com" instead of "*.mystore.example.com".
+    #[serde(rename = "dnsName")]
+    pub dns_name: String,
+    /// Port is the port on which S3 connections can be made for this endpoint.
+    pub port: i32,
+    /// UseTls defines whether the endpoint uses TLS (HTTPS) or not (HTTP).
+    #[serde(rename = "useTls")]
+    pub use_tls: bool,
 }
 
 /// The metadata pool settings

@@ -3435,6 +3435,8 @@ pub struct OutputKafka {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub use_default_for_unknown_topic: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub use_rdkafka: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<OutputKafkaUsername>,
 }
 

@@ -135,6 +135,9 @@ pub struct MigrationStatusVms {
     ///   The managed object ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+    /// Selected InstanceType that will override the VM properties.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
+    pub instance_type: Option<String>,
     /// Disk decryption LUKS keys
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub luks: Option<MigrationStatusVmsLuks>,

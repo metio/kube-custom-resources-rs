@@ -43,6 +43,9 @@ pub struct AerospikeClusterSpec {
     /// MaxUnavailable is the percentage/number of pods that can be allowed to go down or unavailable before application disruption. This value is used to create PodDisruptionBudget. Defaults to 1. Refer Aerospike documentation for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
+    /// Operations is a list of on-demand operations to be performed on the Aerospike cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operations: Option<Vec<AerospikeClusterOperations>>,
     /// Certificates to connect to Aerospike.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorClientCert")]
     pub operator_client_cert: Option<AerospikeClusterOperatorClientCert>,
@@ -231,6 +234,21 @@ pub enum AerospikeClusterAerospikeNetworkPolicyTlsAlternateAccess {
 pub enum AerospikeClusterAerospikeNetworkPolicyTlsFabric {
     #[serde(rename = "customInterface")]
     CustomInterface,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AerospikeClusterOperations {
+    pub id: String,
+    /// Kind is the type of operation to be performed on the Aerospike cluster.
+    pub kind: AerospikeClusterOperationsKind,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podList")]
+    pub pod_list: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AerospikeClusterOperationsKind {
+    WarmRestart,
+    PodRestart,
 }
 
 /// Certificates to connect to Aerospike.
@@ -5275,6 +5293,9 @@ pub struct AerospikeClusterStatus {
     ///  If set false then only single pod can be created per Kubernetes Node. This will create Pods using hostPort setting. The container port will be exposed to the external network at <hostIP>:<hostPort>, where the hostIP is the IP address of the Kubernetes Node where the container is running and the hostPort is the port requested by the user. Deprecated: MultiPodPerHost is now part of podSpec
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiPodPerHost")]
     pub multi_pod_per_host: Option<bool>,
+    /// Operations is a list of on-demand operation to be performed on the Aerospike cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operations: Option<Vec<AerospikeClusterStatusOperations>>,
     /// Certificates to connect to Aerospike. If omitted then certs are taken from the secret 'aerospike-secret'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorClientCertSpec")]
     pub operator_client_cert_spec: Option<AerospikeClusterStatusOperatorClientCertSpec>,
@@ -5473,6 +5494,21 @@ pub enum AerospikeClusterStatusAerospikeNetworkPolicyTlsAlternateAccess {
 pub enum AerospikeClusterStatusAerospikeNetworkPolicyTlsFabric {
     #[serde(rename = "customInterface")]
     CustomInterface,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AerospikeClusterStatusOperations {
+    pub id: String,
+    /// Kind is the type of operation to be performed on the Aerospike cluster.
+    pub kind: AerospikeClusterStatusOperationsKind,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podList")]
+    pub pod_list: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AerospikeClusterStatusOperationsKind {
+    WarmRestart,
+    PodRestart,
 }
 
 /// Certificates to connect to Aerospike. If omitted then certs are taken from the secret 'aerospike-secret'.

@@ -21,6 +21,13 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct JobSetSpec {
+    /// Coordinator can be used to assign a specific pod as the coordinator for
+    /// the JobSet. If defined, an annotation will be added to all Jobs and pods with
+    /// coordinator pod, which contains the stable network endpoint where the
+    /// coordinator pod can be reached.
+    /// jobset.sigs.k8s.io/coordinator=<pod hostname>.<headless service>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub coordinator: Option<JobSetCoordinator>,
     /// FailurePolicy, if set, configures when to declare the JobSet as
     /// failed.
     /// The JobSet is always declared failed if any job in the set
@@ -68,6 +75,26 @@ pub struct JobSetSpec {
     /// the JobSet becomes eligible to be deleted immediately after it finishes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
     pub ttl_seconds_after_finished: Option<i32>,
+}
+
+/// Coordinator can be used to assign a specific pod as the coordinator for
+/// the JobSet. If defined, an annotation will be added to all Jobs and pods with
+/// coordinator pod, which contains the stable network endpoint where the
+/// coordinator pod can be reached.
+/// jobset.sigs.k8s.io/coordinator=<pod hostname>.<headless service>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobSetCoordinator {
+    /// JobIndex is the index of Job which contains the coordinator pod
+    /// (i.e., for a ReplicatedJob with N replicas, there are Job indexes 0 to N-1).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobIndex")]
+    pub job_index: Option<i64>,
+    /// PodIndex is the Job completion index of the coordinator pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndex")]
+    pub pod_index: Option<i64>,
+    /// ReplicatedJob is the name of the ReplicatedJob which contains
+    /// the coordinator pod.
+    #[serde(rename = "replicatedJob")]
+    pub replicated_job: String,
 }
 
 /// FailurePolicy, if set, configures when to declare the JobSet as
@@ -7068,6 +7095,10 @@ pub struct JobSetStatus {
     /// RestartsCountTowardsMax tracks the number of times the JobSet has restarted that counts towards the maximum allowed number of restarts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartsCountTowardsMax")]
     pub restarts_count_towards_max: Option<i32>,
+    /// TerminalState the state of the JobSet when it finishes execution.
+    /// It can be either Complete or Failed. Otherwise, it is empty by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminalState")]
+    pub terminal_state: Option<String>,
 }
 
 /// ReplicatedJobStatus defines the observed ReplicatedJobs Readiness.

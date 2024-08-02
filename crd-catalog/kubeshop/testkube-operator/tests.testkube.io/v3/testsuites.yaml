@@ -86,7 +86,7 @@ spec:
                                   description: "cron job template extensions reference"
                                   type: "string"
                                 disableWebhooks:
-                                  description: "whether webhooks should be called on execution"
+                                  description: "whether webhooks should be called on execution\nDeprecated: field is not used"
                                   type: "boolean"
                                 executionLabels:
                                   additionalProperties:
@@ -287,7 +287,7 @@ spec:
                                   description: "cron job template extensions reference"
                                   type: "string"
                                 disableWebhooks:
-                                  description: "whether webhooks should be called on execution"
+                                  description: "whether webhooks should be called on execution\nDeprecated: field is not used"
                                   type: "boolean"
                                 executionLabels:
                                   additionalProperties:
@@ -443,7 +443,7 @@ spec:
                       description: "name of the template resource"
                       type: "string"
                     disableWebhooks:
-                      description: "whether webhooks should be called on execution"
+                      description: "whether webhooks should be called on execution\nDeprecated: field is not used"
                       type: "boolean"
                     executionLabels:
                       additionalProperties:
@@ -641,7 +641,7 @@ spec:
                                   description: "cron job template extensions reference"
                                   type: "string"
                                 disableWebhooks:
-                                  description: "whether webhooks should be called on execution"
+                                  description: "whether webhooks should be called on execution\nDeprecated: field is not used"
                                   type: "boolean"
                                 executionLabels:
                                   additionalProperties:

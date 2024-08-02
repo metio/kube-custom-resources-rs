@@ -260,7 +260,7 @@ spec:
                                 description: "ClusterVariable can be used to customize the Cluster through patches. Each ClusterVariable is associated with a\nVariable definition in the ClusterClass `status` variables."
                                 properties:
                                   definitionFrom:
-                                    description: "DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the\ndefinition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass\n`.spec.patches` where the patch is external and provides external variables.\nThis field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`"
+                                    description: "DefinitionFrom specifies where the definition of this Variable is from.\n\n\nDeprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion."
                                     type: "string"
                                   name:
                                     description: "Name of the variable."
@@ -273,6 +273,9 @@ spec:
                                   - "value"
                                 type: "object"
                               type: "array"
+                              x-kubernetes-list-map-keys:
+                                - "name"
+                              x-kubernetes-list-type: "map"
                           type: "object"
                       type: "object"
                     rolloutAfter:
@@ -285,7 +288,7 @@ spec:
                         description: "ClusterVariable can be used to customize the Cluster through patches. Each ClusterVariable is associated with a\nVariable definition in the ClusterClass `status` variables."
                         properties:
                           definitionFrom:
-                            description: "DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the\ndefinition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass\n`.spec.patches` where the patch is external and provides external variables.\nThis field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`"
+                            description: "DefinitionFrom specifies where the definition of this Variable is from.\n\n\nDeprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion."
                             type: "string"
                           name:
                             description: "Name of the variable."
@@ -298,6 +301,9 @@ spec:
                           - "value"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "name"
+                      x-kubernetes-list-type: "map"
                     version:
                       description: "The Kubernetes version of the cluster."
                       type: "string"
@@ -466,7 +472,7 @@ spec:
                                       description: "ClusterVariable can be used to customize the Cluster through patches. Each ClusterVariable is associated with a\nVariable definition in the ClusterClass `status` variables."
                                       properties:
                                         definitionFrom:
-                                          description: "DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the\ndefinition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass\n`.spec.patches` where the patch is external and provides external variables.\nThis field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`"
+                                          description: "DefinitionFrom specifies where the definition of this Variable is from.\n\n\nDeprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion."
                                           type: "string"
                                         name:
                                           description: "Name of the variable."
@@ -479,12 +485,18 @@ spec:
                                         - "value"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-map-keys:
+                                      - "name"
+                                    x-kubernetes-list-type: "map"
                                 type: "object"
                             required:
                               - "class"
                               - "name"
                             type: "object"
                           type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "name"
+                          x-kubernetes-list-type: "map"
                         machinePools:
                           description: "MachinePools is a list of machine pools in the cluster."
                           items:
@@ -541,7 +553,7 @@ spec:
                                       description: "ClusterVariable can be used to customize the Cluster through patches. Each ClusterVariable is associated with a\nVariable definition in the ClusterClass `status` variables."
                                       properties:
                                         definitionFrom:
-                                          description: "DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the\ndefinition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass\n`.spec.patches` where the patch is external and provides external variables.\nThis field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`"
+                                          description: "DefinitionFrom specifies where the definition of this Variable is from.\n\n\nDeprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion."
                                           type: "string"
                                         name:
                                           description: "Name of the variable."
@@ -554,12 +566,18 @@ spec:
                                         - "value"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-map-keys:
+                                      - "name"
+                                    x-kubernetes-list-type: "map"
                                 type: "object"
                             required:
                               - "class"
                               - "name"
                             type: "object"
                           type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "name"
+                          x-kubernetes-list-type: "map"
                       type: "object"
                   required:
                     - "class"

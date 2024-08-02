@@ -209,7 +209,7 @@ spec:
                             podSelector:
                               additionalProperties:
                                 type: "string"
-                              description: "Routes service traffic to pods with matching label keys and values.\nIf specified, the service will only be exposed to pods matching the selector.\n\n\nNote: At least one of 'roleSelector' or 'podSelector' must be specified.\nIf both are specified, a pod must match both conditions to be selected."
+                              description: "Routes service traffic to pods with matching label keys and values.\nIf specified, the service will only be exposed to pods matching the selector.\n\n\nNote: If the component has roles, at least one of 'roleSelector' or 'podSelector' must be specified.\nIf both are specified, a pod must match both conditions to be selected."
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             ports:
@@ -250,7 +250,7 @@ spec:
                                 - "protocol"
                               x-kubernetes-list-type: "map"
                             roleSelector:
-                              description: "Specifies a role to target with the service.\nIf specified, the service will only be exposed to pods with the matching role.\n\n\nNote: At least one of 'roleSelector' or 'podSelector' must be specified.\nIf both are specified, a pod must match both conditions to be selected."
+                              description: "Specifies a role to target with the service.\nIf specified, the service will only be exposed to pods with the matching role.\n\n\nNote: If the component has roles, at least one of 'roleSelector' or 'podSelector' must be specified.\nIf both are specified, a pod must match both conditions to be selected."
                               type: "string"
                             serviceType:
                               description: "Determines how the Service is exposed. Defaults to 'ClusterIP'.\nValid options are `ClusterIP`, `NodePort`, and `LoadBalancer`.\n\n\n- `ClusterIP`: allocates a cluster-internal IP address for load-balancing to endpoints.\n   Endpoints are determined by the selector or if that is not specified,\n   they are determined by manual construction of an Endpoints object or EndpointSlice objects.\n- `NodePort`: builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP.\n- `LoadBalancer`: builds on NodePort and creates an external load-balancer (if supported in the current cloud)\n   which routes to the same endpoints as the clusterIP.\n\n\nNote: although K8s Service type allows the 'ExternalName' type, it is not a valid option for the expose operation.\n\n\nFor more info, see:\nhttps://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
@@ -2181,6 +2181,9 @@ spec:
                       componentName:
                         description: "Specifies the name of the Component."
                         type: "string"
+                      inPlace:
+                        description: "When it is set to true, the instance will be rebuilt in-place.\nBy default, a new pod will be created. Once the new pod is ready to serve,\nthe instance that require rebuilding will be taken offline."
+                        type: "boolean"
                       instances:
                         description: "Specifies the instances (Pods) that need to be rebuilt, typically operating as standbys."
                         items:
@@ -2194,6 +2197,7 @@ spec:
                           required:
                             - "name"
                           type: "object"
+                        minItems: 1
                         type: "array"
                       restoreEnv:
                         description: "Defines container environment variables for the restore process.\nmerged with the ones specified in the Backup and ActionSet resources.\n\n\nMerge priority: Restore env > Backup env > ActionSet env.\n\n\nPurpose: Some databases require different configurations when being restored as a standby\ncompared to being restored as a primary.\nFor example, when restoring MySQL as a replica, you need to set `skip_slave_start=\"ON\"` for 5.7\nor `skip_replica_start=\"ON\"` for 8.0.\nAllowing environment variables to be passed in makes it more convenient to control these behavioral differences\nduring the restore process."
@@ -2648,8 +2652,16 @@ spec:
                   x-kubernetes-validations:
                     - message: "forbidden to update spec.switchover"
                       rule: "self == oldSelf"
+                timeoutSeconds:
+                  description: "Specifies the maximum duration (in seconds) that an opsRequest is allowed to run.\nIf the opsRequest runs longer than this duration, its phase will be marked as Aborted.\nIf this value is not set or set to 0, the timeout will be ignored and the opsRequest will run indefinitely."
+                  format: "int32"
+                  type: "integer"
                 ttlSecondsAfterSucceed:
                   description: "Specifies the duration in seconds that an OpsRequest will remain in the system after successfully completing\n(when `opsRequest.status.phase` is \"Succeed\") before automatic deletion."
+                  format: "int32"
+                  type: "integer"
+                ttlSecondsAfterUnsuccessfulCompletion:
+                  description: "Specifies the duration in seconds that an OpsRequest will remain in the system after completion\nfor any phase other than \"Succeed\" (e.g., \"Failed\", \"Cancelled\", \"Aborted\") before automatic deletion."
                   format: "int32"
                   type: "integer"
                 type:

@@ -3,7 +3,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: "v0.15.0"
-    operator.min.io/version: "v5.0.15"
+    operator.min.io/version: "v6.0.1"
   name: "tenants.minio.min.io"
 spec:
   group: "minio.min.io"
@@ -874,14 +874,10 @@ spec:
                         type: "string"
                       type: "array"
                   type: "object"
+                certExpiryAlertThreshold:
+                  format: "int32"
+                  type: "integer"
                 configuration:
-                  properties:
-                    name:
-                      default: ""
-                      type: "string"
-                  type: "object"
-                  x-kubernetes-map-type: "atomic"
-                credsSecret:
                   properties:
                     name:
                       default: ""
@@ -3260,8 +3256,6 @@ spec:
                         additionalProperties:
                           type: "string"
                         type: "object"
-                      reclaimStorage:
-                        type: "boolean"
                       resources:
                         properties:
                           claims:

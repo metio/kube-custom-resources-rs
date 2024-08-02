@@ -6404,6 +6404,8 @@ pub struct RayClusterWorkerGroupSpecsTemplateSpecVolumesVsphereVolume {
 pub struct RayClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableWorkerReplicas")]
     pub available_worker_replicas: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredCPU")]
     pub desired_cpu: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredGPU")]
@@ -6440,6 +6442,8 @@ pub struct RayClusterStatus {
 pub struct RayClusterStatusHead {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIP")]
     pub pod_ip: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podName")]
+    pub pod_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceIP")]
     pub service_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]

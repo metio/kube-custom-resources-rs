@@ -25,7 +25,8 @@ pub struct BackupBackingImageSpec {
     /// The time to request run sync the remote backing image backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncRequestedAt")]
     pub sync_requested_at: Option<String>,
-    /// Is this CR created by user through API or UI. Required
+    /// Is this CR created by user through API or UI.
+    /// Required
     #[serde(rename = "userCreated")]
     pub user_created: bool,
 }
@@ -69,7 +70,8 @@ pub struct BackupBackingImageStatus {
     /// The backing image size.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
-    /// The backing image backup creation state. Can be "", "InProgress", "Completed", "Error", "Unknown".
+    /// The backing image backup creation state.
+    /// Can be "", "InProgress", "Completed", "Error", "Unknown".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
     /// The backing image backup URL.

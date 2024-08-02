@@ -227,12 +227,27 @@ pub struct VaultAuthStorageEncryption {
 /// VaultAuthGlobalRef.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VaultAuthVaultAuthGlobalRef {
+    /// AllowDefault when set to true will use the default VaultAuthGlobal resource
+    /// as the default if Name is not set. The 'allow-default-globals' option must be
+    /// set on the operator's '-global-vault-auth-options' flag
+    /// 
+    /// 
+    /// The default VaultAuthGlobal search is conditional.
+    /// When a ref Namespace is set, the search for the default
+    /// VaultAuthGlobal resource is constrained to that namespace.
+    /// Otherwise, the search order is:
+    /// 1. The default VaultAuthGlobal resource in the referring VaultAuth resource's
+    /// namespace.
+    /// 2. The default VaultAuthGlobal resource in the Operator's namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowDefault")]
+    pub allow_default: Option<bool>,
     /// MergeStrategy configures the merge strategy for HTTP headers and parameters
     /// that are included in all Vault authentication requests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergeStrategy")]
     pub merge_strategy: Option<VaultAuthVaultAuthGlobalRefMergeStrategy>,
     /// Name of the VaultAuthGlobal resource.
-    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Namespace of the VaultAuthGlobal resource. If not provided, the namespace of
     /// the referring VaultAuth resource is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]

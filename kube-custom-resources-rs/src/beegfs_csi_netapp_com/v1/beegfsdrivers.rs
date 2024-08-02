@@ -70,6 +70,9 @@ pub struct BeegfsDriverContainerImageOverrides {
     /// Defaults to registry.k8s.io/sig-storage/csi-provisioner:<the most current version at operator release>.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiProvisioner")]
     pub csi_provisioner: Option<BeegfsDriverContainerImageOverridesCsiProvisioner>,
+    /// Defaults to registry.k8s.io/sig-storage/csi-resizer:<the most current version at operator release>.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiResizer")]
+    pub csi_resizer: Option<BeegfsDriverContainerImageOverridesCsiResizer>,
     /// Defaults to registry.k8s.io/sig-storage/livenessprobe:<the most current version at operator release>.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<BeegfsDriverContainerImageOverridesLivenessProbe>,
@@ -100,6 +103,17 @@ pub struct BeegfsDriverContainerImageOverridesCsiNodeDriverRegistrar {
 /// Defaults to registry.k8s.io/sig-storage/csi-provisioner:<the most current version at operator release>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BeegfsDriverContainerImageOverridesCsiProvisioner {
+    /// A combination of registry and image (e.g. registry.k8s.io/csi-provisioner or ghcr.io/thinkparq/beegfs-csi-driver).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// A tag (e.g. v2.2.2 or latest).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+}
+
+/// Defaults to registry.k8s.io/sig-storage/csi-resizer:<the most current version at operator release>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BeegfsDriverContainerImageOverridesCsiResizer {
     /// A combination of registry and image (e.g. registry.k8s.io/csi-provisioner or ghcr.io/thinkparq/beegfs-csi-driver).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,

@@ -534,6 +534,9 @@ spec:
                           description: "uri of test content"
                           type: "string"
                       type: "object"
+                    disableWebhooks:
+                      description: "whether webhooks should be called on execution"
+                      type: "boolean"
                     duration:
                       description: "test duration"
                       type: "string"

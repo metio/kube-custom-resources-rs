@@ -25,6 +25,9 @@ spec:
                 caBundle:
                   description: "Location of CA bundle in istio-proxy. Default is `/etc/ssl/certs/ca-certificates.crt` which is suitable for Istio. OpenShift Service Mesh requires `/etc/ssl/certs/ca-bundle.crt`."
                   type: "string"
+                enableClientInterception:
+                  description: "If true (default), then certificates are installed in pods for outbound TLS interception."
+                  type: "boolean"
                 enableStreaming:
                   description: "If `true` (default), then L4 streams are also scanned by LeakSignal Proxy."
                   type: "boolean"

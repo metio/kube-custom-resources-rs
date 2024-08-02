@@ -28,8 +28,8 @@ pub struct AlertmanagerSpec {
     /// If specified, the pod's scheduling constraints.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<AlertmanagerAffinity>,
-    /// The AlertmanagerConfigMatcherStrategy defines how AlertmanagerConfig objects match the alerts.
-    /// In the future more options may be added.
+    /// AlertmanagerConfigMatcherStrategy defines how AlertmanagerConfig objects
+    /// process incoming alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertmanagerConfigMatcherStrategy")]
     pub alertmanager_config_matcher_strategy: Option<AlertmanagerAlertmanagerConfigMatcherStrategy>,
     /// Namespaces to be selected for AlertmanagerConfig discovery. If nil, only
@@ -969,19 +969,22 @@ pub struct AlertmanagerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDur
     pub values: Option<Vec<String>>,
 }
 
-/// The AlertmanagerConfigMatcherStrategy defines how AlertmanagerConfig objects match the alerts.
-/// In the future more options may be added.
+/// AlertmanagerConfigMatcherStrategy defines how AlertmanagerConfig objects
+/// process incoming alerts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigMatcherStrategy {
-    /// If set to `OnNamespace`, the operator injects a label matcher matching the namespace of the AlertmanagerConfig object for all its routes and inhibition rules.
-    /// `None` will not add any additional matchers other than the ones specified in the AlertmanagerConfig.
-    /// Default is `OnNamespace`.
+    /// AlertmanagerConfigMatcherStrategyType defines the strategy used by
+    /// AlertmanagerConfig objects to match alerts in the routes and inhibition
+    /// rules.
+    /// 
+    /// 
+    /// The default value is `OnNamespace`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<AlertmanagerAlertmanagerConfigMatcherStrategyType>,
 }
 
-/// The AlertmanagerConfigMatcherStrategy defines how AlertmanagerConfig objects match the alerts.
-/// In the future more options may be added.
+/// AlertmanagerConfigMatcherStrategy defines how AlertmanagerConfig objects
+/// process incoming alerts.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum AlertmanagerAlertmanagerConfigMatcherStrategyType {
     OnNamespace,
@@ -1352,6 +1355,18 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -1472,6 +1487,32 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigKeySecr
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// The default OpsGenie API Key.

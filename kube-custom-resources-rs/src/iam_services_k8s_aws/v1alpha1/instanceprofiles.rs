@@ -107,6 +107,8 @@ pub struct InstanceProfileRoleRef {
 pub struct InstanceProfileRoleRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// A structure that represents user-provided metadata that can be associated

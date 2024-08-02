@@ -91,6 +91,9 @@ pub struct TeleportOIDCConnectorClientRedirectSettings {
     /// a list of hostnames allowed for https client redirect URLs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed_https_hostnames: Option<Vec<String>>,
+    /// a list of CIDRs allowed for HTTP or HTTPS client redirect URLs
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure_allowed_cidr_ranges: Option<Vec<String>>,
 }
 
 /// Status defines the observed state of the Teleport resource

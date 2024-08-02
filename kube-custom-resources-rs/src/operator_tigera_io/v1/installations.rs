@@ -870,7 +870,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainers {
     /// Name is an enum which identifies the calico-kube-controllers Deployment container by name.
-    /// Supported values are: calico-kube-controllers
+    /// Supported values are: calico-kube-controllers, es-calico-kube-controllers
     pub name: InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named calico-kube-controllers Deployment container's resources.
@@ -885,6 +885,8 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainers
 pub enum InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainersName {
     #[serde(rename = "calico-kube-controllers")]
     CalicoKubeControllers,
+    #[serde(rename = "es-calico-kube-controllers")]
+    EsCalicoKubeControllers,
 }
 
 /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
@@ -1095,6 +1097,7 @@ pub enum InstallationCalicoNetworkLinuxDataplane {
     Bpf,
     #[serde(rename = "VPP")]
     Vpp,
+    Nftables,
 }
 
 /// CalicoNetwork specifies networking configuration options for Calico.
@@ -6971,7 +6974,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecContainers {
     /// Name is an enum which identifies the calico-kube-controllers Deployment container by name.
-    /// Supported values are: calico-kube-controllers
+    /// Supported values are: calico-kube-controllers, es-calico-kube-controllers
     pub name: InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named calico-kube-controllers Deployment container's resources.
@@ -6986,6 +6989,8 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 pub enum InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecContainersName {
     #[serde(rename = "calico-kube-controllers")]
     CalicoKubeControllers,
+    #[serde(rename = "es-calico-kube-controllers")]
+    EsCalicoKubeControllers,
 }
 
 /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
@@ -7196,6 +7201,7 @@ pub enum InstallationStatusComputedCalicoNetworkLinuxDataplane {
     Bpf,
     #[serde(rename = "VPP")]
     Vpp,
+    Nftables,
 }
 
 /// CalicoNetwork specifies networking configuration options for Calico.

@@ -10,9 +10,12 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// AlertmanagerConfigSpec is a specification of the desired behavior of the Alertmanager configuration.
-/// By definition, the Alertmanager configuration only applies to alerts for which
-/// the `namespace` label is equal to the namespace of the AlertmanagerConfig resource.
+/// AlertmanagerConfigSpec is a specification of the desired behavior of the
+/// Alertmanager configuration.
+/// By default, the Alertmanager configuration only applies to alerts for which
+/// the `namespace` label is equal to the namespace of the AlertmanagerConfig
+/// resource (see the `.spec.alertmanagerConfigMatcherStrategy` field of the
+/// Alertmanager CRD).
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "monitoring.coreos.com", version = "v1alpha1", kind = "AlertmanagerConfig", plural = "alertmanagerconfigs")]
 #[kube(namespaced)]
@@ -515,6 +518,18 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -637,6 +652,32 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigKeySecret
     pub optional: Option<bool>,
 }
 
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
 /// EmailConfig configures notifications via Email.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerConfigReceiversEmailConfigs {
@@ -756,6 +797,18 @@ pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversEmailConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversEmailConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversEmailConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -876,6 +929,32 @@ pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversEmailConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversEmailConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// MSTeamsConfig configures notifications via Microsoft Teams.
@@ -1155,6 +1234,18 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -1275,6 +1366,32 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigKeySecret
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// MSTeams webhook URL.
@@ -1632,6 +1749,18 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -1752,6 +1881,32 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigKeySecre
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// OpsGenieConfigResponder defines a responder to an incident.
@@ -2094,6 +2249,18 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -2214,6 +2381,32 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigKeySecr
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// PagerDutyImageConfig attaches images to an incident
@@ -2607,6 +2800,18 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -2727,6 +2932,32 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigKeySecre
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// The secret's key that contains the registered application's API token, see https://pushover.net/apps.
@@ -3158,6 +3389,18 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -3278,6 +3521,32 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// SNSConfig configures notifications via AWS SNS.
@@ -3572,6 +3841,18 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -3692,6 +3973,32 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// Configures AWS's Signature Verification 4 signing process to sign requests.
@@ -4075,6 +4382,18 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -4195,6 +4514,32 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigKeySecre
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// TelegramConfig configures notifications via Telegram.
@@ -4527,6 +4872,18 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -4647,6 +5004,32 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigKeySecr
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// WebexConfig configures notification via Cisco Webex
@@ -4925,6 +5308,18 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -5045,6 +5440,32 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// WebhookConfig configures notifications via a generic receiver supporting the webhook payload.
@@ -5325,6 +5746,18 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -5445,6 +5878,32 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigKeySecret
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// The secret's key that contains the webhook URL to send HTTP requests to.
@@ -5779,6 +6238,18 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -5899,6 +6370,32 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigKeySecret 
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// The Alertmanager route definition for alerts matching the resource's

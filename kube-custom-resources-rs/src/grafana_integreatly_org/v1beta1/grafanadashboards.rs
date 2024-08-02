@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -40,6 +41,12 @@ pub struct GrafanaDashboardSpec {
     /// folder assignment for dashboard
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub folder: Option<String>,
+    /// Name of a `GrafanaFolder` resource in the same namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "folderRef")]
+    pub folder_ref: Option<String>,
+    /// UID of the target folder for this dashboard
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "folderUID")]
+    pub folder_uid: Option<String>,
     /// grafana.com/dashboards
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grafanaCom")]
     pub grafana_com: Option<GrafanaDashboardGrafanaCom>,
@@ -265,6 +272,8 @@ pub struct GrafanaDashboardStatus {
     /// The dashboard instanceSelector can't find matching grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "NoMatchingInstances")]
     pub no_matching_instances: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentCache")]
     pub content_cache: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentTimestamp")]

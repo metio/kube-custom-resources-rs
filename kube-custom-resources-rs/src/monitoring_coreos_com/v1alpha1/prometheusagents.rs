@@ -620,6 +620,11 @@ pub struct PrometheusAgentSpec {
     /// Prometheus Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
+    /// Defines the service discovery role used to discover targets from `ServiceMonitor` objects.
+    /// If set, the value should be either "Endpoints" or "EndpointSlice".
+    /// If unset, the operator assumes the "Endpoints" role.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDiscoveryRole")]
+    pub service_discovery_role: Option<PrometheusAgentServiceDiscoveryRole>,
     /// Namespaces to match for ServicedMonitors discovery. An empty label selector
     /// matches all namespaces. A null label selector (default value) matches the current
     /// namespace only.
@@ -1625,6 +1630,18 @@ pub struct PrometheusAgentApiserverConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PrometheusAgentApiserverConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<PrometheusAgentApiserverConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<PrometheusAgentApiserverConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -1745,6 +1762,32 @@ pub struct PrometheusAgentApiserverConfigTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS Config to use for the API server.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentApiserverConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS Config to use for the API server.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentApiserverConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// When true, ServiceMonitor, PodMonitor and Probe object are forbidden to
@@ -5158,6 +5201,18 @@ pub struct PrometheusAgentRemoteWriteTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PrometheusAgentRemoteWriteTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<PrometheusAgentRemoteWriteTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<PrometheusAgentRemoteWriteTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -5278,6 +5333,32 @@ pub struct PrometheusAgentRemoteWriteTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS Config to use for the URL.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentRemoteWriteTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS Config to use for the URL.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentRemoteWriteTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
@@ -5417,6 +5498,11 @@ pub struct PrometheusAgentResourcesClaims {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentScrapeClasses {
+    /// AttachMetadata configures additional metadata to the discovered targets.
+    /// When the scrape object defines its own configuration, it takes
+    /// precedence over the scrape class configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
+    pub attach_metadata: Option<PrometheusAgentScrapeClassesAttachMetadata>,
     /// Default indicates that the scrape applies to all scrape objects that
     /// don't configure an explicit scrape class name.
     /// 
@@ -5457,6 +5543,21 @@ pub struct PrometheusAgentScrapeClasses {
     /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<PrometheusAgentScrapeClassesTlsConfig>,
+}
+
+/// AttachMetadata configures additional metadata to the discovered targets.
+/// When the scrape object defines its own configuration, it takes
+/// precedence over the scrape class configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusAgentScrapeClassesAttachMetadata {
+    /// When set to true, Prometheus attaches node metadata to the discovered
+    /// targets.
+    /// 
+    /// 
+    /// The Prometheus service account must have the `list` and `watch`
+    /// permissions on the `Nodes` objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub node: Option<bool>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
@@ -5688,6 +5789,18 @@ pub struct PrometheusAgentScrapeClassesTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PrometheusAgentScrapeClassesTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<PrometheusAgentScrapeClassesTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<PrometheusAgentScrapeClassesTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -5808,6 +5921,42 @@ pub struct PrometheusAgentScrapeClassesTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLSConfig defines the TLS settings to use for the scrape. When the
+/// scrape objects define their own CA, certificate and/or key, they take
+/// precedence over the corresponding scrape class fields.
+/// 
+/// 
+/// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentScrapeClassesTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLSConfig defines the TLS settings to use for the scrape. When the
+/// scrape objects define their own CA, certificate and/or key, they take
+/// precedence over the corresponding scrape class fields.
+/// 
+/// 
+/// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentScrapeClassesTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// Namespaces to match for ScrapeConfig discovery. An empty label selector
@@ -6075,6 +6224,14 @@ pub struct PrometheusAgentSecurityContextWindowsOptions {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+/// Specification of the desired behavior of the Prometheus agent. More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentServiceDiscoveryRole {
+    Endpoints,
+    EndpointSlice,
 }
 
 /// Namespaces to match for ServicedMonitors discovery. An empty label selector
@@ -7097,6 +7254,18 @@ pub struct PrometheusAgentTracingConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PrometheusAgentTracingConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<PrometheusAgentTracingConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<PrometheusAgentTracingConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -7217,6 +7386,32 @@ pub struct PrometheusAgentTracingConfigTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS Config to use when sending traces.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentTracingConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS Config to use when sending traces.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentTracingConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.

@@ -61,6 +61,9 @@ pub struct MachineDeploymentSpec {
     /// The number of old MachineSets to retain to allow rollback.
     /// This is a pointer to distinguish between explicit zero and not specified.
     /// Defaults to 1.
+    /// 
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10479 for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionHistoryLimit")]
     pub revision_history_limit: Option<i32>,
     /// RolloutAfter is a field to indicate a rollout should be performed

@@ -23,31 +23,46 @@ pub struct NodePtpDeviceSpec {
 /// NodePtpDeviceStatus defines the observed state of NodePtpDevice
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePtpDeviceStatus {
-    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file
+    /// PtpDevice represents a PTP device available in the cluster node.
+    /// This struct contains information about the device, including its name and profile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub devices: Option<Vec<NodePtpDeviceStatusDevices>>,
+    /// HwConfig represents the hardware configuration for a device in the cluster.
+    /// This struct contains information about the device's identification and status,
+    /// as well as its specific configuration settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hwconfig: Option<Vec<NodePtpDeviceStatusHwconfig>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePtpDeviceStatusDevices {
+    /// Name is the name of the PTP device.
+    /// It is a unique identifier for the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Profile is the PTP profile associated with the device.
+    /// This profile defines the PTP configuration settings for the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profile: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePtpDeviceStatusHwconfig {
+    /// Config contains the configuration settings for the hardware device.
+    /// This is a JSON object that holds the device-specific configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<serde_json::Value>,
+    /// DeviceID is the unique identifier for the hardware device.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceID")]
     pub device_id: Option<String>,
+    /// Failed indicates whether the hardware configuration has failed.
+    /// A value of true means the configuration has failed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failed: Option<bool>,
+    /// Status provides a descriptive status of the hardware device's configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
+    /// VendorID is the identifier for the vendor of the hardware device.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vendorID")]
     pub vendor_id: Option<String>,
 }

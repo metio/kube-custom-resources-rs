@@ -27,7 +27,6 @@ pub struct PolicySpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
     pub api_key: Option<PolicyApiKey>,
     /// BasicAuth holds HTTP Basic authentication configuration
-    /// policy status: preview
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PolicyBasicAuth>,
     /// EgressMTLS defines an Egress MTLS policy.
@@ -81,7 +80,6 @@ pub struct PolicyApiKeySuppliedIn {
 }
 
 /// BasicAuth holds HTTP Basic authentication configuration
-/// policy status: preview
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyBasicAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]

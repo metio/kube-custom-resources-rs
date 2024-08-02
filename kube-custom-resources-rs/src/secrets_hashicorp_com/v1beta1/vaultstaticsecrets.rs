@@ -47,6 +47,9 @@ pub struct VaultStaticSecretSpec {
     /// See RolloutRestartTarget for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutRestartTargets")]
     pub rollout_restart_targets: Option<Vec<VaultStaticSecretRolloutRestartTargets>>,
+    /// SyncConfig configures sync behavior from Vault to VSO
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncConfig")]
+    pub sync_config: Option<VaultStaticSecretSyncConfig>,
     /// Type of the Vault static secret
     #[serde(rename = "type")]
     pub r#type: VaultStaticSecretType,
@@ -211,6 +214,15 @@ pub enum VaultStaticSecretRolloutRestartTargetsKind {
     StatefulSet,
     #[serde(rename = "argo.Rollout")]
     ArgoRollout,
+}
+
+/// SyncConfig configures sync behavior from Vault to VSO
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VaultStaticSecretSyncConfig {
+    /// InstantUpdates is a flag to indicate that event-driven updates are
+    /// enabled for this VaultStaticSecret
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instantUpdates")]
+    pub instant_updates: Option<bool>,
 }
 
 /// VaultStaticSecretSpec defines the desired state of VaultStaticSecret

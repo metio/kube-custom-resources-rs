@@ -59,6 +59,9 @@ spec:
                     cronJobTemplate:
                       description: "cron job template extensions"
                       type: "string"
+                    disableWebhooks:
+                      description: "whether webhooks should be disabled for this execution"
+                      type: "boolean"
                     executionLabels:
                       additionalProperties:
                         type: "string"
@@ -226,6 +229,9 @@ spec:
                 latestExecution:
                   description: "INSERT ADDITIONAL STATUS FIELD - define observed state of cluster\nImportant: Run \"make\" to regenerate code after modifying this file"
                   properties:
+                    disableWebhooks:
+                      description: "whether webhooks should be disabled for this execution"
+                      type: "boolean"
                     duration:
                       description: "test duration"
                       type: "string"

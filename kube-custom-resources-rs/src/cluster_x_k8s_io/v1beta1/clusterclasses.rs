@@ -547,6 +547,9 @@ pub struct ClusterClassVariables {
     /// Metadata is the metadata of a variable.
     /// It can be used to add additional data for higher level tools to
     /// a ClusterClassVariable.
+    /// 
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please use XMetadata in JSONSchemaProps instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterClassVariablesMetadata>,
     /// Name of the variable.
@@ -563,6 +566,9 @@ pub struct ClusterClassVariables {
 /// Metadata is the metadata of a variable.
 /// It can be used to add additional data for higher level tools to
 /// a ClusterClassVariable.
+/// 
+/// 
+/// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please use XMetadata in JSONSchemaProps instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassVariablesMetadata {
     /// Annotations is an unstructured key value map that can be used to store and
@@ -699,6 +705,10 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     /// XValidations describes a list of validation rules written in the CEL expression language.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-kubernetes-validations")]
     pub x_kubernetes_validations: Option<Vec<ClusterClassVariablesSchemaOpenApiv3SchemaXKubernetesValidations>>,
+    /// XMetadata is the metadata of a variable or a nested field within a variable.
+    /// It can be used to add additional data for higher level tools.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-metadata")]
+    pub x_metadata: Option<ClusterClassVariablesSchemaOpenApiv3SchemaXMetadata>,
 }
 
 /// ValidationRule describes a validation rule written in the CEL expression language.
@@ -799,6 +809,21 @@ pub enum ClusterClassVariablesSchemaOpenApiv3SchemaXKubernetesValidationsReason 
     FieldValueForbidden,
     FieldValueRequired,
     FieldValueDuplicate,
+}
+
+/// XMetadata is the metadata of a variable or a nested field within a variable.
+/// It can be used to add additional data for higher level tools.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassVariablesSchemaOpenApiv3SchemaXMetadata {
+    /// Annotations is an unstructured key value map that can be used to store and
+    /// retrieve arbitrary metadata.
+    /// They are not queryable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) variables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Workers describes the worker nodes for the cluster.
@@ -1448,6 +1473,9 @@ pub struct ClusterClassStatusVariablesDefinitions {
     /// Metadata is the metadata of a variable.
     /// It can be used to add additional data for higher level tools to
     /// a ClusterClassVariable.
+    /// 
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterClassStatusVariablesDefinitionsMetadata>,
     /// Required specifies if the variable is required.
@@ -1462,6 +1490,9 @@ pub struct ClusterClassStatusVariablesDefinitions {
 /// Metadata is the metadata of a variable.
 /// It can be used to add additional data for higher level tools to
 /// a ClusterClassVariable.
+/// 
+/// 
+/// Deprecated: This field is deprecated and is going to be removed in the next apiVersion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassStatusVariablesDefinitionsMetadata {
     /// Annotations is an unstructured key value map that can be used to store and
@@ -1598,6 +1629,10 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     /// XValidations describes a list of validation rules written in the CEL expression language.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-kubernetes-validations")]
     pub x_kubernetes_validations: Option<Vec<ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3SchemaXKubernetesValidations>>,
+    /// XMetadata is the metadata of a variable or a nested field within a variable.
+    /// It can be used to add additional data for higher level tools.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-metadata")]
+    pub x_metadata: Option<ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3SchemaXMetadata>,
 }
 
 /// ValidationRule describes a validation rule written in the CEL expression language.
@@ -1698,5 +1733,20 @@ pub enum ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3SchemaXKubernetesV
     FieldValueForbidden,
     FieldValueRequired,
     FieldValueDuplicate,
+}
+
+/// XMetadata is the metadata of a variable or a nested field within a variable.
+/// It can be used to add additional data for higher level tools.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3SchemaXMetadata {
+    /// Annotations is an unstructured key value map that can be used to store and
+    /// retrieve arbitrary metadata.
+    /// They are not queryable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) variables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 

@@ -448,11 +448,22 @@ pub struct VSphereVMPciDevices {
     /// DeviceID is the device ID of a virtual machine's PCI, in integer.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
+    /// Mutually exclusive with VGPUProfile as VGPUProfile and DeviceID + VendorID
+    /// are two independent ways to define PCI devices.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceId")]
     pub device_id: Option<i32>,
+    /// VGPUProfile is the profile name of a virtual machine's vGPU, in string.
+    /// Defaults to the eponymous property value in the template from which the
+    /// virtual machine is cloned.
+    /// Mutually exclusive with DeviceID and VendorID as VGPUProfile and DeviceID + VendorID
+    /// are two independent ways to define PCI devices.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vGPUProfile")]
+    pub v_gpu_profile: Option<String>,
     /// VendorId is the vendor ID of a virtual machine's PCI, in integer.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
+    /// Mutually exclusive with VGPUProfile as VGPUProfile and DeviceID + VendorID
+    /// are two independent ways to define PCI devices.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vendorId")]
     pub vendor_id: Option<i32>,
 }

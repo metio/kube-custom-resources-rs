@@ -28,7 +28,8 @@ pub struct VolumeAttachmentSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeAttachmentAttachmentTickets {
-    /// A sequence number representing a specific generation of the desired state. Populated by the system. Read-only.
+    /// A sequence number representing a specific generation of the desired state.
+    /// Populated by the system. Read-only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generation: Option<i64>,
     /// The unique ID of this attachment. Used to differentiate different attachments of the same volume.
@@ -56,7 +57,8 @@ pub struct VolumeAttachmentStatusAttachmentTicketStatuses {
     /// Record any error when trying to fulfill this attachment
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// A sequence number representing a specific generation of the desired state. Populated by the system. Read-only.
+    /// A sequence number representing a specific generation of the desired state.
+    /// Populated by the system. Read-only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generation: Option<i64>,
     /// The unique ID of this attachment. Used to differentiate different attachments of the same volume.

@@ -159,6 +159,10 @@ pub struct ClusterSecretStoreProvider {
     /// Scaleway
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scaleway: Option<ClusterSecretStoreProviderScaleway>,
+    /// SecretServer configures this store to sync secrets using SecretServer provider
+    /// https://docs.delinea.com/online-help/secret-server/start.htm
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secretserver: Option<ClusterSecretStoreProviderSecretserver>,
     /// Senhasegura configures this store to sync secrets using senhasegura provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub senhasegura: Option<ClusterSecretStoreProviderSenhasegura>,
@@ -452,6 +456,9 @@ pub struct ClusterSecretStoreProviderAws {
     /// AWS External ID set on assumed IAM roles
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalID")]
     pub external_id: Option<String>,
+    /// Prefix adds a prefix to all retrieved values.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
     /// AWS Region to be used for the provider
     pub region: String,
     /// Role is a Role ARN which the provider will assume
@@ -1548,7 +1555,11 @@ pub struct ClusterSecretStoreProviderKeepersecurityAuthRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderKubernetes {
     /// Auth configures how secret-manager authenticates with a Kubernetes instance.
-    pub auth: ClusterSecretStoreProviderKubernetesAuth,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth: Option<ClusterSecretStoreProviderKubernetesAuth>,
+    /// A reference to a secret that contains the auth information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authRef")]
+    pub auth_ref: Option<ClusterSecretStoreProviderKubernetesAuthRef>,
     /// Remote namespace to fetch the secrets from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteNamespace")]
     pub remote_namespace: Option<String>,
@@ -1647,6 +1658,22 @@ pub struct ClusterSecretStoreProviderKubernetesAuthToken {
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderKubernetesAuthTokenBearerToken {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// A reference to a secret that contains the auth information.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderKubernetesAuthRef {
     /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
     /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2124,6 +2151,74 @@ pub struct ClusterSecretStoreProviderScalewaySecretKeySecretRef {
     pub namespace: Option<String>,
 }
 
+/// SecretServer configures this store to sync secrets using SecretServer provider
+/// https://docs.delinea.com/online-help/secret-server/start.htm
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderSecretserver {
+    /// Password is the secret server account password.
+    pub password: ClusterSecretStoreProviderSecretserverPassword,
+    /// ServerURL
+    /// URL to your secret server installation
+    #[serde(rename = "serverURL")]
+    pub server_url: String,
+    /// Username is the secret server account username.
+    pub username: ClusterSecretStoreProviderSecretserverUsername,
+}
+
+/// Password is the secret server account password.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderSecretserverPassword {
+    /// SecretRef references a key in a secret that will be used as value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ClusterSecretStoreProviderSecretserverPasswordSecretRef>,
+    /// Value can be specified directly to set a value without using a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// SecretRef references a key in a secret that will be used as value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderSecretserverPasswordSecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Username is the secret server account username.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderSecretserverUsername {
+    /// SecretRef references a key in a secret that will be used as value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ClusterSecretStoreProviderSecretserverUsernameSecretRef>,
+    /// Value can be specified directly to set a value without using a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// SecretRef references a key in a secret that will be used as value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderSecretserverUsernameSecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// Senhasegura configures this store to sync secrets using senhasegura provider
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderSenhasegura {
@@ -2186,6 +2281,9 @@ pub struct ClusterSecretStoreProviderVault {
     /// https://www.vaultproject.io/docs/configuration/replication#allow_forwarding_via_header
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardInconsistent")]
     pub forward_inconsistent: Option<bool>,
+    /// Headers to be added in Vault request
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub headers: Option<BTreeMap<String, String>>,
     /// Name of the vault namespace. Namespaces is a set of features within Vault Enterprise that allows
     /// Vault environments to support Secure Multi-tenancy. e.g: "ns1".
     /// More about namespaces can be found here https://www.vaultproject.io/docs/enterprise/namespaces

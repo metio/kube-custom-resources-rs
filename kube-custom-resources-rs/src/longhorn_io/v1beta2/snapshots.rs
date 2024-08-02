@@ -25,7 +25,9 @@ pub struct SnapshotSpec {
     /// The labels of snapshot
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// the volume that this snapshot belongs to. This field is immutable after creation. Required
+    /// the volume that this snapshot belongs to.
+    /// This field is immutable after creation.
+    /// Required
     pub volume: String,
 }
 

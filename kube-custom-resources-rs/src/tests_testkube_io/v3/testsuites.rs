@@ -105,6 +105,7 @@ pub struct TestSuiteAfterExecuteExecutionRequest {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
     /// whether webhooks should be called on execution
+    /// Deprecated: field is not used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
     pub disable_webhooks: Option<bool>,
     /// test execution labels
@@ -327,6 +328,7 @@ pub struct TestSuiteBeforeExecuteExecutionRequest {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
     /// whether webhooks should be called on execution
+    /// Deprecated: field is not used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
     pub disable_webhooks: Option<bool>,
     /// test execution labels
@@ -495,6 +497,7 @@ pub struct TestSuiteExecutionRequest {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
     /// whether webhooks should be called on execution
+    /// Deprecated: field is not used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
     pub disable_webhooks: Option<bool>,
     /// execution labels
@@ -701,6 +704,7 @@ pub struct TestSuiteStepsExecuteExecutionRequest {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
     /// whether webhooks should be called on execution
+    /// Deprecated: field is not used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
     pub disable_webhooks: Option<bool>,
     /// test execution labels

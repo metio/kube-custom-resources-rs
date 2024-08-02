@@ -24,6 +24,15 @@ pub struct InstanceSetSpec {
     /// Credential used to connect to DB engine
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credential: Option<InstanceSetCredential>,
+    /// Specifies the desired Ordinals of the default template.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under the default template.
+    /// 
+    /// 
+    /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+    /// then the instance names generated under the default template would be
+    /// $(cluster.name)-$(component.name)-0、$(cluster.name)-$(component.name)-1 and $(cluster.name)-$(component.name)-7
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTemplateOrdinals")]
+    pub default_template_ordinals: Option<InstanceSetDefaultTemplateOrdinals>,
     /// Overrides values in default Template.
     /// 
     /// 
@@ -79,6 +88,11 @@ pub struct InstanceSetSpec {
     /// The cluster administrator must manually manage the cleanup and removal of these resources when they are no longer needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
+    /// Controls the concurrency of pods during initial scale up, when replacing pods on nodes,
+    /// or when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.
+    /// The default Concurrency is 100%.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelPodManagementConcurrency")]
+    pub parallel_pod_management_concurrency: Option<IntOrString>,
     /// Indicates that the InstanceSet is paused, meaning the reconciliation of this InstanceSet object will be paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
@@ -96,6 +110,16 @@ pub struct InstanceSetSpec {
     /// Note: This field will be removed in future version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
     pub pod_management_policy: Option<String>,
+    /// PodUpdatePolicy indicates how pods should be updated
+    /// 
+    /// 
+    /// - `StrictInPlace` indicates that only allows in-place upgrades.
+    /// Any attempt to modify other fields will be rejected.
+    /// - `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.
+    /// If that fails, it will fall back to the ReCreate, where pod will be recreated.
+    /// Default value is "PreferInPlace"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
+    pub pod_update_policy: Option<String>,
     /// Specifies the desired number of replicas of the given Template.
     /// These replicas are instantiations of the same Template, with each having a consistent identity.
     /// Defaults to 1 if unspecified.
@@ -336,6 +360,29 @@ pub struct InstanceSetCredentialUsernameValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+/// Specifies the desired Ordinals of the default template.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under the default template.
+/// 
+/// 
+/// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+/// then the instance names generated under the default template would be
+/// $(cluster.name)-$(component.name)-0、$(cluster.name)-$(component.name)-1 and $(cluster.name)-$(component.name)-7
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetDefaultTemplateOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<InstanceSetDefaultTemplateOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetDefaultTemplateOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
+}
+
 /// InstanceTemplate allows customization of individual replica configurations within a Component,
 /// without altering the base component template defined in ClusterComponentSpec.
 /// It enables the application of distinct settings to specific instances (replicas),
@@ -362,6 +409,16 @@ pub struct InstanceSetInstances {
     /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
     /// The specified name overrides any default naming conventions or patterns.
     pub name: String,
+    /// Specifies the desired Ordinals of this InstanceTemplate.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+    /// 
+    /// 
+    /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+    /// then the instance names generated under this InstanceTemplate would be
+    /// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+    /// $(cluster.name)-$(component.name)-$(template.name)-7
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<InstanceSetInstancesOrdinals>,
     /// Specifies the number of instances (Pods) to create from this InstanceTemplate.
     /// This field allows setting how many replicated instances of the component,
     /// with the specific overrides in the InstanceTemplate, are created.
@@ -483,6 +540,30 @@ pub struct InstanceSetInstancesEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Specifies the desired Ordinals of this InstanceTemplate.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+/// 
+/// 
+/// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+/// then the instance names generated under this InstanceTemplate would be
+/// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+/// $(cluster.name)-$(component.name)-$(template.name)-7
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetInstancesOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<InstanceSetInstancesOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetInstancesOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 /// Specifies an override for the resource requirements of the first container in the Pod.
@@ -10579,6 +10660,9 @@ pub struct InstanceSetStatus {
     pub ready_without_primary: Option<bool>,
     /// replicas is the number of instances created by the InstanceSet controller.
     pub replicas: i32,
+    /// TemplatesStatus represents status of each instance generated by InstanceTemplates
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templatesStatus")]
+    pub templates_status: Option<Vec<InstanceSetStatusTemplatesStatus>>,
     /// updateRevision, if not empty, indicates the version of the InstanceSet used to generate instances in the sequence
     /// [replicas-updatedReplicas,replicas)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateRevision")]
@@ -10625,5 +10709,29 @@ pub enum InstanceSetStatusMembersStatusRoleAccessMode {
     None,
     Readonly,
     ReadWrite,
+}
+
+/// InstanceTemplateStatus aggregates the status of replicas for each InstanceTemplate
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetStatusTemplatesStatus {
+    /// AvailableReplicas is the number of Pods that ready for at least minReadySeconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
+    pub available_replicas: Option<i32>,
+    /// currentReplicas is the number of instances created by the InstanceSet controller from the InstanceSet version
+    /// indicated by CurrentRevisions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentReplicas")]
+    pub current_replicas: Option<i32>,
+    /// Name, the name of the InstanceTemplate.
+    pub name: String,
+    /// ReadyReplicas is the number of Pods that have a Ready Condition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
+    pub ready_replicas: Option<i32>,
+    /// Replicas is the number of replicas of the InstanceTemplate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// UpdatedReplicas is the number of Pods created by the InstanceSet controller from the InstanceSet version
+    /// indicated by UpdateRevisions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
+    pub updated_replicas: Option<i32>,
 }
 

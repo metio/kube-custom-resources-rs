@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -25,6 +26,12 @@ pub struct GrafanaFolderSpec {
     /// selects Grafanas for import
     #[serde(rename = "instanceSelector")]
     pub instance_selector: GrafanaFolderInstanceSelector,
+    /// Reference to an existing GrafanaFolder CR in the same namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentFolderRef")]
+    pub parent_folder_ref: Option<String>,
+    /// UID of the folder in which the current folder should be created
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentFolderUID")]
+    pub parent_folder_uid: Option<String>,
     /// raw json with folder permissions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<String>,
@@ -71,6 +78,8 @@ pub struct GrafanaFolderStatus {
     /// The folder instanceSelector can't find matching grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "NoMatchingInstances")]
     pub no_matching_instances: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
     /// Important: Run "make" to regenerate code after modifying this file
     #[serde(default, skip_serializing_if = "Option::is_none")]

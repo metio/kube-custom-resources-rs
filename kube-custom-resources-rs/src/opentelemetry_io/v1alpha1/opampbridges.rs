@@ -37,6 +37,10 @@ pub struct OpAMPBridgeSpec {
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
+    pub ip_families: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
+    pub ip_family_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAnnotations")]

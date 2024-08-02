@@ -238,8 +238,7 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromClu
     /// Specifies the appropriate version of the backup tool image.
     #[serde(rename = "mappingValue")]
     pub mapping_value: String,
-    /// Represents an array of names of ClusterVersion or ComponentDefinition that can be mapped to
-    /// the appropriate version of the backup tool image.
+    /// Represents an array of names of ComponentDefinition that can be mapped to the appropriate version of the backup tool image.
     /// 
     /// 
     /// This mapping allows different versions of component images to correspond to specific versions of backup tool images.
@@ -251,8 +250,7 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromCom
     /// Specifies the appropriate version of the backup tool image.
     #[serde(rename = "mappingValue")]
     pub mapping_value: String,
-    /// Represents an array of names of ClusterVersion or ComponentDefinition that can be mapped to
-    /// the appropriate version of the backup tool image.
+    /// Represents an array of names of ComponentDefinition that can be mapped to the appropriate version of the backup tool image.
     /// 
     /// 
     /// This mapping allows different versions of component images to correspond to specific versions of backup tool images.

@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
@@ -44,6 +45,9 @@ pub struct ClusterPoolSpec {
     /// InstallConfigSecretTemplateRef is a secret with the key install-config.yaml consisting of the content of the install-config.yaml to be used as a template for all clusters in this pool. Cluster specific settings (name, basedomain) will be injected dynamically when the ClusterDeployment install-config Secret is generated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installConfigSecretTemplateRef")]
     pub install_config_secret_template_ref: Option<ClusterPoolInstallConfigSecretTemplateRef>,
+    /// InstallerEnv are extra environment variables to pass through to the installer. This may be used to enable additional features of the installer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installerEnv")]
+    pub installer_env: Option<Vec<ClusterPoolInstallerEnv>>,
     /// Inventory maintains a list of entries consumed by the ClusterPool to customize the default ClusterDeployment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inventory: Option<Vec<ClusterPoolInventory>>,
@@ -103,6 +107,86 @@ pub struct ClusterPoolInstallConfigSecretTemplateRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPoolInstallerEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ClusterPoolInstallerEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPoolInstallerEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterPoolInstallerEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ClusterPoolInstallerEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterPoolInstallerEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterPoolInstallerEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPoolInstallerEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPoolInstallerEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPoolInstallerEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPoolInstallerEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// InventoryEntry maintains a reference to a custom resource consumed by a clusterpool to customize the cluster deployment.
@@ -292,8 +376,11 @@ pub struct ClusterPoolPlatformBaremetalLibvirtSshPrivateKeySecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformGcp {
     /// CredentialsSecretRef refers to a secret that contains the GCP account access credentials.
-    #[serde(rename = "credentialsSecretRef")]
-    pub credentials_secret_ref: ClusterPoolPlatformGcpCredentialsSecretRef,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretRef")]
+    pub credentials_secret_ref: Option<ClusterPoolPlatformGcpCredentialsSecretRef>,
+    /// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP Private Service Connect. It includes a forwarding rule paired with a Service Attachment across GCP accounts and allows clients to connect to services using GCP internal networking of using public load balancers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateServiceConnect")]
+    pub private_service_connect: Option<ClusterPoolPlatformGcpPrivateServiceConnect>,
     /// Region specifies the GCP region where the cluster will be created.
     pub region: String,
 }
@@ -304,6 +391,32 @@ pub struct ClusterPoolPlatformGcpCredentialsSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP Private Service Connect. It includes a forwarding rule paired with a Service Attachment across GCP accounts and allows clients to connect to services using GCP internal networking of using public load balancers.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPoolPlatformGcpPrivateServiceConnect {
+    /// Enabled specifies if Private Service Connect is to be enabled on the cluster.
+    pub enabled: bool,
+    /// ServiceAttachment configures the service attachment to be used by the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAttachment")]
+    pub service_attachment: Option<ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachment>,
+}
+
+/// ServiceAttachment configures the service attachment to be used by the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachment {
+    /// Subnet configures the subnetwork that contains the service attachment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub subnet: Option<ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachmentSubnet>,
+}
+
+/// Subnet configures the subnetwork that contains the service attachment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachmentSubnet {
+    /// Cidr configures the network cidr of the subnetwork that contains the service attachment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
 }
 
 /// IBMCloud is the configuration used when installing on IBM Cloud

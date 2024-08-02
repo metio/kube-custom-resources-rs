@@ -3174,6 +3174,8 @@ pub struct K6ScriptVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

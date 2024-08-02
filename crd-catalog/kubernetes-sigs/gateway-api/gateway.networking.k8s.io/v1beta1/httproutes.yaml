@@ -112,7 +112,7 @@ spec:
                     description: "HTTPRouteRule defines semantics for matching an HTTP request based on\nconditions (matches), processing it (filters), and forwarding the request to\nan API object (backendRefs)."
                     properties:
                       backendRefs:
-                        description: "BackendRefs defines the backend(s) where matching requests should be\nsent.\n\n\nFailure behavior here depends on how many BackendRefs are specified and\nhow many are invalid.\n\n\nIf *all* entries in BackendRefs are invalid, and there are also no filters\nspecified in this route rule, *all* traffic which matches this rule MUST\nreceive a 500 status code.\n\n\nSee the HTTPBackendRef definition for the rules about what makes a single\nHTTPBackendRef invalid.\n\n\nWhen a HTTPBackendRef is invalid, 500 status codes MUST be returned for\nrequests that would have otherwise been routed to an invalid backend. If\nmultiple backends are specified, and some are invalid, the proportion of\nrequests that would otherwise have been routed to an invalid backend\nMUST receive a 500 status code.\n\n\nFor example, if two backends are specified with equal weights, and one is\ninvalid, 50 percent of traffic must receive a 500. Implementations may\nchoose how that 50 percent is determined.\n\n\nSupport: Core for Kubernetes Service\n\n\nSupport: Extended for Kubernetes ServiceImport\n\n\nSupport: Implementation-specific for any other resource\n\n\nSupport for weight: Core"
+                        description: "BackendRefs defines the backend(s) where matching requests should be\nsent.\n\n\nFailure behavior here depends on how many BackendRefs are specified and\nhow many are invalid.\n\n\nIf *all* entries in BackendRefs are invalid, and there are also no filters\nspecified in this route rule, *all* traffic which matches this rule MUST\nreceive a 500 status code.\n\n\nSee the HTTPBackendRef definition for the rules about what makes a single\nHTTPBackendRef invalid.\n\n\nWhen a HTTPBackendRef is invalid, 500 status codes MUST be returned for\nrequests that would have otherwise been routed to an invalid backend. If\nmultiple backends are specified, and some are invalid, the proportion of\nrequests that would otherwise have been routed to an invalid backend\nMUST receive a 500 status code.\n\n\nFor example, if two backends are specified with equal weights, and one is\ninvalid, 50 percent of traffic must receive a 500. Implementations may\nchoose how that 50 percent is determined.\n\n\nWhen a HTTPBackendRef refers to a Service that has no ready endpoints,\nimplementations SHOULD return a 503 for requests to that backend instead.\nIf an implementation chooses to do this, all of the above rules for 500 responses\nMUST also apply for responses that return a 503.\n\n\nSupport: Core for Kubernetes Service\n\n\nSupport: Extended for Kubernetes ServiceImport\n\n\nSupport: Implementation-specific for any other resource\n\n\nSupport for weight: Core"
                         items:
                           description: "HTTPBackendRef defines how a HTTPRoute forwards a HTTP request.\n\n\nNote that when a namespace different than the local namespace is specified, a\nReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\n\n<gateway:experimental:description>\n\n\nWhen the BackendRef points to a Kubernetes Service, implementations SHOULD\nhonor the appProtocol field if it is set for the target Service Port.\n\n\nImplementations supporting appProtocol SHOULD recognize the Kubernetes\nStandard Application Protocols defined in KEP-3726.\n\n\nIf a Service appProtocol isn't specified, an implementation MAY infer the\nbackend protocol through its own means. Implementations MAY infer the\nprotocol from the Route type referring to the backend Service.\n\n\nIf a Route is not able to send traffic to the backend using the specified\nprotocol then the backend is considered invalid. Implementations MUST set the\n\"ResolvedRefs\" condition to \"False\" with the \"UnsupportedProtocol\" reason.\n\n\n</gateway:experimental:description>"
                           properties:
@@ -981,7 +981,7 @@ spec:
                                 - "name"
                               x-kubernetes-list-type: "map"
                           type: "object"
-                        maxItems: 8
+                        maxItems: 64
                         type: "array"
                       sessionPersistence:
                         description: "SessionPersistence defines and configures session persistence\nfor the route rule.\n\n\nSupport: Extended\n\n\n"
@@ -1019,7 +1019,7 @@ spec:
                         type: "object"
                         x-kubernetes-validations:
                           - message: "AbsoluteTimeout must be specified when cookie lifetimeType is Permanent"
-                            rule: "!has(self.cookieConfig.lifetimeType) || self.cookieConfig.lifetimeType != 'Permanent' || has(self.absoluteTimeout)"
+                            rule: "!has(self.cookieConfig) || !has(self.cookieConfig.lifetimeType) || self.cookieConfig.lifetimeType != 'Permanent' || has(self.absoluteTimeout)"
                       timeouts:
                         description: "Timeouts defines the timeouts that can be configured for an HTTP request.\n\n\nSupport: Extended\n\n\n"
                         properties:
@@ -1049,6 +1049,9 @@ spec:
                         rule: "(has(self.backendRefs) && self.backendRefs.exists_one(b, (has(b.filters) && b.filters.exists_one(f, has(f.urlRewrite) && has(f.urlRewrite.path) && f.urlRewrite.path.type == 'ReplacePrefixMatch' && has(f.urlRewrite.path.replacePrefixMatch))) )) ? ((size(self.matches) != 1 || !has(self.matches[0].path) || self.matches[0].path.type != 'PathPrefix') ? false : true) : true"
                   maxItems: 16
                   type: "array"
+                  x-kubernetes-validations:
+                    - message: "While 16 rules and 64 matches per rule are allowed, the total number of matches across all rules in a route must be less than 128"
+                      rule: "(self.size() > 0 ? self[0].matches.size() : 0) + (self.size() > 1 ? self[1].matches.size() : 0) + (self.size() > 2 ? self[2].matches.size() : 0) + (self.size() > 3 ? self[3].matches.size() : 0) + (self.size() > 4 ? self[4].matches.size() : 0) + (self.size() > 5 ? self[5].matches.size() : 0) + (self.size() > 6 ? self[6].matches.size() : 0) + (self.size() > 7 ? self[7].matches.size() : 0) + (self.size() > 8 ? self[8].matches.size() : 0) + (self.size() > 9 ? self[9].matches.size() : 0) + (self.size() > 10 ? self[10].matches.size() : 0) + (self.size() > 11 ? self[11].matches.size() : 0) + (self.size() > 12 ? self[12].matches.size() : 0) + (self.size() > 13 ? self[13].matches.size() : 0) + (self.size() > 14 ? self[14].matches.size() : 0) + (self.size() > 15 ? self[15].matches.size() : 0) <= 128"
               type: "object"
             status:
               description: "Status defines the current state of HTTPRoute."

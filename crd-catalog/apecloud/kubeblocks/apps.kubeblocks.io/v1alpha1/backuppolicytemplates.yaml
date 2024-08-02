@@ -164,7 +164,7 @@ spec:
                                               description: "Specifies the appropriate version of the backup tool image."
                                               type: "string"
                                             names:
-                                              description: "Represents an array of names of ClusterVersion or ComponentDefinition that can be mapped to\nthe appropriate version of the backup tool image.\n\n\nThis mapping allows different versions of component images to correspond to specific versions of backup tool images."
+                                              description: "Represents an array of names of ComponentDefinition that can be mapped to the appropriate version of the backup tool image.\n\n\nThis mapping allows different versions of component images to correspond to specific versions of backup tool images."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -181,7 +181,7 @@ spec:
                                               description: "Specifies the appropriate version of the backup tool image."
                                               type: "string"
                                             names:
-                                              description: "Represents an array of names of ClusterVersion or ComponentDefinition that can be mapped to\nthe appropriate version of the backup tool image.\n\n\nThis mapping allows different versions of component images to correspond to specific versions of backup tool images."
+                                              description: "Represents an array of names of ComponentDefinition that can be mapped to the appropriate version of the backup tool image.\n\n\nThis mapping allows different versions of component images to correspond to specific versions of backup tool images."
                                               items:
                                                 type: "string"
                                               type: "array"

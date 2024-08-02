@@ -200,6 +200,11 @@ pub struct FilterFiltersKubernetes {
     /// For example, set this value to 60 or 60s and cache entries which have been created more than 60s will be evicted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeMetaCacheTTL")]
     pub kube_meta_cache_ttl: Option<String>,
+    /// Configurable TTL for K8s cached namespace metadata.
+    /// By default, it is set to 900 which means a 15min TTL for namespace cache entries.
+    /// Setting this to 0 will mean entries are evicted at random once the cache is full.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeMetaNamespaceCacheTTL")]
+    pub kube_meta_namespace_cache_ttl: Option<i32>,
     /// If set, Kubernetes meta-data can be cached/pre-loaded from files in JSON format in this directory,
     /// named as namespace-pod.meta
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeMetaPreloadCacheDir")]
@@ -208,6 +213,10 @@ pub struct FilterFiltersKubernetes {
     /// this option allows to specify what's the prefix used in Tail configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTagPrefix")]
     pub kube_tag_prefix: Option<String>,
+    /// Command to get Kubernetes authorization token.
+    /// By default, it will be NULL and we will use token file to get token.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTokenCommand")]
+    pub kube_token_command: Option<String>,
     /// Token file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTokenFile")]
     pub kube_token_file: Option<String>,
@@ -242,6 +251,16 @@ pub struct FilterFiltersKubernetes {
     /// Optional parser name to specify how to parse the data contained in the log key. Recommended use is for developers or testing only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergeParser")]
     pub merge_parser: Option<String>,
+    /// Include Kubernetes namespace resource annotations in the extra metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceAnnotations")]
+    pub namespace_annotations: Option<bool>,
+    /// Include Kubernetes namespace resource labels in the extra metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceLabels")]
+    pub namespace_labels: Option<bool>,
+    /// Include Kubernetes namespace metadata only and no pod metadata.
+    /// If this is set, the values of Labels and Annotations are ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceMetadataOnly")]
+    pub namespace_metadata_only: Option<bool>,
     /// Set an alternative Parser to process record Tag and extract pod_name, namespace_name, container_name and docker_id.
     /// The parser must be registered in a parsers file (refer to parser filter-kube-test as an example).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "regexParser")]
@@ -307,8 +326,12 @@ pub struct FilterFiltersLuaScript {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined

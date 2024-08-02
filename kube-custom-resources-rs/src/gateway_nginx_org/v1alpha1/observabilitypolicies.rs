@@ -21,7 +21,7 @@ use self::prelude::*;
 pub struct ObservabilityPolicySpec {
     /// TargetRefs identifies the API object(s) to apply the policy to.
     /// Objects must be in the same namespace as the policy.
-    /// Support: HTTPRoute
+    /// Support: HTTPRoute, GRPCRoute.
     #[serde(rename = "targetRefs")]
     pub target_refs: Vec<ObservabilityPolicyTargetRefs>,
     /// Tracing allows for enabling and configuring tracing.

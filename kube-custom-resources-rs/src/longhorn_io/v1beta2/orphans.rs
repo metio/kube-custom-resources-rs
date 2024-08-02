@@ -23,7 +23,8 @@ pub struct OrphanSpec {
     /// The node ID on which the controller is responsible to reconcile this orphan CR.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeID")]
     pub node_id: Option<String>,
-    /// The type of the orphaned data. Can be "replica".
+    /// The type of the orphaned data.
+    /// Can be "replica".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orphanType")]
     pub orphan_type: Option<String>,
     /// The parameters of the orphaned data

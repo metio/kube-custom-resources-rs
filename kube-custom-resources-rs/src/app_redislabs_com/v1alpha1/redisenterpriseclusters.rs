@@ -23,6 +23,8 @@ pub struct RedisEnterpriseClusterSpec {
     pub active_active: Option<RedisEnterpriseClusterActiveActive>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityAdditionalTopologyKeys")]
     pub anti_affinity_additional_topology_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub backup: Option<RedisEnterpriseClusterBackup>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapperImageSpec")]
     pub bootstrapper_image_spec: Option<RedisEnterpriseClusterBootstrapperImageSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapperResources")]
@@ -158,6 +160,20 @@ pub enum RedisEnterpriseClusterActiveActiveMethod {
     Ingress,
     #[serde(rename = "istio")]
     Istio,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterBackup {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub s3: Option<RedisEnterpriseClusterBackupS3>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterBackupS3 {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificateSecretName")]
+    pub ca_certificate_secret_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

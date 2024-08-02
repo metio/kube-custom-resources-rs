@@ -213,6 +213,7 @@ spec:
                             x-kubernetes-list-type: "atomic"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                   type: "object"
                 serviceLocations:
                   description: "ServiceLocations records the locations of MulticlusterIngress's backend\nService resources. It will be set by the system controller."

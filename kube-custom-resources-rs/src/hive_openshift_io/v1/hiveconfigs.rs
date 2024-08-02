@@ -74,6 +74,9 @@ pub struct HiveConfigSpec {
     /// MetricsConfig encapsulates metrics specific configurations, like opting in for certain metrics.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsConfig")]
     pub metrics_config: Option<HiveConfigMetricsConfig>,
+    /// PrivateLink is used to configure the privatelink controller.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateLink")]
+    pub private_link: Option<HiveConfigPrivateLink>,
     /// ReleaseImageVerificationConfigMapRef is a reference to the ConfigMap that will be used to verify release images. 
     ///  The config map structure is exactly the same as the config map used for verification of release images for OpenShift 4 during upgrades. Therefore you can usually set this to the config map shipped as part of OpenShift (openshift-config-managed/release-verification). 
     ///  See https://github.com/openshift/cluster-update-keys for more details. The keys within the config map in the data field define how verification is performed: 
@@ -614,6 +617,47 @@ pub enum HiveConfigMetricsConfigMetricsWithDurationName {
     CumulativeHibernated,
     #[serde(rename = "cumulativeResumed")]
     CumulativeResumed,
+}
+
+/// PrivateLink is used to configure the privatelink controller.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HiveConfigPrivateLink {
+    /// GCP is the configuration for GCP hub and link resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gcp: Option<HiveConfigPrivateLinkGcp>,
+}
+
+/// GCP is the configuration for GCP hub and link resources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HiveConfigPrivateLinkGcp {
+    /// CredentialsSecretRef references a secret in the TargetNamespace that will be used to authenticate with GCP for creating the resources for GCP Private Service Connect
+    #[serde(rename = "credentialsSecretRef")]
+    pub credentials_secret_ref: HiveConfigPrivateLinkGcpCredentialsSecretRef,
+    /// EndpointVPCInventory is a list of VPCs and the corresponding subnets in various GCP regions. The controller uses this list to choose a VPC for creating GCP Endpoints. Since the VPC Endpoints must be in the same region as the ClusterDeployment, we must have VPCs in that region to be able to setup Private Service Connect.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointVPCInventory")]
+    pub endpoint_vpc_inventory: Option<Vec<HiveConfigPrivateLinkGcpEndpointVpcInventory>>,
+}
+
+/// CredentialsSecretRef references a secret in the TargetNamespace that will be used to authenticate with GCP for creating the resources for GCP Private Service Connect
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HiveConfigPrivateLinkGcpCredentialsSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// GCPPrivateServiceConnectInventory is a VPC and its corresponding subnets. This VPC will be used to create a GCP Endpoint whenever there is a Private Service Connect service created for a ClusterDeployment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HiveConfigPrivateLinkGcpEndpointVpcInventory {
+    pub network: String,
+    pub subnets: Vec<HiveConfigPrivateLinkGcpEndpointVpcInventorySubnets>,
+}
+
+/// GCPPrivateServiceConnectSubnet defines subnet and the corresponding GCP region.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HiveConfigPrivateLinkGcpEndpointVpcInventorySubnets {
+    pub region: String,
+    pub subnet: String,
 }
 
 /// ReleaseImageVerificationConfigMapRef is a reference to the ConfigMap that will be used to verify release images. 

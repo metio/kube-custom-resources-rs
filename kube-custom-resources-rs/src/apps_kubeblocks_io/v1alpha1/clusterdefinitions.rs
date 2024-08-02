@@ -58,14 +58,6 @@ pub struct ClusterDefinitionSpec {
     /// Topologies defines all possible topologies within the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topologies: Option<Vec<ClusterDefinitionTopologies>>,
-    /// Specifies the well-known database type, such as mysql, redis, or mongodb.
-    /// 
-    /// 
-    /// Deprecated since v0.9.
-    /// This field is maintained for backward compatibility and its use is discouraged.
-    /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
 }
 
 /// ClusterComponentDefinition defines a Component within a ClusterDefinition but is deprecated and
@@ -88,25 +80,12 @@ pub struct ClusterDefinitionComponentDefs {
     /// Defines spec for `Consensus` workloads. It's required if the workload type is `Consensus`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consensusSpec")]
     pub consensus_spec: Option<ClusterDefinitionComponentDefsConsensusSpec>,
-    /// Used for custom label tags which you want to add to the component resources.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customLabelSpecs")]
-    pub custom_label_specs: Option<Vec<ClusterDefinitionComponentDefsCustomLabelSpecs>>,
-    /// Description of the component definition.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    /// Defines the metrics exporter.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exporter: Option<ClusterDefinitionComponentDefsExporter>,
     /// Defines the behavior of horizontal scale.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "horizontalScalePolicy")]
     pub horizontal_scale_policy: Option<ClusterDefinitionComponentDefsHorizontalScalePolicy>,
     /// Specify the logging files which can be observed and configured by cluster users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logConfigs")]
     pub log_configs: Option<Vec<ClusterDefinitionComponentDefsLogConfigs>>,
-    /// Deprecated since v0.9
-    /// monitor is monitoring config which provided by provider.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub monitor: Option<ClusterDefinitionComponentDefsMonitor>,
     /// This name could be used as default name of `cluster.spec.componentSpecs.name`, and needs to conform with same
     /// validation rules as `cluster.spec.componentSpecs.name`, currently complying with IANA Service Naming rule.
     /// This name will apply to cluster objects as the value of label "apps.kubeblocks.io/component-name".
@@ -546,59 +525,6 @@ pub enum ClusterDefinitionComponentDefsConsensusSpecUpdateStrategy {
     Parallel,
 }
 
-/// CustomLabelSpec is deprecated since v0.8.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsCustomLabelSpecs {
-    /// The key of the label.
-    pub key: String,
-    /// The resources that will be patched with the label.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<Vec<ClusterDefinitionComponentDefsCustomLabelSpecsResources>>,
-    /// The value of the label.
-    pub value: String,
-}
-
-/// GVKResource is deprecated since v0.8.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsCustomLabelSpecsResources {
-    /// Represents the GVK of a resource, such as "v1/Pod", "apps/v1/StatefulSet", etc.
-    /// When a resource matching this is found by the selector, a custom label will be added if it doesn't already exist,
-    /// or updated if it does.
-    pub gvk: String,
-    /// A label query used to filter a set of resources.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<BTreeMap<String, String>>,
-}
-
-/// Defines the metrics exporter.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsExporter {
-    /// Specifies the name of the built-in metrics exporter container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    /// Specifies the http/https url path to scrape for metrics.
-    /// If empty, Prometheus uses the default value (e.g. `/metrics`).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapePath")]
-    pub scrape_path: Option<String>,
-    /// Specifies the port name to scrape for metrics.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapePort")]
-    pub scrape_port: Option<String>,
-    /// Specifies the schema to use for scraping.
-    /// `http` and `https` are the expected values unless you rewrite the `__scheme__` label via relabeling.
-    /// If empty, Prometheus uses the default value `http`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeScheme")]
-    pub scrape_scheme: Option<ClusterDefinitionComponentDefsExporterScrapeScheme>,
-}
-
-/// Defines the metrics exporter.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterDefinitionComponentDefsExporterScrapeScheme {
-    #[serde(rename = "http")]
-    Http,
-    #[serde(rename = "https")]
-    Https,
-}
-
 /// Defines the behavior of horizontal scale.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsHorizontalScalePolicy {
@@ -645,33 +571,6 @@ pub struct ClusterDefinitionComponentDefsLogConfigs {
     /// Specifies a descriptive label for the log type, such as 'slow' for a MySQL slow log file.
     /// It provides a clear identification of the log's purpose and content.
     pub name: String,
-}
-
-/// Deprecated since v0.9
-/// monitor is monitoring config which provided by provider.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsMonitor {
-    /// builtIn is a switch to enable KubeBlocks builtIn monitoring.
-    /// If BuiltIn is set to true, monitor metrics will be scraped automatically.
-    /// If BuiltIn is set to false, the provider should set ExporterConfig and Sidecar container own.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtIn")]
-    pub built_in: Option<bool>,
-    /// exporterConfig provided by provider, which specify necessary information to Time Series Database.
-    /// exporterConfig is valid when builtIn is false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exporterConfig")]
-    pub exporter_config: Option<ClusterDefinitionComponentDefsMonitorExporterConfig>,
-}
-
-/// exporterConfig provided by provider, which specify necessary information to Time Series Database.
-/// exporterConfig is valid when builtIn is false.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsMonitorExporterConfig {
-    /// scrapePath is exporter url path for Time Series Database to scrape metrics.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapePath")]
-    pub scrape_path: Option<String>,
-    /// scrapePort is exporter port for Time Series Database to scrape metrics.
-    #[serde(rename = "scrapePort")]
-    pub scrape_port: IntOrString,
 }
 
 /// Defines the pod spec template of component.

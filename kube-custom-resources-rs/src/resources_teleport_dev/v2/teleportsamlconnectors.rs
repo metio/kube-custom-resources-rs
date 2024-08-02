@@ -34,7 +34,7 @@ pub struct TeleportSAMLConnectorSpec {
     /// Audience uniquely identifies our service provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// Cert is the identity provider certificate PEM. IDP signs <Response> responses using this certificate.
+    /// Cert is the identity provider certificate PEM. IDP signs `<Response>` responses using this certificate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<String>,
     /// ClientRedirectSettings defines which client redirect URLs are allowed for non-browser SSO logins other than the standard localhost ones.
@@ -99,6 +99,9 @@ pub struct TeleportSAMLConnectorClientRedirectSettings {
     /// a list of hostnames allowed for https client redirect URLs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed_https_hostnames: Option<Vec<String>>,
+    /// a list of CIDRs allowed for HTTP or HTTPS client redirect URLs
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure_allowed_cidr_ranges: Option<Vec<String>>,
 }
 
 /// SigningKeyPair is an x509 key pair used to sign AuthnRequest.

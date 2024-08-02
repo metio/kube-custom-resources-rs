@@ -29,6 +29,22 @@ spec:
             spec:
               description: "ClusterSpec defines the desired state of Cluster.\n\n\nReturns information about a cluster of either the provisioned or the serverless\ntype."
               properties:
+                associatedSCRAMSecretRefs:
+                  items:
+                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                    properties:
+                      from:
+                        description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                        properties:
+                          name:
+                            type: "string"
+                        type: "object"
+                    type: "object"
+                  type: "array"
+                associatedSCRAMSecrets:
+                  items:
+                    type: "string"
+                  type: "array"
                 brokerNodeGroupInfo:
                   description: "Information about the brokers."
                   properties:
@@ -265,6 +281,10 @@ spec:
                   type: "array"
                 state:
                   description: "The state of the cluster. The possible states are ACTIVE, CREATING, DELETING,\nFAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING."
+                  type: "string"
+                zookeeperConnectString:
+                  type: "string"
+                zookeeperConnectStringTLS:
                   type: "string"
               type: "object"
           type: "object"

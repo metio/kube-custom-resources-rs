@@ -2124,9 +2124,9 @@ pub struct IssuerVenafiTpp {
     /// the cert-manager controller container is used to validate the TLS connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundleSecretRef")]
     pub ca_bundle_secret_ref: Option<IssuerVenafiTppCaBundleSecretRef>,
-    /// CredentialsRef is a reference to a Secret containing the username and
-    /// password for the TPP server.
-    /// The secret must contain two keys, 'username' and 'password'.
+    /// CredentialsRef is a reference to a Secret containing the Venafi TPP API credentials.
+    /// The secret must contain the key 'access-token' for the Access Token Authentication,
+    /// or two keys, 'username' and 'password' for the API Keys Authentication.
     #[serde(rename = "credentialsRef")]
     pub credentials_ref: IssuerVenafiTppCredentialsRef,
     /// URL is the base URL for the vedsdk endpoint of the Venafi TPP instance,
@@ -2151,9 +2151,9 @@ pub struct IssuerVenafiTppCaBundleSecretRef {
     pub name: String,
 }
 
-/// CredentialsRef is a reference to a Secret containing the username and
-/// password for the TPP server.
-/// The secret must contain two keys, 'username' and 'password'.
+/// CredentialsRef is a reference to a Secret containing the Venafi TPP API credentials.
+/// The secret must contain the key 'access-token' for the Access Token Authentication,
+/// or two keys, 'username' and 'password' for the API Keys Authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IssuerVenafiTppCredentialsRef {
     /// Name of the resource being referred to.

@@ -33,7 +33,8 @@ pub struct PulpRestoreSpec {
     /// Name of the deployment type. Can be one of {galaxy,pulp}.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment_type: Option<PulpRestoreDeploymentType>,
-    /// KeepBackupReplicasCount allows to define if the restore controller should restore the components with the same number of replicas from backup or restore only a single replica each.
+    /// KeepBackupReplicasCount allows to define if the restore controller should restore the components with the
+    /// same number of replicas from backup or restore only a single replica each.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keep_replicas: Option<bool>,
 }

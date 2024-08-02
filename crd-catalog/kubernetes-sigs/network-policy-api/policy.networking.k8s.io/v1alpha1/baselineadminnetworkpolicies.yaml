@@ -103,9 +103,9 @@ spec:
                         maxItems: 100
                         type: "array"
                       to:
-                        description: "To is the list of destinations whose traffic this rule applies to.\nIf any AdminNetworkPolicyEgressPeer matches the destination of outgoing\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item.\n\n\nSupport: Core"
+                        description: "To is the list of destinations whose traffic this rule applies to.\nIf any BaselineAdminNetworkPolicyEgressPeer matches the destination of outgoing\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item.\n\n\nSupport: Core"
                         items:
-                          description: "AdminNetworkPolicyEgressPeer defines a peer to allow traffic to.\nExactly one of the selector pointers must be set for a given peer. If a\nconsumer observes none of its fields are set, they must assume an unknown\noption has been specified and fail closed."
+                          description: "BaselineAdminNetworkPolicyEgressPeer defines a peer to allow traffic to.\nExactly one of the selector pointers must be set for a given peer. If a\nconsumer observes none of its fields are set, they must assume an unknown\noption has been specified and fail closed."
                           maxProperties: 1
                           minProperties: 1
                           properties:

@@ -22,6 +22,9 @@ pub struct ClusterLeaksignalIstioSpec {
     /// Location of CA bundle in istio-proxy. Default is `/etc/ssl/certs/ca-certificates.crt` which is suitable for Istio. OpenShift Service Mesh requires `/etc/ssl/certs/ca-bundle.crt`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
+    /// If true (default), then certificates are installed in pods for outbound TLS interception.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableClientInterception")]
+    pub enable_client_interception: Option<bool>,
     /// If `true` (default), then L4 streams are also scanned by LeakSignal Proxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableStreaming")]
     pub enable_streaming: Option<bool>,

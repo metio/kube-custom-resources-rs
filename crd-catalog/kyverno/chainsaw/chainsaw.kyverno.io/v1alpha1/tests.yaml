@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "(devel)"
   name: "tests.chainsaw.kyverno.io"
 spec:
   group: "chainsaw.kyverno.io"
@@ -50,6 +50,25 @@ spec:
                   description: "Catch defines what the steps will execute when an error happens.\nThis will be combined with catch handlers defined at the step level."
                   items:
                     description: "CatchFinally defines actions to be executed in catch, finally and cleanup blocks."
+                    oneOf:
+                      - required:
+                          - "command"
+                      - required:
+                          - "delete"
+                      - required:
+                          - "describe"
+                      - required:
+                          - "events"
+                      - required:
+                          - "get"
+                      - required:
+                          - "podLogs"
+                      - required:
+                          - "script"
+                      - required:
+                          - "sleep"
+                      - required:
+                          - "wait"
                     properties:
                       command:
                         description: "Command defines a command to run."
@@ -81,7 +100,7 @@ spec:
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -150,6 +169,10 @@ spec:
                         type: "object"
                       delete:
                         description: "Delete represents a deletion operation."
+                        not:
+                          required:
+                            - "file"
+                            - "ref"
                         properties:
                           bindings:
                             description: "Bindings defines additional binding key/values."
@@ -169,7 +192,7 @@ spec:
                               type: "object"
                             type: "array"
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -246,12 +269,16 @@ spec:
                         type: "object"
                       describe:
                         description: "Describe determines the resource describe collector to execute."
+                        not:
+                          required:
+                            - "name"
+                            - "selector"
                         properties:
                           apiVersion:
                             description: "API version of the referent."
                             type: "string"
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -295,9 +322,13 @@ spec:
                         type: "string"
                       events:
                         description: "Events determines the events collector to execute."
+                        not:
+                          required:
+                            - "name"
+                            - "selector"
                         properties:
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -333,12 +364,16 @@ spec:
                         type: "object"
                       get:
                         description: "Get determines the resource get collector to execute."
+                        not:
+                          required:
+                            - "name"
+                            - "selector"
                         properties:
                           apiVersion:
                             description: "API version of the referent."
                             type: "string"
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -380,9 +415,13 @@ spec:
                         type: "object"
                       podLogs:
                         description: "PodLogs determines the pod logs collector to execute."
+                        not:
+                          required:
+                            - "name"
+                            - "selector"
                         properties:
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -443,7 +482,7 @@ spec:
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -519,12 +558,16 @@ spec:
                         type: "object"
                       wait:
                         description: "Wait determines the resource wait collector to execute."
+                        not:
+                          required:
+                            - "name"
+                            - "selector"
                         properties:
                           apiVersion:
                             description: "API version of the referent."
                             type: "string"
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -600,7 +643,7 @@ spec:
                     type: "object"
                   type: "array"
                 cluster:
-                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                   type: "string"
                 clusters:
                   additionalProperties:
@@ -633,6 +676,9 @@ spec:
                 description:
                   description: "Description contains a description of the test."
                   type: "string"
+                failFast:
+                  description: "FailFast determines whether the test should stop upon encountering the first failure."
+                  type: "boolean"
                 forceTerminationGracePeriod:
                   description: "ForceTerminationGracePeriod forces the termination grace period on pods, statefulsets, daemonsets and deployments."
                   type: "string"
@@ -677,6 +723,18 @@ spec:
                   description: "Steps defining the test."
                   items:
                     description: "TestStep contains the test step definition used in a test spec."
+                    not:
+                      anyOf:
+                        - required:
+                            - "try"
+                        - required:
+                            - "catch"
+                        - required:
+                            - "finally"
+                        - required:
+                            - "cleanup"
+                      required:
+                        - "use"
                     properties:
                       bindings:
                         description: "Bindings defines additional binding key/values."
@@ -699,6 +757,25 @@ spec:
                         description: "Catch defines what the step will execute when an error happens."
                         items:
                           description: "CatchFinally defines actions to be executed in catch, finally and cleanup blocks."
+                          oneOf:
+                            - required:
+                                - "command"
+                            - required:
+                                - "delete"
+                            - required:
+                                - "describe"
+                            - required:
+                                - "events"
+                            - required:
+                                - "get"
+                            - required:
+                                - "podLogs"
+                            - required:
+                                - "script"
+                            - required:
+                                - "sleep"
+                            - required:
+                                - "wait"
                           properties:
                             command:
                               description: "Command defines a command to run."
@@ -730,7 +807,7 @@ spec:
                                   type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -799,6 +876,10 @@ spec:
                               type: "object"
                             delete:
                               description: "Delete represents a deletion operation."
+                              not:
+                                required:
+                                  - "file"
+                                  - "ref"
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -818,7 +899,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -895,12 +976,16 @@ spec:
                               type: "object"
                             describe:
                               description: "Describe determines the resource describe collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -944,9 +1029,13 @@ spec:
                               type: "string"
                             events:
                               description: "Events determines the events collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -982,12 +1071,16 @@ spec:
                               type: "object"
                             get:
                               description: "Get determines the resource get collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1029,9 +1122,13 @@ spec:
                               type: "object"
                             podLogs:
                               description: "PodLogs determines the pod logs collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1092,7 +1189,7 @@ spec:
                                   type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1168,12 +1265,16 @@ spec:
                               type: "object"
                             wait:
                               description: "Wait determines the resource wait collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1252,6 +1353,25 @@ spec:
                         description: "Cleanup defines what will be executed after the test is terminated."
                         items:
                           description: "CatchFinally defines actions to be executed in catch, finally and cleanup blocks."
+                          oneOf:
+                            - required:
+                                - "command"
+                            - required:
+                                - "delete"
+                            - required:
+                                - "describe"
+                            - required:
+                                - "events"
+                            - required:
+                                - "get"
+                            - required:
+                                - "podLogs"
+                            - required:
+                                - "script"
+                            - required:
+                                - "sleep"
+                            - required:
+                                - "wait"
                           properties:
                             command:
                               description: "Command defines a command to run."
@@ -1283,7 +1403,7 @@ spec:
                                   type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1352,6 +1472,10 @@ spec:
                               type: "object"
                             delete:
                               description: "Delete represents a deletion operation."
+                              not:
+                                required:
+                                  - "file"
+                                  - "ref"
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -1371,7 +1495,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1448,12 +1572,16 @@ spec:
                               type: "object"
                             describe:
                               description: "Describe determines the resource describe collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1497,9 +1625,13 @@ spec:
                               type: "string"
                             events:
                               description: "Events determines the events collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1535,12 +1667,16 @@ spec:
                               type: "object"
                             get:
                               description: "Get determines the resource get collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1582,9 +1718,13 @@ spec:
                               type: "object"
                             podLogs:
                               description: "PodLogs determines the pod logs collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1645,7 +1785,7 @@ spec:
                                   type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1721,12 +1861,16 @@ spec:
                               type: "object"
                             wait:
                               description: "Wait determines the resource wait collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1802,7 +1946,7 @@ spec:
                           type: "object"
                         type: "array"
                       cluster:
-                        description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                        description: "Cluster defines the target cluster (will be inherited if not specified)."
                         type: "string"
                       clusters:
                         additionalProperties:
@@ -1833,6 +1977,25 @@ spec:
                         description: "Finally defines what the step will execute after the step is terminated."
                         items:
                           description: "CatchFinally defines actions to be executed in catch, finally and cleanup blocks."
+                          oneOf:
+                            - required:
+                                - "command"
+                            - required:
+                                - "delete"
+                            - required:
+                                - "describe"
+                            - required:
+                                - "events"
+                            - required:
+                                - "get"
+                            - required:
+                                - "podLogs"
+                            - required:
+                                - "script"
+                            - required:
+                                - "sleep"
+                            - required:
+                                - "wait"
                           properties:
                             command:
                               description: "Command defines a command to run."
@@ -1864,7 +2027,7 @@ spec:
                                   type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -1933,6 +2096,10 @@ spec:
                               type: "object"
                             delete:
                               description: "Delete represents a deletion operation."
+                              not:
+                                required:
+                                  - "file"
+                                  - "ref"
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -1952,7 +2119,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2029,12 +2196,16 @@ spec:
                               type: "object"
                             describe:
                               description: "Describe determines the resource describe collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2078,9 +2249,13 @@ spec:
                               type: "string"
                             events:
                               description: "Events determines the events collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2116,12 +2291,16 @@ spec:
                               type: "object"
                             get:
                               description: "Get determines the resource get collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2163,9 +2342,13 @@ spec:
                               type: "object"
                             podLogs:
                               description: "PodLogs determines the pod logs collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2226,7 +2409,7 @@ spec:
                                   type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2302,12 +2485,16 @@ spec:
                               type: "object"
                             wait:
                               description: "Wait determines the resource wait collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2417,9 +2604,44 @@ spec:
                         description: "Try defines what the step will try to execute."
                         items:
                           description: "Operation defines a single operation, only one action is permitted for a given operation."
+                          oneOf:
+                            - required:
+                                - "apply"
+                            - required:
+                                - "assert"
+                            - required:
+                                - "command"
+                            - required:
+                                - "create"
+                            - required:
+                                - "delete"
+                            - required:
+                                - "describe"
+                            - required:
+                                - "error"
+                            - required:
+                                - "events"
+                            - required:
+                                - "patch"
+                            - required:
+                                - "podLogs"
+                            - required:
+                                - "proxy"
+                            - required:
+                                - "script"
+                            - required:
+                                - "sleep"
+                            - required:
+                                - "update"
+                            - required:
+                                - "wait"
                           properties:
                             apply:
                               description: "Apply represents resources that should be applied for this test step. This can include things\nlike configuration settings or any other resources that need to be available during the test."
+                              not:
+                                required:
+                                  - "file"
+                                  - "resource"
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -2439,7 +2661,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2514,6 +2736,10 @@ spec:
                               type: "object"
                             assert:
                               description: "Assert represents an assertion to be made. It checks whether the conditions specified in the assertion hold true."
+                              not:
+                                required:
+                                  - "file"
+                                  - "resource"
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -2533,7 +2759,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2594,7 +2820,7 @@ spec:
                                   type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2666,6 +2892,10 @@ spec:
                               type: "boolean"
                             create:
                               description: "Create represents a creation operation."
+                              not:
+                                required:
+                                  - "file"
+                                  - "resource"
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -2685,7 +2915,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2760,6 +2990,10 @@ spec:
                               type: "object"
                             delete:
                               description: "Delete represents a deletion operation."
+                              not:
+                                required:
+                                  - "file"
+                                  - "ref"
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -2779,7 +3013,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2856,12 +3090,16 @@ spec:
                               type: "object"
                             describe:
                               description: "Describe determines the resource describe collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2905,6 +3143,10 @@ spec:
                               type: "string"
                             error:
                               description: "Error represents the expected errors for this test step. If any of these errors occur, the test\nwill consider them as expected; otherwise, they will be treated as test failures."
+                              not:
+                                required:
+                                  - "file"
+                                  - "resource"
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -2924,7 +3166,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2957,9 +3199,13 @@ spec:
                               type: "object"
                             events:
                               description: "Events determines the events collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -2995,12 +3241,16 @@ spec:
                               type: "object"
                             get:
                               description: "Get determines the resource get collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -3042,6 +3292,10 @@ spec:
                               type: "object"
                             patch:
                               description: "Patch represents a patch operation."
+                              not:
+                                required:
+                                  - "file"
+                                  - "resource"
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -3061,7 +3315,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -3136,9 +3390,13 @@ spec:
                               type: "object"
                             podLogs:
                               description: "PodLogs determines the pod logs collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -3181,7 +3439,7 @@ spec:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -3266,7 +3524,7 @@ spec:
                                   type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -3342,6 +3600,10 @@ spec:
                               type: "object"
                             update:
                               description: "Update represents an update operation."
+                              not:
+                                required:
+                                  - "file"
+                                  - "resource"
                               properties:
                                 bindings:
                                   description: "Bindings defines additional binding key/values."
@@ -3361,7 +3623,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -3436,12 +3698,16 @@ spec:
                               type: "object"
                             wait:
                               description: "Wait determines the resource wait collector to execute."
+                              not:
+                                required:
+                                  - "name"
+                                  - "selector"
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
                                   type: "string"
                                 cluster:
-                                  description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                                  description: "Cluster defines the target cluster (will be inherited if not specified)."
                                   type: "string"
                                 clusters:
                                   additionalProperties:
@@ -3517,8 +3783,13 @@ spec:
                           type: "object"
                         minItems: 1
                         type: "array"
-                    required:
-                      - "try"
+                      use:
+                        description: "Use defines a reference to a step template."
+                        properties:
+                          template:
+                            description: "Template references a step template."
+                            type: "string"
+                        type: "object"
                     type: "object"
                   type: "array"
                 template:

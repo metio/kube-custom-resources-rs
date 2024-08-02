@@ -251,6 +251,9 @@ pub struct AWXSpec {
     /// Secret where the old database configuration can be found for data migration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub old_postgres_configuration_secret: Option<String>,
+    /// Annotations to add to the Postgres deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub postgres_annotations: Option<String>,
     /// Secret where the database configuration can be found
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_configuration_secret: Option<String>,

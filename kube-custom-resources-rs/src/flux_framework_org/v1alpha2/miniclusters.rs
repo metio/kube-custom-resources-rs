@@ -246,6 +246,9 @@ pub struct MiniClusterContainersVolumes {
     /// Add an empty directory custom type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirMedium")]
     pub empty_dir_medium: Option<String>,
+    /// Add an empty directory sizeLimit
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirSizeLimit")]
+    pub empty_dir_size_limit: Option<String>,
     /// An existing hostPath to bind to path
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<String>,
@@ -472,6 +475,9 @@ pub struct MiniClusterPod {
     /// Annotations for each pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// Automatically mount the service account name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
+    pub automount_service_account_token: Option<bool>,
     /// Labels for each pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -481,6 +487,12 @@ pub struct MiniClusterPod {
     /// Resources include limits and requests
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BTreeMap<String, IntOrString>>,
+    /// Restart Policy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
+    /// RuntimeClassName for the pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
+    pub runtime_class_name: Option<String>,
     /// Scheduler name for the pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
@@ -650,6 +662,9 @@ pub struct MiniClusterServicesVolumes {
     /// Add an empty directory custom type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirMedium")]
     pub empty_dir_medium: Option<String>,
+    /// Add an empty directory sizeLimit
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirSizeLimit")]
+    pub empty_dir_size_limit: Option<String>,
     /// An existing hostPath to bind to path
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<String>,

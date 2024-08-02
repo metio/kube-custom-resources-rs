@@ -491,8 +491,11 @@ pub struct ClusterDeploymentPlatformBaremetalLibvirtSshPrivateKeySecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentPlatformGcp {
     /// CredentialsSecretRef refers to a secret that contains the GCP account access credentials.
-    #[serde(rename = "credentialsSecretRef")]
-    pub credentials_secret_ref: ClusterDeploymentPlatformGcpCredentialsSecretRef,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretRef")]
+    pub credentials_secret_ref: Option<ClusterDeploymentPlatformGcpCredentialsSecretRef>,
+    /// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP Private Service Connect. It includes a forwarding rule paired with a Service Attachment across GCP accounts and allows clients to connect to services using GCP internal networking of using public load balancers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateServiceConnect")]
+    pub private_service_connect: Option<ClusterDeploymentPlatformGcpPrivateServiceConnect>,
     /// Region specifies the GCP region where the cluster will be created.
     pub region: String,
 }
@@ -503,6 +506,32 @@ pub struct ClusterDeploymentPlatformGcpCredentialsSecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP Private Service Connect. It includes a forwarding rule paired with a Service Attachment across GCP accounts and allows clients to connect to services using GCP internal networking of using public load balancers.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformGcpPrivateServiceConnect {
+    /// Enabled specifies if Private Service Connect is to be enabled on the cluster.
+    pub enabled: bool,
+    /// ServiceAttachment configures the service attachment to be used by the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAttachment")]
+    pub service_attachment: Option<ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachment>,
+}
+
+/// ServiceAttachment configures the service attachment to be used by the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachment {
+    /// Subnet configures the subnetwork that contains the service attachment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub subnet: Option<ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachmentSubnet>,
+}
+
+/// Subnet configures the subnetwork that contains the service attachment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachmentSubnet {
+    /// Cidr configures the network cidr of the subnetwork that contains the service attachment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
 }
 
 /// IBMCloud is the configuration used when installing on IBM Cloud
@@ -873,6 +902,9 @@ pub struct ClusterDeploymentStatusPlatformStatus {
     /// AWS is the observed state on AWS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aws: Option<ClusterDeploymentStatusPlatformStatusAws>,
+    /// GCP is the observed state on GCP
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gcp: Option<ClusterDeploymentStatusPlatformStatusGcp>,
 }
 
 /// AWS is the observed state on AWS.
@@ -906,6 +938,34 @@ pub struct ClusterDeploymentStatusPlatformStatusAwsPrivateLinkVpcEndpointService
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// GCP is the observed state on GCP
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentStatusPlatformStatusGcp {
+    /// PrivateServiceConnect contains the private service connect resource references
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateServiceConnect")]
+    pub private_service_connect: Option<ClusterDeploymentStatusPlatformStatusGcpPrivateServiceConnect>,
+}
+
+/// PrivateServiceConnect contains the private service connect resource references
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentStatusPlatformStatusGcpPrivateServiceConnect {
+    /// Endpoint is the selfLink of the endpoint created for the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+    /// EndpointAddress is the selfLink of the address created for the cluster endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointAddress")]
+    pub endpoint_address: Option<String>,
+    /// ServiceAttachment is the selfLink of the service attachment created for the clsuter.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAttachment")]
+    pub service_attachment: Option<String>,
+    /// ServiceAttachmentFirewall is the selfLink of the firewall that allows traffic between the service attachment and the cluster's internal api load balancer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAttachmentFirewall")]
+    pub service_attachment_firewall: Option<String>,
+    /// ServiceAttachmentSubnet is the selfLink of the subnet that will contain the service attachment.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAttachmentSubnet")]
+    pub service_attachment_subnet: Option<String>,
 }
 
 /// ProvisionRef is a reference to the last ClusterProvision created for the deployment

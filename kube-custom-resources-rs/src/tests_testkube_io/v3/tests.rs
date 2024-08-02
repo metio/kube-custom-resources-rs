@@ -167,6 +167,7 @@ pub struct TestExecutionRequest {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
     /// whether webhooks should be called on execution
+    /// Deprecated: field is not used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
     pub disable_webhooks: Option<bool>,
     /// config map references

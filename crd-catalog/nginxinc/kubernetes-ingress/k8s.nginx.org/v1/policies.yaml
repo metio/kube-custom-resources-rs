@@ -70,7 +70,7 @@ spec:
                       type: "object"
                   type: "object"
                 basicAuth:
-                  description: "BasicAuth holds HTTP Basic authentication configuration\npolicy status: preview"
+                  description: "BasicAuth holds HTTP Basic authentication configuration"
                   properties:
                     realm:
                       type: "string"

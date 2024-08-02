@@ -999,12 +999,6 @@ pub struct RateLimitPolicyTargetRef {
     pub kind: String,
     /// Name is the name of the target resource.
     pub name: String,
-    /// Namespace is the namespace of the referent. When unspecified, the local
-    /// namespace is inferred. Even when policy targets a resource in a different
-    /// namespace, it MUST only apply to traffic originating from the same
-    /// namespace as the policy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
 /// RateLimitPolicyStatus defines the observed state of RateLimitPolicy

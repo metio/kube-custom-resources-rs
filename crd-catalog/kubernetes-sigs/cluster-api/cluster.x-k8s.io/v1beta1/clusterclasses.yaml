@@ -349,7 +349,7 @@ spec:
                     description: "ClusterClassVariable defines a variable which can\nbe configured in the Cluster topology and used in patches."
                     properties:
                       metadata:
-                        description: "Metadata is the metadata of a variable.\nIt can be used to add additional data for higher level tools to\na ClusterClassVariable."
+                        description: "Metadata is the metadata of a variable.\nIt can be used to add additional data for higher level tools to\na ClusterClassVariable.\n\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please use XMetadata in JSONSchemaProps instead."
                         properties:
                           annotations:
                             additionalProperties:
@@ -488,6 +488,20 @@ spec:
                                 x-kubernetes-list-map-keys:
                                   - "rule"
                                 x-kubernetes-list-type: "map"
+                              x-metadata:
+                                description: "XMetadata is the metadata of a variable or a nested field within a variable.\nIt can be used to add additional data for higher level tools."
+                                properties:
+                                  annotations:
+                                    additionalProperties:
+                                      type: "string"
+                                    description: "Annotations is an unstructured key value map that can be used to store and\nretrieve arbitrary metadata.\nThey are not queryable."
+                                    type: "object"
+                                  labels:
+                                    additionalProperties:
+                                      type: "string"
+                                    description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) variables."
+                                    type: "object"
+                                type: "object"
                             required:
                               - "type"
                             type: "object"
@@ -729,6 +743,9 @@ spec:
                           - "template"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "class"
+                      x-kubernetes-list-type: "map"
                     machinePools:
                       description: "MachinePools is a list of machine pool classes that can be used to create\na set of worker nodes."
                       items:
@@ -852,6 +869,9 @@ spec:
                           - "template"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "class"
+                      x-kubernetes-list-type: "map"
                   type: "object"
               type: "object"
             status:
@@ -905,7 +925,7 @@ spec:
                               description: "From specifies the origin of the variable definition.\nThis will be `inline` for variables defined in the ClusterClass or the name of a patch defined in the ClusterClass\nfor variables discovered from a DiscoverVariables runtime extensions."
                               type: "string"
                             metadata:
-                              description: "Metadata is the metadata of a variable.\nIt can be used to add additional data for higher level tools to\na ClusterClassVariable."
+                              description: "Metadata is the metadata of a variable.\nIt can be used to add additional data for higher level tools to\na ClusterClassVariable.\n\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion."
                               properties:
                                 annotations:
                                   additionalProperties:
@@ -1041,6 +1061,20 @@ spec:
                                       x-kubernetes-list-map-keys:
                                         - "rule"
                                       x-kubernetes-list-type: "map"
+                                    x-metadata:
+                                      description: "XMetadata is the metadata of a variable or a nested field within a variable.\nIt can be used to add additional data for higher level tools."
+                                      properties:
+                                        annotations:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "Annotations is an unstructured key value map that can be used to store and\nretrieve arbitrary metadata.\nThey are not queryable."
+                                          type: "object"
+                                        labels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) variables."
+                                          type: "object"
+                                      type: "object"
                                   required:
                                     - "type"
                                   type: "object"
