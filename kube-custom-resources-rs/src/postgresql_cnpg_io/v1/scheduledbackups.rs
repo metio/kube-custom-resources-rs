@@ -31,8 +31,8 @@ pub struct ScheduledBackupSpec {
     /// If the first backup has to be immediately start after creation or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub immediate: Option<bool>,
-    /// The backup method to be used, possible options are `barmanObjectStore`
-    /// and `volumeSnapshot`. Defaults to: `barmanObjectStore`.
+    /// The backup method to be used, possible options are `barmanObjectStore`,
+    /// `volumeSnapshot` or `plugin`. Defaults to: `barmanObjectStore`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<ScheduledBackupMethod>,
     /// Whether the default type of backup with volume snapshots is
@@ -91,6 +91,8 @@ pub enum ScheduledBackupMethod {
     BarmanObjectStore,
     #[serde(rename = "volumeSnapshot")]
     VolumeSnapshot,
+    #[serde(rename = "plugin")]
+    Plugin,
 }
 
 /// Configuration parameters to control the online/hot backup with volume snapshots

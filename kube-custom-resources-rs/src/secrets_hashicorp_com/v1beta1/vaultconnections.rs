@@ -30,6 +30,10 @@ pub struct VaultConnectionSpec {
     /// SkipTLSVerify for TLS connections.
     #[serde(rename = "skipTLSVerify")]
     pub skip_tls_verify: bool,
+    /// Timeout applied to all Vault requests for this connection. If not set, the
+    /// default timeout from the Vault API client config is used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
     /// TLSServerName to use as the SNI host for TLS connections.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsServerName")]
     pub tls_server_name: Option<String>,

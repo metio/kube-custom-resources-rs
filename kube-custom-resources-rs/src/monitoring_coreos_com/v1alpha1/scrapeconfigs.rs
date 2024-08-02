@@ -172,6 +172,9 @@ pub struct ScrapeConfigSpec {
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
+    /// ScalewaySDConfigs defines a list of Scaleway instances and baremetal service discovery configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalewaySDConfigs")]
+    pub scaleway_sd_configs: Option<Vec<ScrapeConfigScalewaySdConfigs>>,
     /// Configures the protocol scheme used for requests.
     /// If empty, Prometheus uses HTTP by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -498,6 +501,18 @@ pub struct ScrapeConfigNomadSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigNomadSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigNomadSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigNomadSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -618,6 +633,32 @@ pub struct ScrapeConfigNomadSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigNomadSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigNomadSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// Authorization header to use on every scrape request.
@@ -1096,6 +1137,18 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigConsulSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigConsulSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigConsulSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -1216,6 +1269,32 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS Config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigConsulSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS Config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigConsulSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// Consul ACL TokenRef, if not provided it will use the ACL from the local Consul Agent.
@@ -1460,6 +1539,18 @@ pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -1580,6 +1671,32 @@ pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigDigitalOceanSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigDigitalOceanSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// DNSSDConfig allows specifying a set of DNS domain names which are periodically queried to discover a list of targets.
@@ -1919,6 +2036,18 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigDockerSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigDockerSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigDockerSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -2039,6 +2168,32 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigDockerSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigDockerSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// DockerSwarmSDConfig configurations allow retrieving scrape targets from Docker Swarm engine.
@@ -2348,6 +2503,18 @@ pub struct ScrapeConfigDockerSwarmSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigDockerSwarmSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigDockerSwarmSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigDockerSwarmSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -2468,6 +2635,32 @@ pub struct ScrapeConfigDockerSwarmSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration to use on every scrape request
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigDockerSwarmSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use on every scrape request
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigDockerSwarmSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// EC2SDConfig allow retrieving scrape targets from AWS EC2 instances.
@@ -2826,6 +3019,18 @@ pub struct ScrapeConfigEurekaSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigEurekaSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigEurekaSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigEurekaSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -2946,6 +3151,32 @@ pub struct ScrapeConfigEurekaSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigEurekaSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigEurekaSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// FileSDConfig defines a Prometheus file service discovery configuration
@@ -3298,6 +3529,18 @@ pub struct ScrapeConfigHetznerSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigHetznerSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigHetznerSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigHetznerSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -3418,6 +3661,32 @@ pub struct ScrapeConfigHetznerSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration to use on every scrape request.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigHetznerSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use on every scrape request.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigHetznerSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// HTTPSDConfig defines a prometheus HTTP service discovery configuration
@@ -3594,6 +3863,18 @@ pub struct ScrapeConfigHttpSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigHttpSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigHttpSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigHttpSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -3714,6 +3995,32 @@ pub struct ScrapeConfigHttpSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigHttpSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigHttpSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API.
@@ -4093,6 +4400,18 @@ pub struct ScrapeConfigKubernetesSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigKubernetesSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigKubernetesSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigKubernetesSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -4213,6 +4532,32 @@ pub struct ScrapeConfigKubernetesSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration to use on every scrape request.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigKubernetesSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use on every scrape request.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigKubernetesSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// KumaSDConfig allow retrieving scrape targets from Kuma's control plane.
@@ -4496,6 +4841,18 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigKumaSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigKumaSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigKumaSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -4616,6 +4973,32 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration to use on every scrape request
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigKumaSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use on every scrape request
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigKumaSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// LightSailSDConfig configurations allow retrieving scrape targets from AWS Lightsail instances.
@@ -4953,6 +5336,18 @@ pub struct ScrapeConfigLightSailSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigLightSailSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigLightSailSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigLightSailSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -5073,6 +5468,32 @@ pub struct ScrapeConfigLightSailSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration to connect to the Puppet DB.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigLightSailSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to connect to the Puppet DB.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigLightSailSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// LinodeSDConfig configurations allow retrieving scrape targets from Linode's Linode APIv4.
@@ -5301,6 +5722,18 @@ pub struct ScrapeConfigLinodeSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigLinodeSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigLinodeSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigLinodeSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -5421,6 +5854,32 @@ pub struct ScrapeConfigLinodeSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigLinodeSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigLinodeSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
@@ -5678,6 +6137,18 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigOpenstackSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigOpenstackSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigOpenstackSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -5798,6 +6269,32 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigOpenstackSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigOpenstackSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// OVHCloudSDConfig configurations allow retrieving scrape targets from OVHcloud's dedicated servers and VPS using their API.
@@ -6170,6 +6667,18 @@ pub struct ScrapeConfigPuppetDbsdConfigsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigPuppetDbsdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigPuppetDbsdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigPuppetDbsdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -6292,6 +6801,32 @@ pub struct ScrapeConfigPuppetDbsdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
+/// TLS configuration to connect to the Puppet DB.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigPuppetDbsdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to connect to the Puppet DB.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigPuppetDbsdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
@@ -6392,6 +6927,301 @@ pub enum ScrapeConfigRelabelingsAction {
     DropEqual,
 }
 
+/// ScalewaySDConfig configurations allow retrieving scrape targets from Scaleway instances and baremetal services.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scaleway_sd_config
+/// TODO: Need to document that we will not be supporting the `_file` fields.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigs {
+    /// Access key to use. https://console.scaleway.com/project/credentials
+    #[serde(rename = "accessKey")]
+    pub access_key: String,
+    /// API URL to use when doing the server listing requests.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
+    pub api_url: Option<String>,
+    /// Whether to enable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
+    pub enable_http2: Option<bool>,
+    /// Configure whether HTTP requests follow HTTP 3xx redirects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
+    pub follow_redirects: Option<bool>,
+    /// NameFilter specify a name filter (works as a LIKE) to apply on the server listing request.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameFilter")]
+    pub name_filter: Option<String>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
+    /// The port to scrape metrics from.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// Project ID of the targets.
+    #[serde(rename = "projectID")]
+    pub project_id: String,
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigScalewaySdConfigsProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
+    pub proxy_url: Option<String>,
+    /// Refresh interval to re-read the list of instances.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
+    pub refresh_interval: Option<String>,
+    /// Service of the targets to retrieve. Must be `Instance` or `Baremetal`.
+    pub role: ScrapeConfigScalewaySdConfigsRole,
+    /// Secret key to use when listing targets.
+    #[serde(rename = "secretKey")]
+    pub secret_key: ScrapeConfigScalewaySdConfigsSecretKey,
+    /// TagsFilter specify a tag filter (a server needs to have all defined tags to be listed) to apply on the server listing request.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagsFilter")]
+    pub tags_filter: Option<Vec<String>>,
+    /// TLS configuration to use on every scrape request
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<ScrapeConfigScalewaySdConfigsTlsConfig>,
+    /// Zone is the availability zone of your targets (e.g. fr-par-1).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub zone: Option<String>,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigsProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// ScalewaySDConfig configurations allow retrieving scrape targets from Scaleway instances and baremetal services.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scaleway_sd_config
+/// TODO: Need to document that we will not be supporting the `_file` fields.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigScalewaySdConfigsRole {
+    Instance,
+    Baremetal,
+}
+
+/// Secret key to use when listing targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigsSecretKey {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration to use on every scrape request
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigsTlsConfig {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<ScrapeConfigScalewaySdConfigsTlsConfigCa>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<ScrapeConfigScalewaySdConfigsTlsConfigCert>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<ScrapeConfigScalewaySdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigScalewaySdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigScalewaySdConfigsTlsConfigMinVersion>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigsTlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigScalewaySdConfigsTlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigScalewaySdConfigsTlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigsTlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigsTlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigsTlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigScalewaySdConfigsTlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigScalewaySdConfigsTlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigsTlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigsTlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigScalewaySdConfigsTlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration to use on every scrape request
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigScalewaySdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use on every scrape request
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigScalewaySdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
 /// ScrapeConfigSpec is a specification of the desired configuration for a scrape configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigScheme {
@@ -6428,6 +7258,18 @@ pub struct ScrapeConfigTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -6548,5 +7390,31 @@ pub struct ScrapeConfigTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration to use on every scrape request
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use on every scrape request
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 

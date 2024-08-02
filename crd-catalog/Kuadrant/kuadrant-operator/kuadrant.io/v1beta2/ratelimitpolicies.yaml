@@ -730,12 +730,6 @@ spec:
                       maxLength: 253
                       minLength: 1
                       type: "string"
-                    namespace:
-                      description: "Namespace is the namespace of the referent. When unspecified, the local\nnamespace is inferred. Even when policy targets a resource in a different\nnamespace, it MUST only apply to traffic originating from the same\nnamespace as the policy."
-                      maxLength: 63
-                      minLength: 1
-                      pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
-                      type: "string"
                   required:
                     - "group"
                     - "kind"

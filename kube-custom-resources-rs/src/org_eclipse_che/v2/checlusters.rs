@@ -1109,6 +1109,13 @@ pub struct CheClusterDevEnvironments {
     /// GatewayContainer configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayContainer")]
     pub gateway_container: Option<CheClusterDevEnvironmentsGatewayContainer>,
+    /// IgnoredUnrecoverableEvents defines a list of Kubernetes event names that should
+    /// be ignored when deciding to fail a workspace that is starting. This option should be used
+    /// if a transient cluster issue is triggering false-positives (for example, if
+    /// the cluster occasionally encounters FailedScheduling events). Events listed
+    /// here will not trigger workspace failures.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoredUnrecoverableEvents")]
+    pub ignored_unrecoverable_events: Option<Vec<String>>,
     /// ImagePullPolicy defines the imagePullPolicy used for containers in a DevWorkspace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<CheClusterDevEnvironmentsImagePullPolicy>,

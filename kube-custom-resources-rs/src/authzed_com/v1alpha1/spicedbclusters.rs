@@ -20,19 +20,35 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct SpiceDBClusterSpec {
-    /// Channel is a defined series of updates that operator should follow. The operator is configured with a datasource that configures available channels and update paths. If `version` is not specified, then the operator will keep SpiceDB up-to-date with the current head of the channel. If `version` is specified, then the operator will write available updates in the status.
+    /// Channel is a defined series of updates that operator should follow.
+    /// The operator is configured with a datasource that configures available
+    /// channels and update paths.
+    /// If `version` is not specified, then the operator will keep SpiceDB
+    /// up-to-date with the current head of the channel.
+    /// If `version` is specified, then the operator will write available updates
+    /// in the status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel: Option<String>,
     /// Config values to be passed to the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
-    /// Patches is a list of patches to apply to generated resources. If multiple patches apply to the same object and field, later patches in the list take precedence over earlier ones.
+    /// Patches is a list of patches to apply to generated resources.
+    /// If multiple patches apply to the same object and field, later patches
+    /// in the list take precedence over earlier ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patches: Option<Vec<SpiceDBClusterPatches>>,
-    /// SecretName points to a secret (in the same namespace) that holds secret config for the cluster like passwords, credentials, etc. If the secret is omitted, one will be generated
+    /// SecretName points to a secret (in the same namespace) that holds secret
+    /// config for the cluster like passwords, credentials, etc.
+    /// If the secret is omitted, one will be generated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
-    /// Version is the name of the version of SpiceDB that will be run. The version is usually a simple version string like `v1.13.0`, but the operator is configured with a data source that tells it what versions are allowed, and they may have other names. If omitted, the newest version in the head of the channel will be used. Note that the `config.image` field will take precedence over version/channel, if it is specified
+    /// Version is the name of the version of SpiceDB that will be run.
+    /// The version is usually a simple version string like `v1.13.0`, but the
+    /// operator is configured with a data source that tells it what versions
+    /// are allowed, and they may have other names.
+    /// If omitted, the newest version in the head of the channel will be used.
+    /// Note that the `config.image` field will take precedence over
+    /// version/channel, if it is specified
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -43,20 +59,25 @@ pub struct SpiceDBClusterPatches {
     /// Kind targets an object by its kubernetes Kind name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Patch is an inlined representation of a structured merge patch (one that just specifies the structure and fields to be modified) or a an explicit JSON6902 patch operation.
+    /// Patch is an inlined representation of a structured merge patch (one that
+    /// just specifies the structure and fields to be modified) or a an explicit
+    /// JSON6902 patch operation.
     pub patch: BTreeMap<String, serde_json::Value>,
 }
 
 /// ClusterStatus communicates the observed state of the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SpiceDBClusterStatus {
-    /// AvailableVersions is a list of versions that the currently running version can be updated to. Only applies if using an update channel.
+    /// AvailableVersions is a list of versions that the currently running
+    /// version can be updated to. Only applies if using an update channel.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableVersions")]
     pub available_versions: Option<Vec<SpiceDBClusterStatusAvailableVersions>>,
     /// Conditions for the current state of the Stack.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// CurrentMigrationHash is a hash of the currently running migration target and config. If this is equal to TargetMigrationHash (and there are no conditions) then the datastore is fully migrated.
+    /// CurrentMigrationHash is a hash of the currently running migration target and config.
+    /// If this is equal to TargetMigrationHash (and there are no conditions) then the datastore
+    /// is fully migrated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentMigrationHash")]
     pub current_migration_hash: Option<String>,
     /// Image is the image that is or will be used for this cluster
@@ -65,7 +86,8 @@ pub struct SpiceDBClusterStatus {
     /// Migration is the name of the last migration applied
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub migration: Option<String>,
-    /// ObservedGeneration represents the .metadata.generation that has been seen by the controller.
+    /// ObservedGeneration represents the .metadata.generation that has been
+    /// seen by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Phase is the currently running phase (used for phased migrations)
@@ -77,14 +99,17 @@ pub struct SpiceDBClusterStatus {
     /// TargetMigrationHash is a hash of the desired migration target and config
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetMigrationHash")]
     pub target_migration_hash: Option<String>,
-    /// CurrentVersion is a description of the currently selected version from the channel, if an update channel is being used.
+    /// CurrentVersion is a description of the currently selected version from
+    /// the channel, if an update channel is being used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<SpiceDBClusterStatusVersion>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SpiceDBClusterStatusAvailableVersions {
-    /// Attributes is an optional set of descriptors for the update, which carry additional information like whether there will be a migration if this version is selected.
+    /// Attributes is an optional set of descriptors for the update, which
+    /// carry additional information like whether there will be a migration
+    /// if this version is selected.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Vec<String>>,
     /// Channel is the name of the channel this version is in
@@ -96,10 +121,13 @@ pub struct SpiceDBClusterStatusAvailableVersions {
     pub name: String,
 }
 
-/// CurrentVersion is a description of the currently selected version from the channel, if an update channel is being used.
+/// CurrentVersion is a description of the currently selected version from
+/// the channel, if an update channel is being used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SpiceDBClusterStatusVersion {
-    /// Attributes is an optional set of descriptors for the update, which carry additional information like whether there will be a migration if this version is selected.
+    /// Attributes is an optional set of descriptors for the update, which
+    /// carry additional information like whether there will be a migration
+    /// if this version is selected.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Vec<String>>,
     /// Channel is the name of the channel this version is in

@@ -351,7 +351,7 @@ spec:
                       description: "The priorityClassName used to assign the priority of the Kiali pod."
                       type: "string"
                     replicas:
-                      description: "The replica count for the Kiail deployment."
+                      description: "The replica count for the Kiail deployment. If `deployment.hpa` is specified, this setting is ignored."
                       type: "integer"
                     resources:
                       description: "Defines compute resources that are to be given to the Kiali pod's container. The value is a dict as defined by Kubernetes. See the Kubernetes documentation (https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container).\nIf you set this to an empty dict (`{}`) then no resources will be defined in the Deployment.\nIf you do not set this at all, the default is,\n```\nrequests:\n  cpu: \"10m\"\n  memory: \"64Mi\"\nlimits:\n  memory: \"1Gi\"\n```\n"
@@ -573,6 +573,9 @@ spec:
                         config_map_name:
                           description: "The name of the istio control plane config map."
                           type: "string"
+                        egress_gateway_namespace:
+                          description: "The namespace where Istio EgressGateway component is read for a status check. When left empty, then `istio_namespace` value is used."
+                          type: "string"
                         envoy_admin_local_port:
                           description: "The port which kiali will open to fetch envoy config data information."
                           type: "integer"
@@ -588,6 +591,9 @@ spec:
                                 type: "string"
                             type: "object"
                           type: "array"
+                        ingress_gateway_namespace:
+                          description: "The namespace where Istio IngressGateway component is read for a status check. When left empty, then `istio_namespace` value is used."
+                          type: "string"
                         istio_api_enabled:
                           description: "Indicates if Kiali has access to istiod. true by default."
                           type: "boolean"
@@ -835,6 +841,12 @@ spec:
                   properties:
                     app_label_name:
                       description: "The name of the label used to define what application a workload belongs to. This is typically something like `app` or `app.kubernetes.io/name`."
+                      type: "string"
+                    egress_gateway_label:
+                      description: "The selector label for Egress Gateway workload. This is typically `istio=egressgateway`."
+                      type: "string"
+                    ingress_gateway_label:
+                      description: "The selector label for Ingress Gateway workload. This is typically `istio=ingressgateway`."
                       type: "string"
                     injection_label_name:
                       description: "The name of the label used to instruct Istio to automatically inject sidecar proxies when applications are deployed."
@@ -1165,7 +1177,7 @@ spec:
                         - "https"
                       type: "string"
                     write_timeout:
-                      description: "The maximum duration, in seconds, before timing out writes of the HTTP response back to the client. Default is 30."
+                      description: "The maximum duration, in seconds, before timing out writes of the HTTP response back to the client. Default is 30.\n\nIn OpenShift clusters, the route request time out should be also increased as the default is 30 seconds. \nThis can be done by annotating the specific route with `haproxy.router.openshift.io/timeout`. \nSee https://docs.openshift.com/container-platform/4.16/networking/routes/route-configuration.html#nw-configuring-route-timeouts_route-configuration for further details.\n"
                       type: "integer"
                   type: "object"
                 version:

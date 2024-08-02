@@ -14,6 +14,10 @@ spec:
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
+        - description: "Final state of JobSet"
+          jsonPath: ".status.terminalState"
+          name: "TerminalState"
+          type: "string"
         - description: "Number of restarts"
           jsonPath: ".status.restarts"
           name: "Restarts"
@@ -45,6 +49,21 @@ spec:
             spec:
               description: "JobSetSpec defines the desired state of JobSet"
               properties:
+                coordinator:
+                  description: "Coordinator can be used to assign a specific pod as the coordinator for\nthe JobSet. If defined, an annotation will be added to all Jobs and pods with\ncoordinator pod, which contains the stable network endpoint where the\ncoordinator pod can be reached.\njobset.sigs.k8s.io/coordinator=<pod hostname>.<headless service>"
+                  properties:
+                    jobIndex:
+                      description: "JobIndex is the index of Job which contains the coordinator pod\n(i.e., for a ReplicatedJob with N replicas, there are Job indexes 0 to N-1)."
+                      type: "integer"
+                    podIndex:
+                      description: "PodIndex is the Job completion index of the coordinator pod."
+                      type: "integer"
+                    replicatedJob:
+                      description: "ReplicatedJob is the name of the ReplicatedJob which contains\nthe coordinator pod."
+                      type: "string"
+                  required:
+                    - "replicatedJob"
+                  type: "object"
                 failurePolicy:
                   description: "FailurePolicy, if set, configures when to declare the JobSet as\nfailed.\nThe JobSet is always declared failed if any job in the set\nfinished with status failed."
                   properties:
@@ -4886,6 +4905,9 @@ spec:
                   description: "RestartsCountTowardsMax tracks the number of times the JobSet has restarted that counts towards the maximum allowed number of restarts."
                   format: "int32"
                   type: "integer"
+                terminalState:
+                  description: "TerminalState the state of the JobSet when it finishes execution.\nIt can be either Complete or Failed. Otherwise, it is empty by default."
+                  type: "string"
               type: "object"
           type: "object"
       served: true

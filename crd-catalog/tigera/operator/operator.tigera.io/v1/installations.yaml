@@ -553,9 +553,10 @@ spec:
                                     description: "CalicoKubeControllersDeploymentContainer is a calico-kube-controllers Deployment container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the calico-kube-controllers Deployment container by name.\nSupported values are: calico-kube-controllers"
+                                        description: "Name is an enum which identifies the calico-kube-controllers Deployment container by name.\nSupported values are: calico-kube-controllers, es-calico-kube-controllers"
                                         enum:
                                           - "calico-kube-controllers"
+                                          - "es-calico-kube-controllers"
                                         type: "string"
                                       resources:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-kube-controllers Deployment container's resources.\nIf omitted, the calico-kube-controllers Deployment will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
@@ -703,6 +704,7 @@ spec:
                         - "Iptables"
                         - "BPF"
                         - "VPP"
+                        - "Nftables"
                       type: "string"
                     linuxPolicySetupTimeoutSeconds:
                       description: "LinuxPolicySetupTimeoutSeconds delays new pods from running containers\nuntil their policy has been programmed in the dataplane.\nThe specified delay defines the maximum amount of time\nthat the Calico CNI plugin will wait for policy to be programmed.\nOnly applies to pods created on Linux nodes.\n* A value of 0 disables pod startup delays.\nDefault: 0"
@@ -5006,9 +5008,10 @@ spec:
                                         description: "CalicoKubeControllersDeploymentContainer is a calico-kube-controllers Deployment container."
                                         properties:
                                           name:
-                                            description: "Name is an enum which identifies the calico-kube-controllers Deployment container by name.\nSupported values are: calico-kube-controllers"
+                                            description: "Name is an enum which identifies the calico-kube-controllers Deployment container by name.\nSupported values are: calico-kube-controllers, es-calico-kube-controllers"
                                             enum:
                                               - "calico-kube-controllers"
+                                              - "es-calico-kube-controllers"
                                             type: "string"
                                           resources:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-kube-controllers Deployment container's resources.\nIf omitted, the calico-kube-controllers Deployment will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
@@ -5156,6 +5159,7 @@ spec:
                             - "Iptables"
                             - "BPF"
                             - "VPP"
+                            - "Nftables"
                           type: "string"
                         linuxPolicySetupTimeoutSeconds:
                           description: "LinuxPolicySetupTimeoutSeconds delays new pods from running containers\nuntil their policy has been programmed in the dataplane.\nThe specified delay defines the maximum amount of time\nthat the Calico CNI plugin will wait for policy to be programmed.\nOnly applies to pods created on Linux nodes.\n* A value of 0 disables pod startup delays.\nDefault: 0"

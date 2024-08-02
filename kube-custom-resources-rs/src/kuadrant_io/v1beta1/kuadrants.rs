@@ -32,6 +32,9 @@ pub struct KuadrantLimitador {
     pub affinity: Option<KuadrantLimitadorAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pdb: Option<KuadrantLimitadorPdb>,
+    /// RateLimitHeadersType defines the valid options for the --rate-limit-headers arg
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitHeaders")]
+    pub rate_limit_headers: Option<KuadrantLimitadorRateLimitHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
     /// ResourceRequirements describes the compute resource requirements.
@@ -40,6 +43,12 @@ pub struct KuadrantLimitador {
     /// Storage contains the options for Limitador counters database or in-memory data storage
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<KuadrantLimitadorStorage>,
+    /// Telemetry defines the level of metrics Limitador will expose to the user
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub telemetry: Option<KuadrantLimitadorTelemetry>,
+    /// Sets the level of verbosity
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub verbosity: Option<i64>,
 }
 
 /// Affinity is a group of affinity scheduling rules.
@@ -237,8 +246,31 @@ pub struct KuadrantLimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantLimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KuadrantLimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -262,6 +294,7 @@ pub struct KuadrantLimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredD
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantLimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -334,8 +367,31 @@ pub struct KuadrantLimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantLimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KuadrantLimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -359,6 +415,7 @@ pub struct KuadrantLimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDu
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantLimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -462,8 +519,31 @@ pub struct KuadrantLimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgno
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantLimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KuadrantLimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -487,6 +567,7 @@ pub struct KuadrantLimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgno
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantLimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -559,8 +640,31 @@ pub struct KuadrantLimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgno
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantLimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KuadrantLimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -584,6 +688,7 @@ pub struct KuadrantLimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnor
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantLimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -661,6 +766,14 @@ pub struct KuadrantLimitadorPdb {
     /// evictions by specifying "100%".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KuadrantLimitadorRateLimitHeaders {
+    #[serde(rename = "NONE")]
+    None,
+    #[serde(rename = "DRAFT_VERSION_03")]
+    DraftVersion03,
 }
 
 /// ResourceRequirements describes the compute resource requirements.
@@ -791,18 +904,26 @@ pub struct KuadrantLimitadorStorageRedisCachedConfigSecretRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantLimitadorStorageRedisCachedOptions {
+    /// BatchSize defines the size of entries to flush in as single flush [default: 100]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-size")]
+    pub batch_size: Option<i64>,
     /// FlushPeriod for counters in milliseconds [default: 1000]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flush-period")]
     pub flush_period: Option<i64>,
     /// MaxCached refers to the maximum amount of counters cached [default: 10000]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "max-cached")]
     pub max_cached: Option<i64>,
-    /// Ratio to apply to the TTL from Redis on cached counters [default: 10]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ratio: Option<i64>,
-    /// TTL for cached counters in milliseconds [default: 5000]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ttl: Option<i64>,
+    /// ResponseTimeout defines the timeout for Redis commands in milliseconds [default: 350]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "response-timeout")]
+    pub response_timeout: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KuadrantLimitadorTelemetry {
+    #[serde(rename = "basic")]
+    Basic,
+    #[serde(rename = "exhaustive")]
+    Exhaustive,
 }
 
 /// KuadrantStatus defines the observed state of Kuadrant

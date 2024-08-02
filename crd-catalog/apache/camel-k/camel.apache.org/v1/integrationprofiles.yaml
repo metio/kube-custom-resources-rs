@@ -349,7 +349,7 @@ spec:
                           description: "Defines a set of nodes the builder pod is eligible to be scheduled on, based on labels on the node."
                           type: "object"
                         orderStrategy:
-                          description: "The build order strategy to use, either `dependencies`, `fifo` or `sequential` (default `sequential`)"
+                          description: "The build order strategy to use, either `dependencies`, `fifo` or `sequential` (default is the platform default)"
                           enum:
                             - "dependencies"
                             - "fifo"
@@ -1108,6 +1108,11 @@ spec:
                           description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
+                        emptyDirs:
+                          description: "A list of EmptyDir volumes to be mounted. Syntax: [name:/container/path]"
+                          items:
+                            type: "string"
+                          type: "array"
                         enabled:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
@@ -1801,7 +1806,7 @@ spec:
                           description: "Defines a set of nodes the builder pod is eligible to be scheduled on, based on labels on the node."
                           type: "object"
                         orderStrategy:
-                          description: "The build order strategy to use, either `dependencies`, `fifo` or `sequential` (default `sequential`)"
+                          description: "The build order strategy to use, either `dependencies`, `fifo` or `sequential` (default is the platform default)"
                           enum:
                             - "dependencies"
                             - "fifo"
@@ -2560,6 +2565,11 @@ spec:
                           description: "Legacy trait configuration parameters. Deprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
+                        emptyDirs:
+                          description: "A list of EmptyDir volumes to be mounted. Syntax: [name:/container/path]"
+                          items:
+                            type: "string"
+                          type: "array"
                         enabled:
                           description: "Deprecated: no longer in use."
                           type: "boolean"

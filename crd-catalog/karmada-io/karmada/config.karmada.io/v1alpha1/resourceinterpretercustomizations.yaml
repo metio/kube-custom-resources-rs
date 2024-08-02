@@ -17,7 +17,17 @@ spec:
     singular: "resourceinterpretercustomization"
   scope: "Cluster"
   versions:
-    - name: "v1alpha1"
+    - additionalPrinterColumns:
+        - jsonPath: ".spec.target.apiVersion"
+          name: "TARGET-API-VERSION"
+          type: "string"
+        - jsonPath: ".spec.target.kind"
+          name: "TARGET-KIND"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "AGE"
+          type: "date"
+      name: "v1alpha1"
       schema:
         openAPIV3Schema:
           description: "ResourceInterpreterCustomization describes the configuration of a specific\nresource for Karmada to get the structure.\nIt has higher precedence than the default interpreter and the interpreter\nwebhook."
@@ -122,3 +132,4 @@ spec:
           type: "object"
       served: true
       storage: true
+      subresources: {}

@@ -61,10 +61,11 @@ spec:
                   type: "boolean"
                 method:
                   default: "barmanObjectStore"
-                  description: "The backup method to be used, possible options are `barmanObjectStore`\nand `volumeSnapshot`. Defaults to: `barmanObjectStore`."
+                  description: "The backup method to be used, possible options are `barmanObjectStore`,\n`volumeSnapshot` or `plugin`. Defaults to: `barmanObjectStore`."
                   enum:
                     - "barmanObjectStore"
                     - "volumeSnapshot"
+                    - "plugin"
                   type: "string"
                 online:
                   description: "Whether the default type of backup with volume snapshots is\nonline/hot (`true`, default) or offline/cold (`false`)\nOverrides the default setting specified in the cluster field '.spec.backup.volumeSnapshot.online'"

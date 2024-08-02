@@ -331,8 +331,31 @@ pub struct FluentBitAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<FluentBitAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -356,6 +379,7 @@ pub struct FluentBitAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -428,8 +452,31 @@ pub struct FluentBitAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<FluentBitAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -453,6 +500,7 @@ pub struct FluentBitAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -556,8 +604,31 @@ pub struct FluentBitAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<FluentBitAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -581,6 +652,7 @@ pub struct FluentBitAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -653,8 +725,31 @@ pub struct FluentBitAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<FluentBitAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -678,6 +773,7 @@ pub struct FluentBitAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuring
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -753,6 +849,11 @@ pub struct FluentBitContainerSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FluentBitContainerSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -819,6 +920,26 @@ pub struct FluentBitContainerSecurityContext {
     pub windows_options: Option<FluentBitContainerSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitContainerSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -862,7 +983,7 @@ pub struct FluentBitContainerSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
-    /// Must only be set if type is "Localhost".
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
@@ -891,12 +1012,9 @@ pub struct FluentBitContainerSecurityContextWindowsOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// This field is alpha-level and will only be honored by components that enable the
-    /// WindowsHostProcessContainers feature flag. Setting this field without the feature
-    /// flag will result in errors when validating the Pod. All of a Pod's containers must
-    /// have the same effective HostProcess value (it is not allowed to have a mix of HostProcess
-    /// containers and non-HostProcess containers).  In addition, if HostProcess is true
-    /// then HostNetwork must also be set to true.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
@@ -953,8 +1071,12 @@ pub struct FluentBitEnvVarsValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -994,8 +1116,12 @@ pub struct FluentBitEnvVarsValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1008,8 +1134,12 @@ pub struct FluentBitEnvVarsValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitImagePullSecrets {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1091,11 +1221,31 @@ pub struct FluentBitInitContainers {
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<FluentBitInitContainersReadinessProbe>,
+    /// Resources resize policy for the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<FluentBitInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FluentBitInitContainersResources>,
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -1207,8 +1357,12 @@ pub struct FluentBitInitContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1248,8 +1402,12 @@ pub struct FluentBitInitContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1275,8 +1433,12 @@ pub struct FluentBitInitContainersEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersEnvFromConfigMapRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1288,8 +1450,12 @@ pub struct FluentBitInitContainersEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersEnvFromSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -1332,6 +1498,9 @@ pub struct FluentBitInitContainersLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<FluentBitInitContainersLifecyclePostStartHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<FluentBitInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -1377,10 +1546,18 @@ pub struct FluentBitInitContainersLifecyclePostStartHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePostStartHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
+}
+
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitInitContainersLifecyclePostStartSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -1414,6 +1591,9 @@ pub struct FluentBitInitContainersLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<FluentBitInitContainersLifecyclePreStopHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<FluentBitInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -1459,10 +1639,18 @@ pub struct FluentBitInitContainersLifecyclePreStopHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePreStopHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
+}
+
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitInitContainersLifecyclePreStopSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -1493,7 +1681,6 @@ pub struct FluentBitInitContainersLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<FluentBitInitContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -1546,7 +1733,6 @@ pub struct FluentBitInitContainersLivenessProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1586,7 +1772,8 @@ pub struct FluentBitInitContainersLivenessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLivenessProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1645,7 +1832,6 @@ pub struct FluentBitInitContainersReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<FluentBitInitContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -1698,7 +1884,6 @@ pub struct FluentBitInitContainersReadinessProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1738,7 +1923,8 @@ pub struct FluentBitInitContainersReadinessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersReadinessProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1754,6 +1940,19 @@ pub struct FluentBitInitContainersReadinessProbeTcpSocket {
     /// Number must be in the range 1 to 65535.
     /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
+}
+
+/// ContainerResizePolicy represents resource resize policy for the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitInitContainersResizePolicy {
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
 }
 
 /// Compute Resources required by this container.
@@ -1778,7 +1977,7 @@ pub struct FluentBitInitContainersResources {
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required.
     /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value.
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
@@ -1807,6 +2006,11 @@ pub struct FluentBitInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FluentBitInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -1873,6 +2077,26 @@ pub struct FluentBitInitContainersSecurityContext {
     pub windows_options: Option<FluentBitInitContainersSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitInitContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -1916,7 +2140,7 @@ pub struct FluentBitInitContainersSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
-    /// Must only be set if type is "Localhost".
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
@@ -1945,12 +2169,9 @@ pub struct FluentBitInitContainersSecurityContextWindowsOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// This field is alpha-level and will only be honored by components that enable the
-    /// WindowsHostProcessContainers feature flag. Setting this field without the feature
-    /// flag will result in errors when validating the Pod. All of a Pod's containers must
-    /// have the same effective HostProcess value (it is not allowed to have a mix of HostProcess
-    /// containers and non-HostProcess containers).  In addition, if HostProcess is true
-    /// then HostNetwork must also be set to true.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
@@ -1978,7 +2199,6 @@ pub struct FluentBitInitContainersStartupProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<FluentBitInitContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -2031,7 +2251,6 @@ pub struct FluentBitInitContainersStartupProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2071,7 +2290,8 @@ pub struct FluentBitInitContainersStartupProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersStartupProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2110,6 +2330,8 @@ pub struct FluentBitInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -2118,6 +2340,28 @@ pub struct FluentBitInitContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -2149,7 +2393,6 @@ pub struct FluentBitLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<FluentBitLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -2202,7 +2445,6 @@ pub struct FluentBitLivenessProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2242,7 +2484,8 @@ pub struct FluentBitLivenessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitLivenessProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2563,8 +2806,12 @@ pub struct FluentBitPositionDbCephfs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbCephfsSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2599,8 +2846,12 @@ pub struct FluentBitPositionDbCinder {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbCinderSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2627,8 +2878,12 @@ pub struct FluentBitPositionDbConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<FluentBitPositionDbConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -2692,8 +2947,12 @@ pub struct FluentBitPositionDbCsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbCsiNodePublishSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2719,7 +2978,7 @@ pub struct FluentBitPositionDbDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<FluentBitPositionDbDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -2738,7 +2997,7 @@ pub struct FluentBitPositionDbDownwardApiItems {
     pub resource_field_ref: Option<FluentBitPositionDbDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -2778,7 +3037,7 @@ pub struct FluentBitPositionDbEmptyDir {
     /// The maximum usage on memory medium EmptyDir would be the minimum value between
     /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
     /// The default is nil which means that the limit is undefined.
-    /// More info: http://kubernetes.io/docs/user-guide/volumes#emptydir
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
@@ -2955,6 +3214,20 @@ pub struct FluentBitPositionDbEphemeralVolumeClaimTemplateSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
@@ -3033,36 +3306,16 @@ pub struct FluentBitPositionDbEphemeralVolumeClaimTemplateSpecDataSourceRef {
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbEphemeralVolumeClaimTemplateSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<FluentBitPositionDbEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required.
     /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value.
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FluentBitPositionDbEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -3155,8 +3408,12 @@ pub struct FluentBitPositionDbFlexVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbFlexVolumeSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3312,8 +3569,12 @@ pub struct FluentBitPositionDbIscsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbIscsiSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3399,6 +3660,24 @@ pub struct FluentBitPositionDbProjected {
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbProjectedSources {
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+    /// of ClusterTrustBundle objects in an auto-updating file.
+    /// 
+    /// 
+    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+    /// 
+    /// 
+    /// ClusterTrustBundle objects can either be selected by name, or by the
+    /// combination of signer name and a label selector.
+    /// 
+    /// 
+    /// Kubelet performs aggressive normalization of the PEM contents written
+    /// into the pod filesystem.  Esoteric PEM features such as inter-block
+    /// comments and block headers are stripped.  Certificates are deduplicated.
+    /// The ordering of certificates within the file is arbitrary, and Kubelet
+    /// may change the order over time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<FluentBitPositionDbProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<FluentBitPositionDbProjectedSourcesConfigMap>,
@@ -3411,6 +3690,83 @@ pub struct FluentBitPositionDbProjectedSources {
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<FluentBitPositionDbProjectedSourcesServiceAccountToken>,
+}
+
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+/// of ClusterTrustBundle objects in an auto-updating file.
+/// 
+/// 
+/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+/// 
+/// 
+/// ClusterTrustBundle objects can either be selected by name, or by the
+/// combination of signer name and a label selector.
+/// 
+/// 
+/// Kubelet performs aggressive normalization of the PEM contents written
+/// into the pod filesystem.  Esoteric PEM features such as inter-block
+/// comments and block headers are stripped.  Certificates are deduplicated.
+/// The ordering of certificates within the file is arbitrary, and Kubelet
+/// may change the order over time.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitPositionDbProjectedSourcesClusterTrustBundle {
+    /// Select all ClusterTrustBundles that match this label selector.  Only has
+    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+    /// interpreted as "match nothing".  If set but empty, interpreted as "match
+    /// everything".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<FluentBitPositionDbProjectedSourcesClusterTrustBundleLabelSelector>,
+    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
+    /// with signerName and labelSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
+    /// aren't available.  If using name, then the named ClusterTrustBundle is
+    /// allowed not to exist.  If using signerName, then the combination of
+    /// signerName and labelSelector is allowed to match zero
+    /// ClusterTrustBundles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Relative path from the volume root to write the bundle.
+    pub path: String,
+    /// Select all ClusterTrustBundles that match this signer name.
+    /// Mutually-exclusive with name.  The contents of all selected
+    /// ClusterTrustBundles will be unified and deduplicated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+/// Select all ClusterTrustBundles that match this label selector.  Only has
+/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+/// interpreted as "match nothing".  If set but empty, interpreted as "match
+/// everything".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitPositionDbProjectedSourcesClusterTrustBundleLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<FluentBitPositionDbProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitPositionDbProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// configMap information about the configMap data to project
@@ -3426,8 +3782,12 @@ pub struct FluentBitPositionDbProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<FluentBitPositionDbProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -3466,7 +3826,7 @@ pub struct FluentBitPositionDbProjectedSourcesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<FluentBitPositionDbProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -3485,7 +3845,7 @@ pub struct FluentBitPositionDbProjectedSourcesDownwardApiItems {
     pub resource_field_ref: Option<FluentBitPositionDbProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -3523,8 +3883,12 @@ pub struct FluentBitPositionDbProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<FluentBitPositionDbProjectedSourcesSecretItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -3653,8 +4017,12 @@ pub struct FluentBitPositionDbRbd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbRbdSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3704,8 +4072,12 @@ pub struct FluentBitPositionDbScaleIo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbScaleIoSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3796,8 +4168,12 @@ pub struct FluentBitPositionDbStorageos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbStorageosSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3855,7 +4231,6 @@ pub struct FluentBitReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<FluentBitReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -3908,7 +4283,6 @@ pub struct FluentBitReadinessProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3948,7 +4322,8 @@ pub struct FluentBitReadinessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitReadinessProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -3986,7 +4361,7 @@ pub struct FluentBitResources {
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required.
     /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value.
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
@@ -4004,6 +4379,10 @@ pub struct FluentBitResourcesClaims {
 /// SecurityContext holds pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FluentBitSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
@@ -4085,6 +4464,25 @@ pub struct FluentBitSecurityContext {
     pub windows_options: Option<FluentBitSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The SELinux context to be applied to all containers.
 /// If unspecified, the container runtime will allocate a random SELinux context for each
 /// container.  May also be set in SecurityContext.  If set in
@@ -4114,7 +4512,7 @@ pub struct FluentBitSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
-    /// Must only be set if type is "Localhost".
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
@@ -4152,12 +4550,9 @@ pub struct FluentBitSecurityContextWindowsOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// This field is alpha-level and will only be honored by components that enable the
-    /// WindowsHostProcessContainers feature flag. Setting this field without the feature
-    /// flag will result in errors when validating the Pod. All of a Pod's containers must
-    /// have the same effective HostProcess value (it is not allowed to have a mix of HostProcess
-    /// containers and non-HostProcess containers).  In addition, if HostProcess is true
-    /// then HostNetwork must also be set to true.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
@@ -4462,8 +4857,12 @@ pub struct FluentBitVolumesCephfs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesCephfsSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -4498,8 +4897,12 @@ pub struct FluentBitVolumesCinder {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesCinderSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -4526,8 +4929,12 @@ pub struct FluentBitVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<FluentBitVolumesConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -4591,8 +4998,12 @@ pub struct FluentBitVolumesCsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesCsiNodePublishSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -4618,7 +5029,7 @@ pub struct FluentBitVolumesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<FluentBitVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -4637,7 +5048,7 @@ pub struct FluentBitVolumesDownwardApiItems {
     pub resource_field_ref: Option<FluentBitVolumesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -4677,7 +5088,7 @@ pub struct FluentBitVolumesEmptyDir {
     /// The maximum usage on memory medium EmptyDir would be the minimum value between
     /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
     /// The default is nil which means that the limit is undefined.
-    /// More info: http://kubernetes.io/docs/user-guide/volumes#emptydir
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
@@ -4854,6 +5265,20 @@ pub struct FluentBitVolumesEphemeralVolumeClaimTemplateSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
@@ -4932,36 +5357,16 @@ pub struct FluentBitVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesEphemeralVolumeClaimTemplateSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<FluentBitVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required.
     /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value.
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FluentBitVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -5054,8 +5459,12 @@ pub struct FluentBitVolumesFlexVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesFlexVolumeSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5211,8 +5620,12 @@ pub struct FluentBitVolumesIscsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesIscsiSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5298,6 +5711,24 @@ pub struct FluentBitVolumesProjected {
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesProjectedSources {
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+    /// of ClusterTrustBundle objects in an auto-updating file.
+    /// 
+    /// 
+    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+    /// 
+    /// 
+    /// ClusterTrustBundle objects can either be selected by name, or by the
+    /// combination of signer name and a label selector.
+    /// 
+    /// 
+    /// Kubelet performs aggressive normalization of the PEM contents written
+    /// into the pod filesystem.  Esoteric PEM features such as inter-block
+    /// comments and block headers are stripped.  Certificates are deduplicated.
+    /// The ordering of certificates within the file is arbitrary, and Kubelet
+    /// may change the order over time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<FluentBitVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<FluentBitVolumesProjectedSourcesConfigMap>,
@@ -5310,6 +5741,83 @@ pub struct FluentBitVolumesProjectedSources {
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<FluentBitVolumesProjectedSourcesServiceAccountToken>,
+}
+
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+/// of ClusterTrustBundle objects in an auto-updating file.
+/// 
+/// 
+/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+/// 
+/// 
+/// ClusterTrustBundle objects can either be selected by name, or by the
+/// combination of signer name and a label selector.
+/// 
+/// 
+/// Kubelet performs aggressive normalization of the PEM contents written
+/// into the pod filesystem.  Esoteric PEM features such as inter-block
+/// comments and block headers are stripped.  Certificates are deduplicated.
+/// The ordering of certificates within the file is arbitrary, and Kubelet
+/// may change the order over time.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitVolumesProjectedSourcesClusterTrustBundle {
+    /// Select all ClusterTrustBundles that match this label selector.  Only has
+    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+    /// interpreted as "match nothing".  If set but empty, interpreted as "match
+    /// everything".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<FluentBitVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
+    /// with signerName and labelSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
+    /// aren't available.  If using name, then the named ClusterTrustBundle is
+    /// allowed not to exist.  If using signerName, then the combination of
+    /// signerName and labelSelector is allowed to match zero
+    /// ClusterTrustBundles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Relative path from the volume root to write the bundle.
+    pub path: String,
+    /// Select all ClusterTrustBundles that match this signer name.
+    /// Mutually-exclusive with name.  The contents of all selected
+    /// ClusterTrustBundles will be unified and deduplicated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+/// Select all ClusterTrustBundles that match this label selector.  Only has
+/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+/// interpreted as "match nothing".  If set but empty, interpreted as "match
+/// everything".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<FluentBitVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// configMap information about the configMap data to project
@@ -5325,8 +5833,12 @@ pub struct FluentBitVolumesProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<FluentBitVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -5365,7 +5877,7 @@ pub struct FluentBitVolumesProjectedSourcesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<FluentBitVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -5384,7 +5896,7 @@ pub struct FluentBitVolumesProjectedSourcesDownwardApiItems {
     pub resource_field_ref: Option<FluentBitVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -5422,8 +5934,12 @@ pub struct FluentBitVolumesProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<FluentBitVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -5552,8 +6068,12 @@ pub struct FluentBitVolumesRbd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesRbdSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5603,8 +6123,12 @@ pub struct FluentBitVolumesScaleIo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesScaleIoSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5695,8 +6219,12 @@ pub struct FluentBitVolumesStorageos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesStorageosSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5731,6 +6259,8 @@ pub struct FluentBitVolumesMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -5739,6 +6269,28 @@ pub struct FluentBitVolumesMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]

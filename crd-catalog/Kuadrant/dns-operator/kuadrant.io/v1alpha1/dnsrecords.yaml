@@ -80,13 +80,27 @@ spec:
                   description: "HealthCheckSpec configures health checks in the DNS provider.\nBy default this health check will be applied to each unique DNS A Record for\nthe listeners assigned to the target gateway"
                   properties:
                     endpoint:
+                      description: "Endpoint is the path to append to the host to reach the expected health check.\nMust start with \"?\" or \"/\", contain only valid URL characters and end with alphanumeric char or \"/\". For example \"/\" or \"/healthz\" are common"
+                      pattern: "^(?:\\?|\\/)[\\w\\-.~:\\/?#\\[\\]@!$&'()*+,;=]+(?:[a-zA-Z0-9]|\\/){1}$"
                       type: "string"
                     failureThreshold:
+                      description: "FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy"
                       type: "integer"
+                      x-kubernetes-validations:
+                        - message: "Failure threshold must be greater than 0"
+                          rule: "self > 0"
                     port:
+                      description: "Port to connect to the host on. Must be either 80, 443 or 1024-49151"
                       type: "integer"
+                      x-kubernetes-validations:
+                        - message: "Only ports 80, 443, 1024-49151 are allowed"
+                          rule: "self in [80, 443] || (self >= 1024 && self <= 49151)"
                     protocol:
+                      description: "Protocol to use when connecting to the host, valid values are \"HTTP\" or \"HTTPS\""
                       type: "string"
+                      x-kubernetes-validations:
+                        - message: "Only HTTP or HTTPS protocols are allowed"
+                          rule: "self in ['HTTP','HTTPS']"
                   type: "object"
                 managedZone:
                   description: "managedZone is a reference to a ManagedZone instance to which this record will publish its endpoints."
@@ -106,8 +120,10 @@ spec:
                     - message: "OwnerID is immutable"
                       rule: "self == oldSelf"
                 rootHost:
-                  description: "rootHost is the single root for all endpoints in a DNSRecord.\nit is expected all defined endpoints are children of or equal to this rootHost"
+                  description: "rootHost is the single root for all endpoints in a DNSRecord.\nit is expected all defined endpoints are children of or equal to this rootHost\nMust contain at least two groups of valid URL characters separated by a \".\""
+                  maxLength: 255
                   minLength: 1
+                  pattern: "^(?:[\\w\\-.~:\\/?#[\\]@!$&'()*+,;=]+)\\.(?:[\\w\\-.~:\\/?#[\\]@!$&'()*+,;=]+)$"
                   type: "string"
               required:
                 - "managedZone"

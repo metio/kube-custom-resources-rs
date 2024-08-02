@@ -802,7 +802,7 @@ pub struct ConfigConstraintStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Specifies the status of the configuration template.
-    /// When set to CCAvailablePhase, the ConfigConstraint can be referenced by ClusterDefinition or ClusterVersion.
+    /// When set to CCAvailablePhase, the ConfigConstraint can be referenced by ClusterDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ConfigConstraintStatusPhase>,
 }

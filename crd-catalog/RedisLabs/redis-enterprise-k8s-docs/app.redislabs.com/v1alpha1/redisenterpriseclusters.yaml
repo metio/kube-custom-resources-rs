@@ -78,6 +78,16 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                backup:
+                  properties:
+                    s3:
+                      properties:
+                        caCertificateSecretName:
+                          type: "string"
+                        url:
+                          type: "string"
+                      type: "object"
+                  type: "object"
                 bootstrapperImageSpec:
                   properties:
                     digestHash:

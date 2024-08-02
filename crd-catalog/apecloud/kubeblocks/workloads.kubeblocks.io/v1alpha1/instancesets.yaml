@@ -211,6 +211,30 @@ spec:
                     - "password"
                     - "username"
                   type: "object"
+                defaultTemplateOrdinals:
+                  description: "Specifies the desired Ordinals of the default template.\nThe Ordinals used to specify the ordinal of the instance (pod) names to be generated under the default template.\n\n\nFor example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},\nthen the instance names generated under the default template would be\n$(cluster.name)-$(component.name)-0、$(cluster.name)-$(component.name)-1 and $(cluster.name)-$(component.name)-7"
+                  properties:
+                    discrete:
+                      items:
+                        format: "int32"
+                        type: "integer"
+                      type: "array"
+                    ranges:
+                      items:
+                        description: "Range represents a range with a start and an end value.\nIt is used to define a continuous segment."
+                        properties:
+                          end:
+                            format: "int32"
+                            type: "integer"
+                          start:
+                            format: "int32"
+                            type: "integer"
+                        required:
+                          - "end"
+                          - "start"
+                        type: "object"
+                      type: "array"
+                  type: "object"
                 instances:
                   description: "Overrides values in default Template.\n\n\nInstance is the fundamental unit managed by KubeBlocks.\nIt represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc.\nAn InstanceSet manages instances with a total count of Replicas,\nand by default, all these instances are generated from the same template.\nThe InstanceTemplate provides a way to override values in the default template,\nallowing the InstanceSet to manage instances from different templates.\n\n\nThe naming convention for instances (pods) based on the InstanceSet Name, InstanceTemplate Name, and ordinal.\nThe constructed instance name follows the pattern: $(instance_set.name)-$(template.name)-$(ordinal).\nBy default, the ordinal starts from 0 for each InstanceTemplate.\nIt is important to ensure that the Name of each InstanceTemplate is unique.\n\n\nThe sum of replicas across all InstanceTemplates should not exceed the total number of Replicas specified for the InstanceSet.\nAny remaining replicas will be generated using the default template and will follow the default naming rules."
                   items:
@@ -318,6 +342,30 @@ spec:
                         maxLength: 54
                         pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                         type: "string"
+                      ordinals:
+                        description: "Specifies the desired Ordinals of this InstanceTemplate.\nThe Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.\n\n\nFor example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},\nthen the instance names generated under this InstanceTemplate would be\n$(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and\n$(cluster.name)-$(component.name)-$(template.name)-7"
+                        properties:
+                          discrete:
+                            items:
+                              format: "int32"
+                              type: "integer"
+                            type: "array"
+                          ranges:
+                            items:
+                              description: "Range represents a range with a start and an end value.\nIt is used to define a continuous segment."
+                              properties:
+                                end:
+                                  format: "int32"
+                                  type: "integer"
+                                start:
+                                  format: "int32"
+                                  type: "integer"
+                              required:
+                                - "end"
+                                - "start"
+                              type: "object"
+                            type: "array"
+                        type: "object"
                       replicas:
                         default: 1
                         description: "Specifies the number of instances (Pods) to create from this InstanceTemplate.\nThis field allows setting how many replicated instances of the component,\nwith the specific overrides in the InstanceTemplate, are created.\nThe default value is 1. A value of 0 disables instance creation."
@@ -2281,11 +2329,20 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                parallelPodManagementConcurrency:
+                  anyOf:
+                    - type: "integer"
+                    - type: "string"
+                  description: "Controls the concurrency of pods during initial scale up, when replacing pods on nodes,\nor when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.\nThe default Concurrency is 100%."
+                  x-kubernetes-int-or-string: true
                 paused:
                   description: "Indicates that the InstanceSet is paused, meaning the reconciliation of this InstanceSet object will be paused."
                   type: "boolean"
                 podManagementPolicy:
                   description: "Controls how pods are created during initial scale up,\nwhen replacing pods on nodes, or when scaling down.\n\n\nThe default policy is `OrderedReady`, where pods are created in increasing order and the controller waits until each pod is ready before\ncontinuing. When scaling down, the pods are removed in the opposite order.\nThe alternative policy is `Parallel` which will create pods in parallel\nto match the desired scale without waiting, and on scale down will delete\nall pods at once.\n\n\nNote: This field will be removed in future version."
+                  type: "string"
+                podUpdatePolicy:
+                  description: "PodUpdatePolicy indicates how pods should be updated\n\n\n- `StrictInPlace` indicates that only allows in-place upgrades.\nAny attempt to modify other fields will be rejected.\n- `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.\nIf that fails, it will fall back to the ReCreate, where pod will be recreated.\nDefault value is \"PreferInPlace\""
                   type: "string"
                 replicas:
                   default: 1
@@ -7349,6 +7406,38 @@ spec:
                   description: "replicas is the number of instances created by the InstanceSet controller."
                   format: "int32"
                   type: "integer"
+                templatesStatus:
+                  description: "TemplatesStatus represents status of each instance generated by InstanceTemplates"
+                  items:
+                    description: "InstanceTemplateStatus aggregates the status of replicas for each InstanceTemplate"
+                    properties:
+                      availableReplicas:
+                        description: "AvailableReplicas is the number of Pods that ready for at least minReadySeconds."
+                        format: "int32"
+                        type: "integer"
+                      currentReplicas:
+                        description: "currentReplicas is the number of instances created by the InstanceSet controller from the InstanceSet version\nindicated by CurrentRevisions."
+                        format: "int32"
+                        type: "integer"
+                      name:
+                        description: "Name, the name of the InstanceTemplate."
+                        type: "string"
+                      readyReplicas:
+                        description: "ReadyReplicas is the number of Pods that have a Ready Condition."
+                        format: "int32"
+                        type: "integer"
+                      replicas:
+                        description: "Replicas is the number of replicas of the InstanceTemplate."
+                        format: "int32"
+                        type: "integer"
+                      updatedReplicas:
+                        description: "UpdatedReplicas is the number of Pods created by the InstanceSet controller from the InstanceSet version\nindicated by UpdateRevisions."
+                        format: "int32"
+                        type: "integer"
+                    required:
+                      - "name"
+                    type: "object"
+                  type: "array"
                 updateRevision:
                   description: "updateRevision, if not empty, indicates the version of the InstanceSet used to generate instances in the sequence\n[replicas-updatedReplicas,replicas)"
                   type: "string"
@@ -7368,4 +7457,7 @@ spec:
       served: true
       storage: true
       subresources:
+        scale:
+          specReplicasPath: ".spec.replicas"
+          statusReplicasPath: ".status.replicas"
         status: {}

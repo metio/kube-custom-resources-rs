@@ -491,6 +491,21 @@ pub struct ClusterComponentSpecs {
     /// The administrator must manually manage the cleanup and removal of these resources when they are no longer needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
+    /// Controls the concurrency of pods during initial scale up, when replacing pods on nodes,
+    /// or when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.
+    /// The default Concurrency is 100%.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelPodManagementConcurrency")]
+    pub parallel_pod_management_concurrency: Option<IntOrString>,
+    /// PodUpdatePolicy indicates how pods should be updated
+    /// 
+    /// 
+    /// - `StrictInPlace` indicates that only allows in-place upgrades.
+    /// Any attempt to modify other fields will be rejected.
+    /// - `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.
+    /// If that fails, it will fall back to the ReCreate, where pod will be recreated.
+    /// Default value is "PreferInPlace"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
+    pub pod_update_policy: Option<String>,
     /// Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing.
     pub replicas: i32,
     /// Specifies the resources required by the Component.
@@ -506,8 +521,9 @@ pub struct ClusterComponentSpecs {
     /// 
     /// 
     /// Defaults:
-    /// If not specified, KubeBlocks automatically assigns a default ServiceAccount named "kb-{cluster.name}",
-    /// bound to a default role installed together with KubeBlocks.
+    /// To perform certain operational tasks, agent sidecars running in Pods require specific RBAC permissions.
+    /// The service account will be bound to a default role named "kubeblocks-cluster-pod-role" which is installed together with KubeBlocks.
+    /// If not specified, KubeBlocks automatically assigns a default ServiceAccount named "kb-{cluster.name}"
     /// 
     /// 
     /// Future Changes:
@@ -558,6 +574,10 @@ pub struct ClusterComponentSpecs {
     /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterComponentSpecsServices>>,
+    /// Stop the Component.
+    /// If set, all the computing resources will be released.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stop: Option<bool>,
     /// Defines the strategy for switchover and failover when workloadType is Replication.
     /// 
     /// 
@@ -7852,6 +7872,21 @@ pub struct ClusterShardingSpecsTemplate {
     /// The administrator must manually manage the cleanup and removal of these resources when they are no longer needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
+    /// Controls the concurrency of pods during initial scale up, when replacing pods on nodes,
+    /// or when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.
+    /// The default Concurrency is 100%.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelPodManagementConcurrency")]
+    pub parallel_pod_management_concurrency: Option<IntOrString>,
+    /// PodUpdatePolicy indicates how pods should be updated
+    /// 
+    /// 
+    /// - `StrictInPlace` indicates that only allows in-place upgrades.
+    /// Any attempt to modify other fields will be rejected.
+    /// - `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.
+    /// If that fails, it will fall back to the ReCreate, where pod will be recreated.
+    /// Default value is "PreferInPlace"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
+    pub pod_update_policy: Option<String>,
     /// Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing.
     pub replicas: i32,
     /// Specifies the resources required by the Component.
@@ -7867,8 +7902,9 @@ pub struct ClusterShardingSpecsTemplate {
     /// 
     /// 
     /// Defaults:
-    /// If not specified, KubeBlocks automatically assigns a default ServiceAccount named "kb-{cluster.name}",
-    /// bound to a default role installed together with KubeBlocks.
+    /// To perform certain operational tasks, agent sidecars running in Pods require specific RBAC permissions.
+    /// The service account will be bound to a default role named "kubeblocks-cluster-pod-role" which is installed together with KubeBlocks.
+    /// If not specified, KubeBlocks automatically assigns a default ServiceAccount named "kb-{cluster.name}"
     /// 
     /// 
     /// Future Changes:
@@ -7919,6 +7955,10 @@ pub struct ClusterShardingSpecsTemplate {
     /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterShardingSpecsTemplateServices>>,
+    /// Stop the Component.
+    /// If set, all the computing resources will be released.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stop: Option<bool>,
     /// Defines the strategy for switchover and failover when workloadType is Replication.
     /// 
     /// 

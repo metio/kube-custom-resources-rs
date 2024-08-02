@@ -2146,11 +2146,127 @@ spec:
                           - "address"
                           - "topic"
                         type: "object"
+                      openTelemetry:
+                        description: "Open telemetry configuration, such as the IP address and port to send enriched logs, metrics and or traces to."
+                        properties:
+                          fieldsMapping:
+                            description: "Custom fields mapping to an OpenTelemetry conformant format.\nBy default, NetObserv format proposal is used: https://github.com/rhobs/observability-data-model/blob/main/network-observability.md#format-proposal .\nAs there is currently no accepted otlp standard for L3/4 network logs, you can freely override it with your own."
+                            items:
+                              properties:
+                                input:
+                                  type: "string"
+                                multiplier:
+                                  type: "integer"
+                                output:
+                                  type: "string"
+                              type: "object"
+                            type: "array"
+                          headers:
+                            additionalProperties:
+                              type: "string"
+                            description: "Headers to add to messages (optional)"
+                            type: "object"
+                          logs:
+                            description: "Open telemetry configuration for logs."
+                            properties:
+                              enable:
+                                default: true
+                                description: "Set `enable` to `true` to send logs to Open Telemetry receiver."
+                                type: "boolean"
+                            type: "object"
+                          metrics:
+                            description: "Open telemetry configuration for metrics."
+                            properties:
+                              enable:
+                                default: true
+                                description: "Set `enable` to `true` to send metrics to Open Telemetry receiver."
+                                type: "boolean"
+                              pushTimeInterval:
+                                default: "20s"
+                                description: "How often should metrics be sent to collector"
+                                type: "string"
+                            type: "object"
+                          protocol:
+                            description: "Protocol of Open Telemetry connection. The available options are `http` and `grpc`."
+                            enum:
+                              - "http"
+                              - "grpc"
+                            type: "string"
+                          targetHost:
+                            default: ""
+                            description: "Address of the Open Telemetry receiver"
+                            type: "string"
+                          targetPort:
+                            description: "Port for the Open Telemetry receiver"
+                            type: "integer"
+                          tls:
+                            description: "TLS client configuration."
+                            properties:
+                              caCert:
+                                description: "`caCert` defines the reference of the certificate for the Certificate Authority"
+                                properties:
+                                  certFile:
+                                    description: "`certFile` defines the path to the certificate file name within the config map or secret."
+                                    type: "string"
+                                  certKey:
+                                    description: "`certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary."
+                                    type: "string"
+                                  name:
+                                    description: "Name of the config map or secret containing certificates."
+                                    type: "string"
+                                  namespace:
+                                    default: ""
+                                    description: "Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.\nIf the namespace is different, the config map or the secret is copied so that it can be mounted as required."
+                                    type: "string"
+                                  type:
+                                    description: "Type for the certificate reference: `configmap` or `secret`."
+                                    enum:
+                                      - "configmap"
+                                      - "secret"
+                                    type: "string"
+                                type: "object"
+                              enable:
+                                default: false
+                                description: "Enable TLS"
+                                type: "boolean"
+                              insecureSkipVerify:
+                                default: false
+                                description: "`insecureSkipVerify` allows skipping client-side verification of the server certificate.\nIf set to `true`, the `caCert` field is ignored."
+                                type: "boolean"
+                              userCert:
+                                description: "`userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)"
+                                properties:
+                                  certFile:
+                                    description: "`certFile` defines the path to the certificate file name within the config map or secret."
+                                    type: "string"
+                                  certKey:
+                                    description: "`certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary."
+                                    type: "string"
+                                  name:
+                                    description: "Name of the config map or secret containing certificates."
+                                    type: "string"
+                                  namespace:
+                                    default: ""
+                                    description: "Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.\nIf the namespace is different, the config map or the secret is copied so that it can be mounted as required."
+                                    type: "string"
+                                  type:
+                                    description: "Type for the certificate reference: `configmap` or `secret`."
+                                    enum:
+                                      - "configmap"
+                                      - "secret"
+                                    type: "string"
+                                type: "object"
+                            type: "object"
+                        required:
+                          - "targetHost"
+                          - "targetPort"
+                        type: "object"
                       type:
                         description: "`type` selects the type of exporters. The available options are `Kafka` and `IPFIX`."
                         enum:
                           - "Kafka"
                           - "IPFIX"
+                          - "OpenTelemetry"
                         type: "string"
                     required:
                       - "type"
@@ -2643,6 +2759,21 @@ spec:
                   default: "netobserv"
                   description: "Namespace where NetObserv pods are deployed."
                   type: "string"
+                networkPolicy:
+                  description: "`networkPolicy` defines ingress network policy settings for NetObserv components isolation."
+                  properties:
+                    additionalNamespaces:
+                      default:
+                        - "openshift-console"
+                        - "openshift-monitoring"
+                      description: "`additionalNamespaces` contains additional namespaces allowed to connect to the NetObserv namespace.\nIt gives some flexibility in the network policy configuration, however should you need a more specific\nconfiguration, you can disable it and install your own instead."
+                      items:
+                        type: "string"
+                      type: "array"
+                    enable:
+                      description: "Set `enable` to `true` to deploy network policies on the namespaces used by NetObserv (main and privileged). It is disabled by default.\nThese network policies better isolate the NetObserv components to prevent undesired connections to them.\nWe recommend you either enable it, or create your own network policy for NetObserv."
+                      type: "boolean"
+                  type: "object"
                 processor:
                   description: "`processor` defines the settings of the component that receives the flows from the agent,\nenriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter."
                   properties:

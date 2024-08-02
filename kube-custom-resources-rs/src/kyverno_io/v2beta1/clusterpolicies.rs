@@ -1712,6 +1712,9 @@ pub struct ClusterPolicyRulesValidate {
     /// must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
     pub any_pattern: Option<serde_json::Value>,
+    /// Assert defines a kyverno-json assertion tree.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub assert: Option<BTreeMap<String, serde_json::Value>>,
     /// CEL allows validation checks using the Common Expression Language (https://kubernetes.io/docs/reference/using-api/cel/).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cel: Option<ClusterPolicyRulesValidateCel>,
@@ -5534,6 +5537,9 @@ pub struct ClusterPolicyStatusAutogenRulesValidate {
     /// must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
     pub any_pattern: Option<serde_json::Value>,
+    /// Assert defines a kyverno-json assertion tree.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub assert: Option<BTreeMap<String, serde_json::Value>>,
     /// CEL allows validation checks using the Common Expression Language (https://kubernetes.io/docs/reference/using-api/cel/).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cel: Option<ClusterPolicyStatusAutogenRulesValidateCel>,

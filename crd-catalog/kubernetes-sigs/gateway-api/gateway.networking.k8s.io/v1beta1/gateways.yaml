@@ -246,7 +246,7 @@ spec:
                         description: "Protocol specifies the network protocol this listener expects to receive.\n\n\nSupport: Core"
                         maxLength: 255
                         minLength: 1
-                        pattern: "^[a-zA-Z0-9]([-a-zSA-Z0-9]*[a-zA-Z0-9])?$|[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[A-Za-z0-9]+$"
+                        pattern: "^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?$|[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[A-Za-z0-9]+$"
                         type: "string"
                       tls:
                         description: "TLS is the TLS configuration for the Listener. This field is required if\nthe Protocol field is \"HTTPS\" or \"TLS\". It is invalid to set this field\nif the Protocol field is \"HTTP\", \"TCP\", or \"UDP\".\n\n\nThe association of SNIs to Certificate defined in GatewayTLSConfig is\ndefined based on the Hostname field for this listener.\n\n\nThe GatewayClass MUST use the longest matching SNI out of all\navailable certificates for any TLS handshake.\n\n\nSupport: Core"

@@ -250,6 +250,9 @@ spec:
                       id:
                         description: "The object ID.\nvsphere:\n  The managed object ID."
                         type: "string"
+                      instanceType:
+                        description: "Selected InstanceType that will override the VM properties."
+                        type: "string"
                       luks:
                         description: "Disk decryption LUKS keys"
                         properties:
@@ -636,6 +639,9 @@ spec:
                             type: "array"
                           id:
                             description: "The object ID.\nvsphere:\n  The managed object ID."
+                            type: "string"
+                          instanceType:
+                            description: "Selected InstanceType that will override the VM properties."
                             type: "string"
                           luks:
                             description: "Disk decryption LUKS keys"

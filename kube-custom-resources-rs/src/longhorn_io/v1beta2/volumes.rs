@@ -23,7 +23,7 @@ pub struct VolumeSpec {
     pub standby: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<VolumeAccessMode>,
-    /// Deprecated: Replaced by field `dataEngine`.
+    /// Deprecated:Replaced by field `dataEngine`.'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
@@ -66,9 +66,6 @@ pub struct VolumeSpec {
     pub node_selector: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberOfReplicas")]
     pub number_of_replicas: Option<i64>,
-    /// OfflineReplicaRebuilding is used to determine if the offline replica rebuilding feature is enabled or not
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineReplicaRebuilding")]
-    pub offline_replica_rebuilding: Option<VolumeOfflineReplicaRebuilding>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaAutoBalance")]
     pub replica_auto_balance: Option<VolumeReplicaAutoBalance>,
     /// Replica disk soft anti affinity of the volume. Set enabled to allow replicas to be scheduled in the same disk.
@@ -160,17 +157,6 @@ pub enum VolumeFrontend {
     Nvmf,
     #[serde(rename = "")]
     KopiumEmpty,
-}
-
-/// VolumeSpec defines the desired state of the Longhorn volume
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum VolumeOfflineReplicaRebuilding {
-    #[serde(rename = "ignored")]
-    Ignored,
-    #[serde(rename = "disabled")]
-    Disabled,
-    #[serde(rename = "enabled")]
-    Enabled,
 }
 
 /// VolumeSpec defines the desired state of the Longhorn volume
@@ -284,8 +270,6 @@ pub struct VolumeStatus {
     pub last_backup_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastDegradedAt")]
     pub last_degraded_at: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineReplicaRebuildingRequired")]
-    pub offline_replica_rebuilding_required: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
     /// Deprecated.
@@ -309,6 +293,10 @@ pub struct VolumeStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeStatusCloneStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attemptCount")]
+    pub attempt_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextAllowedAttemptAt")]
+    pub next_allowed_attempt_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceVolume")]
@@ -341,8 +329,6 @@ pub struct VolumeStatusKubernetesStatus {
 pub struct VolumeStatusKubernetesStatusWorkloadsStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podName")]
     pub pod_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podNamespace")]
-    pub pod_namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podStatus")]
     pub pod_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadName")]

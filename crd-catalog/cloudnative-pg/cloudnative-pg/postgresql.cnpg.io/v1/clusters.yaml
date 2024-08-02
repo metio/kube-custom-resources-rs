@@ -850,8 +850,8 @@ spec:
                         wal:
                           description: "The configuration for the backup of the WAL stream.\nWhen not defined, WAL files will be stored uncompressed and may be\nunencrypted in the object store, according to the bucket default policy."
                           properties:
-                            additionalCommandArgs:
-                              description: "AdditionalCommandArgs represents additional arguments that can be appended\nto the 'barman-cloud-wal-archive' command-line invocation. These arguments\nprovide flexibility to customize the backup process further according to\nspecific requirements or configurations.\n\n\nExample:\nIn a scenario where specialized backup options are required, such as setting\na specific timeout or defining custom behavior, users can use this field\nto specify additional command arguments.\n\n\nNote:\nIt's essential to ensure that the provided arguments are valid and supported\nby the 'barman-cloud-wal-archive' command, to avoid potential errors or unintended\nbehavior during execution."
+                            archiveAdditionalCommandArgs:
+                              description: "Additional arguments that can be appended to the 'barman-cloud-wal-archive'\ncommand-line invocation. These arguments provide flexibility to customize\nthe WAL archive process further, according to specific requirements or configurations.\n\n\nExample:\nIn a scenario where specialized backup options are required, such as setting\na specific timeout or defining custom behavior, users can use this field\nto specify additional command arguments.\n\n\nNote:\nIt's essential to ensure that the provided arguments are valid and supported\nby the 'barman-cloud-wal-archive' command, to avoid potential errors or unintended\nbehavior during execution."
                               items:
                                 type: "string"
                               type: "array"
@@ -872,6 +872,11 @@ spec:
                               description: "Number of WAL files to be either archived in parallel (when the\nPostgreSQL instance is archiving to a backup object store) or\nrestored in parallel (when a PostgreSQL standby is fetching WAL\nfiles from a recovery object store). If not specified, WAL files\nwill be processed one at a time. It accepts a positive integer as a\nvalue - with 1 being the minimum accepted value."
                               minimum: 1.0
                               type: "integer"
+                            restoreAdditionalCommandArgs:
+                              description: "Additional arguments that can be appended to the 'barman-cloud-wal-restore'\ncommand-line invocation. These arguments provide flexibility to customize\nthe WAL restore process further, according to specific requirements or configurations.\n\n\nExample:\nIn a scenario where specialized backup options are required, such as setting\na specific timeout or defining custom behavior, users can use this field\nto specify additional command arguments.\n\n\nNote:\nIt's essential to ensure that the provided arguments are valid and supported\nby the 'barman-cloud-wal-restore' command, to avoid potential errors or unintended\nbehavior during execution."
+                              items:
+                                type: "string"
+                              type: "array"
                           type: "object"
                       required:
                         - "destinationPath"
@@ -1010,12 +1015,12 @@ spec:
                           description: "Name of the owner of the database in the instance to be used\nby applications. Defaults to the value of the `database` key."
                           type: "string"
                         postInitApplicationSQL:
-                          description: "List of SQL queries to be executed as a superuser in the application\ndatabase right after is created - to be used with extreme care\n(by default empty)"
+                          description: "List of SQL queries to be executed as a superuser in the application\ndatabase right after the cluster has been created - to be used with extreme care\n(by default empty)"
                           items:
                             type: "string"
                           type: "array"
                         postInitApplicationSQLRefs:
-                          description: "PostInitApplicationSQLRefs points references to ConfigMaps or Secrets which\ncontain SQL files, the general implementation order to these references is\nfrom all Secrets to all ConfigMaps, and inside Secrets or ConfigMaps,\nthe implementation order is same as the order of each array\n(by default empty)"
+                          description: "List of references to ConfigMaps or Secrets containing SQL files\nto be executed as a superuser in the application database right after\nthe cluster has been created. The references are processed in a specific order:\nfirst, all Secrets are processed, followed by all ConfigMaps.\nWithin each group, the processing order follows the sequence specified\nin their respective arrays.\n(by default empty)"
                           properties:
                             configMapRefs:
                               description: "ConfigMapRefs holds a list of references to ConfigMaps"
@@ -1051,15 +1056,87 @@ spec:
                               type: "array"
                           type: "object"
                         postInitSQL:
-                          description: "List of SQL queries to be executed as a superuser immediately\nafter the cluster has been created - to be used with extreme care\n(by default empty)"
+                          description: "List of SQL queries to be executed as a superuser in the `postgres`\ndatabase right after the cluster has been created - to be used with extreme care\n(by default empty)"
                           items:
                             type: "string"
                           type: "array"
+                        postInitSQLRefs:
+                          description: "List of references to ConfigMaps or Secrets containing SQL files\nto be executed as a superuser in the `postgres` database right after\nthe cluster has been created. The references are processed in a specific order:\nfirst, all Secrets are processed, followed by all ConfigMaps.\nWithin each group, the processing order follows the sequence specified\nin their respective arrays.\n(by default empty)"
+                          properties:
+                            configMapRefs:
+                              description: "ConfigMapRefs holds a list of references to ConfigMaps"
+                              items:
+                                description: "ConfigMapKeySelector contains enough information to let you locate\nthe key of a ConfigMap"
+                                properties:
+                                  key:
+                                    description: "The key to select"
+                                    type: "string"
+                                  name:
+                                    description: "Name of the referent."
+                                    type: "string"
+                                required:
+                                  - "key"
+                                  - "name"
+                                type: "object"
+                              type: "array"
+                            secretRefs:
+                              description: "SecretRefs holds a list of references to Secrets"
+                              items:
+                                description: "SecretKeySelector contains enough information to let you locate\nthe key of a Secret"
+                                properties:
+                                  key:
+                                    description: "The key to select"
+                                    type: "string"
+                                  name:
+                                    description: "Name of the referent."
+                                    type: "string"
+                                required:
+                                  - "key"
+                                  - "name"
+                                type: "object"
+                              type: "array"
+                          type: "object"
                         postInitTemplateSQL:
-                          description: "List of SQL queries to be executed as a superuser in the `template1`\nafter the cluster has been created - to be used with extreme care\n(by default empty)"
+                          description: "List of SQL queries to be executed as a superuser in the `template1`\ndatabase right after the cluster has been created - to be used with extreme care\n(by default empty)"
                           items:
                             type: "string"
                           type: "array"
+                        postInitTemplateSQLRefs:
+                          description: "List of references to ConfigMaps or Secrets containing SQL files\nto be executed as a superuser in the `template1` database right after\nthe cluster has been created. The references are processed in a specific order:\nfirst, all Secrets are processed, followed by all ConfigMaps.\nWithin each group, the processing order follows the sequence specified\nin their respective arrays.\n(by default empty)"
+                          properties:
+                            configMapRefs:
+                              description: "ConfigMapRefs holds a list of references to ConfigMaps"
+                              items:
+                                description: "ConfigMapKeySelector contains enough information to let you locate\nthe key of a ConfigMap"
+                                properties:
+                                  key:
+                                    description: "The key to select"
+                                    type: "string"
+                                  name:
+                                    description: "Name of the referent."
+                                    type: "string"
+                                required:
+                                  - "key"
+                                  - "name"
+                                type: "object"
+                              type: "array"
+                            secretRefs:
+                              description: "SecretRefs holds a list of references to Secrets"
+                              items:
+                                description: "SecretKeySelector contains enough information to let you locate\nthe key of a Secret"
+                                properties:
+                                  key:
+                                    description: "The key to select"
+                                    type: "string"
+                                  name:
+                                    description: "Name of the referent."
+                                    type: "string"
+                                required:
+                                  - "key"
+                                  - "name"
+                                type: "object"
+                              type: "array"
+                          type: "object"
                         secret:
                           description: "Name of the secret containing the initial credentials for the\nowner of the user database. If empty a new secret will be\ncreated from scratch"
                           properties:
@@ -1741,8 +1818,8 @@ spec:
                           wal:
                             description: "The configuration for the backup of the WAL stream.\nWhen not defined, WAL files will be stored uncompressed and may be\nunencrypted in the object store, according to the bucket default policy."
                             properties:
-                              additionalCommandArgs:
-                                description: "AdditionalCommandArgs represents additional arguments that can be appended\nto the 'barman-cloud-wal-archive' command-line invocation. These arguments\nprovide flexibility to customize the backup process further according to\nspecific requirements or configurations.\n\n\nExample:\nIn a scenario where specialized backup options are required, such as setting\na specific timeout or defining custom behavior, users can use this field\nto specify additional command arguments.\n\n\nNote:\nIt's essential to ensure that the provided arguments are valid and supported\nby the 'barman-cloud-wal-archive' command, to avoid potential errors or unintended\nbehavior during execution."
+                              archiveAdditionalCommandArgs:
+                                description: "Additional arguments that can be appended to the 'barman-cloud-wal-archive'\ncommand-line invocation. These arguments provide flexibility to customize\nthe WAL archive process further, according to specific requirements or configurations.\n\n\nExample:\nIn a scenario where specialized backup options are required, such as setting\na specific timeout or defining custom behavior, users can use this field\nto specify additional command arguments.\n\n\nNote:\nIt's essential to ensure that the provided arguments are valid and supported\nby the 'barman-cloud-wal-archive' command, to avoid potential errors or unintended\nbehavior during execution."
                                 items:
                                   type: "string"
                                 type: "array"
@@ -1763,6 +1840,11 @@ spec:
                                 description: "Number of WAL files to be either archived in parallel (when the\nPostgreSQL instance is archiving to a backup object store) or\nrestored in parallel (when a PostgreSQL standby is fetching WAL\nfiles from a recovery object store). If not specified, WAL files\nwill be processed one at a time. It accepts a positive integer as a\nvalue - with 1 being the minimum accepted value."
                                 minimum: 1.0
                                 type: "integer"
+                              restoreAdditionalCommandArgs:
+                                description: "Additional arguments that can be appended to the 'barman-cloud-wal-restore'\ncommand-line invocation. These arguments provide flexibility to customize\nthe WAL restore process further, according to specific requirements or configurations.\n\n\nExample:\nIn a scenario where specialized backup options are required, such as setting\na specific timeout or defining custom behavior, users can use this field\nto specify additional command arguments.\n\n\nNote:\nIt's essential to ensure that the provided arguments are valid and supported\nby the 'barman-cloud-wal-restore' command, to avoid potential errors or unintended\nbehavior during execution."
+                                items:
+                                  type: "string"
+                                type: "array"
                             type: "object"
                         required:
                           - "destinationPath"
@@ -2168,6 +2250,13 @@ spec:
                                         type: "string"
                                     type: "object"
                                 type: "object"
+                              updateStrategy:
+                                default: "patch"
+                                description: "UpdateStrategy describes how the service differences should be reconciled"
+                                enum:
+                                  - "patch"
+                                  - "replace"
+                                type: "string"
                             required:
                               - "selectorType"
                               - "serviceTemplate"
@@ -2352,6 +2441,14 @@ spec:
                             type: "string"
                         type: "object"
                       type: "array"
+                    tls:
+                      description: "Configure TLS communication for the metrics endpoint.\nChanging tls.enabled option will force a rollout of all instances."
+                      properties:
+                        enabled:
+                          default: false
+                          description: "Enable TLS for the monitoring endpoint.\nChanging this option will force a rollout of all instances."
+                          type: "boolean"
+                      type: "object"
                   type: "object"
                 nodeMaintenanceWindow:
                   description: "Define a maintenance window for the Kubernetes nodes"
@@ -2497,6 +2594,38 @@ spec:
                           type: "array"
                       required:
                         - "enabled"
+                      type: "object"
+                    synchronous:
+                      description: "Configuration of the PostgreSQL synchronous replication feature"
+                      properties:
+                        maxStandbyNamesFromCluster:
+                          description: "Specifies the maximum number of local cluster pods that can be\nautomatically included in the `synchronous_standby_names` option in\nPostgreSQL."
+                          type: "integer"
+                        method:
+                          description: "Method to select synchronous replication standbys from the listed\nservers, accepting 'any' (quorum-based synchronous replication) or\n'first' (priority-based synchronous replication) as values."
+                          enum:
+                            - "any"
+                            - "first"
+                          type: "string"
+                        number:
+                          description: "Specifies the number of synchronous standby servers that\ntransactions must wait for responses from."
+                          type: "integer"
+                          x-kubernetes-validations:
+                            - message: "The number of synchronous replicas should be greater than zero"
+                              rule: "self > 0"
+                        standbyNamesPost:
+                          description: "A user-defined list of application names to be added to\n`synchronous_standby_names` after local cluster pods (the order is\nonly useful for priority-based synchronous replication)."
+                          items:
+                            type: "string"
+                          type: "array"
+                        standbyNamesPre:
+                          description: "A user-defined list of application names to be added to\n`synchronous_standby_names` before local cluster pods (the order is\nonly useful for priority-based synchronous replication)."
+                          items:
+                            type: "string"
+                          type: "array"
+                      required:
+                        - "method"
+                        - "number"
                       type: "object"
                   type: "object"
                 primaryUpdateMethod:
@@ -2725,6 +2854,9 @@ spec:
                     enabled:
                       description: "If replica mode is enabled, this cluster will be a replica of an\nexisting cluster. Replica cluster can be created from a recovery\nobject store or via streaming through pg_basebackup.\nRefer to the Replica clusters page of the documentation for more information."
                       type: "boolean"
+                    minApplyDelay:
+                      description: "When replica mode is enabled, this parameter allows you to replay\ntransactions only when the system time is at least the configured\ntime past the commit time. This provides an opportunity to correct\ndata loss errors. Note that when this parameter is set, a promotion\ntoken cannot be used."
+                      type: "string"
                     primary:
                       description: "Primary defines which Cluster is defined to be the primary in the distributed PostgreSQL cluster, based on the\ntopology specified in externalClusters"
                       type: "string"

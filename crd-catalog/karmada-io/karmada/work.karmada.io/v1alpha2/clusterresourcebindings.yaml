@@ -19,13 +19,13 @@ spec:
   versions:
     - additionalPrinterColumns:
         - jsonPath: ".status.conditions[?(@.type==\"Scheduled\")].status"
-          name: "Scheduled"
+          name: "SCHEDULED"
           type: "string"
         - jsonPath: ".status.conditions[?(@.type==\"FullyApplied\")].status"
-          name: "FullyApplied"
+          name: "FULLYAPPLIED"
           type: "string"
         - jsonPath: ".metadata.creationTimestamp"
-          name: "Age"
+          name: "AGE"
           type: "date"
       name: "v1alpha2"
       schema:
@@ -177,6 +177,7 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                   required:
                                     - "key"
                                     - "operator"
@@ -202,11 +203,13 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                   required:
                                     - "key"
                                     - "operator"
                                   type: "object"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
@@ -250,6 +253,7 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 required:
                                   - "key"
                                   - "operator"
@@ -275,11 +279,13 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 required:
                                   - "key"
                                   - "operator"
                                 type: "object"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                             matchLabels:
                               additionalProperties:
                                 type: "string"
@@ -372,6 +378,7 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
@@ -397,11 +404,13 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -483,11 +492,13 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                       required:
                                         - "key"
                                         - "operator"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   matchFields:
                                     description: "A list of node selector requirements by node's fields."
                                     items:
@@ -504,14 +515,17 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                       required:
                                         - "key"
                                         - "operator"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                           required:
                             - "nodeSelectorTerms"
                           type: "object"

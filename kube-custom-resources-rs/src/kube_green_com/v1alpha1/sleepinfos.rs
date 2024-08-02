@@ -22,6 +22,9 @@ pub struct SleepInfoSpec {
     /// ExcludeRef define the resource to exclude from the sleep.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeRef")]
     pub exclude_ref: Option<Vec<SleepInfoExcludeRef>>,
+    /// IncludeRef define the resource to include from the sleep.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeRef")]
+    pub include_ref: Option<Vec<SleepInfoIncludeRef>>,
     /// Patches is a list of json 6902 patches to apply to the target resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patches: Option<Vec<SleepInfoPatches>>,
@@ -61,8 +64,28 @@ pub struct SleepInfoSpec {
     pub weekdays: String,
 }
 
+/// Common type to use for both IncludeRef and ExcludeRef to prevent duplication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SleepInfoExcludeRef {
+    /// ApiVersion of the kubernetes resources.
+    /// Supported api version is "apps/v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Kind of the kubernetes resources of the specific version.
+    /// Supported kind are "Deployment" and "CronJob".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// MatchLabels which identify the kubernetes resource by labels
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+    /// Name which identify the kubernetes resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Common type to use for both IncludeRef and ExcludeRef to prevent duplication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SleepInfoIncludeRef {
     /// ApiVersion of the kubernetes resources.
     /// Supported api version is "apps/v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]

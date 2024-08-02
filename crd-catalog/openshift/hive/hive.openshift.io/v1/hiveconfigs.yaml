@@ -554,6 +554,49 @@ spec:
                         type: "object"
                       type: "array"
                   type: "object"
+                privateLink:
+                  description: "PrivateLink is used to configure the privatelink controller."
+                  properties:
+                    gcp:
+                      description: "GCP is the configuration for GCP hub and link resources."
+                      properties:
+                        credentialsSecretRef:
+                          description: "CredentialsSecretRef references a secret in the TargetNamespace that will be used to authenticate with GCP for creating the resources for GCP Private Service Connect"
+                          properties:
+                            name:
+                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              type: "string"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        endpointVPCInventory:
+                          description: "EndpointVPCInventory is a list of VPCs and the corresponding subnets in various GCP regions. The controller uses this list to choose a VPC for creating GCP Endpoints. Since the VPC Endpoints must be in the same region as the ClusterDeployment, we must have VPCs in that region to be able to setup Private Service Connect."
+                          items:
+                            description: "GCPPrivateServiceConnectInventory is a VPC and its corresponding subnets. This VPC will be used to create a GCP Endpoint whenever there is a Private Service Connect service created for a ClusterDeployment."
+                            properties:
+                              network:
+                                type: "string"
+                              subnets:
+                                items:
+                                  description: "GCPPrivateServiceConnectSubnet defines subnet and the corresponding GCP region."
+                                  properties:
+                                    region:
+                                      type: "string"
+                                    subnet:
+                                      type: "string"
+                                  required:
+                                    - "region"
+                                    - "subnet"
+                                  type: "object"
+                                type: "array"
+                            required:
+                              - "network"
+                              - "subnets"
+                            type: "object"
+                          type: "array"
+                      required:
+                        - "credentialsSecretRef"
+                      type: "object"
+                  type: "object"
                 releaseImageVerificationConfigMapRef:
                   description: "ReleaseImageVerificationConfigMapRef is a reference to the ConfigMap that will be used to verify release images. \n The config map structure is exactly the same as the config map used for verification of release images for OpenShift 4 during upgrades. Therefore you can usually set this to the config map shipped as part of OpenShift (openshift-config-managed/release-verification). \n See https://github.com/openshift/cluster-update-keys for more details. The keys within the config map in the data field define how verification is performed: \n verifier-public-key-*: One or more GPG public keys in ASCII form that must have signed the release image by digest. \n store-*: A URL (scheme file://, http://, or https://) location that contains signatures. These signatures are in the atomic container signature format. The URL will have the digest of the image appended to it as \"<STORE>/<ALGO>=<DIGEST>/signature-<NUMBER>\" as described in the container image signing format. The docker-image-manifest section of the signature must match the release image digest. Signatures are searched starting at NUMBER 1 and incrementing if the signature exists but is not valid. The signature is a GPG signed and encrypted JSON message. The file store is provided for testing only at the current time, although future versions of the CVO might allow host mounting of signatures. \n See https://github.com/containers/image/blob/ab49b0a48428c623a8f03b41b9083d48966b34a9/docs/signature-protocols.md for a description of the signature store \n The returned verifier will require that any new release image will only be considered verified if each provided public key has signed the release image digest. The signature may be in any store and the lookup order is internally defined. \n If not set, no verification will be performed."
                   properties:

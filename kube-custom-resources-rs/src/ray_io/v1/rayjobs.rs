@@ -22,6 +22,8 @@ use self::prelude::*;
 pub struct RayJobSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
+    pub backoff_limit: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSelector")]
     pub cluster_selector: Option<BTreeMap<String, String>>,
     pub entrypoint: String,
@@ -9434,6 +9436,8 @@ pub struct RayJobStatus {
     pub dashboard_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
     pub end_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub failed: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobDeploymentStatus")]
     pub job_deployment_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobId")]
@@ -9452,12 +9456,16 @@ pub struct RayJobStatus {
     pub reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeeded: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayJobStatusRayClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableWorkerReplicas")]
     pub available_worker_replicas: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredCPU")]
     pub desired_cpu: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredGPU")]
@@ -9494,6 +9502,8 @@ pub struct RayJobStatusRayClusterStatus {
 pub struct RayJobStatusRayClusterStatusHead {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIP")]
     pub pod_ip: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podName")]
+    pub pod_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceIP")]
     pub service_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]

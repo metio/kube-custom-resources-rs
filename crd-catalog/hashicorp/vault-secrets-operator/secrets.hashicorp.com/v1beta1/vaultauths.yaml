@@ -177,6 +177,9 @@ spec:
                 vaultAuthGlobalRef:
                   description: "VaultAuthGlobalRef."
                   properties:
+                    allowDefault:
+                      description: "AllowDefault when set to true will use the default VaultAuthGlobal resource\nas the default if Name is not set. The 'allow-default-globals' option must be\nset on the operator's '-global-vault-auth-options' flag\n\n\nThe default VaultAuthGlobal search is conditional.\nWhen a ref Namespace is set, the search for the default\nVaultAuthGlobal resource is constrained to that namespace.\nOtherwise, the search order is:\n1. The default VaultAuthGlobal resource in the referring VaultAuth resource's\nnamespace.\n2. The default VaultAuthGlobal resource in the Operator's namespace."
+                      type: "boolean"
                     mergeStrategy:
                       description: "MergeStrategy configures the merge strategy for HTTP headers and parameters\nthat are included in all Vault authentication requests."
                       properties:
@@ -203,8 +206,6 @@ spec:
                       description: "Namespace of the VaultAuthGlobal resource. If not provided, the namespace of\nthe referring VaultAuth resource is used."
                       pattern: "^([a-z0-9.-]{1,253})$"
                       type: "string"
-                  required:
-                    - "name"
                   type: "object"
                 vaultConnectionRef:
                   description: "VaultConnectionRef to the VaultConnection resource, can be prefixed with a namespace,\neg: `namespaceA/vaultConnectionRefB`. If no namespace prefix is provided it will default to\nnamespace of the VaultConnection CR. If no value is specified for VaultConnectionRef the\nOperator will default to the `default` VaultConnection, configured in the operator's namespace."

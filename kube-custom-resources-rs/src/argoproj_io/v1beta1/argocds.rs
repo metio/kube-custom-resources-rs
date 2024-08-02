@@ -20,6 +20,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ArgoCDSpec {
+    /// AggregatedClusterRoles will allow users to have aggregated ClusterRoles for a cluster scoped instance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aggregatedClusterRoles")]
+    pub aggregated_cluster_roles: Option<bool>,
     /// ApplicationInstanceLabelKey is the key name where Argo CD injects the app name as a tracking label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationInstanceLabelKey")]
     pub application_instance_label_key: Option<String>,
@@ -41,8 +44,13 @@ pub struct ArgoCDSpec {
     /// DisableAdmin will disable the admin user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAdmin")]
     pub disable_admin: Option<bool>,
-    /// ExtraConfig can be used to add fields to Argo CD configmap that are not supported by Argo CD CRD. 
-    ///  Note: ExtraConfig takes precedence over Argo CD CRD. For example, A user sets `argocd.Spec.DisableAdmin` = true and also `a.Spec.ExtraConfig["admin.enabled"]` = true. In this case, operator updates Argo CD Configmap as follows -> argocd-cm.Data["admin.enabled"] = true.
+    /// ExtraConfig can be used to add fields to Argo CD configmap that are not supported by Argo CD CRD.
+    /// 
+    /// 
+    /// Note: ExtraConfig takes precedence over Argo CD CRD.
+    /// For example, A user sets `argocd.Spec.DisableAdmin` = true and also
+    /// `a.Spec.ExtraConfig["admin.enabled"]` = true. In this case, operator updates
+    /// Argo CD Configmap as follows -> argocd-cm.Data["admin.enabled"] = true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraConfig")]
     pub extra_config: Option<BTreeMap<String, String>>,
     /// GAAnonymizeUsers toggles user IDs being hashed before sending to google analytics.
@@ -120,7 +128,8 @@ pub struct ArgoCDSpec {
     /// ResourceIgnoreDifferences customizes resource ignore difference behavior.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceIgnoreDifferences")]
     pub resource_ignore_differences: Option<ArgoCDResourceIgnoreDifferences>,
-    /// ResourceInclusions is used to only include specific group/kinds in the reconciliation process.
+    /// ResourceInclusions is used to only include specific group/kinds in the
+    /// reconciliation process.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceInclusions")]
     pub resource_inclusions: Option<String>,
     /// ResourceTrackingMethod defines how Argo CD should track resources that it manages
@@ -141,7 +150,8 @@ pub struct ArgoCDSpec {
     /// TLS defines the TLS options for ArgoCD.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ArgoCDTls>,
-    /// UsersAnonymousEnabled toggles anonymous user access. The anonymous users get default role permissions specified argocd-rbac-cm.
+    /// UsersAnonymousEnabled toggles anonymous user access.
+    /// The anonymous users get default role permissions specified argocd-rbac-cm.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usersAnonymousEnabled")]
     pub users_anonymous_enabled: Option<bool>,
     /// Version is the tag to use with the ArgoCD container image for all ArgoCD components.
@@ -158,7 +168,10 @@ pub struct ArgoCDApplicationSet {
     /// Env lets you specify environment for applicationSet controller pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCDApplicationSetEnv>>,
-    /// ExtraCommandArgs allows users to pass command line arguments to ApplicationSet controller. They get added to default command line arguments provided by the operator. Please note that the command line arguments provided as part of ExtraCommandArgs will not overwrite the default command line arguments.
+    /// ExtraCommandArgs allows users to pass command line arguments to ApplicationSet controller.
+    /// They get added to default command line arguments provided by the operator.
+    /// Please note that the command line arguments provided as part of ExtraCommandArgs
+    /// will not overwrite the default command line arguments.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraCommandArgs")]
     pub extra_command_args: Option<Vec<String>>,
     /// Image is the Argo CD ApplicationSet image (optional)
@@ -192,7 +205,15 @@ pub struct ArgoCDApplicationSet {
 pub struct ArgoCDApplicationSetEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -206,10 +227,12 @@ pub struct ArgoCDApplicationSetEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ArgoCDApplicationSetEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCDApplicationSetEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ArgoCDApplicationSetEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -222,7 +245,9 @@ pub struct ArgoCDApplicationSetEnvValueFrom {
 pub struct ArgoCDApplicationSetEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -230,7 +255,8 @@ pub struct ArgoCDApplicationSetEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDApplicationSetEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -241,7 +267,8 @@ pub struct ArgoCDApplicationSetEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDApplicationSetEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -259,7 +286,9 @@ pub struct ArgoCDApplicationSetEnvValueFromResourceFieldRef {
 pub struct ArgoCDApplicationSetEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -270,15 +299,25 @@ pub struct ArgoCDApplicationSetEnvValueFromSecretKeyRef {
 /// Resources defines the Compute Resources required by the container for ApplicationSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDApplicationSetResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDApplicationSetResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -286,7 +325,9 @@ pub struct ArgoCDApplicationSetResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDApplicationSetResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -318,7 +359,11 @@ pub struct ArgoCDApplicationSetWebhookServerIngress {
     /// Path used for the Ingress resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// TLS configuration. Currently the Ingress only supports a single TLS port, 443. If multiple members of this list specify different hosts, they will be multiplexed on the same port according to the hostname specified through the SNI TLS extension, if the ingress controller fulfilling the ingress supports SNI.
+    /// TLS configuration. Currently the Ingress only supports a single TLS
+    /// port, 443. If multiple members of this list specify different hosts, they
+    /// will be multiplexed on the same port according to the hostname specified
+    /// through the SNI TLS extension, if the ingress controller fulfilling the
+    /// ingress supports SNI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<Vec<ArgoCDApplicationSetWebhookServerIngressTls>>,
 }
@@ -326,10 +371,17 @@ pub struct ArgoCDApplicationSetWebhookServerIngress {
 /// IngressTLS describes the transport layer security associated with an ingress.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDApplicationSetWebhookServerIngressTls {
-    /// hosts is a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
+    /// hosts is a list of hosts included in the TLS certificate. The values in
+    /// this list must match the name/s used in the tlsSecret. Defaults to the
+    /// wildcard host setting for the loadbalancer controller fulfilling this
+    /// Ingress, if left unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
-    /// secretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the "Host" header is used for routing.
+    /// secretName is the name of the secret used to terminate TLS traffic on
+    /// port 443. Field is left optional to allow TLS routing based on SNI
+    /// hostname alone. If the SNI host in a listener conflicts with the "Host"
+    /// header field used by an IngressRule, the SNI host is used for termination
+    /// and value of the "Host" header is used for routing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
@@ -365,11 +417,20 @@ pub struct ArgoCDApplicationSetWebhookServerRouteTls {
     /// certificate provides certificate contents
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
-    /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt termination this file should be provided in order to have routers use it for health checks on the secure connection. If this field is not specified, the router may provide its own destination CA and perform hostname validation using the short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically verify.
+    /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt
+    /// termination this file should be provided in order to have routers use it for health checks on the secure connection.
+    /// If this field is not specified, the router may provide its own destination CA and perform hostname validation using
+    /// the short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically
+    /// verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCACertificate")]
     pub destination_ca_certificate: Option<String>,
-    /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While each router may make its own decisions on which ports to expose, this is normally port 80. 
-    ///  * Allow - traffic is sent to the server on the insecure port (default) * Disable - no traffic is allowed on the insecure port. * Redirect - clients are redirected to the secure port.
+    /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While
+    /// each router may make its own decisions on which ports to expose, this is normally port 80.
+    /// 
+    /// 
+    /// * Allow - traffic is sent to the server on the insecure port (default)
+    /// * Disable - no traffic is allowed on the insecure port.
+    /// * Redirect - clients are redirected to the secure port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureEdgeTerminationPolicy")]
     pub insecure_edge_termination_policy: Option<String>,
     /// key provides key file contents
@@ -392,8 +453,12 @@ pub struct ArgoCDBanner {
 /// Controller defines the Application Controller options for ArgoCD.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDController {
-    /// AppSync is used to control the sync frequency, by default the ArgoCD controller polls Git every 3m. 
-    ///  Set this to a duration, e.g. 10m or 600s to control the synchronisation frequency.
+    /// AppSync is used to control the sync frequency, by default the ArgoCD
+    /// controller polls Git every 3m.
+    /// 
+    /// 
+    /// Set this to a duration, e.g. 10m or 600s to control the synchronisation
+    /// frequency.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appSync")]
     pub app_sync: Option<String>,
     /// Enabled is the flag to enable the Application Controller during ArgoCD installation. (optional, default `true`)
@@ -402,6 +467,14 @@ pub struct ArgoCDController {
     /// Env lets you specify environment for application controller pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCDControllerEnv>>,
+    /// Extra Command arguments allows users to pass command line arguments to controller workload. They get added to default command line arguments provided
+    /// by the operator.
+    /// Please note that the command line arguments provided as part of ExtraCommandArgs will not overwrite the default command line arguments.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraCommandArgs")]
+    pub extra_command_args: Option<Vec<String>>,
+    /// InitContainers defines the list of initialization containers for the Application Controller component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ArgoCDControllerInitContainers>>,
     /// LogFormat refers to the log format used by the Application Controller component. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
     pub log_format: Option<String>,
@@ -420,6 +493,15 @@ pub struct ArgoCDController {
     /// Sharding contains the options for the Application Controller sharding configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sharding: Option<ArgoCDControllerSharding>,
+    /// SidecarContainers defines the list of sidecar containers for the controller deployment
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarContainers")]
+    pub sidecar_containers: Option<Vec<ArgoCDControllerSidecarContainers>>,
+    /// VolumeMounts adds volumeMounts to the Argo CD Controller container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ArgoCDControllerVolumeMounts>>,
+    /// Volumes adds volumes to the Argo CD Controller container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volumes: Option<Vec<ArgoCDControllerVolumes>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -427,7 +509,15 @@ pub struct ArgoCDController {
 pub struct ArgoCDControllerEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -441,10 +531,12 @@ pub struct ArgoCDControllerEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ArgoCDControllerEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCDControllerEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ArgoCDControllerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -457,7 +549,9 @@ pub struct ArgoCDControllerEnvValueFrom {
 pub struct ArgoCDControllerEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -465,7 +559,8 @@ pub struct ArgoCDControllerEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDControllerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -476,7 +571,8 @@ pub struct ArgoCDControllerEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDControllerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -494,12 +590,1159 @@ pub struct ArgoCDControllerEnvValueFromResourceFieldRef {
 pub struct ArgoCDControllerEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// A single application container that you want to run within a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainers {
+    /// Arguments to the entrypoint.
+    /// The container image's CMD is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Entrypoint array. Not executed within a shell.
+    /// The container image's ENTRYPOINT is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// List of environment variables to set in the container.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ArgoCDControllerInitContainersEnv>>,
+    /// List of sources to populate environment variables in the container.
+    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
+    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// sources, the value associated with the last source will take precedence.
+    /// Values defined by an Env with a duplicate key will take precedence.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
+    pub env_from: Option<Vec<ArgoCDControllerInitContainersEnvFrom>>,
+    /// Container image name.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// Image pull policy.
+    /// One of Always, Never, IfNotPresent.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
+    /// Actions that the management system should take in response to container lifecycle events.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lifecycle: Option<ArgoCDControllerInitContainersLifecycle>,
+    /// Periodic probe of container liveness.
+    /// Container will be restarted if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ArgoCDControllerInitContainersLivenessProbe>,
+    /// Name of the container specified as a DNS_LABEL.
+    /// Each container in a pod must have a unique name (DNS_LABEL).
+    /// Cannot be updated.
+    pub name: String,
+    /// List of ports to expose from the container. Not specifying a port here
+    /// DOES NOT prevent that port from being exposed. Any port which is
+    /// listening on the default "0.0.0.0" address inside a container will be
+    /// accessible from the network.
+    /// Modifying this array with strategic merge patch may corrupt the data.
+    /// For more information See https://github.com/kubernetes/kubernetes/issues/108255.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<ArgoCDControllerInitContainersPorts>>,
+    /// Periodic probe of container service readiness.
+    /// Container will be removed from service endpoints if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ArgoCDControllerInitContainersReadinessProbe>,
+    /// Resources resize policy for the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ArgoCDControllerInitContainersResizePolicy>>,
+    /// Compute Resources required by this container.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ArgoCDControllerInitContainersResources>,
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
+    /// SecurityContext defines the security options the container should be run with.
+    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ArgoCDControllerInitContainersSecurityContext>,
+    /// StartupProbe indicates that the Pod has successfully initialized.
+    /// If specified, no other probes are executed until this completes successfully.
+    /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+    /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+    /// when it might take a long time to load data or warm a cache, than during steady-state operation.
+    /// This cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<ArgoCDControllerInitContainersStartupProbe>,
+    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
+    /// is not set, reads from stdin in the container will always result in EOF.
+    /// Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdin: Option<bool>,
+    /// Whether the container runtime should close the stdin channel after it has been opened by
+    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
+    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
+    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
+    /// at which time stdin is closed and remains closed until the container is restarted. If this
+    /// flag is false, a container processes that reads from stdin will never receive an EOF.
+    /// Default is false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
+    pub stdin_once: Option<bool>,
+    /// Optional: Path at which the file to which the container's termination message
+    /// will be written is mounted into the container's filesystem.
+    /// Message written is intended to be brief final status, such as an assertion failure message.
+    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
+    /// all containers will be limited to 12kb.
+    /// Defaults to /dev/termination-log.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
+    pub termination_message_path: Option<String>,
+    /// Indicate how the termination message should be populated. File will use the contents of
+    /// terminationMessagePath to populate the container status message on both success and failure.
+    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
+    /// message file is empty and the container exited with an error.
+    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
+    /// Defaults to File.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
+    pub termination_message_policy: Option<String>,
+    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
+    /// Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tty: Option<bool>,
+    /// volumeDevices is the list of block devices to be used by the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ArgoCDControllerInitContainersVolumeDevices>>,
+    /// Pod volumes to mount into the container's filesystem.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ArgoCDControllerInitContainersVolumeMounts>>,
+    /// Container's working directory.
+    /// If not specified, the container runtime's default will be used, which
+    /// might be configured in the container image.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
+    pub working_dir: Option<String>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ArgoCDControllerInitContainersEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ArgoCDControllerInitContainersEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ArgoCDControllerInitContainersEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ArgoCDControllerInitContainersEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ArgoCDControllerInitContainersEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// EnvFromSource represents the source of a set of ConfigMaps
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersEnvFrom {
+    /// The ConfigMap to select from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ArgoCDControllerInitContainersEnvFromConfigMapRef>,
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// The Secret to select from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDControllerInitContainersEnvFromSecretRef>,
+}
+
+/// The ConfigMap to select from
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersEnvFromConfigMapRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The Secret to select from
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersEnvFromSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Actions that the management system should take in response to container lifecycle events.
+/// Cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecycle {
+    /// PostStart is called immediately after a container is created. If the handler fails,
+    /// the container is terminated and restarted according to its restart policy.
+    /// Other management of the container blocks until the hook completes.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
+    pub post_start: Option<ArgoCDControllerInitContainersLifecyclePostStart>,
+    /// PreStop is called immediately before a container is terminated due to an
+    /// API request or management event such as liveness/startup probe failure,
+    /// preemption, resource contention, etc. The handler is not called if the
+    /// container crashes or exits. The Pod's termination grace period countdown begins before the
+    /// PreStop hook is executed. Regardless of the outcome of the handler, the
+    /// container will eventually terminate within the Pod's termination grace
+    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+    /// or until the termination grace period is reached.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
+    pub pre_stop: Option<ArgoCDControllerInitContainersLifecyclePreStop>,
+}
+
+/// PostStart is called immediately after a container is created. If the handler fails,
+/// the container is terminated and restarted according to its restart policy.
+/// Other management of the container blocks until the hook completes.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecyclePostStart {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDControllerInitContainersLifecyclePostStartExec>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDControllerInitContainersLifecyclePostStartHttpGet>,
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDControllerInitContainersLifecyclePostStartTcpSocket>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecyclePostStartExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecyclePostStartHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDControllerInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecyclePostStartHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecyclePostStartTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// PreStop is called immediately before a container is terminated due to an
+/// API request or management event such as liveness/startup probe failure,
+/// preemption, resource contention, etc. The handler is not called if the
+/// container crashes or exits. The Pod's termination grace period countdown begins before the
+/// PreStop hook is executed. Regardless of the outcome of the handler, the
+/// container will eventually terminate within the Pod's termination grace
+/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+/// or until the termination grace period is reached.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecyclePreStop {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDControllerInitContainersLifecyclePreStopExec>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDControllerInitContainersLifecyclePreStopHttpGet>,
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDControllerInitContainersLifecyclePreStopTcpSocket>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecyclePreStopExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecyclePreStopHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDControllerInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecyclePreStopHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLifecyclePreStopTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// Periodic probe of container liveness.
+/// Container will be restarted if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLivenessProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDControllerInitContainersLivenessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDControllerInitContainersLivenessProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDControllerInitContainersLivenessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDControllerInitContainersLivenessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLivenessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLivenessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLivenessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDControllerInitContainersLivenessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLivenessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersLivenessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// ContainerPort represents a network port in a single container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersPorts {
+    /// Number of port to expose on the pod's IP address.
+    /// This must be a valid port number, 0 < x < 65536.
+    #[serde(rename = "containerPort")]
+    pub container_port: i32,
+    /// What host IP to bind the external port to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
+    pub host_ip: Option<String>,
+    /// Number of port to expose on the host.
+    /// If specified, this must be a valid port number, 0 < x < 65536.
+    /// If HostNetwork is specified, this must match ContainerPort.
+    /// Most containers do not need this.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
+    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
+    /// named port in a pod must have a unique name. Name for the port that can be
+    /// referred to by services.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Protocol for port. Must be UDP, TCP, or SCTP.
+    /// Defaults to "TCP".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+}
+
+/// Periodic probe of container service readiness.
+/// Container will be removed from service endpoints if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersReadinessProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDControllerInitContainersReadinessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDControllerInitContainersReadinessProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDControllerInitContainersReadinessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDControllerInitContainersReadinessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersReadinessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersReadinessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersReadinessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDControllerInitContainersReadinessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersReadinessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersReadinessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// ContainerResizePolicy represents resource resize policy for the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersResizePolicy {
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+/// Compute Resources required by this container.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ArgoCDControllerInitContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// SecurityContext defines the security options the container should be run with.
+/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+/// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersSecurityContext {
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<ArgoCDControllerInitContainersSecurityContextCapabilities>,
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
+    pub proc_mount: Option<String>,
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ArgoCDControllerInitContainersSecurityContextSeLinuxOptions>,
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ArgoCDControllerInitContainersSecurityContextSeccompProfile>,
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ArgoCDControllerInitContainersSecurityContextWindowsOptions>,
+}
+
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersSecurityContextCapabilities {
+    /// Added capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// Removed capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
+}
+
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersSecurityContextSeLinuxOptions {
+    /// Level is SELinux level label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+    /// Role is a SELinux role label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    /// Type is a SELinux type label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    /// User is a SELinux user label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersSecurityContextSeccompProfile {
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersSecurityContextWindowsOptions {
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
+    pub gmsa_credential_spec: Option<String>,
+    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
+    pub gmsa_credential_spec_name: Option<String>,
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
+    pub host_process: Option<bool>,
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
+    pub run_as_user_name: Option<String>,
+}
+
+/// StartupProbe indicates that the Pod has successfully initialized.
+/// If specified, no other probes are executed until this completes successfully.
+/// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+/// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+/// when it might take a long time to load data or warm a cache, than during steady-state operation.
+/// This cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersStartupProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDControllerInitContainersStartupProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDControllerInitContainersStartupProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDControllerInitContainersStartupProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDControllerInitContainersStartupProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersStartupProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersStartupProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersStartupProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDControllerInitContainersStartupProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersStartupProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersStartupProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// volumeDevice describes a mapping of a raw block device within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersVolumeDevices {
+    /// devicePath is the path inside of the container that the device will be mapped to.
+    #[serde(rename = "devicePath")]
+    pub device_path: String,
+    /// name must match the name of a persistentVolumeClaim in the pod
+    pub name: String,
+}
+
+/// VolumeMount describes a mounting of a Volume within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerInitContainersVolumeMounts {
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
 }
 
 /// Processors contains the options for the Application Controller processors.
@@ -516,15 +1759,25 @@ pub struct ArgoCDControllerProcessors {
 /// Resources defines the Compute Resources required by the container for the Application Controller.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDControllerResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDControllerResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -532,7 +1785,9 @@ pub struct ArgoCDControllerResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDControllerResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -557,6 +1812,2680 @@ pub struct ArgoCDControllerSharding {
     /// Replicas defines the number of replicas to run in the Application controller shard.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
+}
+
+/// A single application container that you want to run within a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainers {
+    /// Arguments to the entrypoint.
+    /// The container image's CMD is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Entrypoint array. Not executed within a shell.
+    /// The container image's ENTRYPOINT is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// List of environment variables to set in the container.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ArgoCDControllerSidecarContainersEnv>>,
+    /// List of sources to populate environment variables in the container.
+    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
+    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// sources, the value associated with the last source will take precedence.
+    /// Values defined by an Env with a duplicate key will take precedence.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
+    pub env_from: Option<Vec<ArgoCDControllerSidecarContainersEnvFrom>>,
+    /// Container image name.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// Image pull policy.
+    /// One of Always, Never, IfNotPresent.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
+    /// Actions that the management system should take in response to container lifecycle events.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lifecycle: Option<ArgoCDControllerSidecarContainersLifecycle>,
+    /// Periodic probe of container liveness.
+    /// Container will be restarted if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ArgoCDControllerSidecarContainersLivenessProbe>,
+    /// Name of the container specified as a DNS_LABEL.
+    /// Each container in a pod must have a unique name (DNS_LABEL).
+    /// Cannot be updated.
+    pub name: String,
+    /// List of ports to expose from the container. Not specifying a port here
+    /// DOES NOT prevent that port from being exposed. Any port which is
+    /// listening on the default "0.0.0.0" address inside a container will be
+    /// accessible from the network.
+    /// Modifying this array with strategic merge patch may corrupt the data.
+    /// For more information See https://github.com/kubernetes/kubernetes/issues/108255.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<ArgoCDControllerSidecarContainersPorts>>,
+    /// Periodic probe of container service readiness.
+    /// Container will be removed from service endpoints if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ArgoCDControllerSidecarContainersReadinessProbe>,
+    /// Resources resize policy for the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ArgoCDControllerSidecarContainersResizePolicy>>,
+    /// Compute Resources required by this container.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ArgoCDControllerSidecarContainersResources>,
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
+    /// SecurityContext defines the security options the container should be run with.
+    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ArgoCDControllerSidecarContainersSecurityContext>,
+    /// StartupProbe indicates that the Pod has successfully initialized.
+    /// If specified, no other probes are executed until this completes successfully.
+    /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+    /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+    /// when it might take a long time to load data or warm a cache, than during steady-state operation.
+    /// This cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<ArgoCDControllerSidecarContainersStartupProbe>,
+    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
+    /// is not set, reads from stdin in the container will always result in EOF.
+    /// Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdin: Option<bool>,
+    /// Whether the container runtime should close the stdin channel after it has been opened by
+    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
+    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
+    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
+    /// at which time stdin is closed and remains closed until the container is restarted. If this
+    /// flag is false, a container processes that reads from stdin will never receive an EOF.
+    /// Default is false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
+    pub stdin_once: Option<bool>,
+    /// Optional: Path at which the file to which the container's termination message
+    /// will be written is mounted into the container's filesystem.
+    /// Message written is intended to be brief final status, such as an assertion failure message.
+    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
+    /// all containers will be limited to 12kb.
+    /// Defaults to /dev/termination-log.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
+    pub termination_message_path: Option<String>,
+    /// Indicate how the termination message should be populated. File will use the contents of
+    /// terminationMessagePath to populate the container status message on both success and failure.
+    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
+    /// message file is empty and the container exited with an error.
+    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
+    /// Defaults to File.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
+    pub termination_message_policy: Option<String>,
+    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
+    /// Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tty: Option<bool>,
+    /// volumeDevices is the list of block devices to be used by the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ArgoCDControllerSidecarContainersVolumeDevices>>,
+    /// Pod volumes to mount into the container's filesystem.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ArgoCDControllerSidecarContainersVolumeMounts>>,
+    /// Container's working directory.
+    /// If not specified, the container runtime's default will be used, which
+    /// might be configured in the container image.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
+    pub working_dir: Option<String>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ArgoCDControllerSidecarContainersEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ArgoCDControllerSidecarContainersEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ArgoCDControllerSidecarContainersEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ArgoCDControllerSidecarContainersEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ArgoCDControllerSidecarContainersEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// EnvFromSource represents the source of a set of ConfigMaps
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersEnvFrom {
+    /// The ConfigMap to select from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ArgoCDControllerSidecarContainersEnvFromConfigMapRef>,
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// The Secret to select from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDControllerSidecarContainersEnvFromSecretRef>,
+}
+
+/// The ConfigMap to select from
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersEnvFromConfigMapRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The Secret to select from
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersEnvFromSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Actions that the management system should take in response to container lifecycle events.
+/// Cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecycle {
+    /// PostStart is called immediately after a container is created. If the handler fails,
+    /// the container is terminated and restarted according to its restart policy.
+    /// Other management of the container blocks until the hook completes.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
+    pub post_start: Option<ArgoCDControllerSidecarContainersLifecyclePostStart>,
+    /// PreStop is called immediately before a container is terminated due to an
+    /// API request or management event such as liveness/startup probe failure,
+    /// preemption, resource contention, etc. The handler is not called if the
+    /// container crashes or exits. The Pod's termination grace period countdown begins before the
+    /// PreStop hook is executed. Regardless of the outcome of the handler, the
+    /// container will eventually terminate within the Pod's termination grace
+    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+    /// or until the termination grace period is reached.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
+    pub pre_stop: Option<ArgoCDControllerSidecarContainersLifecyclePreStop>,
+}
+
+/// PostStart is called immediately after a container is created. If the handler fails,
+/// the container is terminated and restarted according to its restart policy.
+/// Other management of the container blocks until the hook completes.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecyclePostStart {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDControllerSidecarContainersLifecyclePostStartExec>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDControllerSidecarContainersLifecyclePostStartHttpGet>,
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDControllerSidecarContainersLifecyclePostStartTcpSocket>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecyclePostStartExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecyclePostStartHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDControllerSidecarContainersLifecyclePostStartHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecyclePostStartHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecyclePostStartTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// PreStop is called immediately before a container is terminated due to an
+/// API request or management event such as liveness/startup probe failure,
+/// preemption, resource contention, etc. The handler is not called if the
+/// container crashes or exits. The Pod's termination grace period countdown begins before the
+/// PreStop hook is executed. Regardless of the outcome of the handler, the
+/// container will eventually terminate within the Pod's termination grace
+/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+/// or until the termination grace period is reached.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecyclePreStop {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDControllerSidecarContainersLifecyclePreStopExec>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDControllerSidecarContainersLifecyclePreStopHttpGet>,
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDControllerSidecarContainersLifecyclePreStopTcpSocket>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecyclePreStopExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecyclePreStopHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDControllerSidecarContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecyclePreStopHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLifecyclePreStopTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// Periodic probe of container liveness.
+/// Container will be restarted if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLivenessProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDControllerSidecarContainersLivenessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDControllerSidecarContainersLivenessProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDControllerSidecarContainersLivenessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDControllerSidecarContainersLivenessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLivenessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLivenessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLivenessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDControllerSidecarContainersLivenessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLivenessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersLivenessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// ContainerPort represents a network port in a single container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersPorts {
+    /// Number of port to expose on the pod's IP address.
+    /// This must be a valid port number, 0 < x < 65536.
+    #[serde(rename = "containerPort")]
+    pub container_port: i32,
+    /// What host IP to bind the external port to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
+    pub host_ip: Option<String>,
+    /// Number of port to expose on the host.
+    /// If specified, this must be a valid port number, 0 < x < 65536.
+    /// If HostNetwork is specified, this must match ContainerPort.
+    /// Most containers do not need this.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
+    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
+    /// named port in a pod must have a unique name. Name for the port that can be
+    /// referred to by services.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Protocol for port. Must be UDP, TCP, or SCTP.
+    /// Defaults to "TCP".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+}
+
+/// Periodic probe of container service readiness.
+/// Container will be removed from service endpoints if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersReadinessProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDControllerSidecarContainersReadinessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDControllerSidecarContainersReadinessProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDControllerSidecarContainersReadinessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDControllerSidecarContainersReadinessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersReadinessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersReadinessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersReadinessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDControllerSidecarContainersReadinessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersReadinessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersReadinessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// ContainerResizePolicy represents resource resize policy for the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersResizePolicy {
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+/// Compute Resources required by this container.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ArgoCDControllerSidecarContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// SecurityContext defines the security options the container should be run with.
+/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+/// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersSecurityContext {
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<ArgoCDControllerSidecarContainersSecurityContextCapabilities>,
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
+    pub proc_mount: Option<String>,
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ArgoCDControllerSidecarContainersSecurityContextSeLinuxOptions>,
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ArgoCDControllerSidecarContainersSecurityContextSeccompProfile>,
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ArgoCDControllerSidecarContainersSecurityContextWindowsOptions>,
+}
+
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersSecurityContextCapabilities {
+    /// Added capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// Removed capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
+}
+
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersSecurityContextSeLinuxOptions {
+    /// Level is SELinux level label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+    /// Role is a SELinux role label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    /// Type is a SELinux type label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    /// User is a SELinux user label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersSecurityContextSeccompProfile {
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersSecurityContextWindowsOptions {
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
+    pub gmsa_credential_spec: Option<String>,
+    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
+    pub gmsa_credential_spec_name: Option<String>,
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
+    pub host_process: Option<bool>,
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
+    pub run_as_user_name: Option<String>,
+}
+
+/// StartupProbe indicates that the Pod has successfully initialized.
+/// If specified, no other probes are executed until this completes successfully.
+/// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+/// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+/// when it might take a long time to load data or warm a cache, than during steady-state operation.
+/// This cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersStartupProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDControllerSidecarContainersStartupProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDControllerSidecarContainersStartupProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDControllerSidecarContainersStartupProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDControllerSidecarContainersStartupProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersStartupProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersStartupProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersStartupProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDControllerSidecarContainersStartupProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersStartupProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersStartupProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// volumeDevice describes a mapping of a raw block device within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersVolumeDevices {
+    /// devicePath is the path inside of the container that the device will be mapped to.
+    #[serde(rename = "devicePath")]
+    pub device_path: String,
+    /// name must match the name of a persistentVolumeClaim in the pod
+    pub name: String,
+}
+
+/// VolumeMount describes a mounting of a Volume within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerSidecarContainersVolumeMounts {
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
+}
+
+/// VolumeMount describes a mounting of a Volume within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumeMounts {
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
+}
+
+/// Volume represents a named volume in a pod that may be accessed by any container in the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumes {
+    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<ArgoCDControllerVolumesAwsElasticBlockStore>,
+    /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
+    pub azure_disk: Option<ArgoCDControllerVolumesAzureDisk>,
+    /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
+    pub azure_file: Option<ArgoCDControllerVolumesAzureFile>,
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cephfs: Option<ArgoCDControllerVolumesCephfs>,
+    /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cinder: Option<ArgoCDControllerVolumesCinder>,
+    /// configMap represents a configMap that should populate this volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ArgoCDControllerVolumesConfigMap>,
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<ArgoCDControllerVolumesCsi>,
+    /// downwardAPI represents downward API about the pod that should populate this volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<ArgoCDControllerVolumesDownwardApi>,
+    /// emptyDir represents a temporary directory that shares a pod's lifetime.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<ArgoCDControllerVolumesEmptyDir>,
+    /// ephemeral represents a volume that is handled by a cluster storage driver.
+    /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+    /// and deleted when the pod is removed.
+    /// 
+    /// 
+    /// Use this if:
+    /// a) the volume is only needed while the pod runs,
+    /// b) features of normal volumes like restoring from snapshot or capacity
+    ///    tracking are needed,
+    /// c) the storage driver is specified through a storage class, and
+    /// d) the storage driver supports dynamic volume provisioning through
+    ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+    ///    information on the connection between this volume type
+    ///    and PersistentVolumeClaim).
+    /// 
+    /// 
+    /// Use PersistentVolumeClaim or one of the vendor-specific
+    /// APIs for volumes that persist for longer than the lifecycle
+    /// of an individual pod.
+    /// 
+    /// 
+    /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+    /// be used that way - see the documentation of the driver for
+    /// more information.
+    /// 
+    /// 
+    /// A pod can use both types of ephemeral volumes and
+    /// persistent volumes at the same time.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ephemeral: Option<ArgoCDControllerVolumesEphemeral>,
+    /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fc: Option<ArgoCDControllerVolumesFc>,
+    /// flexVolume represents a generic volume resource that is
+    /// provisioned/attached using an exec based plugin.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
+    pub flex_volume: Option<ArgoCDControllerVolumesFlexVolume>,
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flocker: Option<ArgoCDControllerVolumesFlocker>,
+    /// gcePersistentDisk represents a GCE Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<ArgoCDControllerVolumesGcePersistentDisk>,
+    /// gitRepo represents a git repository at a particular revision.
+    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+    /// into the Pod's container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
+    pub git_repo: Option<ArgoCDControllerVolumesGitRepo>,
+    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub glusterfs: Option<ArgoCDControllerVolumesGlusterfs>,
+    /// hostPath represents a pre-existing file or directory on the host
+    /// machine that is directly exposed to the container. This is generally
+    /// used for system agents or other privileged things that are allowed
+    /// to see the host machine. Most containers will NOT need this.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// ---
+    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+    /// mount host directories as read/write.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
+    pub host_path: Option<ArgoCDControllerVolumesHostPath>,
+    /// iscsi represents an ISCSI Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://examples.k8s.io/volumes/iscsi/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub iscsi: Option<ArgoCDControllerVolumesIscsi>,
+    /// name of the volume.
+    /// Must be a DNS_LABEL and unique within the pod.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    pub name: String,
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nfs: Option<ArgoCDControllerVolumesNfs>,
+    /// persistentVolumeClaimVolumeSource represents a reference to a
+    /// PersistentVolumeClaim in the same namespace.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<ArgoCDControllerVolumesPersistentVolumeClaim>,
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<ArgoCDControllerVolumesPhotonPersistentDisk>,
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<ArgoCDControllerVolumesPortworxVolume>,
+    /// projected items for all in one resources secrets, configmaps, and downward API
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub projected: Option<ArgoCDControllerVolumesProjected>,
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quobyte: Option<ArgoCDControllerVolumesQuobyte>,
+    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rbd: Option<ArgoCDControllerVolumesRbd>,
+    /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
+    pub scale_io: Option<ArgoCDControllerVolumesScaleIo>,
+    /// secret represents a secret that should populate this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ArgoCDControllerVolumesSecret>,
+    /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storageos: Option<ArgoCDControllerVolumesStorageos>,
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<ArgoCDControllerVolumesVsphereVolume>,
+}
+
+/// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesAwsElasticBlockStore {
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
+    /// readOnly value true will force the readOnly setting in VolumeMounts.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesAzureDisk {
+    /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
+    pub caching_mode: Option<String>,
+    /// diskName is the Name of the data disk in the blob storage
+    #[serde(rename = "diskName")]
+    pub disk_name: String,
+    /// diskURI is the URI of data disk in the blob storage
+    #[serde(rename = "diskURI")]
+    pub disk_uri: String,
+    /// fsType is Filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesAzureFile {
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretName is the  name of secret that contains Azure Storage Account Name and Key
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+    /// shareName is the azure share Name
+    #[serde(rename = "shareName")]
+    pub share_name: String,
+}
+
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesCephfs {
+    /// monitors is Required: Monitors is a collection of Ceph monitors
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    pub monitors: Vec<String>,
+    /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
+    pub secret_file: Option<String>,
+    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDControllerVolumesCephfsSecretRef>,
+    /// user is optional: User is the rados user name, default is admin
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+/// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesCephfsSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesCinder {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is optional: points to a secret object containing parameters used to connect
+    /// to OpenStack.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDControllerVolumesCinderSecretRef>,
+    /// volumeID used to identify the volume in cinder.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// secretRef is optional: points to a secret object containing parameters used to connect
+/// to OpenStack.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesCinderSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// configMap represents a configMap that should populate this volume
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesConfigMap {
+    /// defaultMode is optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDControllerVolumesConfigMapItems>>,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesCsi {
+    /// driver is the name of the CSI driver that handles this volume.
+    /// Consult with your admin for the correct name as registered in the cluster.
+    pub driver: String,
+    /// fsType to mount. Ex. "ext4", "xfs", "ntfs".
+    /// If not provided, the empty value is passed to the associated CSI driver
+    /// which will determine the default filesystem to apply.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// nodePublishSecretRef is a reference to the secret object containing
+    /// sensitive information to pass to the CSI driver to complete the CSI
+    /// NodePublishVolume and NodeUnpublishVolume calls.
+    /// This field is optional, and  may be empty if no secret is required. If the
+    /// secret object contains more than one secret, all secret references are passed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<ArgoCDControllerVolumesCsiNodePublishSecretRef>,
+    /// readOnly specifies a read-only configuration for the volume.
+    /// Defaults to false (read/write).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// volumeAttributes stores driver-specific properties that are passed to the CSI
+    /// driver. Consult your driver's documentation for supported values.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+/// nodePublishSecretRef is a reference to the secret object containing
+/// sensitive information to pass to the CSI driver to complete the CSI
+/// NodePublishVolume and NodeUnpublishVolume calls.
+/// This field is optional, and  may be empty if no secret is required. If the
+/// secret object contains more than one secret, all secret references are passed.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesCsiNodePublishSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// downwardAPI represents downward API about the pod that should populate this volume
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesDownwardApi {
+    /// Optional: mode bits to use on created files by default. Must be a
+    /// Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// Items is a list of downward API volume file
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDControllerVolumesDownwardApiItems>>,
+}
+
+/// DownwardAPIVolumeFile represents information to create the file containing the pod field
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesDownwardApiItems {
+    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ArgoCDControllerVolumesDownwardApiItemsFieldRef>,
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
+    pub path: String,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ArgoCDControllerVolumesDownwardApiItemsResourceFieldRef>,
+}
+
+/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesDownwardApiItemsFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesDownwardApiItemsResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// emptyDir represents a temporary directory that shares a pod's lifetime.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEmptyDir {
+    /// medium represents what type of storage medium should back this directory.
+    /// The default is "" which means to use the node's default medium.
+    /// Must be an empty string (default) or Memory.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
+    /// The size limit is also applicable for memory medium.
+    /// The maximum usage on memory medium EmptyDir would be the minimum value between
+    /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
+    /// The default is nil which means that the limit is undefined.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
+    pub size_limit: Option<IntOrString>,
+}
+
+/// ephemeral represents a volume that is handled by a cluster storage driver.
+/// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+/// and deleted when the pod is removed.
+/// 
+/// 
+/// Use this if:
+/// a) the volume is only needed while the pod runs,
+/// b) features of normal volumes like restoring from snapshot or capacity
+///    tracking are needed,
+/// c) the storage driver is specified through a storage class, and
+/// d) the storage driver supports dynamic volume provisioning through
+///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+///    information on the connection between this volume type
+///    and PersistentVolumeClaim).
+/// 
+/// 
+/// Use PersistentVolumeClaim or one of the vendor-specific
+/// APIs for volumes that persist for longer than the lifecycle
+/// of an individual pod.
+/// 
+/// 
+/// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+/// be used that way - see the documentation of the driver for
+/// more information.
+/// 
+/// 
+/// A pod can use both types of ephemeral volumes and
+/// persistent volumes at the same time.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEphemeral {
+    /// Will be used to create a stand-alone PVC to provision the volume.
+    /// The pod in which this EphemeralVolumeSource is embedded will be the
+    /// owner of the PVC, i.e. the PVC will be deleted together with the
+    /// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+    /// `<volume name>` is the name from the `PodSpec.Volumes` array
+    /// entry. Pod validation will reject the pod if the concatenated name
+    /// is not valid for a PVC (for example, too long).
+    /// 
+    /// 
+    /// An existing PVC with that name that is not owned by the pod
+    /// will *not* be used for the pod to avoid using an unrelated
+    /// volume by mistake. Starting the pod is then blocked until
+    /// the unrelated PVC is removed. If such a pre-created PVC is
+    /// meant to be used by the pod, the PVC has to updated with an
+    /// owner reference to the pod once the pod exists. Normally
+    /// this should not be necessary, but it may be useful when
+    /// manually reconstructing a broken cluster.
+    /// 
+    /// 
+    /// This field is read-only and no changes will be made by Kubernetes
+    /// to the PVC after it has been created.
+    /// 
+    /// 
+    /// Required, must not be nil.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<ArgoCDControllerVolumesEphemeralVolumeClaimTemplate>,
+}
+
+/// Will be used to create a stand-alone PVC to provision the volume.
+/// The pod in which this EphemeralVolumeSource is embedded will be the
+/// owner of the PVC, i.e. the PVC will be deleted together with the
+/// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+/// `<volume name>` is the name from the `PodSpec.Volumes` array
+/// entry. Pod validation will reject the pod if the concatenated name
+/// is not valid for a PVC (for example, too long).
+/// 
+/// 
+/// An existing PVC with that name that is not owned by the pod
+/// will *not* be used for the pod to avoid using an unrelated
+/// volume by mistake. Starting the pod is then blocked until
+/// the unrelated PVC is removed. If such a pre-created PVC is
+/// meant to be used by the pod, the PVC has to updated with an
+/// owner reference to the pod once the pod exists. Normally
+/// this should not be necessary, but it may be useful when
+/// manually reconstructing a broken cluster.
+/// 
+/// 
+/// This field is read-only and no changes will be made by Kubernetes
+/// to the PVC after it has been created.
+/// 
+/// 
+/// Required, must not be nil.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEphemeralVolumeClaimTemplate {
+    /// May contain labels and annotations that will be copied into the PVC
+    /// when creating it. No other fields are allowed and will be rejected during
+    /// validation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<ArgoCDControllerVolumesEphemeralVolumeClaimTemplateMetadata>,
+    /// The specification for the PersistentVolumeClaim. The entire content is
+    /// copied unchanged into the PVC that gets created from this
+    /// template. The same fields as in a PersistentVolumeClaim
+    /// are also valid here.
+    pub spec: ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpec,
+}
+
+/// May contain labels and annotations that will be copied into the PVC
+/// when creating it. No other fields are allowed and will be rejected during
+/// validation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEphemeralVolumeClaimTemplateMetadata {
+}
+
+/// The specification for the PersistentVolumeClaim. The entire content is
+/// copied unchanged into the PVC that gets created from this
+/// template. The same fields as in a PersistentVolumeClaim
+/// are also valid here.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpec {
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    /// selector is a label query over volumes to consider for binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    /// volumeName is the binding reference to the PersistentVolume backing this claim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecDataSource {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// selector is a label query over volumes to consider for binding.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesFc {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// lun is Optional: FC target lun number
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lun: Option<i32>,
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// targetWWNs is Optional: FC target worldwide names (WWNs)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
+    pub target_ww_ns: Option<Vec<String>>,
+    /// wwids Optional: FC volume world wide identifiers (wwids)
+    /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wwids: Option<Vec<String>>,
+}
+
+/// flexVolume represents a generic volume resource that is
+/// provisioned/attached using an exec based plugin.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesFlexVolume {
+    /// driver is the name of the driver to use for this volume.
+    pub driver: String,
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// options is Optional: this field holds extra command options if any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, String>>,
+    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is Optional: secretRef is reference to the secret object containing
+    /// sensitive information to pass to the plugin scripts. This may be
+    /// empty if no secret object is specified. If the secret object
+    /// contains more than one secret, all secrets are passed to the plugin
+    /// scripts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDControllerVolumesFlexVolumeSecretRef>,
+}
+
+/// secretRef is Optional: secretRef is reference to the secret object containing
+/// sensitive information to pass to the plugin scripts. This may be
+/// empty if no secret object is specified. If the secret object
+/// contains more than one secret, all secrets are passed to the plugin
+/// scripts.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesFlexVolumeSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesFlocker {
+    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
+    /// should be considered as deprecated
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
+    pub dataset_name: Option<String>,
+    /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
+    pub dataset_uuid: Option<String>,
+}
+
+/// gcePersistentDisk represents a GCE Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesGcePersistentDisk {
+    /// fsType is filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
+    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(rename = "pdName")]
+    pub pd_name: String,
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// gitRepo represents a git repository at a particular revision.
+/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+/// into the Pod's container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesGitRepo {
+    /// directory is the target directory name.
+    /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
+    /// git repository.  Otherwise, if specified, the volume will contain the git repository in
+    /// the subdirectory with the given name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub directory: Option<String>,
+    /// repository is the URL
+    pub repository: String,
+    /// revision is the commit hash for the specified revision.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub revision: Option<String>,
+}
+
+/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/glusterfs/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesGlusterfs {
+    /// endpoints is the endpoint name that details Glusterfs topology.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    pub endpoints: String,
+    /// path is the Glusterfs volume path.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    pub path: String,
+    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// hostPath represents a pre-existing file or directory on the host
+/// machine that is directly exposed to the container. This is generally
+/// used for system agents or other privileged things that are allowed
+/// to see the host machine. Most containers will NOT need this.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+/// ---
+/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+/// mount host directories as read/write.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesHostPath {
+    /// path of the directory on the host.
+    /// If the path is a symlink, it will follow the link to the real path.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    pub path: String,
+    /// type for HostPath Volume
+    /// Defaults to ""
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// iscsi represents an ISCSI Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://examples.k8s.io/volumes/iscsi/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesIscsi {
+    /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
+    pub chap_auth_discovery: Option<bool>,
+    /// chapAuthSession defines whether support iSCSI Session CHAP authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
+    pub chap_auth_session: Option<bool>,
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// initiatorName is the custom iSCSI Initiator Name.
+    /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
+    /// <target portal>:<volume name> will be created for the connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
+    pub initiator_name: Option<String>,
+    /// iqn is the target iSCSI Qualified Name.
+    pub iqn: String,
+    /// iscsiInterface is the interface Name that uses an iSCSI transport.
+    /// Defaults to 'default' (tcp).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
+    pub iscsi_interface: Option<String>,
+    /// lun represents iSCSI Target Lun number.
+    pub lun: i32,
+    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub portals: Option<Vec<String>>,
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDControllerVolumesIscsiSecretRef>,
+    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
+    #[serde(rename = "targetPortal")]
+    pub target_portal: String,
+}
+
+/// secretRef is the CHAP Secret for iSCSI target and initiator authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesIscsiSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// nfs represents an NFS mount on the host that shares a pod's lifetime
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesNfs {
+    /// path that is exported by the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    pub path: String,
+    /// readOnly here will force the NFS export to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// server is the hostname or IP address of the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    pub server: String,
+}
+
+/// persistentVolumeClaimVolumeSource represents a reference to a
+/// PersistentVolumeClaim in the same namespace.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesPersistentVolumeClaim {
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesPhotonPersistentDisk {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// pdID is the ID that identifies Photon Controller persistent disk
+    #[serde(rename = "pdID")]
+    pub pd_id: String,
+}
+
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesPortworxVolume {
+    /// fSType represents the filesystem type to mount
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// volumeID uniquely identifies a Portworx volume
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// projected items for all in one resources secrets, configmaps, and downward API
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjected {
+    /// defaultMode are the mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// sources is the list of volume projections
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sources: Option<Vec<ArgoCDControllerVolumesProjectedSources>>,
+}
+
+/// Projection that may be projected along with other supported volume types
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjectedSources {
+    /// configMap information about the configMap data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ArgoCDControllerVolumesProjectedSourcesConfigMap>,
+    /// downwardAPI information about the downwardAPI data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<ArgoCDControllerVolumesProjectedSourcesDownwardApi>,
+    /// secret information about the secret data to project
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ArgoCDControllerVolumesProjectedSourcesSecret>,
+    /// serviceAccountToken is information about the serviceAccountToken data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<ArgoCDControllerVolumesProjectedSourcesServiceAccountToken>,
+}
+
+/// configMap information about the configMap data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjectedSourcesConfigMap {
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDControllerVolumesProjectedSourcesConfigMapItems>>,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjectedSourcesConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// downwardAPI information about the downwardAPI data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjectedSourcesDownwardApi {
+    /// Items is a list of DownwardAPIVolume file
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDControllerVolumesProjectedSourcesDownwardApiItems>>,
+}
+
+/// DownwardAPIVolumeFile represents information to create the file containing the pod field
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjectedSourcesDownwardApiItems {
+    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ArgoCDControllerVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
+    pub path: String,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ArgoCDControllerVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+}
+
+/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjectedSourcesDownwardApiItemsFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// secret information about the secret data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjectedSourcesSecret {
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDControllerVolumesProjectedSourcesSecretItems>>,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional field specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjectedSourcesSecretItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// serviceAccountToken is information about the serviceAccountToken data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesProjectedSourcesServiceAccountToken {
+    /// audience is the intended audience of the token. A recipient of a token
+    /// must identify itself with an identifier specified in the audience of the
+    /// token, and otherwise should reject the token. The audience defaults to the
+    /// identifier of the apiserver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// expirationSeconds is the requested duration of validity of the service
+    /// account token. As the token approaches expiration, the kubelet volume
+    /// plugin will proactively rotate the service account token. The kubelet will
+    /// start trying to rotate the token if the token is older than 80 percent of
+    /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
+    /// and must be at least 10 minutes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
+    pub expiration_seconds: Option<i64>,
+    /// path is the path relative to the mount point of the file to project the
+    /// token into.
+    pub path: String,
+}
+
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesQuobyte {
+    /// group to map volume access to
+    /// Default is no group
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions.
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// registry represents a single or multiple Quobyte Registry services
+    /// specified as a string as host:port pair (multiple entries are separated with commas)
+    /// which acts as the central registry for volumes
+    pub registry: String,
+    /// tenant owning the given Quobyte volume in the Backend
+    /// Used with dynamically provisioned Quobyte volumes, value is set by the plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tenant: Option<String>,
+    /// user to map volume access to
+    /// Defaults to serivceaccount user
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+    /// volume is a string that references an already created Quobyte volume by name.
+    pub volume: String,
+}
+
+/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesRbd {
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// image is the rados image name.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    pub image: String,
+    /// keyring is the path to key ring for RBDUser.
+    /// Default is /etc/ceph/keyring.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keyring: Option<String>,
+    /// monitors is a collection of Ceph monitors.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    pub monitors: Vec<String>,
+    /// pool is the rados pool name.
+    /// Default is rbd.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pool: Option<String>,
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is name of the authentication secret for RBDUser. If provided
+    /// overrides keyring.
+    /// Default is nil.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDControllerVolumesRbdSecretRef>,
+    /// user is the rados user name.
+    /// Default is admin.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// secretRef is name of the authentication secret for RBDUser. If provided
+/// overrides keyring.
+/// Default is nil.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesRbdSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesScaleIo {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs".
+    /// Default is "xfs".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// gateway is the host address of the ScaleIO API Gateway.
+    pub gateway: String,
+    /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
+    pub protection_domain: Option<String>,
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef references to the secret for ScaleIO user and other
+    /// sensitive information. If this is not provided, Login operation will fail.
+    #[serde(rename = "secretRef")]
+    pub secret_ref: ArgoCDControllerVolumesScaleIoSecretRef,
+    /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
+    pub ssl_enabled: Option<bool>,
+    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
+    /// Default is ThinProvisioned.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
+    pub storage_mode: Option<String>,
+    /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
+    pub storage_pool: Option<String>,
+    /// system is the name of the storage system as configured in ScaleIO.
+    pub system: String,
+    /// volumeName is the name of a volume already created in the ScaleIO system
+    /// that is associated with this volume source.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// secretRef references to the secret for ScaleIO user and other
+/// sensitive information. If this is not provided, Login operation will fail.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesScaleIoSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// secret represents a secret that should populate this volume.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesSecret {
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values
+    /// for mode bits. Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items If unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDControllerVolumesSecretItems>>,
+    /// optional field specify whether the Secret or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// secretName is the name of the secret in the pod's namespace to use.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesSecretItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesStorageos {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef specifies the secret to use for obtaining the StorageOS API
+    /// credentials.  If not specified, default values will be attempted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDControllerVolumesStorageosSecretRef>,
+    /// volumeName is the human-readable name of the StorageOS volume.  Volume
+    /// names are only unique within a namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
+    /// namespace is specified then the Pod's namespace will be used.  This allows the
+    /// Kubernetes name scoping to be mirrored within StorageOS for tighter integration.
+    /// Set VolumeName to any name to override the default behaviour.
+    /// Set to "default" if you are not using namespaces within StorageOS.
+    /// Namespaces that do not pre-exist within StorageOS will be created.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
+    pub volume_namespace: Option<String>,
+}
+
+/// secretRef specifies the secret to use for obtaining the StorageOS API
+/// credentials.  If not specified, default values will be attempted.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesStorageosSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDControllerVolumesVsphereVolume {
+    /// fsType is filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
+    pub storage_policy_id: Option<String>,
+    /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
+    pub storage_policy_name: Option<String>,
+    /// volumePath is the path that identifies vSphere volume vmdk
+    #[serde(rename = "volumePath")]
+    pub volume_path: String,
 }
 
 /// Deprecated: Grafana defines the Grafana server options for ArgoCD.
@@ -601,7 +4530,11 @@ pub struct ArgoCDGrafanaIngress {
     /// Path used for the Ingress resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// TLS configuration. Currently the Ingress only supports a single TLS port, 443. If multiple members of this list specify different hosts, they will be multiplexed on the same port according to the hostname specified through the SNI TLS extension, if the ingress controller fulfilling the ingress supports SNI.
+    /// TLS configuration. Currently the Ingress only supports a single TLS
+    /// port, 443. If multiple members of this list specify different hosts, they
+    /// will be multiplexed on the same port according to the hostname specified
+    /// through the SNI TLS extension, if the ingress controller fulfilling the
+    /// ingress supports SNI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<Vec<ArgoCDGrafanaIngressTls>>,
 }
@@ -609,10 +4542,17 @@ pub struct ArgoCDGrafanaIngress {
 /// IngressTLS describes the transport layer security associated with an ingress.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDGrafanaIngressTls {
-    /// hosts is a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
+    /// hosts is a list of hosts included in the TLS certificate. The values in
+    /// this list must match the name/s used in the tlsSecret. Defaults to the
+    /// wildcard host setting for the loadbalancer controller fulfilling this
+    /// Ingress, if left unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
-    /// secretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the "Host" header is used for routing.
+    /// secretName is the name of the secret used to terminate TLS traffic on
+    /// port 443. Field is left optional to allow TLS routing based on SNI
+    /// hostname alone. If the SNI host in a listener conflicts with the "Host"
+    /// header field used by an IngressRule, the SNI host is used for termination
+    /// and value of the "Host" header is used for routing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
@@ -620,15 +4560,25 @@ pub struct ArgoCDGrafanaIngressTls {
 /// Resources defines the Compute Resources required by the container for Grafana.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDGrafanaResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDGrafanaResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -636,7 +4586,9 @@ pub struct ArgoCDGrafanaResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDGrafanaResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -671,11 +4623,20 @@ pub struct ArgoCDGrafanaRouteTls {
     /// certificate provides certificate contents
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
-    /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt termination this file should be provided in order to have routers use it for health checks on the secure connection. If this field is not specified, the router may provide its own destination CA and perform hostname validation using the short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically verify.
+    /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt
+    /// termination this file should be provided in order to have routers use it for health checks on the secure connection.
+    /// If this field is not specified, the router may provide its own destination CA and perform hostname validation using
+    /// the short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically
+    /// verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCACertificate")]
     pub destination_ca_certificate: Option<String>,
-    /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While each router may make its own decisions on which ports to expose, this is normally port 80. 
-    ///  * Allow - traffic is sent to the server on the insecure port (default) * Disable - no traffic is allowed on the insecure port. * Redirect - clients are redirected to the secure port.
+    /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While
+    /// each router may make its own decisions on which ports to expose, this is normally port 80.
+    /// 
+    /// 
+    /// * Allow - traffic is sent to the server on the insecure port (default)
+    /// * Disable - no traffic is allowed on the insecure port.
+    /// * Redirect - clients are redirected to the secure port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureEdgeTerminationPolicy")]
     pub insecure_edge_termination_policy: Option<String>,
     /// key provides key file contents
@@ -704,15 +4665,25 @@ pub struct ArgoCDHa {
 /// Resources defines the Compute Resources required by the container for HA.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDHaResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDHaResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -720,7 +4691,9 @@ pub struct ArgoCDHaResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDHaResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -737,10 +4710,12 @@ pub struct ArgoCDImport {
 /// InitialSSHKnownHosts defines the SSH known hosts data upon creation of the cluster for connecting Git repositories via SSH.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDInitialSshKnownHosts {
-    /// ExcludeDefaultHosts describes whether you would like to include the default list of SSH Known Hosts provided by ArgoCD.
+    /// ExcludeDefaultHosts describes whether you would like to include the default
+    /// list of SSH Known Hosts provided by ArgoCD.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub excludedefaulthosts: Option<bool>,
-    /// Keys describes a custom set of SSH Known Hosts that you would like to have included in your ArgoCD server.
+    /// Keys describes a custom set of SSH Known Hosts that you would like to
+    /// have included in your ArgoCD server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<String>,
 }
@@ -777,22 +4752,32 @@ pub struct ArgoCDNodePlacement {
     pub tolerations: Option<Vec<ArgoCDNodePlacementTolerations>>,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDNodePlacementTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -827,7 +4812,15 @@ pub struct ArgoCDNotifications {
 pub struct ArgoCDNotificationsEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -841,10 +4834,12 @@ pub struct ArgoCDNotificationsEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ArgoCDNotificationsEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCDNotificationsEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ArgoCDNotificationsEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -857,7 +4852,9 @@ pub struct ArgoCDNotificationsEnvValueFrom {
 pub struct ArgoCDNotificationsEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -865,7 +4862,8 @@ pub struct ArgoCDNotificationsEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDNotificationsEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -876,7 +4874,8 @@ pub struct ArgoCDNotificationsEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDNotificationsEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -894,7 +4893,9 @@ pub struct ArgoCDNotificationsEnvValueFromResourceFieldRef {
 pub struct ArgoCDNotificationsEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -905,15 +4906,25 @@ pub struct ArgoCDNotificationsEnvValueFromSecretKeyRef {
 /// Resources defines the Compute Resources required by the container for Argo CD Notifications.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDNotificationsResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDNotificationsResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -921,7 +4932,9 @@ pub struct ArgoCDNotificationsResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDNotificationsResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -958,7 +4971,11 @@ pub struct ArgoCDPrometheusIngress {
     /// Path used for the Ingress resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// TLS configuration. Currently the Ingress only supports a single TLS port, 443. If multiple members of this list specify different hosts, they will be multiplexed on the same port according to the hostname specified through the SNI TLS extension, if the ingress controller fulfilling the ingress supports SNI.
+    /// TLS configuration. Currently the Ingress only supports a single TLS
+    /// port, 443. If multiple members of this list specify different hosts, they
+    /// will be multiplexed on the same port according to the hostname specified
+    /// through the SNI TLS extension, if the ingress controller fulfilling the
+    /// ingress supports SNI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<Vec<ArgoCDPrometheusIngressTls>>,
 }
@@ -966,10 +4983,17 @@ pub struct ArgoCDPrometheusIngress {
 /// IngressTLS describes the transport layer security associated with an ingress.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDPrometheusIngressTls {
-    /// hosts is a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
+    /// hosts is a list of hosts included in the TLS certificate. The values in
+    /// this list must match the name/s used in the tlsSecret. Defaults to the
+    /// wildcard host setting for the loadbalancer controller fulfilling this
+    /// Ingress, if left unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
-    /// secretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the "Host" header is used for routing.
+    /// secretName is the name of the secret used to terminate TLS traffic on
+    /// port 443. Field is left optional to allow TLS routing based on SNI
+    /// hostname alone. If the SNI host in a listener conflicts with the "Host"
+    /// header field used by an IngressRule, the SNI host is used for termination
+    /// and value of the "Host" header is used for routing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
@@ -1005,11 +5029,20 @@ pub struct ArgoCDPrometheusRouteTls {
     /// certificate provides certificate contents
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
-    /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt termination this file should be provided in order to have routers use it for health checks on the secure connection. If this field is not specified, the router may provide its own destination CA and perform hostname validation using the short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically verify.
+    /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt
+    /// termination this file should be provided in order to have routers use it for health checks on the secure connection.
+    /// If this field is not specified, the router may provide its own destination CA and perform hostname validation using
+    /// the short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically
+    /// verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCACertificate")]
     pub destination_ca_certificate: Option<String>,
-    /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While each router may make its own decisions on which ports to expose, this is normally port 80. 
-    ///  * Allow - traffic is sent to the server on the insecure port (default) * Disable - no traffic is allowed on the insecure port. * Redirect - clients are redirected to the secure port.
+    /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While
+    /// each router may make its own decisions on which ports to expose, this is normally port 80.
+    /// 
+    /// 
+    /// * Allow - traffic is sent to the server on the insecure port (default)
+    /// * Disable - no traffic is allowed on the insecure port.
+    /// * Redirect - clients are redirected to the secure port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureEdgeTerminationPolicy")]
     pub insecure_edge_termination_policy: Option<String>,
     /// key provides key file contents
@@ -1022,16 +5055,25 @@ pub struct ArgoCDPrometheusRouteTls {
 /// RBAC defines the RBAC configuration for Argo CD.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRbac {
-    /// DefaultPolicy is the name of the default role which Argo CD will falls back to, when authorizing API requests (optional). If omitted or empty, users may be still be able to login, but will see no apps, projects, etc...
+    /// DefaultPolicy is the name of the default role which Argo CD will falls back to, when
+    /// authorizing API requests (optional). If omitted or empty, users may be still be able to login,
+    /// but will see no apps, projects, etc...
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultPolicy")]
     pub default_policy: Option<String>,
-    /// Policy is CSV containing user-defined RBAC policies and role definitions. Policy rules are in the form:   p, subject, resource, action, object, effect Role definitions and bindings are in the form:   g, subject, inherited-subject See https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/rbac.md for additional information.
+    /// Policy is CSV containing user-defined RBAC policies and role definitions.
+    /// Policy rules are in the form:
+    ///   p, subject, resource, action, object, effect
+    /// Role definitions and bindings are in the form:
+    ///   g, subject, inherited-subject
+    /// See https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/rbac.md for additional information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<String>,
-    /// PolicyMatcherMode configures the matchers function mode for casbin. There are two options for this, 'glob' for glob matcher or 'regex' for regex matcher.
+    /// PolicyMatcherMode configures the matchers function mode for casbin.
+    /// There are two options for this, 'glob' for glob matcher or 'regex' for regex matcher.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyMatcherMode")]
     pub policy_matcher_mode: Option<String>,
-    /// Scopes controls which OIDC scopes to examine during rbac enforcement (in addition to `sub` scope). If omitted, defaults to: '[groups]'.
+    /// Scopes controls which OIDC scopes to examine during rbac enforcement (in addition to `sub` scope).
+    /// If omitted, defaults to: '[groups]'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<String>,
 }
@@ -1039,7 +5081,9 @@ pub struct ArgoCDRbac {
 /// Redis defines the Redis server options for ArgoCD.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRedis {
-    /// AutoTLS specifies the method to use for automatic TLS configuration for the redis server The value specified here can currently be: - openshift - Use the OpenShift service CA to request TLS config
+    /// AutoTLS specifies the method to use for automatic TLS configuration for the redis server
+    /// The value specified here can currently be:
+    /// - openshift - Use the OpenShift service CA to request TLS config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autotls: Option<String>,
     /// DisableTLSVerification defines whether redis server API should be accessed using strict TLS validation
@@ -1065,15 +5109,25 @@ pub struct ArgoCDRedis {
 /// Resources defines the Compute Resources required by the container for Redis.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRedisResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDRedisResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -1081,14 +5135,18 @@ pub struct ArgoCDRedisResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRedisResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// Repo defines the repo server options for Argo CD.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepo {
-    /// AutoTLS specifies the method to use for automatic TLS configuration for the repo server The value specified here can currently be: - openshift - Use the OpenShift service CA to request TLS config
+    /// AutoTLS specifies the method to use for automatic TLS configuration for the repo server
+    /// The value specified here can currently be:
+    /// - openshift - Use the OpenShift service CA to request TLS config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autotls: Option<String>,
     /// Enabled is the flag to enable Repo Server during ArgoCD installation. (optional, default `true`)
@@ -1100,7 +5158,9 @@ pub struct ArgoCDRepo {
     /// ExecTimeout specifies the timeout in seconds for tool execution
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "execTimeout")]
     pub exec_timeout: Option<i64>,
-    /// Extra Command arguments allows users to pass command line arguments to repo server workload. They get added to default command line arguments provided by the operator. Please note that the command line arguments provided as part of ExtraRepoCommandArgs will not overwrite the default command line arguments.
+    /// Extra Command arguments allows users to pass command line arguments to repo server workload. They get added to default command line arguments provided
+    /// by the operator.
+    /// Please note that the command line arguments provided as part of ExtraRepoCommandArgs will not overwrite the default command line arguments.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraRepoCommandArgs")]
     pub extra_repo_command_args: Option<Vec<String>>,
     /// Image is the ArgoCD Repo Server container image.
@@ -1152,7 +5212,15 @@ pub struct ArgoCDRepo {
 pub struct ArgoCDRepoEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -1166,10 +5234,12 @@ pub struct ArgoCDRepoEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ArgoCDRepoEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCDRepoEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ArgoCDRepoEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -1182,7 +5252,9 @@ pub struct ArgoCDRepoEnvValueFrom {
 pub struct ArgoCDRepoEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1190,7 +5262,8 @@ pub struct ArgoCDRepoEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -1201,7 +5274,8 @@ pub struct ArgoCDRepoEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -1219,7 +5293,9 @@ pub struct ArgoCDRepoEnvValueFromResourceFieldRef {
 pub struct ArgoCDRepoEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1230,75 +5306,166 @@ pub struct ArgoCDRepoEnvValueFromSecretKeyRef {
 /// A single application container that you want to run within a pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainers {
-    /// Arguments to the entrypoint. The container image's CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    /// Arguments to the entrypoint.
+    /// The container image's CMD is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Entrypoint array. Not executed within a shell. The container image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    /// Entrypoint array. Not executed within a shell.
+    /// The container image's ENTRYPOINT is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// List of environment variables to set in the container. Cannot be updated.
+    /// List of environment variables to set in the container.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCDRepoInitContainersEnv>>,
-    /// List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.
+    /// List of sources to populate environment variables in the container.
+    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
+    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// sources, the value associated with the last source will take precedence.
+    /// Values defined by an Env with a duplicate key will take precedence.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<ArgoCDRepoInitContainersEnvFrom>>,
-    /// Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.
+    /// Container image name.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
+    /// Image pull policy.
+    /// One of Always, Never, IfNotPresent.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    /// Actions that the management system should take in response to container lifecycle events. Cannot be updated.
+    /// Actions that the management system should take in response to container lifecycle events.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<ArgoCDRepoInitContainersLifecycle>,
-    /// Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Periodic probe of container liveness.
+    /// Container will be restarted if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ArgoCDRepoInitContainersLivenessProbe>,
-    /// Name of the container specified as a DNS_LABEL. Each container in a pod must have a unique name (DNS_LABEL). Cannot be updated.
+    /// Name of the container specified as a DNS_LABEL.
+    /// Each container in a pod must have a unique name (DNS_LABEL).
+    /// Cannot be updated.
     pub name: String,
-    /// List of ports to expose from the container. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Modifying this array with strategic merge patch may corrupt the data. For more information See https://github.com/kubernetes/kubernetes/issues/108255. Cannot be updated.
+    /// List of ports to expose from the container. Not specifying a port here
+    /// DOES NOT prevent that port from being exposed. Any port which is
+    /// listening on the default "0.0.0.0" address inside a container will be
+    /// accessible from the network.
+    /// Modifying this array with strategic merge patch may corrupt the data.
+    /// For more information See https://github.com/kubernetes/kubernetes/issues/108255.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ArgoCDRepoInitContainersPorts>>,
-    /// Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Periodic probe of container service readiness.
+    /// Container will be removed from service endpoints if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ArgoCDRepoInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ArgoCDRepoInitContainersResizePolicy>>,
-    /// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Compute Resources required by this container.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCDRepoInitContainersResources>,
-    /// RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed.
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    /// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    /// SecurityContext defines the security options the container should be run with.
+    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ArgoCDRepoInitContainersSecurityContext>,
-    /// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// StartupProbe indicates that the Pod has successfully initialized.
+    /// If specified, no other probes are executed until this completes successfully.
+    /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+    /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+    /// when it might take a long time to load data or warm a cache, than during steady-state operation.
+    /// This cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ArgoCDRepoInitContainersStartupProbe>,
-    /// Whether this container should allocate a buffer for stdin in the container runtime. If this is not set, reads from stdin in the container will always result in EOF. Default is false.
+    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
+    /// is not set, reads from stdin in the container will always result in EOF.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
-    /// Whether the container runtime should close the stdin channel after it has been opened by a single attach. When stdin is true the stdin stream will remain open across multiple attach sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the first client attaches to stdin, and then remains open and accepts data until the client disconnects, at which time stdin is closed and remains closed until the container is restarted. If this flag is false, a container processes that reads from stdin will never receive an EOF. Default is false
+    /// Whether the container runtime should close the stdin channel after it has been opened by
+    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
+    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
+    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
+    /// at which time stdin is closed and remains closed until the container is restarted. If this
+    /// flag is false, a container processes that reads from stdin will never receive an EOF.
+    /// Default is false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    /// Optional: Path at which the file to which the container's termination message will be written is mounted into the container's filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.
+    /// Optional: Path at which the file to which the container's termination message
+    /// will be written is mounted into the container's filesystem.
+    /// Message written is intended to be brief final status, such as an assertion failure message.
+    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
+    /// all containers will be limited to 12kb.
+    /// Defaults to /dev/termination-log.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    /// Indicate how the termination message should be populated. File will use the contents of terminationMessagePath to populate the container status message on both success and failure. FallbackToLogsOnError will use the last chunk of container log output if the termination message file is empty and the container exited with an error. The log output is limited to 2048 bytes or 80 lines, whichever is smaller. Defaults to File. Cannot be updated.
+    /// Indicate how the termination message should be populated. File will use the contents of
+    /// terminationMessagePath to populate the container status message on both success and failure.
+    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
+    /// message file is empty and the container exited with an error.
+    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
+    /// Defaults to File.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
-    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true. Default is false.
+    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<ArgoCDRepoInitContainersVolumeDevices>>,
-    /// Pod volumes to mount into the container's filesystem. Cannot be updated.
+    /// Pod volumes to mount into the container's filesystem.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ArgoCDRepoInitContainersVolumeMounts>>,
-    /// Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image. Cannot be updated.
+    /// Container's working directory.
+    /// If not specified, the container runtime's default will be used, which
+    /// might be configured in the container image.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
@@ -1308,7 +5475,15 @@ pub struct ArgoCDRepoInitContainers {
 pub struct ArgoCDRepoInitContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -1322,10 +5497,12 @@ pub struct ArgoCDRepoInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ArgoCDRepoInitContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCDRepoInitContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ArgoCDRepoInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -1338,7 +5515,9 @@ pub struct ArgoCDRepoInitContainersEnvValueFrom {
 pub struct ArgoCDRepoInitContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1346,7 +5525,8 @@ pub struct ArgoCDRepoInitContainersEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -1357,7 +5537,8 @@ pub struct ArgoCDRepoInitContainersEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -1375,7 +5556,9 @@ pub struct ArgoCDRepoInitContainersEnvValueFromResourceFieldRef {
 pub struct ArgoCDRepoInitContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1400,7 +5583,9 @@ pub struct ArgoCDRepoInitContainersEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1411,7 +5596,9 @@ pub struct ArgoCDRepoInitContainersEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -1419,18 +5606,33 @@ pub struct ArgoCDRepoInitContainersEnvFromSecretRef {
     pub optional: Option<bool>,
 }
 
-/// Actions that the management system should take in response to container lifecycle events. Cannot be updated.
+/// Actions that the management system should take in response to container lifecycle events.
+/// Cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecycle {
-    /// PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    /// PostStart is called immediately after a container is created. If the handler fails,
+    /// the container is terminated and restarted according to its restart policy.
+    /// Other management of the container blocks until the hook completes.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
     pub post_start: Option<ArgoCDRepoInitContainersLifecyclePostStart>,
-    /// PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    /// PreStop is called immediately before a container is terminated due to an
+    /// API request or management event such as liveness/startup probe failure,
+    /// preemption, resource contention, etc. The handler is not called if the
+    /// container crashes or exits. The Pod's termination grace period countdown begins before the
+    /// PreStop hook is executed. Regardless of the outcome of the handler, the
+    /// container will eventually terminate within the Pod's termination grace
+    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+    /// or until the termination grace period is reached.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<ArgoCDRepoInitContainersLifecyclePreStop>,
 }
 
-/// PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+/// PostStart is called immediately after a container is created. If the handler fails,
+/// the container is terminated and restarted according to its restart policy.
+/// Other management of the container blocks until the hook completes.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecyclePostStart {
     /// Exec specifies the action to take.
@@ -1439,7 +5641,9 @@ pub struct ArgoCDRepoInitContainersLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ArgoCDRepoInitContainersLifecyclePostStartHttpGet>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ArgoCDRepoInitContainersLifecyclePostStartTcpSocket>,
 }
@@ -1447,7 +5651,11 @@ pub struct ArgoCDRepoInitContainersLifecyclePostStart {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecyclePostStartExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1455,7 +5663,8 @@ pub struct ArgoCDRepoInitContainersLifecyclePostStartExec {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecyclePostStartHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1464,9 +5673,12 @@ pub struct ArgoCDRepoInitContainersLifecyclePostStartHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1474,23 +5686,36 @@ pub struct ArgoCDRepoInitContainersLifecyclePostStartHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecyclePostStartHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
 }
 
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
-/// PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+/// PreStop is called immediately before a container is terminated due to an
+/// API request or management event such as liveness/startup probe failure,
+/// preemption, resource contention, etc. The handler is not called if the
+/// container crashes or exits. The Pod's termination grace period countdown begins before the
+/// PreStop hook is executed. Regardless of the outcome of the handler, the
+/// container will eventually terminate within the Pod's termination grace
+/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+/// or until the termination grace period is reached.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecyclePreStop {
     /// Exec specifies the action to take.
@@ -1499,7 +5724,9 @@ pub struct ArgoCDRepoInitContainersLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ArgoCDRepoInitContainersLifecyclePreStopHttpGet>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ArgoCDRepoInitContainersLifecyclePreStopTcpSocket>,
 }
@@ -1507,7 +5734,11 @@ pub struct ArgoCDRepoInitContainersLifecyclePreStop {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecyclePreStopExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1515,7 +5746,8 @@ pub struct ArgoCDRepoInitContainersLifecyclePreStopExec {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecyclePreStopHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1524,9 +5756,12 @@ pub struct ArgoCDRepoInitContainersLifecyclePreStopHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1534,29 +5769,38 @@ pub struct ArgoCDRepoInitContainersLifecyclePreStopHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecyclePreStopHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
 }
 
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
-/// Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// Periodic probe of container liveness.
+/// Container will be restarted if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLivenessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ArgoCDRepoInitContainersLivenessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -1565,22 +5809,36 @@ pub struct ArgoCDRepoInitContainersLivenessProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ArgoCDRepoInitContainersLivenessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ArgoCDRepoInitContainersLivenessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1588,7 +5846,11 @@ pub struct ArgoCDRepoInitContainersLivenessProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLivenessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1598,8 +5860,11 @@ pub struct ArgoCDRepoInitContainersLivenessProbeExec {
 pub struct ArgoCDRepoInitContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -1607,7 +5872,8 @@ pub struct ArgoCDRepoInitContainersLivenessProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLivenessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1616,9 +5882,12 @@ pub struct ArgoCDRepoInitContainersLivenessProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1626,7 +5895,8 @@ pub struct ArgoCDRepoInitContainersLivenessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersLivenessProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1638,37 +5908,50 @@ pub struct ArgoCDRepoInitContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// ContainerPort represents a network port in a single container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersPorts {
-    /// Number of port to expose on the pod's IP address. This must be a valid port number, 0 < x < 65536.
+    /// Number of port to expose on the pod's IP address.
+    /// This must be a valid port number, 0 < x < 65536.
     #[serde(rename = "containerPort")]
     pub container_port: i32,
     /// What host IP to bind the external port to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
     pub host_ip: Option<String>,
-    /// Number of port to expose on the host. If specified, this must be a valid port number, 0 < x < 65536. If HostNetwork is specified, this must match ContainerPort. Most containers do not need this.
+    /// Number of port to expose on the host.
+    /// If specified, this must be a valid port number, 0 < x < 65536.
+    /// If HostNetwork is specified, this must match ContainerPort.
+    /// Most containers do not need this.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
     pub host_port: Option<i32>,
-    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each named port in a pod must have a unique name. Name for the port that can be referred to by services.
+    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
+    /// named port in a pod must have a unique name. Name for the port that can be
+    /// referred to by services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Protocol for port. Must be UDP, TCP, or SCTP. Defaults to "TCP".
+    /// Protocol for port. Must be UDP, TCP, or SCTP.
+    /// Defaults to "TCP".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }
 
-/// Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// Periodic probe of container service readiness.
+/// Container will be removed from service endpoints if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersReadinessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ArgoCDRepoInitContainersReadinessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -1677,22 +5960,36 @@ pub struct ArgoCDRepoInitContainersReadinessProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ArgoCDRepoInitContainersReadinessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ArgoCDRepoInitContainersReadinessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1700,7 +5997,11 @@ pub struct ArgoCDRepoInitContainersReadinessProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersReadinessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1710,8 +6011,11 @@ pub struct ArgoCDRepoInitContainersReadinessProbeExec {
 pub struct ArgoCDRepoInitContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -1719,7 +6023,8 @@ pub struct ArgoCDRepoInitContainersReadinessProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersReadinessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1728,9 +6033,12 @@ pub struct ArgoCDRepoInitContainersReadinessProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1738,7 +6046,8 @@ pub struct ArgoCDRepoInitContainersReadinessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersReadinessProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1750,33 +6059,49 @@ pub struct ArgoCDRepoInitContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// ContainerResizePolicy represents resource resize policy for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersResizePolicy {
-    /// Name of the resource to which this resource resize policy applies. Supported values: cpu, memory.
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
     #[serde(rename = "resourceName")]
     pub resource_name: String,
-    /// Restart policy to apply when specified resource is resized. If not specified, it defaults to NotRequired.
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
     #[serde(rename = "restartPolicy")]
     pub restart_policy: String,
 }
 
-/// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+/// Compute Resources required by this container.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDRepoInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -1784,49 +6109,95 @@ pub struct ArgoCDRepoInitContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+/// SecurityContext defines the security options the container should be run with.
+/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+/// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersSecurityContext {
-    /// AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
-    /// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<ArgoCDRepoInitContainersSecurityContextCapabilities>,
-    /// Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false. Note that this field cannot be set when spec.os.name is windows.
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    /// procMount denotes the type of proc mount to use for the containers. The default is DefaultProcMount which uses the container runtime defaults for readonly paths and masked paths. This requires the ProcMountType feature flag to be enabled. Note that this field cannot be set when spec.os.name is windows.
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    /// Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ArgoCDRepoInitContainersSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ArgoCDRepoInitContainersSecurityContextSeccompProfile>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ArgoCDRepoInitContainersSecurityContextWindowsOptions>,
 }
 
-/// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersSecurityContextCapabilities {
     /// Added capabilities
@@ -1837,7 +6208,11 @@ pub struct ArgoCDRepoInitContainersSecurityContextCapabilities {
     pub drop: Option<Vec<String>>,
 }
 
-/// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -1854,42 +6229,71 @@ pub struct ArgoCDRepoInitContainersSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
-/// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// StartupProbe indicates that the Pod has successfully initialized.
+/// If specified, no other probes are executed until this completes successfully.
+/// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+/// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+/// when it might take a long time to load data or warm a cache, than during steady-state operation.
+/// This cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersStartupProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ArgoCDRepoInitContainersStartupProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -1898,22 +6302,36 @@ pub struct ArgoCDRepoInitContainersStartupProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ArgoCDRepoInitContainersStartupProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ArgoCDRepoInitContainersStartupProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1921,7 +6339,11 @@ pub struct ArgoCDRepoInitContainersStartupProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersStartupProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1931,8 +6353,11 @@ pub struct ArgoCDRepoInitContainersStartupProbeExec {
 pub struct ArgoCDRepoInitContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -1940,7 +6365,8 @@ pub struct ArgoCDRepoInitContainersStartupProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersStartupProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1949,9 +6375,12 @@ pub struct ArgoCDRepoInitContainersStartupProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1959,7 +6388,8 @@ pub struct ArgoCDRepoInitContainersStartupProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersStartupProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1971,7 +6401,9 @@ pub struct ArgoCDRepoInitContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -1988,21 +6420,30 @@ pub struct ArgoCDRepoInitContainersVolumeDevices {
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoInitContainersVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
@@ -2010,15 +6451,25 @@ pub struct ArgoCDRepoInitContainersVolumeMounts {
 /// Resources defines the Compute Resources required by the container for Redis.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDRepoResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -2026,82 +6477,175 @@ pub struct ArgoCDRepoResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// A single application container that you want to run within a pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainers {
-    /// Arguments to the entrypoint. The container image's CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    /// Arguments to the entrypoint.
+    /// The container image's CMD is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Entrypoint array. Not executed within a shell. The container image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    /// Entrypoint array. Not executed within a shell.
+    /// The container image's ENTRYPOINT is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// List of environment variables to set in the container. Cannot be updated.
+    /// List of environment variables to set in the container.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCDRepoSidecarContainersEnv>>,
-    /// List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.
+    /// List of sources to populate environment variables in the container.
+    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
+    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// sources, the value associated with the last source will take precedence.
+    /// Values defined by an Env with a duplicate key will take precedence.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<ArgoCDRepoSidecarContainersEnvFrom>>,
-    /// Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.
+    /// Container image name.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
+    /// Image pull policy.
+    /// One of Always, Never, IfNotPresent.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    /// Actions that the management system should take in response to container lifecycle events. Cannot be updated.
+    /// Actions that the management system should take in response to container lifecycle events.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<ArgoCDRepoSidecarContainersLifecycle>,
-    /// Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Periodic probe of container liveness.
+    /// Container will be restarted if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ArgoCDRepoSidecarContainersLivenessProbe>,
-    /// Name of the container specified as a DNS_LABEL. Each container in a pod must have a unique name (DNS_LABEL). Cannot be updated.
+    /// Name of the container specified as a DNS_LABEL.
+    /// Each container in a pod must have a unique name (DNS_LABEL).
+    /// Cannot be updated.
     pub name: String,
-    /// List of ports to expose from the container. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Modifying this array with strategic merge patch may corrupt the data. For more information See https://github.com/kubernetes/kubernetes/issues/108255. Cannot be updated.
+    /// List of ports to expose from the container. Not specifying a port here
+    /// DOES NOT prevent that port from being exposed. Any port which is
+    /// listening on the default "0.0.0.0" address inside a container will be
+    /// accessible from the network.
+    /// Modifying this array with strategic merge patch may corrupt the data.
+    /// For more information See https://github.com/kubernetes/kubernetes/issues/108255.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ArgoCDRepoSidecarContainersPorts>>,
-    /// Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Periodic probe of container service readiness.
+    /// Container will be removed from service endpoints if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ArgoCDRepoSidecarContainersReadinessProbe>,
     /// Resources resize policy for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ArgoCDRepoSidecarContainersResizePolicy>>,
-    /// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Compute Resources required by this container.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCDRepoSidecarContainersResources>,
-    /// RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed.
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    /// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    /// SecurityContext defines the security options the container should be run with.
+    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ArgoCDRepoSidecarContainersSecurityContext>,
-    /// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// StartupProbe indicates that the Pod has successfully initialized.
+    /// If specified, no other probes are executed until this completes successfully.
+    /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+    /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+    /// when it might take a long time to load data or warm a cache, than during steady-state operation.
+    /// This cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ArgoCDRepoSidecarContainersStartupProbe>,
-    /// Whether this container should allocate a buffer for stdin in the container runtime. If this is not set, reads from stdin in the container will always result in EOF. Default is false.
+    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
+    /// is not set, reads from stdin in the container will always result in EOF.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
-    /// Whether the container runtime should close the stdin channel after it has been opened by a single attach. When stdin is true the stdin stream will remain open across multiple attach sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the first client attaches to stdin, and then remains open and accepts data until the client disconnects, at which time stdin is closed and remains closed until the container is restarted. If this flag is false, a container processes that reads from stdin will never receive an EOF. Default is false
+    /// Whether the container runtime should close the stdin channel after it has been opened by
+    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
+    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
+    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
+    /// at which time stdin is closed and remains closed until the container is restarted. If this
+    /// flag is false, a container processes that reads from stdin will never receive an EOF.
+    /// Default is false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    /// Optional: Path at which the file to which the container's termination message will be written is mounted into the container's filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.
+    /// Optional: Path at which the file to which the container's termination message
+    /// will be written is mounted into the container's filesystem.
+    /// Message written is intended to be brief final status, such as an assertion failure message.
+    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
+    /// all containers will be limited to 12kb.
+    /// Defaults to /dev/termination-log.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    /// Indicate how the termination message should be populated. File will use the contents of terminationMessagePath to populate the container status message on both success and failure. FallbackToLogsOnError will use the last chunk of container log output if the termination message file is empty and the container exited with an error. The log output is limited to 2048 bytes or 80 lines, whichever is smaller. Defaults to File. Cannot be updated.
+    /// Indicate how the termination message should be populated. File will use the contents of
+    /// terminationMessagePath to populate the container status message on both success and failure.
+    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
+    /// message file is empty and the container exited with an error.
+    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
+    /// Defaults to File.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
-    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true. Default is false.
+    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<ArgoCDRepoSidecarContainersVolumeDevices>>,
-    /// Pod volumes to mount into the container's filesystem. Cannot be updated.
+    /// Pod volumes to mount into the container's filesystem.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ArgoCDRepoSidecarContainersVolumeMounts>>,
-    /// Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image. Cannot be updated.
+    /// Container's working directory.
+    /// If not specified, the container runtime's default will be used, which
+    /// might be configured in the container image.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
@@ -2111,7 +6655,15 @@ pub struct ArgoCDRepoSidecarContainers {
 pub struct ArgoCDRepoSidecarContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -2125,10 +6677,12 @@ pub struct ArgoCDRepoSidecarContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ArgoCDRepoSidecarContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCDRepoSidecarContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ArgoCDRepoSidecarContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -2141,7 +6695,9 @@ pub struct ArgoCDRepoSidecarContainersEnvValueFrom {
 pub struct ArgoCDRepoSidecarContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2149,7 +6705,8 @@ pub struct ArgoCDRepoSidecarContainersEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -2160,7 +6717,8 @@ pub struct ArgoCDRepoSidecarContainersEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -2178,7 +6736,9 @@ pub struct ArgoCDRepoSidecarContainersEnvValueFromResourceFieldRef {
 pub struct ArgoCDRepoSidecarContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2203,7 +6763,9 @@ pub struct ArgoCDRepoSidecarContainersEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -2214,7 +6776,9 @@ pub struct ArgoCDRepoSidecarContainersEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -2222,18 +6786,33 @@ pub struct ArgoCDRepoSidecarContainersEnvFromSecretRef {
     pub optional: Option<bool>,
 }
 
-/// Actions that the management system should take in response to container lifecycle events. Cannot be updated.
+/// Actions that the management system should take in response to container lifecycle events.
+/// Cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecycle {
-    /// PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    /// PostStart is called immediately after a container is created. If the handler fails,
+    /// the container is terminated and restarted according to its restart policy.
+    /// Other management of the container blocks until the hook completes.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
     pub post_start: Option<ArgoCDRepoSidecarContainersLifecyclePostStart>,
-    /// PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    /// PreStop is called immediately before a container is terminated due to an
+    /// API request or management event such as liveness/startup probe failure,
+    /// preemption, resource contention, etc. The handler is not called if the
+    /// container crashes or exits. The Pod's termination grace period countdown begins before the
+    /// PreStop hook is executed. Regardless of the outcome of the handler, the
+    /// container will eventually terminate within the Pod's termination grace
+    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+    /// or until the termination grace period is reached.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<ArgoCDRepoSidecarContainersLifecyclePreStop>,
 }
 
-/// PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+/// PostStart is called immediately after a container is created. If the handler fails,
+/// the container is terminated and restarted according to its restart policy.
+/// Other management of the container blocks until the hook completes.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecyclePostStart {
     /// Exec specifies the action to take.
@@ -2242,7 +6821,9 @@ pub struct ArgoCDRepoSidecarContainersLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ArgoCDRepoSidecarContainersLifecyclePostStartHttpGet>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ArgoCDRepoSidecarContainersLifecyclePostStartTcpSocket>,
 }
@@ -2250,7 +6831,11 @@ pub struct ArgoCDRepoSidecarContainersLifecyclePostStart {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecyclePostStartExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2258,7 +6843,8 @@ pub struct ArgoCDRepoSidecarContainersLifecyclePostStartExec {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecyclePostStartHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2267,9 +6853,12 @@ pub struct ArgoCDRepoSidecarContainersLifecyclePostStartHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2277,23 +6866,36 @@ pub struct ArgoCDRepoSidecarContainersLifecyclePostStartHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecyclePostStartHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
 }
 
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
-/// PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+/// PreStop is called immediately before a container is terminated due to an
+/// API request or management event such as liveness/startup probe failure,
+/// preemption, resource contention, etc. The handler is not called if the
+/// container crashes or exits. The Pod's termination grace period countdown begins before the
+/// PreStop hook is executed. Regardless of the outcome of the handler, the
+/// container will eventually terminate within the Pod's termination grace
+/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+/// or until the termination grace period is reached.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecyclePreStop {
     /// Exec specifies the action to take.
@@ -2302,7 +6904,9 @@ pub struct ArgoCDRepoSidecarContainersLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ArgoCDRepoSidecarContainersLifecyclePreStopHttpGet>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ArgoCDRepoSidecarContainersLifecyclePreStopTcpSocket>,
 }
@@ -2310,7 +6914,11 @@ pub struct ArgoCDRepoSidecarContainersLifecyclePreStop {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecyclePreStopExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2318,7 +6926,8 @@ pub struct ArgoCDRepoSidecarContainersLifecyclePreStopExec {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecyclePreStopHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2327,9 +6936,12 @@ pub struct ArgoCDRepoSidecarContainersLifecyclePreStopHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2337,29 +6949,38 @@ pub struct ArgoCDRepoSidecarContainersLifecyclePreStopHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecyclePreStopHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
 }
 
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
-/// Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// Periodic probe of container liveness.
+/// Container will be restarted if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLivenessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ArgoCDRepoSidecarContainersLivenessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -2368,22 +6989,36 @@ pub struct ArgoCDRepoSidecarContainersLivenessProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ArgoCDRepoSidecarContainersLivenessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ArgoCDRepoSidecarContainersLivenessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -2391,7 +7026,11 @@ pub struct ArgoCDRepoSidecarContainersLivenessProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLivenessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2401,8 +7040,11 @@ pub struct ArgoCDRepoSidecarContainersLivenessProbeExec {
 pub struct ArgoCDRepoSidecarContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -2410,7 +7052,8 @@ pub struct ArgoCDRepoSidecarContainersLivenessProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLivenessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2419,9 +7062,12 @@ pub struct ArgoCDRepoSidecarContainersLivenessProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2429,7 +7075,8 @@ pub struct ArgoCDRepoSidecarContainersLivenessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersLivenessProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2441,37 +7088,50 @@ pub struct ArgoCDRepoSidecarContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// ContainerPort represents a network port in a single container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersPorts {
-    /// Number of port to expose on the pod's IP address. This must be a valid port number, 0 < x < 65536.
+    /// Number of port to expose on the pod's IP address.
+    /// This must be a valid port number, 0 < x < 65536.
     #[serde(rename = "containerPort")]
     pub container_port: i32,
     /// What host IP to bind the external port to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
     pub host_ip: Option<String>,
-    /// Number of port to expose on the host. If specified, this must be a valid port number, 0 < x < 65536. If HostNetwork is specified, this must match ContainerPort. Most containers do not need this.
+    /// Number of port to expose on the host.
+    /// If specified, this must be a valid port number, 0 < x < 65536.
+    /// If HostNetwork is specified, this must match ContainerPort.
+    /// Most containers do not need this.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
     pub host_port: Option<i32>,
-    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each named port in a pod must have a unique name. Name for the port that can be referred to by services.
+    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
+    /// named port in a pod must have a unique name. Name for the port that can be
+    /// referred to by services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Protocol for port. Must be UDP, TCP, or SCTP. Defaults to "TCP".
+    /// Protocol for port. Must be UDP, TCP, or SCTP.
+    /// Defaults to "TCP".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }
 
-/// Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// Periodic probe of container service readiness.
+/// Container will be removed from service endpoints if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersReadinessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ArgoCDRepoSidecarContainersReadinessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -2480,22 +7140,36 @@ pub struct ArgoCDRepoSidecarContainersReadinessProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ArgoCDRepoSidecarContainersReadinessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ArgoCDRepoSidecarContainersReadinessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -2503,7 +7177,11 @@ pub struct ArgoCDRepoSidecarContainersReadinessProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersReadinessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2513,8 +7191,11 @@ pub struct ArgoCDRepoSidecarContainersReadinessProbeExec {
 pub struct ArgoCDRepoSidecarContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -2522,7 +7203,8 @@ pub struct ArgoCDRepoSidecarContainersReadinessProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersReadinessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2531,9 +7213,12 @@ pub struct ArgoCDRepoSidecarContainersReadinessProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2541,7 +7226,8 @@ pub struct ArgoCDRepoSidecarContainersReadinessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersReadinessProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2553,33 +7239,49 @@ pub struct ArgoCDRepoSidecarContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// ContainerResizePolicy represents resource resize policy for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersResizePolicy {
-    /// Name of the resource to which this resource resize policy applies. Supported values: cpu, memory.
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
     #[serde(rename = "resourceName")]
     pub resource_name: String,
-    /// Restart policy to apply when specified resource is resized. If not specified, it defaults to NotRequired.
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
     #[serde(rename = "restartPolicy")]
     pub restart_policy: String,
 }
 
-/// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+/// Compute Resources required by this container.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDRepoSidecarContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -2587,49 +7289,95 @@ pub struct ArgoCDRepoSidecarContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+/// SecurityContext defines the security options the container should be run with.
+/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+/// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersSecurityContext {
-    /// AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
-    /// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<ArgoCDRepoSidecarContainersSecurityContextCapabilities>,
-    /// Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false. Note that this field cannot be set when spec.os.name is windows.
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    /// procMount denotes the type of proc mount to use for the containers. The default is DefaultProcMount which uses the container runtime defaults for readonly paths and masked paths. This requires the ProcMountType feature flag to be enabled. Note that this field cannot be set when spec.os.name is windows.
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    /// Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ArgoCDRepoSidecarContainersSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ArgoCDRepoSidecarContainersSecurityContextSeccompProfile>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ArgoCDRepoSidecarContainersSecurityContextWindowsOptions>,
 }
 
-/// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersSecurityContextCapabilities {
     /// Added capabilities
@@ -2640,7 +7388,11 @@ pub struct ArgoCDRepoSidecarContainersSecurityContextCapabilities {
     pub drop: Option<Vec<String>>,
 }
 
-/// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -2657,42 +7409,71 @@ pub struct ArgoCDRepoSidecarContainersSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
-/// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// StartupProbe indicates that the Pod has successfully initialized.
+/// If specified, no other probes are executed until this completes successfully.
+/// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+/// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+/// when it might take a long time to load data or warm a cache, than during steady-state operation.
+/// This cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersStartupProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ArgoCDRepoSidecarContainersStartupProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -2701,22 +7482,36 @@ pub struct ArgoCDRepoSidecarContainersStartupProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ArgoCDRepoSidecarContainersStartupProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ArgoCDRepoSidecarContainersStartupProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -2724,7 +7519,11 @@ pub struct ArgoCDRepoSidecarContainersStartupProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersStartupProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2734,8 +7533,11 @@ pub struct ArgoCDRepoSidecarContainersStartupProbeExec {
 pub struct ArgoCDRepoSidecarContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -2743,7 +7545,8 @@ pub struct ArgoCDRepoSidecarContainersStartupProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersStartupProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2752,9 +7555,12 @@ pub struct ArgoCDRepoSidecarContainersStartupProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2762,7 +7568,8 @@ pub struct ArgoCDRepoSidecarContainersStartupProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersStartupProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2774,7 +7581,9 @@ pub struct ArgoCDRepoSidecarContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -2791,21 +7600,30 @@ pub struct ArgoCDRepoSidecarContainersVolumeDevices {
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoSidecarContainersVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
@@ -2813,21 +7631,30 @@ pub struct ArgoCDRepoSidecarContainersVolumeMounts {
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
@@ -2835,7 +7662,9 @@ pub struct ArgoCDRepoVolumeMounts {
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumes {
-    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<ArgoCDRepoVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
@@ -2847,7 +7676,8 @@ pub struct ArgoCDRepoVolumes {
     /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<ArgoCDRepoVolumesCephfs>,
-    /// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<ArgoCDRepoVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
@@ -2859,46 +7689,91 @@ pub struct ArgoCDRepoVolumes {
     /// downwardAPI represents downward API about the pod that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ArgoCDRepoVolumesDownwardApi>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// emptyDir represents a temporary directory that shares a pod's lifetime.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<ArgoCDRepoVolumesEmptyDir>,
-    /// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
-    ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity    tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through    a PersistentVolumeClaim (see EphemeralVolumeSource for more    information on the connection between this volume type    and PersistentVolumeClaim). 
-    ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
-    ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
-    ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
+    /// ephemeral represents a volume that is handled by a cluster storage driver.
+    /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+    /// and deleted when the pod is removed.
+    /// 
+    /// 
+    /// Use this if:
+    /// a) the volume is only needed while the pod runs,
+    /// b) features of normal volumes like restoring from snapshot or capacity
+    ///    tracking are needed,
+    /// c) the storage driver is specified through a storage class, and
+    /// d) the storage driver supports dynamic volume provisioning through
+    ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+    ///    information on the connection between this volume type
+    ///    and PersistentVolumeClaim).
+    /// 
+    /// 
+    /// Use PersistentVolumeClaim or one of the vendor-specific
+    /// APIs for volumes that persist for longer than the lifecycle
+    /// of an individual pod.
+    /// 
+    /// 
+    /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+    /// be used that way - see the documentation of the driver for
+    /// more information.
+    /// 
+    /// 
+    /// A pod can use both types of ephemeral volumes and
+    /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<ArgoCDRepoVolumesEphemeral>,
     /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<ArgoCDRepoVolumesFc>,
-    /// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+    /// flexVolume represents a generic volume resource that is
+    /// provisioned/attached using an exec based plugin.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ArgoCDRepoVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<ArgoCDRepoVolumesFlocker>,
-    /// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// gcePersistentDisk represents a GCE Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<ArgoCDRepoVolumesGcePersistentDisk>,
-    /// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+    /// gitRepo represents a git repository at a particular revision.
+    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+    /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<ArgoCDRepoVolumesGitRepo>,
-    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<ArgoCDRepoVolumesGlusterfs>,
-    /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+    /// hostPath represents a pre-existing file or directory on the host
+    /// machine that is directly exposed to the container. This is generally
+    /// used for system agents or other privileged things that are allowed
+    /// to see the host machine. Most containers will NOT need this.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// ---
+    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+    /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<ArgoCDRepoVolumesHostPath>,
-    /// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+    /// iscsi represents an ISCSI Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://examples.k8s.io/volumes/iscsi/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<ArgoCDRepoVolumesIscsi>,
-    /// name of the volume. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// name of the volume.
+    /// Must be a DNS_LABEL and unique within the pod.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
-    /// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<ArgoCDRepoVolumesNfs>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// persistentVolumeClaimVolumeSource represents a reference to a
+    /// PersistentVolumeClaim in the same namespace.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<ArgoCDRepoVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
@@ -2913,13 +7788,15 @@ pub struct ArgoCDRepoVolumes {
     /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<ArgoCDRepoVolumesQuobyte>,
-    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<ArgoCDRepoVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<ArgoCDRepoVolumesScaleIo>,
-    /// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    /// secret represents a secret that should populate this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ArgoCDRepoVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
@@ -2930,19 +7807,30 @@ pub struct ArgoCDRepoVolumes {
     pub vsphere_volume: Option<ArgoCDRepoVolumesVsphereVolume>,
 }
 
-/// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+/// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesAwsElasticBlockStore {
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// readOnly value true will force the readOnly setting in VolumeMounts. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// readOnly value true will force the readOnly setting in VolumeMounts.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume). More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
@@ -2959,13 +7847,16 @@ pub struct ArgoCDRepoVolumesAzureDisk {
     /// diskURI is the URI of data disk in the blob storage
     #[serde(rename = "diskURI")]
     pub disk_uri: String,
-    /// fsType is Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is Filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
@@ -2973,7 +7864,8 @@ pub struct ArgoCDRepoVolumesAzureDisk {
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesAzureFile {
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// secretName is the  name of secret that contains Azure Storage Account Name and Key
@@ -2987,54 +7879,74 @@ pub struct ArgoCDRepoVolumesAzureFile {
 /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesCephfs {
-    /// monitors is Required: Monitors is a collection of Ceph monitors More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// monitors is Required: Monitors is a collection of Ceph monitors
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     pub monitors: Vec<String>,
     /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
-    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ArgoCDRepoVolumesCephfsSecretRef>,
-    /// user is optional: User is the rados user name, default is admin More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// user is optional: User is the rados user name, default is admin
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+/// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesCephfsSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+/// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesCinder {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
+    /// secretRef is optional: points to a secret object containing parameters used to connect
+    /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ArgoCDRepoVolumesCinderSecretRef>,
-    /// volumeID used to identify the volume in cinder. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// volumeID used to identify the volume in cinder.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
 
-/// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
+/// secretRef is optional: points to a secret object containing parameters used to connect
+/// to OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesCinderSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3042,13 +7954,27 @@ pub struct ArgoCDRepoVolumesCinderSecretRef {
 /// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode is optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ArgoCDRepoVolumesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -3061,36 +7987,59 @@ pub struct ArgoCDRepoVolumesConfigMap {
 pub struct ArgoCDRepoVolumesConfigMapItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesCsi {
-    /// driver is the name of the CSI driver that handles this volume. Consult with your admin for the correct name as registered in the cluster.
+    /// driver is the name of the CSI driver that handles this volume.
+    /// Consult with your admin for the correct name as registered in the cluster.
     pub driver: String,
-    /// fsType to mount. Ex. "ext4", "xfs", "ntfs". If not provided, the empty value is passed to the associated CSI driver which will determine the default filesystem to apply.
+    /// fsType to mount. Ex. "ext4", "xfs", "ntfs".
+    /// If not provided, the empty value is passed to the associated CSI driver
+    /// which will determine the default filesystem to apply.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+    /// nodePublishSecretRef is a reference to the secret object containing
+    /// sensitive information to pass to the CSI driver to complete the CSI
+    /// NodePublishVolume and NodeUnpublishVolume calls.
+    /// This field is optional, and  may be empty if no secret is required. If the
+    /// secret object contains more than one secret, all secret references are passed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<ArgoCDRepoVolumesCsiNodePublishSecretRef>,
-    /// readOnly specifies a read-only configuration for the volume. Defaults to false (read/write).
+    /// readOnly specifies a read-only configuration for the volume.
+    /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
+    /// volumeAttributes stores driver-specific properties that are passed to the CSI
+    /// driver. Consult your driver's documentation for supported values.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
-/// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+/// nodePublishSecretRef is a reference to the secret object containing
+/// sensitive information to pass to the CSI driver to complete the CSI
+/// NodePublishVolume and NodeUnpublishVolume calls.
+/// This field is optional, and  may be empty if no secret is required. If the
+/// secret object contains more than one secret, all secret references are passed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesCsiNodePublishSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3098,7 +8047,14 @@ pub struct ArgoCDRepoVolumesCsiNodePublishSecretRef {
 /// downwardAPI represents downward API about the pod that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesDownwardApi {
-    /// Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits to use on created files by default. Must be a
+    /// Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
@@ -3112,12 +8068,18 @@ pub struct ArgoCDRepoVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCDRepoVolumesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ArgoCDRepoVolumesDownwardApiItemsResourceFieldRef>,
 }
@@ -3133,7 +8095,8 @@ pub struct ArgoCDRepoVolumesDownwardApiItemsFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -3146,72 +8109,190 @@ pub struct ArgoCDRepoVolumesDownwardApiItemsResourceFieldRef {
     pub resource: String,
 }
 
-/// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+/// emptyDir represents a temporary directory that shares a pod's lifetime.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesEmptyDir {
-    /// medium represents what type of storage medium should back this directory. The default is "" which means to use the node's default medium. Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// medium represents what type of storage medium should back this directory.
+    /// The default is "" which means to use the node's default medium.
+    /// Must be an empty string (default) or Memory.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
+    /// The size limit is also applicable for memory medium.
+    /// The maximum usage on memory medium EmptyDir would be the minimum value between
+    /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
+    /// The default is nil which means that the limit is undefined.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
 
-/// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
-///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity    tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through    a PersistentVolumeClaim (see EphemeralVolumeSource for more    information on the connection between this volume type    and PersistentVolumeClaim). 
-///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
-///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
-///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
+/// ephemeral represents a volume that is handled by a cluster storage driver.
+/// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+/// and deleted when the pod is removed.
+/// 
+/// 
+/// Use this if:
+/// a) the volume is only needed while the pod runs,
+/// b) features of normal volumes like restoring from snapshot or capacity
+///    tracking are needed,
+/// c) the storage driver is specified through a storage class, and
+/// d) the storage driver supports dynamic volume provisioning through
+///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+///    information on the connection between this volume type
+///    and PersistentVolumeClaim).
+/// 
+/// 
+/// Use PersistentVolumeClaim or one of the vendor-specific
+/// APIs for volumes that persist for longer than the lifecycle
+/// of an individual pod.
+/// 
+/// 
+/// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+/// be used that way - see the documentation of the driver for
+/// more information.
+/// 
+/// 
+/// A pod can use both types of ephemeral volumes and
+/// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesEphemeral {
-    /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
-    ///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
-    ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
-    ///  Required, must not be nil.
+    /// Will be used to create a stand-alone PVC to provision the volume.
+    /// The pod in which this EphemeralVolumeSource is embedded will be the
+    /// owner of the PVC, i.e. the PVC will be deleted together with the
+    /// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+    /// `<volume name>` is the name from the `PodSpec.Volumes` array
+    /// entry. Pod validation will reject the pod if the concatenated name
+    /// is not valid for a PVC (for example, too long).
+    /// 
+    /// 
+    /// An existing PVC with that name that is not owned by the pod
+    /// will *not* be used for the pod to avoid using an unrelated
+    /// volume by mistake. Starting the pod is then blocked until
+    /// the unrelated PVC is removed. If such a pre-created PVC is
+    /// meant to be used by the pod, the PVC has to updated with an
+    /// owner reference to the pod once the pod exists. Normally
+    /// this should not be necessary, but it may be useful when
+    /// manually reconstructing a broken cluster.
+    /// 
+    /// 
+    /// This field is read-only and no changes will be made by Kubernetes
+    /// to the PVC after it has been created.
+    /// 
+    /// 
+    /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<ArgoCDRepoVolumesEphemeralVolumeClaimTemplate>,
 }
 
-/// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
-///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
-///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
-///  Required, must not be nil.
+/// Will be used to create a stand-alone PVC to provision the volume.
+/// The pod in which this EphemeralVolumeSource is embedded will be the
+/// owner of the PVC, i.e. the PVC will be deleted together with the
+/// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+/// `<volume name>` is the name from the `PodSpec.Volumes` array
+/// entry. Pod validation will reject the pod if the concatenated name
+/// is not valid for a PVC (for example, too long).
+/// 
+/// 
+/// An existing PVC with that name that is not owned by the pod
+/// will *not* be used for the pod to avoid using an unrelated
+/// volume by mistake. Starting the pod is then blocked until
+/// the unrelated PVC is removed. If such a pre-created PVC is
+/// meant to be used by the pod, the PVC has to updated with an
+/// owner reference to the pod once the pod exists. Normally
+/// this should not be necessary, but it may be useful when
+/// manually reconstructing a broken cluster.
+/// 
+/// 
+/// This field is read-only and no changes will be made by Kubernetes
+/// to the PVC after it has been created.
+/// 
+/// 
+/// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplate {
-    /// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
+    /// May contain labels and annotations that will be copied into the PVC
+    /// when creating it. No other fields are allowed and will be rejected during
+    /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ArgoCDRepoVolumesEphemeralVolumeClaimTemplateMetadata>,
-    /// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
+    /// The specification for the PersistentVolumeClaim. The entire content is
+    /// copied unchanged into the PVC that gets created from this
+    /// template. The same fields as in a PersistentVolumeClaim
+    /// are also valid here.
     pub spec: ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpec,
 }
 
-/// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
+/// May contain labels and annotations that will be copied into the PVC
+/// when creating it. No other fields are allowed and will be rejected during
+/// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateMetadata {
 }
 
-/// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
+/// The specification for the PersistentVolumeClaim. The entire content is
+/// copied unchanged into the PVC that gets created from this
+/// template. The same fields as in a PersistentVolumeClaim
+/// are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpec {
-    /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
-    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef   allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef   preserves all values, and generates an error if a disallowed value is   specified. * While dataSource only allows local objects, dataSourceRef allows objects   in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
-    /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecSelector>,
-    /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
@@ -3219,10 +8300,19 @@ pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpec {
     pub volume_name: Option<String>,
 }
 
-/// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecDataSource {
-    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
@@ -3231,33 +8321,73 @@ pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     pub name: String,
 }
 
-/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef   allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef   preserves all values, and generates an error if a disallowed value is   specified. * While dataSource only allows local objects, dataSourceRef allows objects   in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
-    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
     pub kind: String,
     /// Name is the name of resource being referenced
     pub name: String,
-    /// Namespace is the namespace of resource being referenced Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details. (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -3265,7 +8395,9 @@ pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -3275,19 +8407,26 @@ pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -3295,46 +8434,65 @@ pub struct ArgoCDRepoVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpress
 /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesFc {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// lun is Optional: FC target lun number
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
-    /// wwids Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+    /// wwids Optional: FC volume world wide identifiers (wwids)
+    /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
 }
 
-/// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+/// flexVolume represents a generic volume resource that is
+/// provisioned/attached using an exec based plugin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
     pub driver: String,
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// options is Optional: this field holds extra command options if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
-    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+    /// secretRef is Optional: secretRef is reference to the secret object containing
+    /// sensitive information to pass to the plugin scripts. This may be
+    /// empty if no secret object is specified. If the secret object
+    /// contains more than one secret, all secrets are passed to the plugin
+    /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ArgoCDRepoVolumesFlexVolumeSecretRef>,
 }
 
-/// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+/// secretRef is Optional: secretRef is reference to the secret object containing
+/// sensitive information to pass to the plugin scripts. This may be
+/// empty if no secret object is specified. If the secret object
+/// contains more than one secret, all secrets are passed to the plugin
+/// scripts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesFlexVolumeSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3342,7 +8500,8 @@ pub struct ArgoCDRepoVolumesFlexVolumeSecretRef {
 /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesFlocker {
-    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
+    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
+    /// should be considered as deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
@@ -3350,27 +8509,46 @@ pub struct ArgoCDRepoVolumesFlocker {
     pub dataset_uuid: Option<String>,
 }
 
-/// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+/// gcePersistentDisk represents a GCE Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesGcePersistentDisk {
-    /// fsType is filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty). More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(rename = "pdName")]
     pub pd_name: String,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+/// gitRepo represents a git repository at a particular revision.
+/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+/// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesGitRepo {
-    /// directory is the target directory name. Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the git repository.  Otherwise, if specified, the volume will contain the git repository in the subdirectory with the given name.
+    /// directory is the target directory name.
+    /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
+    /// git repository.  Otherwise, if specified, the volume will contain the git repository in
+    /// the subdirectory with the given name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub directory: Option<String>,
     /// repository is the URL
@@ -3380,29 +8558,47 @@ pub struct ArgoCDRepoVolumesGitRepo {
     pub revision: Option<String>,
 }
 
-/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesGlusterfs {
-    /// endpoints is the endpoint name that details Glusterfs topology. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// endpoints is the endpoint name that details Glusterfs topology.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub endpoints: String,
-    /// path is the Glusterfs volume path. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// path is the Glusterfs volume path.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub path: String,
-    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions. Defaults to false. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+/// hostPath represents a pre-existing file or directory on the host
+/// machine that is directly exposed to the container. This is generally
+/// used for system agents or other privileged things that are allowed
+/// to see the host machine. Most containers will NOT need this.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+/// ---
+/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+/// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesHostPath {
-    /// path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// path of the directory on the host.
+    /// If the path is a symlink, it will follow the link to the real path.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     pub path: String,
-    /// type for HostPath Volume Defaults to "" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// type for HostPath Volume
+    /// Defaults to ""
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+/// iscsi represents an ISCSI Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://examples.k8s.io/volumes/iscsi/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
@@ -3411,29 +8607,39 @@ pub struct ArgoCDRepoVolumesIscsi {
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// initiatorName is the custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface <target portal>:<volume name> will be created for the connection.
+    /// initiatorName is the custom iSCSI Initiator Name.
+    /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
+    /// <target portal>:<volume name> will be created for the connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
-    /// iscsiInterface is the interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
+    /// iscsiInterface is the interface Name that uses an iSCSI transport.
+    /// Defaults to 'default' (tcp).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
-    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub portals: Option<Vec<String>>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false.
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ArgoCDRepoVolumesIscsiSecretRef>,
-    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
     pub target_portal: String,
 }
@@ -3441,30 +8647,41 @@ pub struct ArgoCDRepoVolumesIscsi {
 /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesIscsiSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+/// nfs represents an NFS mount on the host that shares a pod's lifetime
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesNfs {
-    /// path that is exported by the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// path that is exported by the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub path: String,
-    /// readOnly here will force the NFS export to be mounted with read-only permissions. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// readOnly here will force the NFS export to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// server is the hostname or IP address of the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// server is the hostname or IP address of the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub server: String,
 }
 
-/// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+/// persistentVolumeClaimVolumeSource represents a reference to a
+/// PersistentVolumeClaim in the same namespace.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesPersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
@@ -3472,7 +8689,9 @@ pub struct ArgoCDRepoVolumesPersistentVolumeClaim {
 /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesPhotonPersistentDisk {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// pdID is the ID that identifies Photon Controller persistent disk
@@ -3483,10 +8702,13 @@ pub struct ArgoCDRepoVolumesPhotonPersistentDisk {
 /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesPortworxVolume {
-    /// fSType represents the filesystem type to mount Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fSType represents the filesystem type to mount
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeID uniquely identifies a Portworx volume
@@ -3497,7 +8719,12 @@ pub struct ArgoCDRepoVolumesPortworxVolume {
 /// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode are the mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
@@ -3525,10 +8752,18 @@ pub struct ArgoCDRepoVolumesProjectedSources {
 /// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ArgoCDRepoVolumesProjectedSourcesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -3541,10 +8776,18 @@ pub struct ArgoCDRepoVolumesProjectedSourcesConfigMap {
 pub struct ArgoCDRepoVolumesProjectedSourcesConfigMapItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
@@ -3562,12 +8805,18 @@ pub struct ArgoCDRepoVolumesProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCDRepoVolumesProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ArgoCDRepoVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
@@ -3583,7 +8832,8 @@ pub struct ArgoCDRepoVolumesProjectedSourcesDownwardApiItemsFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -3599,10 +8849,18 @@ pub struct ArgoCDRepoVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ArgoCDRepoVolumesProjectedSourcesSecretItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -3615,78 +8873,124 @@ pub struct ArgoCDRepoVolumesProjectedSourcesSecret {
 pub struct ArgoCDRepoVolumesProjectedSourcesSecretItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
+    /// audience is the intended audience of the token. A recipient of a token
+    /// must identify itself with an identifier specified in the audience of the
+    /// token, and otherwise should reject the token. The audience defaults to the
+    /// identifier of the apiserver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
+    /// expirationSeconds is the requested duration of validity of the service
+    /// account token. As the token approaches expiration, the kubelet volume
+    /// plugin will proactively rotate the service account token. The kubelet will
+    /// start trying to rotate the token if the token is older than 80 percent of
+    /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
+    /// and must be at least 10 minutes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the token into.
+    /// path is the path relative to the mount point of the file to project the
+    /// token into.
     pub path: String,
 }
 
 /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesQuobyte {
-    /// group to map volume access to Default is no group
+    /// group to map volume access to
+    /// Default is no group
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions. Defaults to false.
+    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// registry represents a single or multiple Quobyte Registry services specified as a string as host:port pair (multiple entries are separated with commas) which acts as the central registry for volumes
+    /// registry represents a single or multiple Quobyte Registry services
+    /// specified as a string as host:port pair (multiple entries are separated with commas)
+    /// which acts as the central registry for volumes
     pub registry: String,
-    /// tenant owning the given Quobyte volume in the Backend Used with dynamically provisioned Quobyte volumes, value is set by the plugin
+    /// tenant owning the given Quobyte volume in the Backend
+    /// Used with dynamically provisioned Quobyte volumes, value is set by the plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
-    /// user to map volume access to Defaults to serivceaccount user
+    /// user to map volume access to
+    /// Defaults to serivceaccount user
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
     /// volume is a string that references an already created Quobyte volume by name.
     pub volume: String,
 }
 
-/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesRbd {
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// image is the rados image name. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// image is the rados image name.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub image: String,
-    /// keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// keyring is the path to key ring for RBDUser.
+    /// Default is /etc/ceph/keyring.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyring: Option<String>,
-    /// monitors is a collection of Ceph monitors. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// monitors is a collection of Ceph monitors.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub monitors: Vec<String>,
-    /// pool is the rados pool name. Default is rbd. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// pool is the rados pool name.
+    /// Default is rbd.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pool: Option<String>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// secretRef is name of the authentication secret for RBDUser. If provided
+    /// overrides keyring.
+    /// Default is nil.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ArgoCDRepoVolumesRbdSecretRef>,
-    /// user is the rados user name. Default is admin. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// user is the rados user name.
+    /// Default is admin.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+/// secretRef is name of the authentication secret for RBDUser. If provided
+/// overrides keyring.
+/// Default is nil.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesRbdSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3694,7 +8998,10 @@ pub struct ArgoCDRepoVolumesRbdSecretRef {
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesScaleIo {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Default is "xfs".
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs".
+    /// Default is "xfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// gateway is the host address of the ScaleIO API Gateway.
@@ -3702,16 +9009,19 @@ pub struct ArgoCDRepoVolumesScaleIo {
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+    /// secretRef references to the secret for ScaleIO user and other
+    /// sensitive information. If this is not provided, Login operation will fail.
     #[serde(rename = "secretRef")]
     pub secret_ref: ArgoCDRepoVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned. Default is ThinProvisioned.
+    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
+    /// Default is ThinProvisioned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
@@ -3719,32 +9029,50 @@ pub struct ArgoCDRepoVolumesScaleIo {
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
-    /// volumeName is the name of a volume already created in the ScaleIO system that is associated with this volume source.
+    /// volumeName is the name of a volume already created in the ScaleIO system
+    /// that is associated with this volume source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
-/// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+/// secretRef references to the secret for ScaleIO user and other
+/// sensitive information. If this is not provided, Login operation will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesScaleIoSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+/// secret represents a secret that should populate this volume.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values
+    /// for mode bits. Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items If unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ArgoCDRepoVolumesSecretItems>>,
     /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    /// secretName is the name of the secret in the pod's namespace to use.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
@@ -3754,37 +9082,58 @@ pub struct ArgoCDRepoVolumesSecret {
 pub struct ArgoCDRepoVolumesSecretItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesStorageos {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+    /// secretRef specifies the secret to use for obtaining the StorageOS API
+    /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ArgoCDRepoVolumesStorageosSecretRef>,
-    /// volumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
+    /// volumeName is the human-readable name of the StorageOS volume.  Volume
+    /// names are only unique within a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
+    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
+    /// namespace is specified then the Pod's namespace will be used.  This allows the
+    /// Kubernetes name scoping to be mirrored within StorageOS for tighter integration.
+    /// Set VolumeName to any name to override the default behaviour.
+    /// Set to "default" if you are not using namespaces within StorageOS.
+    /// Namespaces that do not pre-exist within StorageOS will be created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
-/// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+/// secretRef specifies the secret to use for obtaining the StorageOS API
+/// credentials.  If not specified, default values will be attempted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesStorageosSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3792,7 +9141,9 @@ pub struct ArgoCDRepoVolumesStorageosSecretRef {
 /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDRepoVolumesVsphereVolume {
-    /// fsType is filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
@@ -3880,7 +9231,9 @@ pub struct ArgoCDServer {
     /// Env lets you specify environment for API server pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCDServerEnv>>,
-    /// Extra Command arguments that would append to the Argo CD server command. ExtraCommandArgs will not be added, if one of these commands is already part of the server command with same or different value.
+    /// Extra Command arguments that would append to the Argo CD server command.
+    /// ExtraCommandArgs will not be added, if one of these commands is already part of the server command
+    /// with same or different value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraCommandArgs")]
     pub extra_command_args: Option<Vec<String>>,
     /// GRPC defines the state for the Argo CD Server GRPC options.
@@ -3892,6 +9245,9 @@ pub struct ArgoCDServer {
     /// Ingress defines the desired state for an Ingress for the Argo CD Server component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<ArgoCDServerIngress>,
+    /// InitContainers defines the list of initialization containers for the Argo CD Server component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ArgoCDServerInitContainers>>,
     /// Insecure toggles the insecure flag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
@@ -3913,6 +9269,15 @@ pub struct ArgoCDServer {
     /// Service defines the options for the Service backing the ArgoCD Server component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<ArgoCDServerService>,
+    /// SidecarContainers defines the list of sidecar containers for the server deployment
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarContainers")]
+    pub sidecar_containers: Option<Vec<ArgoCDServerSidecarContainers>>,
+    /// VolumeMounts adds volumeMounts to the Argo CD Server container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ArgoCDServerVolumeMounts>>,
+    /// Volumes adds volumes to the Argo CD Server container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volumes: Option<Vec<ArgoCDServerVolumes>>,
 }
 
 /// Autoscale defines the autoscale options for the Argo CD Server component.
@@ -3931,18 +9296,25 @@ pub struct ArgoCDServerAutoscaleHpa {
     /// maxReplicas is the upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
     #[serde(rename = "maxReplicas")]
     pub max_replicas: i32,
-    /// minReplicas is the lower limit for the number of replicas to which the autoscaler can scale down.  It defaults to 1 pod.  minReplicas is allowed to be 0 if the alpha feature gate HPAScaleToZero is enabled and at least one Object or External metric is configured.  Scaling is active as long as at least one metric value is available.
+    /// minReplicas is the lower limit for the number of replicas to which the autoscaler
+    /// can scale down.  It defaults to 1 pod.  minReplicas is allowed to be 0 if the
+    /// alpha feature gate HPAScaleToZero is enabled and at least one Object or External
+    /// metric is configured.  Scaling is active as long as at least one metric value is
+    /// available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
-    /// reference to scaled resource; horizontal pod autoscaler will learn the current resource consumption and will set the desired number of pods by using its Scale subresource.
+    /// reference to scaled resource; horizontal pod autoscaler will learn the current resource consumption
+    /// and will set the desired number of pods by using its Scale subresource.
     #[serde(rename = "scaleTargetRef")]
     pub scale_target_ref: ArgoCDServerAutoscaleHpaScaleTargetRef,
-    /// targetCPUUtilizationPercentage is the target average CPU utilization (represented as a percentage of requested CPU) over all the pods; if not specified the default autoscaling policy will be used.
+    /// targetCPUUtilizationPercentage is the target average CPU utilization (represented as a percentage of requested CPU) over all the pods;
+    /// if not specified the default autoscaling policy will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCPUUtilizationPercentage")]
     pub target_cpu_utilization_percentage: Option<i32>,
 }
 
-/// reference to scaled resource; horizontal pod autoscaler will learn the current resource consumption and will set the desired number of pods by using its Scale subresource.
+/// reference to scaled resource; horizontal pod autoscaler will learn the current resource consumption
+/// and will set the desired number of pods by using its Scale subresource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDServerAutoscaleHpaScaleTargetRef {
     /// apiVersion is the API version of the referent
@@ -3959,7 +9331,15 @@ pub struct ArgoCDServerAutoscaleHpaScaleTargetRef {
 pub struct ArgoCDServerEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -3973,10 +9353,12 @@ pub struct ArgoCDServerEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ArgoCDServerEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCDServerEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ArgoCDServerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -3989,7 +9371,9 @@ pub struct ArgoCDServerEnvValueFrom {
 pub struct ArgoCDServerEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3997,7 +9381,8 @@ pub struct ArgoCDServerEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDServerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -4008,7 +9393,8 @@ pub struct ArgoCDServerEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDServerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -4026,7 +9412,9 @@ pub struct ArgoCDServerEnvValueFromResourceFieldRef {
 pub struct ArgoCDServerEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4059,7 +9447,11 @@ pub struct ArgoCDServerGrpcIngress {
     /// Path used for the Ingress resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// TLS configuration. Currently the Ingress only supports a single TLS port, 443. If multiple members of this list specify different hosts, they will be multiplexed on the same port according to the hostname specified through the SNI TLS extension, if the ingress controller fulfilling the ingress supports SNI.
+    /// TLS configuration. Currently the Ingress only supports a single TLS
+    /// port, 443. If multiple members of this list specify different hosts, they
+    /// will be multiplexed on the same port according to the hostname specified
+    /// through the SNI TLS extension, if the ingress controller fulfilling the
+    /// ingress supports SNI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<Vec<ArgoCDServerGrpcIngressTls>>,
 }
@@ -4067,10 +9459,17 @@ pub struct ArgoCDServerGrpcIngress {
 /// IngressTLS describes the transport layer security associated with an ingress.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDServerGrpcIngressTls {
-    /// hosts is a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
+    /// hosts is a list of hosts included in the TLS certificate. The values in
+    /// this list must match the name/s used in the tlsSecret. Defaults to the
+    /// wildcard host setting for the loadbalancer controller fulfilling this
+    /// Ingress, if left unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
-    /// secretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the "Host" header is used for routing.
+    /// secretName is the name of the secret used to terminate TLS traffic on
+    /// port 443. Field is left optional to allow TLS routing based on SNI
+    /// hostname alone. If the SNI host in a listener conflicts with the "Host"
+    /// header field used by an IngressRule, the SNI host is used for termination
+    /// and value of the "Host" header is used for routing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
@@ -4089,7 +9488,11 @@ pub struct ArgoCDServerIngress {
     /// Path used for the Ingress resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// TLS configuration. Currently the Ingress only supports a single TLS port, 443. If multiple members of this list specify different hosts, they will be multiplexed on the same port according to the hostname specified through the SNI TLS extension, if the ingress controller fulfilling the ingress supports SNI.
+    /// TLS configuration. Currently the Ingress only supports a single TLS
+    /// port, 443. If multiple members of this list specify different hosts, they
+    /// will be multiplexed on the same port according to the hostname specified
+    /// through the SNI TLS extension, if the ingress controller fulfilling the
+    /// ingress supports SNI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<Vec<ArgoCDServerIngressTls>>,
 }
@@ -4097,26 +9500,1188 @@ pub struct ArgoCDServerIngress {
 /// IngressTLS describes the transport layer security associated with an ingress.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDServerIngressTls {
-    /// hosts is a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
+    /// hosts is a list of hosts included in the TLS certificate. The values in
+    /// this list must match the name/s used in the tlsSecret. Defaults to the
+    /// wildcard host setting for the loadbalancer controller fulfilling this
+    /// Ingress, if left unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
-    /// secretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the "Host" header is used for routing.
+    /// secretName is the name of the secret used to terminate TLS traffic on
+    /// port 443. Field is left optional to allow TLS routing based on SNI
+    /// hostname alone. If the SNI host in a listener conflicts with the "Host"
+    /// header field used by an IngressRule, the SNI host is used for termination
+    /// and value of the "Host" header is used for routing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
+}
+
+/// A single application container that you want to run within a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainers {
+    /// Arguments to the entrypoint.
+    /// The container image's CMD is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Entrypoint array. Not executed within a shell.
+    /// The container image's ENTRYPOINT is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// List of environment variables to set in the container.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ArgoCDServerInitContainersEnv>>,
+    /// List of sources to populate environment variables in the container.
+    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
+    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// sources, the value associated with the last source will take precedence.
+    /// Values defined by an Env with a duplicate key will take precedence.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
+    pub env_from: Option<Vec<ArgoCDServerInitContainersEnvFrom>>,
+    /// Container image name.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// Image pull policy.
+    /// One of Always, Never, IfNotPresent.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
+    /// Actions that the management system should take in response to container lifecycle events.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lifecycle: Option<ArgoCDServerInitContainersLifecycle>,
+    /// Periodic probe of container liveness.
+    /// Container will be restarted if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ArgoCDServerInitContainersLivenessProbe>,
+    /// Name of the container specified as a DNS_LABEL.
+    /// Each container in a pod must have a unique name (DNS_LABEL).
+    /// Cannot be updated.
+    pub name: String,
+    /// List of ports to expose from the container. Not specifying a port here
+    /// DOES NOT prevent that port from being exposed. Any port which is
+    /// listening on the default "0.0.0.0" address inside a container will be
+    /// accessible from the network.
+    /// Modifying this array with strategic merge patch may corrupt the data.
+    /// For more information See https://github.com/kubernetes/kubernetes/issues/108255.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<ArgoCDServerInitContainersPorts>>,
+    /// Periodic probe of container service readiness.
+    /// Container will be removed from service endpoints if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ArgoCDServerInitContainersReadinessProbe>,
+    /// Resources resize policy for the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ArgoCDServerInitContainersResizePolicy>>,
+    /// Compute Resources required by this container.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ArgoCDServerInitContainersResources>,
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
+    /// SecurityContext defines the security options the container should be run with.
+    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ArgoCDServerInitContainersSecurityContext>,
+    /// StartupProbe indicates that the Pod has successfully initialized.
+    /// If specified, no other probes are executed until this completes successfully.
+    /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+    /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+    /// when it might take a long time to load data or warm a cache, than during steady-state operation.
+    /// This cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<ArgoCDServerInitContainersStartupProbe>,
+    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
+    /// is not set, reads from stdin in the container will always result in EOF.
+    /// Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdin: Option<bool>,
+    /// Whether the container runtime should close the stdin channel after it has been opened by
+    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
+    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
+    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
+    /// at which time stdin is closed and remains closed until the container is restarted. If this
+    /// flag is false, a container processes that reads from stdin will never receive an EOF.
+    /// Default is false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
+    pub stdin_once: Option<bool>,
+    /// Optional: Path at which the file to which the container's termination message
+    /// will be written is mounted into the container's filesystem.
+    /// Message written is intended to be brief final status, such as an assertion failure message.
+    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
+    /// all containers will be limited to 12kb.
+    /// Defaults to /dev/termination-log.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
+    pub termination_message_path: Option<String>,
+    /// Indicate how the termination message should be populated. File will use the contents of
+    /// terminationMessagePath to populate the container status message on both success and failure.
+    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
+    /// message file is empty and the container exited with an error.
+    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
+    /// Defaults to File.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
+    pub termination_message_policy: Option<String>,
+    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
+    /// Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tty: Option<bool>,
+    /// volumeDevices is the list of block devices to be used by the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ArgoCDServerInitContainersVolumeDevices>>,
+    /// Pod volumes to mount into the container's filesystem.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ArgoCDServerInitContainersVolumeMounts>>,
+    /// Container's working directory.
+    /// If not specified, the container runtime's default will be used, which
+    /// might be configured in the container image.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
+    pub working_dir: Option<String>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ArgoCDServerInitContainersEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ArgoCDServerInitContainersEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ArgoCDServerInitContainersEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ArgoCDServerInitContainersEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ArgoCDServerInitContainersEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// EnvFromSource represents the source of a set of ConfigMaps
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersEnvFrom {
+    /// The ConfigMap to select from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ArgoCDServerInitContainersEnvFromConfigMapRef>,
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// The Secret to select from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDServerInitContainersEnvFromSecretRef>,
+}
+
+/// The ConfigMap to select from
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersEnvFromConfigMapRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The Secret to select from
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersEnvFromSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Actions that the management system should take in response to container lifecycle events.
+/// Cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecycle {
+    /// PostStart is called immediately after a container is created. If the handler fails,
+    /// the container is terminated and restarted according to its restart policy.
+    /// Other management of the container blocks until the hook completes.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
+    pub post_start: Option<ArgoCDServerInitContainersLifecyclePostStart>,
+    /// PreStop is called immediately before a container is terminated due to an
+    /// API request or management event such as liveness/startup probe failure,
+    /// preemption, resource contention, etc. The handler is not called if the
+    /// container crashes or exits. The Pod's termination grace period countdown begins before the
+    /// PreStop hook is executed. Regardless of the outcome of the handler, the
+    /// container will eventually terminate within the Pod's termination grace
+    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+    /// or until the termination grace period is reached.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
+    pub pre_stop: Option<ArgoCDServerInitContainersLifecyclePreStop>,
+}
+
+/// PostStart is called immediately after a container is created. If the handler fails,
+/// the container is terminated and restarted according to its restart policy.
+/// Other management of the container blocks until the hook completes.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecyclePostStart {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDServerInitContainersLifecyclePostStartExec>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDServerInitContainersLifecyclePostStartHttpGet>,
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDServerInitContainersLifecyclePostStartTcpSocket>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecyclePostStartExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecyclePostStartHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDServerInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecyclePostStartHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecyclePostStartTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// PreStop is called immediately before a container is terminated due to an
+/// API request or management event such as liveness/startup probe failure,
+/// preemption, resource contention, etc. The handler is not called if the
+/// container crashes or exits. The Pod's termination grace period countdown begins before the
+/// PreStop hook is executed. Regardless of the outcome of the handler, the
+/// container will eventually terminate within the Pod's termination grace
+/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+/// or until the termination grace period is reached.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecyclePreStop {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDServerInitContainersLifecyclePreStopExec>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDServerInitContainersLifecyclePreStopHttpGet>,
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDServerInitContainersLifecyclePreStopTcpSocket>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecyclePreStopExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecyclePreStopHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDServerInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecyclePreStopHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLifecyclePreStopTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// Periodic probe of container liveness.
+/// Container will be restarted if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLivenessProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDServerInitContainersLivenessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDServerInitContainersLivenessProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDServerInitContainersLivenessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDServerInitContainersLivenessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLivenessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLivenessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLivenessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDServerInitContainersLivenessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLivenessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersLivenessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// ContainerPort represents a network port in a single container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersPorts {
+    /// Number of port to expose on the pod's IP address.
+    /// This must be a valid port number, 0 < x < 65536.
+    #[serde(rename = "containerPort")]
+    pub container_port: i32,
+    /// What host IP to bind the external port to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
+    pub host_ip: Option<String>,
+    /// Number of port to expose on the host.
+    /// If specified, this must be a valid port number, 0 < x < 65536.
+    /// If HostNetwork is specified, this must match ContainerPort.
+    /// Most containers do not need this.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
+    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
+    /// named port in a pod must have a unique name. Name for the port that can be
+    /// referred to by services.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Protocol for port. Must be UDP, TCP, or SCTP.
+    /// Defaults to "TCP".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+}
+
+/// Periodic probe of container service readiness.
+/// Container will be removed from service endpoints if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersReadinessProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDServerInitContainersReadinessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDServerInitContainersReadinessProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDServerInitContainersReadinessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDServerInitContainersReadinessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersReadinessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersReadinessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersReadinessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDServerInitContainersReadinessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersReadinessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersReadinessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// ContainerResizePolicy represents resource resize policy for the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersResizePolicy {
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+/// Compute Resources required by this container.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ArgoCDServerInitContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// SecurityContext defines the security options the container should be run with.
+/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+/// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersSecurityContext {
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<ArgoCDServerInitContainersSecurityContextCapabilities>,
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
+    pub proc_mount: Option<String>,
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ArgoCDServerInitContainersSecurityContextSeLinuxOptions>,
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ArgoCDServerInitContainersSecurityContextSeccompProfile>,
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ArgoCDServerInitContainersSecurityContextWindowsOptions>,
+}
+
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersSecurityContextCapabilities {
+    /// Added capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// Removed capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
+}
+
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersSecurityContextSeLinuxOptions {
+    /// Level is SELinux level label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+    /// Role is a SELinux role label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    /// Type is a SELinux type label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    /// User is a SELinux user label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersSecurityContextSeccompProfile {
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersSecurityContextWindowsOptions {
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
+    pub gmsa_credential_spec: Option<String>,
+    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
+    pub gmsa_credential_spec_name: Option<String>,
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
+    pub host_process: Option<bool>,
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
+    pub run_as_user_name: Option<String>,
+}
+
+/// StartupProbe indicates that the Pod has successfully initialized.
+/// If specified, no other probes are executed until this completes successfully.
+/// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+/// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+/// when it might take a long time to load data or warm a cache, than during steady-state operation.
+/// This cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersStartupProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDServerInitContainersStartupProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDServerInitContainersStartupProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDServerInitContainersStartupProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDServerInitContainersStartupProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersStartupProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersStartupProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersStartupProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDServerInitContainersStartupProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersStartupProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersStartupProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// volumeDevice describes a mapping of a raw block device within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersVolumeDevices {
+    /// devicePath is the path inside of the container that the device will be mapped to.
+    #[serde(rename = "devicePath")]
+    pub device_path: String,
+    /// name must match the name of a persistentVolumeClaim in the pod
+    pub name: String,
+}
+
+/// VolumeMount describes a mounting of a Volume within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerInitContainersVolumeMounts {
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
 }
 
 /// Resources defines the Compute Resources required by the container for the Argo CD server component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDServerResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDServerResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -4124,7 +10689,9 @@ pub struct ArgoCDServerResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDServerResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -4159,11 +10726,20 @@ pub struct ArgoCDServerRouteTls {
     /// certificate provides certificate contents
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
-    /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt termination this file should be provided in order to have routers use it for health checks on the secure connection. If this field is not specified, the router may provide its own destination CA and perform hostname validation using the short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically verify.
+    /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt
+    /// termination this file should be provided in order to have routers use it for health checks on the secure connection.
+    /// If this field is not specified, the router may provide its own destination CA and perform hostname validation using
+    /// the short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically
+    /// verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCACertificate")]
     pub destination_ca_certificate: Option<String>,
-    /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While each router may make its own decisions on which ports to expose, this is normally port 80. 
-    ///  * Allow - traffic is sent to the server on the insecure port (default) * Disable - no traffic is allowed on the insecure port. * Redirect - clients are redirected to the secure port.
+    /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While
+    /// each router may make its own decisions on which ports to expose, this is normally port 80.
+    /// 
+    /// 
+    /// * Allow - traffic is sent to the server on the insecure port (default)
+    /// * Disable - no traffic is allowed on the insecure port.
+    /// * Redirect - clients are redirected to the secure port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureEdgeTerminationPolicy")]
     pub insecure_edge_termination_policy: Option<String>,
     /// key provides key file contents
@@ -4179,6 +10755,2680 @@ pub struct ArgoCDServerService {
     /// Type is the ServiceType to use for the Service resource.
     #[serde(rename = "type")]
     pub r#type: String,
+}
+
+/// A single application container that you want to run within a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainers {
+    /// Arguments to the entrypoint.
+    /// The container image's CMD is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Entrypoint array. Not executed within a shell.
+    /// The container image's ENTRYPOINT is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// List of environment variables to set in the container.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ArgoCDServerSidecarContainersEnv>>,
+    /// List of sources to populate environment variables in the container.
+    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
+    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// sources, the value associated with the last source will take precedence.
+    /// Values defined by an Env with a duplicate key will take precedence.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
+    pub env_from: Option<Vec<ArgoCDServerSidecarContainersEnvFrom>>,
+    /// Container image name.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// Image pull policy.
+    /// One of Always, Never, IfNotPresent.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
+    /// Actions that the management system should take in response to container lifecycle events.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lifecycle: Option<ArgoCDServerSidecarContainersLifecycle>,
+    /// Periodic probe of container liveness.
+    /// Container will be restarted if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ArgoCDServerSidecarContainersLivenessProbe>,
+    /// Name of the container specified as a DNS_LABEL.
+    /// Each container in a pod must have a unique name (DNS_LABEL).
+    /// Cannot be updated.
+    pub name: String,
+    /// List of ports to expose from the container. Not specifying a port here
+    /// DOES NOT prevent that port from being exposed. Any port which is
+    /// listening on the default "0.0.0.0" address inside a container will be
+    /// accessible from the network.
+    /// Modifying this array with strategic merge patch may corrupt the data.
+    /// For more information See https://github.com/kubernetes/kubernetes/issues/108255.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<ArgoCDServerSidecarContainersPorts>>,
+    /// Periodic probe of container service readiness.
+    /// Container will be removed from service endpoints if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ArgoCDServerSidecarContainersReadinessProbe>,
+    /// Resources resize policy for the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ArgoCDServerSidecarContainersResizePolicy>>,
+    /// Compute Resources required by this container.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ArgoCDServerSidecarContainersResources>,
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
+    /// SecurityContext defines the security options the container should be run with.
+    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ArgoCDServerSidecarContainersSecurityContext>,
+    /// StartupProbe indicates that the Pod has successfully initialized.
+    /// If specified, no other probes are executed until this completes successfully.
+    /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+    /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+    /// when it might take a long time to load data or warm a cache, than during steady-state operation.
+    /// This cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<ArgoCDServerSidecarContainersStartupProbe>,
+    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
+    /// is not set, reads from stdin in the container will always result in EOF.
+    /// Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdin: Option<bool>,
+    /// Whether the container runtime should close the stdin channel after it has been opened by
+    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
+    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
+    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
+    /// at which time stdin is closed and remains closed until the container is restarted. If this
+    /// flag is false, a container processes that reads from stdin will never receive an EOF.
+    /// Default is false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
+    pub stdin_once: Option<bool>,
+    /// Optional: Path at which the file to which the container's termination message
+    /// will be written is mounted into the container's filesystem.
+    /// Message written is intended to be brief final status, such as an assertion failure message.
+    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
+    /// all containers will be limited to 12kb.
+    /// Defaults to /dev/termination-log.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
+    pub termination_message_path: Option<String>,
+    /// Indicate how the termination message should be populated. File will use the contents of
+    /// terminationMessagePath to populate the container status message on both success and failure.
+    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
+    /// message file is empty and the container exited with an error.
+    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
+    /// Defaults to File.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
+    pub termination_message_policy: Option<String>,
+    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
+    /// Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tty: Option<bool>,
+    /// volumeDevices is the list of block devices to be used by the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ArgoCDServerSidecarContainersVolumeDevices>>,
+    /// Pod volumes to mount into the container's filesystem.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ArgoCDServerSidecarContainersVolumeMounts>>,
+    /// Container's working directory.
+    /// If not specified, the container runtime's default will be used, which
+    /// might be configured in the container image.
+    /// Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
+    pub working_dir: Option<String>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ArgoCDServerSidecarContainersEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ArgoCDServerSidecarContainersEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ArgoCDServerSidecarContainersEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ArgoCDServerSidecarContainersEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ArgoCDServerSidecarContainersEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// EnvFromSource represents the source of a set of ConfigMaps
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersEnvFrom {
+    /// The ConfigMap to select from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ArgoCDServerSidecarContainersEnvFromConfigMapRef>,
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// The Secret to select from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDServerSidecarContainersEnvFromSecretRef>,
+}
+
+/// The ConfigMap to select from
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersEnvFromConfigMapRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The Secret to select from
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersEnvFromSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Actions that the management system should take in response to container lifecycle events.
+/// Cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecycle {
+    /// PostStart is called immediately after a container is created. If the handler fails,
+    /// the container is terminated and restarted according to its restart policy.
+    /// Other management of the container blocks until the hook completes.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
+    pub post_start: Option<ArgoCDServerSidecarContainersLifecyclePostStart>,
+    /// PreStop is called immediately before a container is terminated due to an
+    /// API request or management event such as liveness/startup probe failure,
+    /// preemption, resource contention, etc. The handler is not called if the
+    /// container crashes or exits. The Pod's termination grace period countdown begins before the
+    /// PreStop hook is executed. Regardless of the outcome of the handler, the
+    /// container will eventually terminate within the Pod's termination grace
+    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+    /// or until the termination grace period is reached.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
+    pub pre_stop: Option<ArgoCDServerSidecarContainersLifecyclePreStop>,
+}
+
+/// PostStart is called immediately after a container is created. If the handler fails,
+/// the container is terminated and restarted according to its restart policy.
+/// Other management of the container blocks until the hook completes.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecyclePostStart {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDServerSidecarContainersLifecyclePostStartExec>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDServerSidecarContainersLifecyclePostStartHttpGet>,
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDServerSidecarContainersLifecyclePostStartTcpSocket>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecyclePostStartExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecyclePostStartHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDServerSidecarContainersLifecyclePostStartHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecyclePostStartHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecyclePostStartTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// PreStop is called immediately before a container is terminated due to an
+/// API request or management event such as liveness/startup probe failure,
+/// preemption, resource contention, etc. The handler is not called if the
+/// container crashes or exits. The Pod's termination grace period countdown begins before the
+/// PreStop hook is executed. Regardless of the outcome of the handler, the
+/// container will eventually terminate within the Pod's termination grace
+/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+/// or until the termination grace period is reached.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecyclePreStop {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDServerSidecarContainersLifecyclePreStopExec>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDServerSidecarContainersLifecyclePreStopHttpGet>,
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDServerSidecarContainersLifecyclePreStopTcpSocket>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecyclePreStopExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecyclePreStopHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDServerSidecarContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecyclePreStopHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLifecyclePreStopTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// Periodic probe of container liveness.
+/// Container will be restarted if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLivenessProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDServerSidecarContainersLivenessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDServerSidecarContainersLivenessProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDServerSidecarContainersLivenessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDServerSidecarContainersLivenessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLivenessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLivenessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLivenessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDServerSidecarContainersLivenessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLivenessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersLivenessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// ContainerPort represents a network port in a single container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersPorts {
+    /// Number of port to expose on the pod's IP address.
+    /// This must be a valid port number, 0 < x < 65536.
+    #[serde(rename = "containerPort")]
+    pub container_port: i32,
+    /// What host IP to bind the external port to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
+    pub host_ip: Option<String>,
+    /// Number of port to expose on the host.
+    /// If specified, this must be a valid port number, 0 < x < 65536.
+    /// If HostNetwork is specified, this must match ContainerPort.
+    /// Most containers do not need this.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
+    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
+    /// named port in a pod must have a unique name. Name for the port that can be
+    /// referred to by services.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Protocol for port. Must be UDP, TCP, or SCTP.
+    /// Defaults to "TCP".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+}
+
+/// Periodic probe of container service readiness.
+/// Container will be removed from service endpoints if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersReadinessProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDServerSidecarContainersReadinessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDServerSidecarContainersReadinessProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDServerSidecarContainersReadinessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDServerSidecarContainersReadinessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersReadinessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersReadinessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersReadinessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDServerSidecarContainersReadinessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersReadinessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersReadinessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// ContainerResizePolicy represents resource resize policy for the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersResizePolicy {
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+/// Compute Resources required by this container.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ArgoCDServerSidecarContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// SecurityContext defines the security options the container should be run with.
+/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+/// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersSecurityContext {
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<ArgoCDServerSidecarContainersSecurityContextCapabilities>,
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
+    pub proc_mount: Option<String>,
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ArgoCDServerSidecarContainersSecurityContextSeLinuxOptions>,
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ArgoCDServerSidecarContainersSecurityContextSeccompProfile>,
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ArgoCDServerSidecarContainersSecurityContextWindowsOptions>,
+}
+
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersSecurityContextCapabilities {
+    /// Added capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// Removed capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
+}
+
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersSecurityContextSeLinuxOptions {
+    /// Level is SELinux level label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+    /// Role is a SELinux role label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    /// Type is a SELinux type label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    /// User is a SELinux user label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersSecurityContextSeccompProfile {
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersSecurityContextWindowsOptions {
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
+    pub gmsa_credential_spec: Option<String>,
+    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
+    pub gmsa_credential_spec_name: Option<String>,
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
+    pub host_process: Option<bool>,
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
+    pub run_as_user_name: Option<String>,
+}
+
+/// StartupProbe indicates that the Pod has successfully initialized.
+/// If specified, no other probes are executed until this completes successfully.
+/// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+/// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+/// when it might take a long time to load data or warm a cache, than during steady-state operation.
+/// This cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersStartupProbe {
+    /// Exec specifies the action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ArgoCDServerSidecarContainersStartupProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies an action involving a GRPC port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ArgoCDServerSidecarContainersStartupProbeGrpc>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<ArgoCDServerSidecarContainersStartupProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies an action involving a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<ArgoCDServerSidecarContainersStartupProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies the action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersStartupProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies an action involving a GRPC port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersStartupProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersStartupProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ArgoCDServerSidecarContainersStartupProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersStartupProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies an action involving a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersStartupProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// volumeDevice describes a mapping of a raw block device within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersVolumeDevices {
+    /// devicePath is the path inside of the container that the device will be mapped to.
+    #[serde(rename = "devicePath")]
+    pub device_path: String,
+    /// name must match the name of a persistentVolumeClaim in the pod
+    pub name: String,
+}
+
+/// VolumeMount describes a mounting of a Volume within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerSidecarContainersVolumeMounts {
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
+}
+
+/// VolumeMount describes a mounting of a Volume within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumeMounts {
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
+}
+
+/// Volume represents a named volume in a pod that may be accessed by any container in the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumes {
+    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<ArgoCDServerVolumesAwsElasticBlockStore>,
+    /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
+    pub azure_disk: Option<ArgoCDServerVolumesAzureDisk>,
+    /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
+    pub azure_file: Option<ArgoCDServerVolumesAzureFile>,
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cephfs: Option<ArgoCDServerVolumesCephfs>,
+    /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cinder: Option<ArgoCDServerVolumesCinder>,
+    /// configMap represents a configMap that should populate this volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ArgoCDServerVolumesConfigMap>,
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<ArgoCDServerVolumesCsi>,
+    /// downwardAPI represents downward API about the pod that should populate this volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<ArgoCDServerVolumesDownwardApi>,
+    /// emptyDir represents a temporary directory that shares a pod's lifetime.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<ArgoCDServerVolumesEmptyDir>,
+    /// ephemeral represents a volume that is handled by a cluster storage driver.
+    /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+    /// and deleted when the pod is removed.
+    /// 
+    /// 
+    /// Use this if:
+    /// a) the volume is only needed while the pod runs,
+    /// b) features of normal volumes like restoring from snapshot or capacity
+    ///    tracking are needed,
+    /// c) the storage driver is specified through a storage class, and
+    /// d) the storage driver supports dynamic volume provisioning through
+    ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+    ///    information on the connection between this volume type
+    ///    and PersistentVolumeClaim).
+    /// 
+    /// 
+    /// Use PersistentVolumeClaim or one of the vendor-specific
+    /// APIs for volumes that persist for longer than the lifecycle
+    /// of an individual pod.
+    /// 
+    /// 
+    /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+    /// be used that way - see the documentation of the driver for
+    /// more information.
+    /// 
+    /// 
+    /// A pod can use both types of ephemeral volumes and
+    /// persistent volumes at the same time.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ephemeral: Option<ArgoCDServerVolumesEphemeral>,
+    /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fc: Option<ArgoCDServerVolumesFc>,
+    /// flexVolume represents a generic volume resource that is
+    /// provisioned/attached using an exec based plugin.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
+    pub flex_volume: Option<ArgoCDServerVolumesFlexVolume>,
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flocker: Option<ArgoCDServerVolumesFlocker>,
+    /// gcePersistentDisk represents a GCE Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<ArgoCDServerVolumesGcePersistentDisk>,
+    /// gitRepo represents a git repository at a particular revision.
+    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+    /// into the Pod's container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
+    pub git_repo: Option<ArgoCDServerVolumesGitRepo>,
+    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub glusterfs: Option<ArgoCDServerVolumesGlusterfs>,
+    /// hostPath represents a pre-existing file or directory on the host
+    /// machine that is directly exposed to the container. This is generally
+    /// used for system agents or other privileged things that are allowed
+    /// to see the host machine. Most containers will NOT need this.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// ---
+    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+    /// mount host directories as read/write.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
+    pub host_path: Option<ArgoCDServerVolumesHostPath>,
+    /// iscsi represents an ISCSI Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://examples.k8s.io/volumes/iscsi/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub iscsi: Option<ArgoCDServerVolumesIscsi>,
+    /// name of the volume.
+    /// Must be a DNS_LABEL and unique within the pod.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    pub name: String,
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nfs: Option<ArgoCDServerVolumesNfs>,
+    /// persistentVolumeClaimVolumeSource represents a reference to a
+    /// PersistentVolumeClaim in the same namespace.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<ArgoCDServerVolumesPersistentVolumeClaim>,
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<ArgoCDServerVolumesPhotonPersistentDisk>,
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<ArgoCDServerVolumesPortworxVolume>,
+    /// projected items for all in one resources secrets, configmaps, and downward API
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub projected: Option<ArgoCDServerVolumesProjected>,
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quobyte: Option<ArgoCDServerVolumesQuobyte>,
+    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rbd: Option<ArgoCDServerVolumesRbd>,
+    /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
+    pub scale_io: Option<ArgoCDServerVolumesScaleIo>,
+    /// secret represents a secret that should populate this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ArgoCDServerVolumesSecret>,
+    /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storageos: Option<ArgoCDServerVolumesStorageos>,
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<ArgoCDServerVolumesVsphereVolume>,
+}
+
+/// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesAwsElasticBlockStore {
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
+    /// readOnly value true will force the readOnly setting in VolumeMounts.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesAzureDisk {
+    /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
+    pub caching_mode: Option<String>,
+    /// diskName is the Name of the data disk in the blob storage
+    #[serde(rename = "diskName")]
+    pub disk_name: String,
+    /// diskURI is the URI of data disk in the blob storage
+    #[serde(rename = "diskURI")]
+    pub disk_uri: String,
+    /// fsType is Filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesAzureFile {
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretName is the  name of secret that contains Azure Storage Account Name and Key
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+    /// shareName is the azure share Name
+    #[serde(rename = "shareName")]
+    pub share_name: String,
+}
+
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesCephfs {
+    /// monitors is Required: Monitors is a collection of Ceph monitors
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    pub monitors: Vec<String>,
+    /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
+    pub secret_file: Option<String>,
+    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDServerVolumesCephfsSecretRef>,
+    /// user is optional: User is the rados user name, default is admin
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+/// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesCephfsSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesCinder {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is optional: points to a secret object containing parameters used to connect
+    /// to OpenStack.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDServerVolumesCinderSecretRef>,
+    /// volumeID used to identify the volume in cinder.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// secretRef is optional: points to a secret object containing parameters used to connect
+/// to OpenStack.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesCinderSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// configMap represents a configMap that should populate this volume
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesConfigMap {
+    /// defaultMode is optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDServerVolumesConfigMapItems>>,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesCsi {
+    /// driver is the name of the CSI driver that handles this volume.
+    /// Consult with your admin for the correct name as registered in the cluster.
+    pub driver: String,
+    /// fsType to mount. Ex. "ext4", "xfs", "ntfs".
+    /// If not provided, the empty value is passed to the associated CSI driver
+    /// which will determine the default filesystem to apply.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// nodePublishSecretRef is a reference to the secret object containing
+    /// sensitive information to pass to the CSI driver to complete the CSI
+    /// NodePublishVolume and NodeUnpublishVolume calls.
+    /// This field is optional, and  may be empty if no secret is required. If the
+    /// secret object contains more than one secret, all secret references are passed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<ArgoCDServerVolumesCsiNodePublishSecretRef>,
+    /// readOnly specifies a read-only configuration for the volume.
+    /// Defaults to false (read/write).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// volumeAttributes stores driver-specific properties that are passed to the CSI
+    /// driver. Consult your driver's documentation for supported values.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+/// nodePublishSecretRef is a reference to the secret object containing
+/// sensitive information to pass to the CSI driver to complete the CSI
+/// NodePublishVolume and NodeUnpublishVolume calls.
+/// This field is optional, and  may be empty if no secret is required. If the
+/// secret object contains more than one secret, all secret references are passed.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesCsiNodePublishSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// downwardAPI represents downward API about the pod that should populate this volume
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesDownwardApi {
+    /// Optional: mode bits to use on created files by default. Must be a
+    /// Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// Items is a list of downward API volume file
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDServerVolumesDownwardApiItems>>,
+}
+
+/// DownwardAPIVolumeFile represents information to create the file containing the pod field
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesDownwardApiItems {
+    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ArgoCDServerVolumesDownwardApiItemsFieldRef>,
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
+    pub path: String,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ArgoCDServerVolumesDownwardApiItemsResourceFieldRef>,
+}
+
+/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesDownwardApiItemsFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesDownwardApiItemsResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// emptyDir represents a temporary directory that shares a pod's lifetime.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEmptyDir {
+    /// medium represents what type of storage medium should back this directory.
+    /// The default is "" which means to use the node's default medium.
+    /// Must be an empty string (default) or Memory.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
+    /// The size limit is also applicable for memory medium.
+    /// The maximum usage on memory medium EmptyDir would be the minimum value between
+    /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
+    /// The default is nil which means that the limit is undefined.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
+    pub size_limit: Option<IntOrString>,
+}
+
+/// ephemeral represents a volume that is handled by a cluster storage driver.
+/// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+/// and deleted when the pod is removed.
+/// 
+/// 
+/// Use this if:
+/// a) the volume is only needed while the pod runs,
+/// b) features of normal volumes like restoring from snapshot or capacity
+///    tracking are needed,
+/// c) the storage driver is specified through a storage class, and
+/// d) the storage driver supports dynamic volume provisioning through
+///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+///    information on the connection between this volume type
+///    and PersistentVolumeClaim).
+/// 
+/// 
+/// Use PersistentVolumeClaim or one of the vendor-specific
+/// APIs for volumes that persist for longer than the lifecycle
+/// of an individual pod.
+/// 
+/// 
+/// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+/// be used that way - see the documentation of the driver for
+/// more information.
+/// 
+/// 
+/// A pod can use both types of ephemeral volumes and
+/// persistent volumes at the same time.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEphemeral {
+    /// Will be used to create a stand-alone PVC to provision the volume.
+    /// The pod in which this EphemeralVolumeSource is embedded will be the
+    /// owner of the PVC, i.e. the PVC will be deleted together with the
+    /// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+    /// `<volume name>` is the name from the `PodSpec.Volumes` array
+    /// entry. Pod validation will reject the pod if the concatenated name
+    /// is not valid for a PVC (for example, too long).
+    /// 
+    /// 
+    /// An existing PVC with that name that is not owned by the pod
+    /// will *not* be used for the pod to avoid using an unrelated
+    /// volume by mistake. Starting the pod is then blocked until
+    /// the unrelated PVC is removed. If such a pre-created PVC is
+    /// meant to be used by the pod, the PVC has to updated with an
+    /// owner reference to the pod once the pod exists. Normally
+    /// this should not be necessary, but it may be useful when
+    /// manually reconstructing a broken cluster.
+    /// 
+    /// 
+    /// This field is read-only and no changes will be made by Kubernetes
+    /// to the PVC after it has been created.
+    /// 
+    /// 
+    /// Required, must not be nil.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<ArgoCDServerVolumesEphemeralVolumeClaimTemplate>,
+}
+
+/// Will be used to create a stand-alone PVC to provision the volume.
+/// The pod in which this EphemeralVolumeSource is embedded will be the
+/// owner of the PVC, i.e. the PVC will be deleted together with the
+/// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+/// `<volume name>` is the name from the `PodSpec.Volumes` array
+/// entry. Pod validation will reject the pod if the concatenated name
+/// is not valid for a PVC (for example, too long).
+/// 
+/// 
+/// An existing PVC with that name that is not owned by the pod
+/// will *not* be used for the pod to avoid using an unrelated
+/// volume by mistake. Starting the pod is then blocked until
+/// the unrelated PVC is removed. If such a pre-created PVC is
+/// meant to be used by the pod, the PVC has to updated with an
+/// owner reference to the pod once the pod exists. Normally
+/// this should not be necessary, but it may be useful when
+/// manually reconstructing a broken cluster.
+/// 
+/// 
+/// This field is read-only and no changes will be made by Kubernetes
+/// to the PVC after it has been created.
+/// 
+/// 
+/// Required, must not be nil.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEphemeralVolumeClaimTemplate {
+    /// May contain labels and annotations that will be copied into the PVC
+    /// when creating it. No other fields are allowed and will be rejected during
+    /// validation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<ArgoCDServerVolumesEphemeralVolumeClaimTemplateMetadata>,
+    /// The specification for the PersistentVolumeClaim. The entire content is
+    /// copied unchanged into the PVC that gets created from this
+    /// template. The same fields as in a PersistentVolumeClaim
+    /// are also valid here.
+    pub spec: ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpec,
+}
+
+/// May contain labels and annotations that will be copied into the PVC
+/// when creating it. No other fields are allowed and will be rejected during
+/// validation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEphemeralVolumeClaimTemplateMetadata {
+}
+
+/// The specification for the PersistentVolumeClaim. The entire content is
+/// copied unchanged into the PVC that gets created from this
+/// template. The same fields as in a PersistentVolumeClaim
+/// are also valid here.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpec {
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    /// selector is a label query over volumes to consider for binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    /// volumeName is the binding reference to the PersistentVolume backing this claim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecDataSource {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// selector is a label query over volumes to consider for binding.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesFc {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// lun is Optional: FC target lun number
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lun: Option<i32>,
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// targetWWNs is Optional: FC target worldwide names (WWNs)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
+    pub target_ww_ns: Option<Vec<String>>,
+    /// wwids Optional: FC volume world wide identifiers (wwids)
+    /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wwids: Option<Vec<String>>,
+}
+
+/// flexVolume represents a generic volume resource that is
+/// provisioned/attached using an exec based plugin.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesFlexVolume {
+    /// driver is the name of the driver to use for this volume.
+    pub driver: String,
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// options is Optional: this field holds extra command options if any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, String>>,
+    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is Optional: secretRef is reference to the secret object containing
+    /// sensitive information to pass to the plugin scripts. This may be
+    /// empty if no secret object is specified. If the secret object
+    /// contains more than one secret, all secrets are passed to the plugin
+    /// scripts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDServerVolumesFlexVolumeSecretRef>,
+}
+
+/// secretRef is Optional: secretRef is reference to the secret object containing
+/// sensitive information to pass to the plugin scripts. This may be
+/// empty if no secret object is specified. If the secret object
+/// contains more than one secret, all secrets are passed to the plugin
+/// scripts.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesFlexVolumeSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesFlocker {
+    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
+    /// should be considered as deprecated
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
+    pub dataset_name: Option<String>,
+    /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
+    pub dataset_uuid: Option<String>,
+}
+
+/// gcePersistentDisk represents a GCE Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesGcePersistentDisk {
+    /// fsType is filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
+    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(rename = "pdName")]
+    pub pd_name: String,
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// gitRepo represents a git repository at a particular revision.
+/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+/// into the Pod's container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesGitRepo {
+    /// directory is the target directory name.
+    /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
+    /// git repository.  Otherwise, if specified, the volume will contain the git repository in
+    /// the subdirectory with the given name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub directory: Option<String>,
+    /// repository is the URL
+    pub repository: String,
+    /// revision is the commit hash for the specified revision.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub revision: Option<String>,
+}
+
+/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/glusterfs/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesGlusterfs {
+    /// endpoints is the endpoint name that details Glusterfs topology.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    pub endpoints: String,
+    /// path is the Glusterfs volume path.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    pub path: String,
+    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// hostPath represents a pre-existing file or directory on the host
+/// machine that is directly exposed to the container. This is generally
+/// used for system agents or other privileged things that are allowed
+/// to see the host machine. Most containers will NOT need this.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+/// ---
+/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+/// mount host directories as read/write.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesHostPath {
+    /// path of the directory on the host.
+    /// If the path is a symlink, it will follow the link to the real path.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    pub path: String,
+    /// type for HostPath Volume
+    /// Defaults to ""
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// iscsi represents an ISCSI Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://examples.k8s.io/volumes/iscsi/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesIscsi {
+    /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
+    pub chap_auth_discovery: Option<bool>,
+    /// chapAuthSession defines whether support iSCSI Session CHAP authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
+    pub chap_auth_session: Option<bool>,
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// initiatorName is the custom iSCSI Initiator Name.
+    /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
+    /// <target portal>:<volume name> will be created for the connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
+    pub initiator_name: Option<String>,
+    /// iqn is the target iSCSI Qualified Name.
+    pub iqn: String,
+    /// iscsiInterface is the interface Name that uses an iSCSI transport.
+    /// Defaults to 'default' (tcp).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
+    pub iscsi_interface: Option<String>,
+    /// lun represents iSCSI Target Lun number.
+    pub lun: i32,
+    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub portals: Option<Vec<String>>,
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDServerVolumesIscsiSecretRef>,
+    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
+    #[serde(rename = "targetPortal")]
+    pub target_portal: String,
+}
+
+/// secretRef is the CHAP Secret for iSCSI target and initiator authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesIscsiSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// nfs represents an NFS mount on the host that shares a pod's lifetime
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesNfs {
+    /// path that is exported by the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    pub path: String,
+    /// readOnly here will force the NFS export to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// server is the hostname or IP address of the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    pub server: String,
+}
+
+/// persistentVolumeClaimVolumeSource represents a reference to a
+/// PersistentVolumeClaim in the same namespace.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesPersistentVolumeClaim {
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesPhotonPersistentDisk {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// pdID is the ID that identifies Photon Controller persistent disk
+    #[serde(rename = "pdID")]
+    pub pd_id: String,
+}
+
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesPortworxVolume {
+    /// fSType represents the filesystem type to mount
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// volumeID uniquely identifies a Portworx volume
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// projected items for all in one resources secrets, configmaps, and downward API
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjected {
+    /// defaultMode are the mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// sources is the list of volume projections
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sources: Option<Vec<ArgoCDServerVolumesProjectedSources>>,
+}
+
+/// Projection that may be projected along with other supported volume types
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjectedSources {
+    /// configMap information about the configMap data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ArgoCDServerVolumesProjectedSourcesConfigMap>,
+    /// downwardAPI information about the downwardAPI data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<ArgoCDServerVolumesProjectedSourcesDownwardApi>,
+    /// secret information about the secret data to project
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ArgoCDServerVolumesProjectedSourcesSecret>,
+    /// serviceAccountToken is information about the serviceAccountToken data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<ArgoCDServerVolumesProjectedSourcesServiceAccountToken>,
+}
+
+/// configMap information about the configMap data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjectedSourcesConfigMap {
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDServerVolumesProjectedSourcesConfigMapItems>>,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjectedSourcesConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// downwardAPI information about the downwardAPI data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjectedSourcesDownwardApi {
+    /// Items is a list of DownwardAPIVolume file
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDServerVolumesProjectedSourcesDownwardApiItems>>,
+}
+
+/// DownwardAPIVolumeFile represents information to create the file containing the pod field
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjectedSourcesDownwardApiItems {
+    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ArgoCDServerVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
+    pub path: String,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ArgoCDServerVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+}
+
+/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjectedSourcesDownwardApiItemsFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// secret information about the secret data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjectedSourcesSecret {
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDServerVolumesProjectedSourcesSecretItems>>,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional field specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjectedSourcesSecretItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// serviceAccountToken is information about the serviceAccountToken data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesProjectedSourcesServiceAccountToken {
+    /// audience is the intended audience of the token. A recipient of a token
+    /// must identify itself with an identifier specified in the audience of the
+    /// token, and otherwise should reject the token. The audience defaults to the
+    /// identifier of the apiserver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// expirationSeconds is the requested duration of validity of the service
+    /// account token. As the token approaches expiration, the kubelet volume
+    /// plugin will proactively rotate the service account token. The kubelet will
+    /// start trying to rotate the token if the token is older than 80 percent of
+    /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
+    /// and must be at least 10 minutes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
+    pub expiration_seconds: Option<i64>,
+    /// path is the path relative to the mount point of the file to project the
+    /// token into.
+    pub path: String,
+}
+
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesQuobyte {
+    /// group to map volume access to
+    /// Default is no group
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions.
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// registry represents a single or multiple Quobyte Registry services
+    /// specified as a string as host:port pair (multiple entries are separated with commas)
+    /// which acts as the central registry for volumes
+    pub registry: String,
+    /// tenant owning the given Quobyte volume in the Backend
+    /// Used with dynamically provisioned Quobyte volumes, value is set by the plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tenant: Option<String>,
+    /// user to map volume access to
+    /// Defaults to serivceaccount user
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+    /// volume is a string that references an already created Quobyte volume by name.
+    pub volume: String,
+}
+
+/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesRbd {
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// image is the rados image name.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    pub image: String,
+    /// keyring is the path to key ring for RBDUser.
+    /// Default is /etc/ceph/keyring.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keyring: Option<String>,
+    /// monitors is a collection of Ceph monitors.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    pub monitors: Vec<String>,
+    /// pool is the rados pool name.
+    /// Default is rbd.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pool: Option<String>,
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is name of the authentication secret for RBDUser. If provided
+    /// overrides keyring.
+    /// Default is nil.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDServerVolumesRbdSecretRef>,
+    /// user is the rados user name.
+    /// Default is admin.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// secretRef is name of the authentication secret for RBDUser. If provided
+/// overrides keyring.
+/// Default is nil.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesRbdSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesScaleIo {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs".
+    /// Default is "xfs".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// gateway is the host address of the ScaleIO API Gateway.
+    pub gateway: String,
+    /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
+    pub protection_domain: Option<String>,
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef references to the secret for ScaleIO user and other
+    /// sensitive information. If this is not provided, Login operation will fail.
+    #[serde(rename = "secretRef")]
+    pub secret_ref: ArgoCDServerVolumesScaleIoSecretRef,
+    /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
+    pub ssl_enabled: Option<bool>,
+    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
+    /// Default is ThinProvisioned.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
+    pub storage_mode: Option<String>,
+    /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
+    pub storage_pool: Option<String>,
+    /// system is the name of the storage system as configured in ScaleIO.
+    pub system: String,
+    /// volumeName is the name of a volume already created in the ScaleIO system
+    /// that is associated with this volume source.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// secretRef references to the secret for ScaleIO user and other
+/// sensitive information. If this is not provided, Login operation will fail.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesScaleIoSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// secret represents a secret that should populate this volume.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesSecret {
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values
+    /// for mode bits. Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items If unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ArgoCDServerVolumesSecretItems>>,
+    /// optional field specify whether the Secret or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// secretName is the name of the secret in the pod's namespace to use.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesSecretItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesStorageos {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef specifies the secret to use for obtaining the StorageOS API
+    /// credentials.  If not specified, default values will be attempted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ArgoCDServerVolumesStorageosSecretRef>,
+    /// volumeName is the human-readable name of the StorageOS volume.  Volume
+    /// names are only unique within a namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
+    /// namespace is specified then the Pod's namespace will be used.  This allows the
+    /// Kubernetes name scoping to be mirrored within StorageOS for tighter integration.
+    /// Set VolumeName to any name to override the default behaviour.
+    /// Set to "default" if you are not using namespaces within StorageOS.
+    /// Namespaces that do not pre-exist within StorageOS will be created.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
+    pub volume_namespace: Option<String>,
+}
+
+/// secretRef specifies the secret to use for obtaining the StorageOS API
+/// credentials.  If not specified, default values will be attempted.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesStorageosSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerVolumesVsphereVolume {
+    /// fsType is filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
+    pub storage_policy_id: Option<String>,
+    /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
+    pub storage_policy_name: Option<String>,
+    /// volumePath is the path that identifies vSphere volume vmdk
+    #[serde(rename = "volumePath")]
+    pub volume_path: String,
 }
 
 /// SSO defines the Single Sign-on configuration for Argo CD
@@ -4226,7 +13476,15 @@ pub struct ArgoCDSsoDex {
 pub struct ArgoCDSsoDexEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -4240,10 +13498,12 @@ pub struct ArgoCDSsoDexEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ArgoCDSsoDexEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCDSsoDexEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ArgoCDSsoDexEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -4256,7 +13516,9 @@ pub struct ArgoCDSsoDexEnvValueFrom {
 pub struct ArgoCDSsoDexEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4264,7 +13526,8 @@ pub struct ArgoCDSsoDexEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDSsoDexEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -4275,7 +13538,8 @@ pub struct ArgoCDSsoDexEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDSsoDexEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -4293,7 +13557,9 @@ pub struct ArgoCDSsoDexEnvValueFromResourceFieldRef {
 pub struct ArgoCDSsoDexEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4304,15 +13570,25 @@ pub struct ArgoCDSsoDexEnvValueFromSecretKeyRef {
 /// Resources defines the Compute Resources required by the container for Dex.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDSsoDexResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDSsoDexResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -4320,7 +13596,9 @@ pub struct ArgoCDSsoDexResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDSsoDexResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -4350,15 +13628,25 @@ pub struct ArgoCDSsoKeycloak {
 /// Resources defines the Compute Resources required by the container for Keycloak.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDSsoKeycloakResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ArgoCDSsoKeycloakResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -4366,7 +13654,9 @@ pub struct ArgoCDSsoKeycloakResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDSsoKeycloakResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -4395,37 +13685,77 @@ pub struct ArgoCDTlsCa {
 /// ArgoCDStatus defines the observed state of ArgoCD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDStatus {
-    /// ApplicationController is a simple, high-level summary of where the Argo CD application controller component is in its lifecycle. There are four possible ApplicationController values: Pending: The Argo CD application controller component has been accepted by the Kubernetes system, but one or more of the required resources have not been created. Running: All of the required Pods for the Argo CD application controller component are in a Ready state. Failed: At least one of the  Argo CD application controller component Pods had a failure. Unknown: The state of the Argo CD application controller component could not be obtained.
+    /// ApplicationController is a simple, high-level summary of where the Argo CD application controller component is in its lifecycle.
+    /// There are four possible ApplicationController values:
+    /// Pending: The Argo CD application controller component has been accepted by the Kubernetes system, but one or more of the required resources have not been created.
+    /// Running: All of the required Pods for the Argo CD application controller component are in a Ready state.
+    /// Failed: At least one of the  Argo CD application controller component Pods had a failure.
+    /// Unknown: The state of the Argo CD application controller component could not be obtained.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationController")]
     pub application_controller: Option<String>,
-    /// ApplicationSetController is a simple, high-level summary of where the Argo CD applicationSet controller component is in its lifecycle. There are four possible ApplicationSetController values: Pending: The Argo CD applicationSet controller component has been accepted by the Kubernetes system, but one or more of the required resources have not been created. Running: All of the required Pods for the Argo CD applicationSet controller component are in a Ready state. Failed: At least one of the  Argo CD applicationSet controller component Pods had a failure. Unknown: The state of the Argo CD applicationSet controller component could not be obtained.
+    /// ApplicationSetController is a simple, high-level summary of where the Argo CD applicationSet controller component is in its lifecycle.
+    /// There are four possible ApplicationSetController values:
+    /// Pending: The Argo CD applicationSet controller component has been accepted by the Kubernetes system, but one or more of the required resources have not been created.
+    /// Running: All of the required Pods for the Argo CD applicationSet controller component are in a Ready state.
+    /// Failed: At least one of the  Argo CD applicationSet controller component Pods had a failure.
+    /// Unknown: The state of the Argo CD applicationSet controller component could not be obtained.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationSetController")]
     pub application_set_controller: Option<String>,
     /// Host is the hostname of the Ingress.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// NotificationsController is a simple, high-level summary of where the Argo CD notifications controller component is in its lifecycle. There are four possible NotificationsController values: Pending: The Argo CD notifications controller component has been accepted by the Kubernetes system, but one or more of the required resources have not been created. Running: All of the required Pods for the Argo CD notifications controller component are in a Ready state. Failed: At least one of the  Argo CD notifications controller component Pods had a failure. Unknown: The state of the Argo CD notifications controller component could not be obtained.
+    /// NotificationsController is a simple, high-level summary of where the Argo CD notifications controller component is in its lifecycle.
+    /// There are four possible NotificationsController values:
+    /// Pending: The Argo CD notifications controller component has been accepted by the Kubernetes system, but one or more of the required resources have not been created.
+    /// Running: All of the required Pods for the Argo CD notifications controller component are in a Ready state.
+    /// Failed: At least one of the  Argo CD notifications controller component Pods had a failure.
+    /// Unknown: The state of the Argo CD notifications controller component could not be obtained.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationsController")]
     pub notifications_controller: Option<String>,
-    /// Phase is a simple, high-level summary of where the ArgoCD is in its lifecycle. There are four possible phase values: Pending: The ArgoCD has been accepted by the Kubernetes system, but one or more of the required resources have not been created. Available: All of the resources for the ArgoCD are ready. Failed: At least one resource has experienced a failure. Unknown: The state of the ArgoCD phase could not be obtained.
+    /// Phase is a simple, high-level summary of where the ArgoCD is in its lifecycle.
+    /// There are four possible phase values:
+    /// Pending: The ArgoCD has been accepted by the Kubernetes system, but one or more of the required resources have not been created.
+    /// Available: All of the resources for the ArgoCD are ready.
+    /// Failed: At least one resource has experienced a failure.
+    /// Unknown: The state of the ArgoCD phase could not be obtained.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
-    /// Redis is a simple, high-level summary of where the Argo CD Redis component is in its lifecycle. There are four possible redis values: Pending: The Argo CD Redis component has been accepted by the Kubernetes system, but one or more of the required resources have not been created. Running: All of the required Pods for the Argo CD Redis component are in a Ready state. Failed: At least one of the  Argo CD Redis component Pods had a failure. Unknown: The state of the Argo CD Redis component could not be obtained.
+    /// Redis is a simple, high-level summary of where the Argo CD Redis component is in its lifecycle.
+    /// There are four possible redis values:
+    /// Pending: The Argo CD Redis component has been accepted by the Kubernetes system, but one or more of the required resources have not been created.
+    /// Running: All of the required Pods for the Argo CD Redis component are in a Ready state.
+    /// Failed: At least one of the  Argo CD Redis component Pods had a failure.
+    /// Unknown: The state of the Argo CD Redis component could not be obtained.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redis: Option<String>,
     /// RedisTLSChecksum contains the SHA256 checksum of the latest known state of tls.crt and tls.key in the argocd-operator-redis-tls secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisTLSChecksum")]
     pub redis_tls_checksum: Option<String>,
-    /// Repo is a simple, high-level summary of where the Argo CD Repo component is in its lifecycle. There are four possible repo values: Pending: The Argo CD Repo component has been accepted by the Kubernetes system, but one or more of the required resources have not been created. Running: All of the required Pods for the Argo CD Repo component are in a Ready state. Failed: At least one of the  Argo CD Repo component Pods had a failure. Unknown: The state of the Argo CD Repo component could not be obtained.
+    /// Repo is a simple, high-level summary of where the Argo CD Repo component is in its lifecycle.
+    /// There are four possible repo values:
+    /// Pending: The Argo CD Repo component has been accepted by the Kubernetes system, but one or more of the required resources have not been created.
+    /// Running: All of the required Pods for the Argo CD Repo component are in a Ready state.
+    /// Failed: At least one of the  Argo CD Repo component Pods had a failure.
+    /// Unknown: The state of the Argo CD Repo component could not be obtained.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<String>,
     /// RepoTLSChecksum contains the SHA256 checksum of the latest known state of tls.crt and tls.key in the argocd-repo-server-tls secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repoTLSChecksum")]
     pub repo_tls_checksum: Option<String>,
-    /// Server is a simple, high-level summary of where the Argo CD server component is in its lifecycle. There are four possible server values: Pending: The Argo CD server component has been accepted by the Kubernetes system, but one or more of the required resources have not been created. Running: All of the required Pods for the Argo CD server component are in a Ready state. Failed: At least one of the  Argo CD server component Pods had a failure. Unknown: The state of the Argo CD server component could not be obtained.
+    /// Server is a simple, high-level summary of where the Argo CD server component is in its lifecycle.
+    /// There are four possible server values:
+    /// Pending: The Argo CD server component has been accepted by the Kubernetes system, but one or more of the required resources have not been created.
+    /// Running: All of the required Pods for the Argo CD server component are in a Ready state.
+    /// Failed: At least one of the  Argo CD server component Pods had a failure.
+    /// Unknown: The state of the Argo CD server component could not be obtained.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<String>,
-    /// SSO is a simple, high-level summary of where the Argo CD SSO(Dex/Keycloak) component is in its lifecycle. There are four possible sso values: Pending: The Argo CD SSO component has been accepted by the Kubernetes system, but one or more of the required resources have not been created. Running: All of the required Pods for the Argo CD SSO component are in a Ready state. Failed: At least one of the  Argo CD SSO component Pods had a failure. Unknown: The state of the Argo CD SSO component could not be obtained.
+    /// SSO is a simple, high-level summary of where the Argo CD SSO(Dex/Keycloak) component is in its lifecycle.
+    /// There are four possible sso values:
+    /// Pending: The Argo CD SSO component has been accepted by the Kubernetes system, but one or more of the required resources have not been created.
+    /// Running: All of the required Pods for the Argo CD SSO component are in a Ready state.
+    /// Failed: At least one of the  Argo CD SSO component Pods had a failure.
+    /// Unknown: The state of the Argo CD SSO component could not be obtained.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sso: Option<String>,
 }

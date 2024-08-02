@@ -38,7 +38,7 @@ spec:
               description: "Spec defines the desired state of the ObservabilityPolicy."
               properties:
                 targetRefs:
-                  description: "TargetRefs identifies the API object(s) to apply the policy to.\nObjects must be in the same namespace as the policy.\nSupport: HTTPRoute"
+                  description: "TargetRefs identifies the API object(s) to apply the policy to.\nObjects must be in the same namespace as the policy.\nSupport: HTTPRoute, GRPCRoute."
                   items:
                     description: "LocalPolicyTargetReference identifies an API object to apply a direct or\ninherited policy to. This should be used as part of Policy resources\nthat can target Gateway API resources. For more information on how this\npolicy attachment model works, and a sample Policy resource, refer to\nthe policy attachment documentation for Gateway API."
                     properties:

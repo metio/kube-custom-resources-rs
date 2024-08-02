@@ -24,6 +24,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "associatedSCRAMSecretRefs")]
+    pub associated_scram_secret_refs: Option<Vec<ClusterAssociatedScramSecretRefs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "associatedSCRAMSecrets")]
+    pub associated_scram_secrets: Option<Vec<String>>,
     /// Information about the brokers.
     #[serde(rename = "brokerNodeGroupInfo")]
     pub broker_node_group_info: ClusterBrokerNodeGroupInfo,
@@ -60,6 +64,30 @@ pub struct ClusterSpec {
     /// Create tags when creating the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
+}
+
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterAssociatedScramSecretRefs {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<ClusterAssociatedScramSecretRefsFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterAssociatedScramSecretRefsFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Information about the brokers.
@@ -319,6 +347,10 @@ pub struct ClusterStatus {
     /// FAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zookeeperConnectString")]
+    pub zookeeper_connect_string: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zookeeperConnectStringTLS")]
+    pub zookeeper_connect_string_tls: Option<String>,
 }
 
 /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member

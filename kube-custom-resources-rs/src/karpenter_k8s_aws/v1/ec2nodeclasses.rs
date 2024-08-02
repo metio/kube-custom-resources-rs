@@ -13,18 +13,24 @@ use self::prelude::*;
 
 /// EC2NodeClassSpec is the top level specification for the AWS Karpenter Provider.
 /// This will contain configuration necessary to launch instances in AWS.
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "karpenter.k8s.aws", version = "v1", kind = "EC2NodeClass", plural = "ec2nodeclasses")]
 #[kube(status = "EC2NodeClassStatus")]
 #[kube(schema = "disabled")]
+#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct EC2NodeClassSpec {
-    /// AMIFamily is the AMI family that instances use.
-    #[serde(rename = "amiFamily")]
-    pub ami_family: EC2NodeClassAmiFamily,
+    /// AMIFamily dictates the UserData format and default BlockDeviceMappings used when generating launch templates.
+    /// This field is optional when using an alias amiSelectorTerm, and the value will be inferred from the alias'
+    /// family. When an alias is specified, this field may only be set to its corresponding family or 'Custom'. If no
+    /// alias is specified, this field is required.
+    /// NOTE: We ignore the AMIFamily for hashing here because we hash the AMIFamily dynamically by using the alias using
+    /// the AMIFamily() helper function
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "amiFamily")]
+    pub ami_family: Option<EC2NodeClassAmiFamily>,
     /// AMISelectorTerms is a list of or ami selector terms. The terms are ORed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "amiSelectorTerms")]
-    pub ami_selector_terms: Option<Vec<EC2NodeClassAmiSelectorTerms>>,
+    #[serde(rename = "amiSelectorTerms")]
+    pub ami_selector_terms: Vec<EC2NodeClassAmiSelectorTerms>,
     /// AssociatePublicIPAddress controls if public IP addresses are assigned to instances that are launched with the nodeclass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "associatePublicIPAddress")]
     pub associate_public_ip_address: Option<bool>,
@@ -47,6 +53,11 @@ pub struct EC2NodeClassSpec {
     /// InstanceStorePolicy specifies how to handle instance-store disks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceStorePolicy")]
     pub instance_store_policy: Option<EC2NodeClassInstanceStorePolicy>,
+    /// Kubelet defines args to be used when configuring kubelet on provisioned nodes.
+    /// They are a subset of the upstream types, recognizing not all options may be supported.
+    /// Wherever possible, the types and names should reflect the upstream kubelet types.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubelet: Option<EC2NodeClassKubelet>,
     /// MetadataOptions for the generated launch template of provisioned nodes.
     /// 
     /// 
@@ -97,7 +108,6 @@ pub enum EC2NodeClassAmiFamily {
     #[serde(rename = "AL2023")]
     Al2023,
     Bottlerocket,
-    Ubuntu,
     Custom,
     Windows2019,
     Windows2022,
@@ -107,6 +117,14 @@ pub enum EC2NodeClassAmiFamily {
 /// If multiple fields are used for selection, the requirements are ANDed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EC2NodeClassAmiSelectorTerms {
+    /// Alias specifies which EKS optimized AMI to select.
+    /// Each alias consists of a family and an AMI version, specified as "family@version".
+    /// Valid families include: al2, al2023, bottlerocket, windows2019, and windows2022.
+    /// The version can either be pinned to a specific AMI release, with that AMIs version format (ex: "al2023@v20240625" or "bottlerocket@v1.10.0").
+    /// The version can also be set to "latest" for any family. Setting the version to latest will result in drift when a new AMI is released. This is **not** recommended for production environments.
+    /// Note: The Windows families do **not** support version pinning, and only latest may be used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub alias: Option<String>,
     /// ID is the ami id in EC2
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -235,6 +253,61 @@ pub enum EC2NodeClassBlockDeviceMappingsEbsVolumeType {
 pub enum EC2NodeClassInstanceStorePolicy {
     #[serde(rename = "RAID0")]
     Raid0,
+}
+
+/// Kubelet defines args to be used when configuring kubelet on provisioned nodes.
+/// They are a subset of the upstream types, recognizing not all options may be supported.
+/// Wherever possible, the types and names should reflect the upstream kubelet types.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EC2NodeClassKubelet {
+    /// clusterDNS is a list of IP addresses for the cluster DNS server.
+    /// Note that not all providers may use all addresses.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDNS")]
+    pub cluster_dns: Option<Vec<String>>,
+    /// CPUCFSQuota enables CPU CFS quota enforcement for containers that specify CPU limits.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuCFSQuota")]
+    pub cpu_cfs_quota: Option<bool>,
+    /// EvictionHard is the map of signal names to quantities that define hard eviction thresholds
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionHard")]
+    pub eviction_hard: Option<BTreeMap<String, String>>,
+    /// EvictionMaxPodGracePeriod is the maximum allowed grace period (in seconds) to use when terminating pods in
+    /// response to soft eviction thresholds being met.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionMaxPodGracePeriod")]
+    pub eviction_max_pod_grace_period: Option<i32>,
+    /// EvictionSoft is the map of signal names to quantities that define soft eviction thresholds
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionSoft")]
+    pub eviction_soft: Option<BTreeMap<String, String>>,
+    /// EvictionSoftGracePeriod is the map of signal names to quantities that define grace periods for each eviction signal
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionSoftGracePeriod")]
+    pub eviction_soft_grace_period: Option<BTreeMap<String, String>>,
+    /// ImageGCHighThresholdPercent is the percent of disk usage after which image
+    /// garbage collection is always run. The percent is calculated by dividing this
+    /// field value by 100, so this field must be between 0 and 100, inclusive.
+    /// When specified, the value must be greater than ImageGCLowThresholdPercent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageGCHighThresholdPercent")]
+    pub image_gc_high_threshold_percent: Option<i32>,
+    /// ImageGCLowThresholdPercent is the percent of disk usage before which image
+    /// garbage collection is never run. Lowest disk usage to garbage collect to.
+    /// The percent is calculated by dividing this field value by 100,
+    /// so the field value must be between 0 and 100, inclusive.
+    /// When specified, the value must be less than imageGCHighThresholdPercent
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageGCLowThresholdPercent")]
+    pub image_gc_low_threshold_percent: Option<i32>,
+    /// KubeReserved contains resources reserved for Kubernetes system components.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeReserved")]
+    pub kube_reserved: Option<BTreeMap<String, String>>,
+    /// MaxPods is an override for the maximum number of pods that can run on
+    /// a worker node instance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPods")]
+    pub max_pods: Option<i32>,
+    /// PodsPerCore is an override for the number of pods that can run on a worker node
+    /// instance based on the number of cpu cores. This value cannot exceed MaxPods, so, if
+    /// MaxPods is a lower value, that value will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podsPerCore")]
+    pub pods_per_core: Option<i32>,
+    /// SystemReserved contains resources reserved for OS system daemons and kernel memory.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemReserved")]
+    pub system_reserved: Option<BTreeMap<String, String>>,
 }
 
 /// MetadataOptions for the generated launch template of provisioned nodes.

@@ -210,8 +210,12 @@ pub struct KafkaBridgeAuthenticationRefreshToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeAuthenticationTlsTrustedCertificates {
-    /// The name of the file certificate in the Secret.
-    pub certificate: String,
+    /// The name of the file certificate in the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    /// Pattern for the certificate files in the secret. Use the link:https://en.wikipedia.org/wiki/Glob_(programming)[_glob syntax_] for the pattern. All files in the secret that match the pattern are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
     pub secret_name: String,
@@ -238,6 +242,12 @@ pub struct KafkaBridgeConsumer {
     /// The Kafka consumer configuration used for consumer instances created by the bridge. Properties with the following prefixes cannot be set: ssl., bootstrap.servers, group.id, sasl., security. (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// Whether the HTTP consumer should be enabled or disabled, default is enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The timeout in seconds for deleting inactive consumers, default is -1 (disabled).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i64>,
 }
 
 /// The HTTP related configuration.
@@ -360,6 +370,9 @@ pub struct KafkaBridgeProducer {
     /// The Kafka producer configuration used for producer instances created by the bridge. Properties with the following prefixes cannot be set: ssl., bootstrap.servers, sasl., security. (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// Whether the HTTP producer should be enabled or disabled, default is enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// Configuration of the node label which will be used as the client.rack consumer configuration.
@@ -495,6 +508,8 @@ pub struct KafkaBridgeTemplateBridgeContainerEnv {
 pub struct KafkaBridgeTemplateBridgeContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<KafkaBridgeTemplateBridgeContainerSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<KafkaBridgeTemplateBridgeContainerSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -515,6 +530,14 @@ pub struct KafkaBridgeTemplateBridgeContainerSecurityContext {
     pub seccomp_profile: Option<KafkaBridgeTemplateBridgeContainerSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<KafkaBridgeTemplateBridgeContainerSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplateBridgeContainerSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -631,6 +654,8 @@ pub struct KafkaBridgeTemplateInitContainerEnv {
 pub struct KafkaBridgeTemplateInitContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<KafkaBridgeTemplateInitContainerSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<KafkaBridgeTemplateInitContainerSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -651,6 +676,14 @@ pub struct KafkaBridgeTemplateInitContainerSecurityContext {
     pub seccomp_profile: Option<KafkaBridgeTemplateInitContainerSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<KafkaBridgeTemplateInitContainerSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplateInitContainerSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1091,6 +1124,8 @@ pub struct KafkaBridgeTemplatePodMetadata {
 /// Configures pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePodSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<KafkaBridgeTemplatePodSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
@@ -1111,6 +1146,14 @@ pub struct KafkaBridgeTemplatePodSecurityContext {
     pub sysctls: Option<Vec<KafkaBridgeTemplatePodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<KafkaBridgeTemplatePodSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1256,8 +1299,12 @@ pub struct KafkaBridgeTls {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTlsTrustedCertificates {
-    /// The name of the file certificate in the Secret.
-    pub certificate: String,
+    /// The name of the file certificate in the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    /// Pattern for the certificate files in the secret. Use the link:https://en.wikipedia.org/wiki/Glob_(programming)[_glob syntax_] for the pattern. All files in the secret that match the pattern are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
     pub secret_name: String,

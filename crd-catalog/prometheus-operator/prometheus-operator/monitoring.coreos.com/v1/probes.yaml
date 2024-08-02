@@ -20,7 +20,7 @@ spec:
     - name: "v1"
       schema:
         openAPIV3Schema:
-          description: "Probe defines monitoring for a set of static targets or ingresses."
+          description: "The `Probe` custom resource definition (CRD) defines how to scrape metrics from prober exporters such as the [blackbox exporter](https://github.com/prometheus/blackbox_exporter).\n\n\nThe `Probe` resource needs 2 pieces of information:\n* The list of probed addresses which can be defined statically or by discovering Kubernetes Ingress objects.\n* The prober which exposes the availability of probed endpoints (over various protocols such HTTP, TCP, ICMP, ...) as Prometheus metrics.\n\n\n`Prometheus` and `PrometheusAgent` objects select `Probe` objects using label and namespace selectors."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -602,6 +602,22 @@ spec:
                         - "key"
                       type: "object"
                       x-kubernetes-map-type: "atomic"
+                    maxVersion:
+                      description: "Maximum acceptable TLS version.\n\n\nIt requires Prometheus >= v2.41.0."
+                      enum:
+                        - "TLS10"
+                        - "TLS11"
+                        - "TLS12"
+                        - "TLS13"
+                      type: "string"
+                    minVersion:
+                      description: "Minimum acceptable TLS version.\n\n\nIt requires Prometheus >= v2.35.0."
+                      enum:
+                        - "TLS10"
+                        - "TLS11"
+                        - "TLS12"
+                        - "TLS13"
+                      type: "string"
                     serverName:
                       description: "Used to verify the hostname for the targets."
                       type: "string"

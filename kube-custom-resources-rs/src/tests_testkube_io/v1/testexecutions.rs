@@ -465,6 +465,9 @@ pub struct TestExecutionStatusLatestExecution {
     /// TestContent defines test content
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<TestExecutionStatusLatestExecutionContent>,
+    /// whether webhooks should be called on execution
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
+    pub disable_webhooks: Option<bool>,
     /// test duration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,

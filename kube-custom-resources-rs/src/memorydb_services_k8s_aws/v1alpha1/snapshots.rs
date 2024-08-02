@@ -10,8 +10,11 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// SnapshotSpec defines the desired state of Snapshot. 
-///  Represents a copy of an entire cluster as of the time when the snapshot was taken.
+/// SnapshotSpec defines the desired state of Snapshot.
+/// 
+/// 
+/// Represents a copy of an entire cluster as of the time when the snapshot was
+/// taken.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "memorydb.services.k8s.aws", version = "v1alpha1", kind = "Snapshot", plural = "snapshots")]
 #[kube(namespaced)]
@@ -23,15 +26,27 @@ pub struct SnapshotSpec {
     /// The snapshot is created from this cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
-    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-    ///  from: name: my-api
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 
+    /// 	from:
+    /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
     pub cluster_ref: Option<SnapshotClusterRef>,
     /// The ID of the KMS key used to encrypt the snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-    ///  from: name: my-api
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 
+    /// 	from:
+    /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyRef")]
     pub kms_key_ref: Option<SnapshotKmsKeyRef>,
     /// A name for the snapshot being created.
@@ -39,44 +54,65 @@ pub struct SnapshotSpec {
     /// The name of an existing snapshot from which to make a copy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceSnapshotName")]
     pub source_snapshot_name: Option<String>,
-    /// A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.
+    /// A list of tags to be added to this resource. A tag is a key-value pair. A
+    /// tag key must be accompanied by a tag value, although null is accepted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<SnapshotTags>>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotClusterRef {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<SnapshotClusterRefFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotClusterRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotKmsKeyRef {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<SnapshotKmsKeyRefFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotKmsKeyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// A tag that can be added to an MemoryDB resource. Tags are composed of a Key/Value pair. You can use tags to categorize and track all your MemoryDB resources. When you add or remove tags on clusters, those actions will be replicated to all nodes in the cluster. A tag with a null Value is permitted. For more information, see Tagging your MemoryDB resources (https://docs.aws.amazon.com/MemoryDB/latest/devguide/tagging-resources.html)
+/// A tag that can be added to an MemoryDB resource. Tags are composed of a Key/Value
+/// pair. You can use tags to categorize and track all your MemoryDB resources.
+/// When you add or remove tags on clusters, those actions will be replicated
+/// to all nodes in the cluster. A tag with a null Value is permitted. For more
+/// information, see Tagging your MemoryDB resources (https://docs.aws.amazon.com/MemoryDB/latest/devguide/tagging-resources.html)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -88,30 +124,47 @@ pub struct SnapshotTags {
 /// SnapshotStatus defines the observed state of Snapshot
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<SnapshotStatusAckResourceMetadata>,
     /// The configuration of the cluster from which the snapshot was taken
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterConfiguration")]
     pub cluster_configuration: Option<SnapshotStatusClusterConfiguration>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Indicates whether the snapshot is from an automatic backup (automated) or was created manually (manual).
+    /// Indicates whether the snapshot is from an automatic backup (automated) or
+    /// was created manually (manual).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
-    /// The status of the snapshot. Valid values: creating | available | restoring | copying | deleting.
+    /// The status of the snapshot. Valid values: creating | available | restoring
+    /// | copying | deleting.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
@@ -154,7 +207,8 @@ pub struct SnapshotStatusClusterConfiguration {
 /// Provides details of a shard in a snapshot
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotStatusClusterConfigurationShards {
-    /// Shard configuration options. Each shard configuration has the following: Slots and ReplicaCount.
+    /// Shard configuration options. Each shard configuration has the following:
+    /// Slots and ReplicaCount.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<SnapshotStatusClusterConfigurationShardsConfiguration>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -165,7 +219,8 @@ pub struct SnapshotStatusClusterConfigurationShards {
     pub snapshot_creation_time: Option<String>,
 }
 
-/// Shard configuration options. Each shard configuration has the following: Slots and ReplicaCount.
+/// Shard configuration options. Each shard configuration has the following:
+/// Slots and ReplicaCount.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotStatusClusterConfigurationShardsConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaCount")]

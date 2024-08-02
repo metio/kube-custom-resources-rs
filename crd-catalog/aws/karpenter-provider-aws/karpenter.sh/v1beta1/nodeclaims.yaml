@@ -5,6 +5,17 @@ metadata:
     controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "nodeclaims.karpenter.sh"
 spec:
+  conversion:
+    strategy: "Webhook"
+    webhook:
+      clientConfig:
+        service:
+          name: "karpenter"
+          namespace: "kube-system"
+          port: 8443
+      conversionReviewVersions:
+        - "v1beta1"
+        - "v1"
   group: "karpenter.sh"
   names:
     categories:
@@ -341,8 +352,7 @@ spec:
                       reason:
                         description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
                         maxLength: 1024
-                        minLength: 1
-                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+                        pattern: "^([A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?|)$"
                         type: "string"
                       status:
                         description: "status of the condition, one of True, False, Unknown."
@@ -358,8 +368,6 @@ spec:
                         type: "string"
                     required:
                       - "lastTransitionTime"
-                      - "message"
-                      - "reason"
                       - "status"
                       - "type"
                     type: "object"
@@ -378,6 +386,6 @@ spec:
             - "spec"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

@@ -127,6 +127,10 @@ pub struct CassandraDatacenterSpec {
     /// the number of racks cannot easily be changed once a datacenter is deployed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub racks: Option<Vec<CassandraDatacenterRacks>>,
+    /// ReadOnlyRootFilesystem makes the cassandra container to be run with a read-only root filesystem. Currently only functional when used with the
+    /// new k8ssandra-client config builder (Cassandra 4.1 and newer and HCD)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
     /// Deprecated Use CassandraTask replacenode to achieve correct node replacement. A list of pod names that need to be replaced.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceNodes")]
     pub replace_nodes: Option<Vec<String>>,

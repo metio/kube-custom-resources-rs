@@ -19,7 +19,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct SystemBackupSpec {
-    /// The create volume backup policy Can be "if-not-present", "always" or "disabled"
+    /// The create volume backup policy
+    /// Can be "if-not-present", "always" or "disabled"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeBackupPolicy")]
     pub volume_backup_policy: Option<String>,
 }

@@ -436,7 +436,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 phase:
-                  description: "Specifies the status of the configuration template.\nWhen set to CCAvailablePhase, the ConfigConstraint can be referenced by ClusterDefinition or ClusterVersion."
+                  description: "Specifies the status of the configuration template.\nWhen set to CCAvailablePhase, the ConfigConstraint can be referenced by ClusterDefinition."
                   enum:
                     - "Available"
                     - "Unavailable"

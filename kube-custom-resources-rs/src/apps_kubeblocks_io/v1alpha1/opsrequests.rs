@@ -112,10 +112,19 @@ pub struct OpsRequestSpec {
     /// Lists Switchover objects, each specifying a Component to perform the switchover operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub switchover: Option<Vec<OpsRequestSwitchover>>,
+    /// Specifies the maximum duration (in seconds) that an opsRequest is allowed to run.
+    /// If the opsRequest runs longer than this duration, its phase will be marked as Aborted.
+    /// If this value is not set or set to 0, the timeout will be ignored and the opsRequest will run indefinitely.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
     /// Specifies the duration in seconds that an OpsRequest will remain in the system after successfully completing
     /// (when `opsRequest.status.phase` is "Succeed") before automatic deletion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterSucceed")]
     pub ttl_seconds_after_succeed: Option<i32>,
+    /// Specifies the duration in seconds that an OpsRequest will remain in the system after completion
+    /// for any phase other than "Succeed" (e.g., "Failed", "Cancelled", "Aborted") before automatic deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterUnsuccessfulCompletion")]
+    pub ttl_seconds_after_unsuccessful_completion: Option<i32>,
     /// Specifies the type of this operation. Supported types include "Start", "Stop", "Restart", "Switchover",
     /// "VerticalScaling", "HorizontalScaling", "VolumeExpansion", "Reconfiguring", "Upgrade", "Backup", "Restore",
     /// "Expose", "DataScript", "RebuildInstance", "Custom".
@@ -388,7 +397,7 @@ pub struct OpsRequestExposeServices {
     /// If specified, the service will only be exposed to pods matching the selector.
     /// 
     /// 
-    /// Note: At least one of 'roleSelector' or 'podSelector' must be specified.
+    /// Note: If the component has roles, at least one of 'roleSelector' or 'podSelector' must be specified.
     /// If both are specified, a pod must match both conditions to be selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<BTreeMap<String, String>>,
@@ -407,7 +416,7 @@ pub struct OpsRequestExposeServices {
     /// If specified, the service will only be exposed to pods with the matching role.
     /// 
     /// 
-    /// Note: At least one of 'roleSelector' or 'podSelector' must be specified.
+    /// Note: If the component has roles, at least one of 'roleSelector' or 'podSelector' must be specified.
     /// If both are specified, a pod must match both conditions to be selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
@@ -3224,6 +3233,11 @@ pub struct OpsRequestRebuildFrom {
     /// Specifies the name of the Component.
     #[serde(rename = "componentName")]
     pub component_name: String,
+    /// When it is set to true, the instance will be rebuilt in-place.
+    /// By default, a new pod will be created. Once the new pod is ready to serve,
+    /// the instance that require rebuilding will be taken offline.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inPlace")]
+    pub in_place: Option<bool>,
     /// Specifies the instances (Pods) that need to be rebuilt, typically operating as standbys.
     pub instances: Vec<OpsRequestRebuildFromInstances>,
     /// Defines container environment variables for the restore process.

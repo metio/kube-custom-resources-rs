@@ -187,6 +187,9 @@ pub struct LokiStackLimitsGlobalQueries {
     /// that is returned by a metric query.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxQuerySeries")]
     pub max_query_series: Option<i32>,
+    /// MaxVolumeSeries defines the maximum number of aggregated series in a log-volume response
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVolumeSeries")]
+    pub max_volume_series: Option<i32>,
     /// Timeout when querying ingesters or storage during the execution of a query request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryTimeout")]
     pub query_timeout: Option<String>,
@@ -291,6 +294,9 @@ pub struct LokiStackLimitsTenantsQueries {
     /// that is returned by a metric query.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxQuerySeries")]
     pub max_query_series: Option<i32>,
+    /// MaxVolumeSeries defines the maximum number of aggregated series in a log-volume response
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVolumeSeries")]
+    pub max_volume_series: Option<i32>,
     /// Timeout when querying ingesters or storage during the execution of a query request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryTimeout")]
     pub query_timeout: Option<String>,

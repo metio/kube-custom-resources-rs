@@ -125,6 +125,10 @@ spec:
                               description: "MaxQuerySeries defines the maximum of unique series\nthat is returned by a metric query."
                               format: "int32"
                               type: "integer"
+                            maxVolumeSeries:
+                              description: "MaxVolumeSeries defines the maximum number of aggregated series in a log-volume response"
+                              format: "int32"
+                              type: "integer"
                             queryTimeout:
                               default: "3m"
                               description: "Timeout when querying ingesters or storage during the execution of a query request."
@@ -256,6 +260,10 @@ spec:
                                 type: "integer"
                               maxQuerySeries:
                                 description: "MaxQuerySeries defines the maximum of unique series\nthat is returned by a metric query."
+                                format: "int32"
+                                type: "integer"
+                              maxVolumeSeries:
+                                description: "MaxVolumeSeries defines the maximum number of aggregated series in a log-volume response"
                                 format: "int32"
                                 type: "integer"
                               queryTimeout:

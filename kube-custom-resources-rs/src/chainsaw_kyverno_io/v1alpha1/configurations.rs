@@ -132,7 +132,7 @@ pub struct ConfigurationCatchCommand {
     /// Check is an assertion tree to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub check: Option<BTreeMap<String, serde_json::Value>>,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    /// Cluster defines the target cluster (will be inherited if not specified).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -201,7 +201,7 @@ pub struct ConfigurationCatchDelete {
     /// Bindings defines additional binding key/values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bindings: Option<Vec<ConfigurationCatchDeleteBindings>>,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    /// Cluster defines the target cluster (will be inherited if not specified).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -298,7 +298,7 @@ pub struct ConfigurationCatchDescribe {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    /// Cluster defines the target cluster (will be inherited if not specified).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -340,7 +340,7 @@ pub struct ConfigurationCatchDescribeClusters {
 /// Events determines the events collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationCatchEvents {
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    /// Cluster defines the target cluster (will be inherited if not specified).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -382,7 +382,7 @@ pub struct ConfigurationCatchGet {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    /// Cluster defines the target cluster (will be inherited if not specified).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -424,7 +424,7 @@ pub struct ConfigurationCatchGetClusters {
 /// PodLogs determines the pod logs collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationCatchPodLogs {
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    /// Cluster defines the target cluster (will be inherited if not specified).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -474,7 +474,7 @@ pub struct ConfigurationCatchScript {
     /// Check is an assertion tree to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub check: Option<BTreeMap<String, serde_json::Value>>,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    /// Cluster defines the target cluster (will be inherited if not specified).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -551,7 +551,7 @@ pub struct ConfigurationCatchWait {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
+    /// Cluster defines the target cluster (will be inherited if not specified).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
     /// Clusters holds a registry to clusters to support multi-cluster tests.

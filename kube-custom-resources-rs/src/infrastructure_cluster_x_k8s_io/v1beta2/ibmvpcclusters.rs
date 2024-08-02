@@ -25,6 +25,9 @@ pub struct IBMVPCClusterSpec {
     /// ControlPlaneLoadBalancer is optional configuration for customizing control plane behavior.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneLoadBalancer")]
     pub control_plane_load_balancer: Option<IBMVPCClusterControlPlaneLoadBalancer>,
+    /// network represents the VPC network to use for the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub network: Option<IBMVPCClusterNetwork>,
     /// The IBM Cloud Region the cluster lives in.
     pub region: String,
     /// The VPC resources should be created under the resource group.
@@ -72,6 +75,61 @@ pub struct IBMVPCClusterControlPlaneLoadBalancerAdditionalListeners {
     pub port: i64,
 }
 
+/// network represents the VPC network to use for the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterNetwork {
+    /// controlPlaneSubnets is a set of Subnet's which define the Control Plane subnets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneSubnets")]
+    pub control_plane_subnets: Option<Vec<IBMVPCClusterNetworkControlPlaneSubnets>>,
+    /// resourceGroup is the name of the Resource Group containing all of the newtork resources.
+    /// This can be different than the Resource Group containing the remaining cluster resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
+    pub resource_group: Option<String>,
+    /// vpc defines the IBM Cloud VPC for extended VPC Infrastructure support.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vpc: Option<IBMVPCClusterNetworkVpc>,
+    /// workerSubnets is a set of Subnet's which define the Worker subnets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerSubnets")]
+    pub worker_subnets: Option<Vec<IBMVPCClusterNetworkWorkerSubnets>>,
+}
+
+/// Subnet describes a subnet.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterNetworkControlPlaneSubnets {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub zone: Option<String>,
+}
+
+/// vpc defines the IBM Cloud VPC for extended VPC Infrastructure support.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterNetworkVpc {
+    /// id of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// name of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Subnet describes a subnet.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterNetworkWorkerSubnets {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub zone: Option<String>,
+}
+
 /// IBMVPCClusterStatus defines the observed state of IBMVPCCluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterStatus {
@@ -81,19 +139,75 @@ pub struct IBMVPCClusterStatus {
     /// ControlPlaneLoadBalancerState is the status of the load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneLoadBalancerState")]
     pub control_plane_load_balancer_state: Option<String>,
+    /// network is the status of the VPC network resources for extended VPC Infrastructure support.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub network: Option<IBMVPCClusterStatusNetwork>,
     /// Ready is true when the provider resource is ready.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
+    /// resourceGroup is the status of the cluster's Resource Group for extended VPC Infrastructure support.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
+    pub resource_group: Option<IBMVPCClusterStatusResourceGroup>,
     /// Subnet describes a subnet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnet: Option<IBMVPCClusterStatusSubnet>,
     /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
     /// Important: Run "make" to regenerate code after modifying this file
+    /// dep: rely on Network instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMVPCClusterStatusVpc>,
     /// VPCEndpoint describes a VPCEndpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcEndpoint")]
     pub vpc_endpoint: Option<IBMVPCClusterStatusVpcEndpoint>,
+}
+
+/// network is the status of the VPC network resources for extended VPC Infrastructure support.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterStatusNetwork {
+    /// resourceGroup references the Resource Group for Network resources for the cluster.
+    /// This can be the same or unique from the cluster's Resource Group.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
+    pub resource_group: Option<IBMVPCClusterStatusNetworkResourceGroup>,
+    /// vpc references the status of the IBM Cloud VPC as part of the extended VPC Infrastructure support.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vpc: Option<IBMVPCClusterStatusNetworkVpc>,
+}
+
+/// resourceGroup references the Resource Group for Network resources for the cluster.
+/// This can be the same or unique from the cluster's Resource Group.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterStatusNetworkResourceGroup {
+    /// id defines the Id of the IBM Cloud resource status.
+    pub id: String,
+    /// name defines the name of the IBM Cloud resource status.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// ready defines whether the IBM Cloud resource is ready.
+    pub ready: bool,
+}
+
+/// vpc references the status of the IBM Cloud VPC as part of the extended VPC Infrastructure support.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterStatusNetworkVpc {
+    /// id defines the Id of the IBM Cloud resource status.
+    pub id: String,
+    /// name defines the name of the IBM Cloud resource status.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// ready defines whether the IBM Cloud resource is ready.
+    pub ready: bool,
+}
+
+/// resourceGroup is the status of the cluster's Resource Group for extended VPC Infrastructure support.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterStatusResourceGroup {
+    /// id defines the Id of the IBM Cloud resource status.
+    pub id: String,
+    /// name defines the name of the IBM Cloud resource status.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// ready defines whether the IBM Cloud resource is ready.
+    pub ready: bool,
 }
 
 /// Subnet describes a subnet.
@@ -111,6 +225,7 @@ pub struct IBMVPCClusterStatusSubnet {
 
 /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 /// Important: Run "make" to regenerate code after modifying this file
+/// dep: rely on Network instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterStatusVpc {
     pub id: String,

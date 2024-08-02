@@ -667,6 +667,9 @@ apiVersion `chisel-operator.io/v1`:
 - `ExitNodeProvisioner`
 - `ExitNode`
 
+apiVersion `chisel-operator.io/v2`:
+- `ExitNode`
+
 ## cilium_io
 
 apiVersion `cilium.io/v2`:

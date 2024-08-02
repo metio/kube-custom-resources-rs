@@ -127,10 +127,10 @@ spec:
                       type: "object"
                   type: "object"
                 operatorUpgrade:
-                  description: "OperatorUpgrade contains the status of the operator upgrade.\nThis is set only if the `everest.percona.com/upgrade-operator-to` annotation is present."
+                  description: "OperatorUpgrade contains the status of the operator upgrade."
                   properties:
                     installPlanRef:
-                      description: "InstallPlanRef is a reference to the InstallPlan object created for the operator upgrade."
+                      description: "InstallPlanRef is a reference to the InstallPlan object created for the operator upgrade.\n\n\nWe do not recommended approving this InstallPlan directly from the Kubernetes API.\nThis is because this InstallPlan may also upgrade other operators in the namespace and that\ncan have unintended consequences.\nThis behaviour is not a bug from Everest, but an unfortunate limitation of OLM.\nWe suggest using the Everest API/UI to handle operator upgrades, which will perform a series\nof checks and safely upgrade all operators in the namespace."
                       properties:
                         name:
                           default: ""
@@ -157,7 +157,7 @@ spec:
                     description: "OperatorUpgrade contains the information about the operator upgrade."
                     properties:
                       installPlanRef:
-                        description: "InstallPlanRef is a reference to the InstallPlan object created for the operator upgrade."
+                        description: "InstallPlanRef is a reference to the InstallPlan object created for the operator upgrade.\n\n\nWe do not recommended approving this InstallPlan directly from the Kubernetes API.\nThis is because this InstallPlan may also upgrade other operators in the namespace and that\ncan have unintended consequences.\nThis behaviour is not a bug from Everest, but an unfortunate limitation of OLM.\nWe suggest using the Everest API/UI to handle operator upgrades, which will perform a series\nof checks and safely upgrade all operators in the namespace."
                         properties:
                           name:
                             default: ""

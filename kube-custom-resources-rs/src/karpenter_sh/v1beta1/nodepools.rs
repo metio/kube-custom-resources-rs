@@ -8,6 +8,7 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -87,7 +88,7 @@ pub struct NodePoolDisruptionBudgets {
     pub nodes: String,
     /// Reasons is a list of disruption methods that this budget applies to. If Reasons is not set, this budget applies to all methods.
     /// Otherwise, this will apply to each reason defined.
-    /// allowed reasons are underutilized, expired, empty, and drifted.
+    /// allowed reasons are Underutilized, Empty, and Drifted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reasons: Option<Vec<String>>,
     /// Schedule specifies when a budget begins being active, following
@@ -327,6 +328,9 @@ pub enum NodePoolTemplateSpecTaintsEffect {
 /// NodePoolStatus defines the observed state of NodePool
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePoolStatus {
+    /// Conditions contains signals for health and readiness
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Resources is the list of resources that have been provisioned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BTreeMap<String, IntOrString>>,

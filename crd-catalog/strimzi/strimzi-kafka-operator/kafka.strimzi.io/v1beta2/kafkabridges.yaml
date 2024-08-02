@@ -93,9 +93,9 @@ spec:
                           description: "The name of the Secret containing the certificate."
                           type: "string"
                       required:
-                        - "key"
                         - "secretName"
                         - "certificate"
+                        - "key"
                       type: "object"
                     clientId:
                       description: "OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI."
@@ -169,16 +169,27 @@ spec:
                     tlsTrustedCertificates:
                       description: "Trusted certificates for TLS connection to the OAuth server."
                       items:
+                        oneOf:
+                          - properties:
+                              certificate: {}
+                            required:
+                              - "certificate"
+                          - properties:
+                              pattern: {}
+                            required:
+                              - "pattern"
                         properties:
                           certificate:
-                            description: "The name of the file certificate in the Secret."
+                            description: "The name of the file certificate in the secret."
+                            type: "string"
+                          pattern:
+                            description: "Pattern for the certificate files in the secret. Use the link:https://en.wikipedia.org/wiki/Glob_(programming)[_glob syntax_] for the pattern. All files in the secret that match the pattern are used."
                             type: "string"
                           secretName:
                             description: "The name of the Secret containing the certificate."
                             type: "string"
                         required:
                           - "secretName"
-                          - "certificate"
                         type: "object"
                       type: "array"
                     tokenEndpointUri:
@@ -212,6 +223,12 @@ spec:
                       description: "The Kafka consumer configuration used for consumer instances created by the bridge. Properties with the following prefixes cannot be set: ssl., bootstrap.servers, group.id, sasl., security. (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols)."
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
+                    enabled:
+                      description: "Whether the HTTP consumer should be enabled or disabled, default is enabled."
+                      type: "boolean"
+                    timeoutSeconds:
+                      description: "The timeout in seconds for deleting inactive consumers, default is -1 (disabled)."
+                      type: "integer"
                   type: "object"
                 enableMetrics:
                   description: "Enable the metrics for the Kafka Bridge. Default is false."
@@ -338,6 +355,9 @@ spec:
                       description: "The Kafka producer configuration used for producer instances created by the bridge. Properties with the following prefixes cannot be set: ssl., bootstrap.servers, sasl., security. (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols)."
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
+                    enabled:
+                      description: "Whether the HTTP producer should be enabled or disabled, default is enabled."
+                      type: "boolean"
                   type: "object"
                 rack:
                   description: "Configuration of the node label which will be used as the client.rack consumer configuration."
@@ -460,6 +480,13 @@ spec:
                           properties:
                             allowPrivilegeEscalation:
                               type: "boolean"
+                            appArmorProfile:
+                              properties:
+                                localhostProfile:
+                                  type: "string"
+                                type:
+                                  type: "string"
+                              type: "object"
                             capabilities:
                               properties:
                                 add:
@@ -576,6 +603,13 @@ spec:
                           properties:
                             allowPrivilegeEscalation:
                               type: "boolean"
+                            appArmorProfile:
+                              properties:
+                                localhostProfile:
+                                  type: "string"
+                                type:
+                                  type: "string"
+                              type: "object"
                             capabilities:
                               properties:
                                 add:
@@ -1008,6 +1042,13 @@ spec:
                         securityContext:
                           description: "Configures pod-level security attributes and common container settings."
                           properties:
+                            appArmorProfile:
+                              properties:
+                                localhostProfile:
+                                  type: "string"
+                                type:
+                                  type: "string"
+                              type: "object"
                             fsGroup:
                               type: "integer"
                             fsGroupChangePolicy:
@@ -1175,16 +1216,27 @@ spec:
                     trustedCertificates:
                       description: "Trusted certificates for TLS connection."
                       items:
+                        oneOf:
+                          - properties:
+                              certificate: {}
+                            required:
+                              - "certificate"
+                          - properties:
+                              pattern: {}
+                            required:
+                              - "pattern"
                         properties:
                           certificate:
-                            description: "The name of the file certificate in the Secret."
+                            description: "The name of the file certificate in the secret."
+                            type: "string"
+                          pattern:
+                            description: "Pattern for the certificate files in the secret. Use the link:https://en.wikipedia.org/wiki/Glob_(programming)[_glob syntax_] for the pattern. All files in the secret that match the pattern are used."
                             type: "string"
                           secretName:
                             description: "The name of the Secret containing the certificate."
                             type: "string"
                         required:
                           - "secretName"
-                          - "certificate"
                         type: "object"
                       type: "array"
                   type: "object"

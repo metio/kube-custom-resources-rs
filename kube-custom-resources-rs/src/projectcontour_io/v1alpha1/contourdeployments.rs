@@ -2400,6 +2400,10 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyClusterCircuitBreakers {
     /// The maximum number of parallel retries a single Envoy instance allows to the Kubernetes Service; defaults to 3.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
+    /// PerHostMaxConnections is the maximum number of connections
+    /// that Envoy will allow to each individual host in a cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perHostMaxConnections")]
+    pub per_host_max_connections: Option<i32>,
 }
 
 /// UpstreamTLS contains the TLS policy parameters for upstream connections
@@ -3242,6 +3246,8 @@ pub struct ContourDeploymentRuntimeSettingsXdsServer {
     /// Defines the XDSServer to use for `contour serve`.
     /// Values: `envoy` (default), `contour (deprecated)`.
     /// Other values will produce an error.
+    /// Deprecated: this field will be removed in a future release when
+    /// the `contour` xDS server implementation is removed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }

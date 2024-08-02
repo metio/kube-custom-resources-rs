@@ -452,6 +452,9 @@ pub struct MachinePoolStatus {
     /// Conditions includes more detailed status for the cluster deployment
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// ControlledByReplica indicates which replica of the hive-machinepool StatefulSet is responsible for this MachinePool. Note that this value indicates the replica that most recently handled the MachinePool. If the hive-machinepool statefulset is scaled up or down, the controlling replica can change, potentially causing logs to be spread across multiple pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlledByReplica")]
+    pub controlled_by_replica: Option<i64>,
     /// MachineSets is the status of the machine sets for the machine pool on the remote cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineSets")]
     pub machine_sets: Option<Vec<MachinePoolStatusMachineSets>>,

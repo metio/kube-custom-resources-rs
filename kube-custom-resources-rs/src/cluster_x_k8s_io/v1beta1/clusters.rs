@@ -382,10 +382,10 @@ pub struct ClusterTopologyControlPlaneVariables {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneVariablesOverrides {
-    /// DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the
-    /// definition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass
-    /// `.spec.patches` where the patch is external and provides external variables.
-    /// This field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`
+    /// DefinitionFrom specifies where the definition of this Variable is from.
+    /// 
+    /// 
+    /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
     /// Name of the variable.
@@ -404,10 +404,10 @@ pub struct ClusterTopologyControlPlaneVariablesOverrides {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyVariables {
-    /// DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the
-    /// definition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass
-    /// `.spec.patches` where the patch is external and provides external variables.
-    /// This field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`
+    /// DefinitionFrom specifies where the definition of this Variable is from.
+    /// 
+    /// 
+    /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
     /// Name of the variable.
@@ -741,10 +741,10 @@ pub struct ClusterTopologyWorkersMachineDeploymentsVariables {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsVariablesOverrides {
-    /// DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the
-    /// definition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass
-    /// `.spec.patches` where the patch is external and provides external variables.
-    /// This field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`
+    /// DefinitionFrom specifies where the definition of this Variable is from.
+    /// 
+    /// 
+    /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
     /// Name of the variable.
@@ -841,10 +841,10 @@ pub struct ClusterTopologyWorkersMachinePoolsVariables {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachinePoolsVariablesOverrides {
-    /// DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the
-    /// definition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass
-    /// `.spec.patches` where the patch is external and provides external variables.
-    /// This field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`
+    /// DefinitionFrom specifies where the definition of this Variable is from.
+    /// 
+    /// 
+    /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
     /// Name of the variable.

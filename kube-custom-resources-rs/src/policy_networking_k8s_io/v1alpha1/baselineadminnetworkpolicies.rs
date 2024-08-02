@@ -82,7 +82,7 @@ pub struct BaselineAdminNetworkPolicyEgress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<BaselineAdminNetworkPolicyEgressPorts>>,
     /// To is the list of destinations whose traffic this rule applies to.
-    /// If any AdminNetworkPolicyEgressPeer matches the destination of outgoing
+    /// If any BaselineAdminNetworkPolicyEgressPeer matches the destination of outgoing
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
     /// 
@@ -167,7 +167,7 @@ pub struct BaselineAdminNetworkPolicyEgressPortsPortRange {
     pub start: i32,
 }
 
-/// AdminNetworkPolicyEgressPeer defines a peer to allow traffic to.
+/// BaselineAdminNetworkPolicyEgressPeer defines a peer to allow traffic to.
 /// Exactly one of the selector pointers must be set for a given peer. If a
 /// consumer observes none of its fields are set, they must assume an unknown
 /// option has been specified and fail closed.

@@ -20,7 +20,6 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct NodeSpec {
-    /// Allow scheduling replicas on the node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowScheduling")]
     pub allow_scheduling: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -78,21 +77,16 @@ pub struct NodeStatus {
     pub auto_evicting: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// The status of the disks on the node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskStatus")]
     pub disk_status: Option<BTreeMap<String, NodeStatusDiskStatus>>,
-    /// The Region of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    /// The status of the snapshot integrity check.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotCheckStatus")]
     pub snapshot_check_status: Option<NodeStatusSnapshotCheckStatus>,
-    /// The Zone of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
 }
 
-/// The status of the disks on the node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeStatusDiskStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -121,7 +115,6 @@ pub struct NodeStatusDiskStatus {
     pub storage_scheduled: Option<i64>,
 }
 
-/// The status of the snapshot integrity check.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeStatusSnapshotCheckStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPeriodicCheckedAt")]

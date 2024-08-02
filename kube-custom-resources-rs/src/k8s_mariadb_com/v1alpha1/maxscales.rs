@@ -356,23 +356,23 @@ pub struct MaxScaleAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExec
     pub label_selector: Option<MaxScaleAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -477,23 +477,23 @@ pub struct MaxScaleAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecu
     pub label_selector: Option<MaxScaleAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -629,23 +629,23 @@ pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuring
     pub label_selector: Option<MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -750,23 +750,23 @@ pub struct MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringE
     pub label_selector: Option<MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -939,8 +939,12 @@ pub struct MaxScaleAuthAdminPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -958,8 +962,12 @@ pub struct MaxScaleAuthClientPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -977,8 +985,12 @@ pub struct MaxScaleAuthMetricsPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -996,8 +1008,12 @@ pub struct MaxScaleAuthMonitorPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1015,8 +1031,12 @@ pub struct MaxScaleAuthServerPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1034,8 +1054,12 @@ pub struct MaxScaleAuthSyncPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1142,7 +1166,7 @@ pub struct MaxScaleConfigVolumeClaimTemplate {
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
@@ -1397,8 +1421,12 @@ pub struct MaxScaleEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1438,8 +1466,12 @@ pub struct MaxScaleEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1465,8 +1497,12 @@ pub struct MaxScaleEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvFromConfigMapRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1478,8 +1514,12 @@ pub struct MaxScaleEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvFromSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -1546,8 +1586,12 @@ pub enum MaxScaleImagePullPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleImagePullSecrets {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1646,8 +1690,12 @@ pub struct MaxScaleInitContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1687,8 +1735,12 @@ pub struct MaxScaleInitContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1714,8 +1766,12 @@ pub struct MaxScaleInitContainersEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleInitContainersEnvFromConfigMapRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1727,8 +1783,12 @@ pub struct MaxScaleInitContainersEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleInitContainersEnvFromSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -2033,6 +2093,11 @@ pub struct MaxScaleInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<MaxScaleInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2097,6 +2162,26 @@ pub struct MaxScaleInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<MaxScaleInitContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleInitContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -2195,6 +2280,8 @@ pub struct MaxScaleInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -2203,6 +2290,28 @@ pub struct MaxScaleInitContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -2719,23 +2828,23 @@ pub struct MaxScaleMetricsExporterAffinityPodAffinityPreferredDuringSchedulingIg
     pub label_selector: Option<MaxScaleMetricsExporterAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -2840,23 +2949,23 @@ pub struct MaxScaleMetricsExporterAffinityPodAffinityRequiredDuringSchedulingIgn
     pub label_selector: Option<MaxScaleMetricsExporterAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -2992,23 +3101,23 @@ pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringScheduli
     pub label_selector: Option<MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -3113,23 +3222,23 @@ pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulin
     pub label_selector: Option<MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -3266,8 +3375,12 @@ pub struct MaxScaleMetricsExporterEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3307,8 +3420,12 @@ pub struct MaxScaleMetricsExporterEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3334,8 +3451,12 @@ pub struct MaxScaleMetricsExporterEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterEnvFromConfigMapRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -3347,8 +3468,12 @@ pub struct MaxScaleMetricsExporterEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterEnvFromSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -3369,8 +3494,12 @@ pub enum MaxScaleMetricsExporterImagePullPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterImagePullSecrets {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3458,8 +3587,12 @@ pub struct MaxScaleMetricsExporterInitContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3499,8 +3632,12 @@ pub struct MaxScaleMetricsExporterInitContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3526,8 +3663,12 @@ pub struct MaxScaleMetricsExporterInitContainersEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterInitContainersEnvFromConfigMapRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -3539,8 +3680,12 @@ pub struct MaxScaleMetricsExporterInitContainersEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterInitContainersEnvFromSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -3845,6 +3990,11 @@ pub struct MaxScaleMetricsExporterInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<MaxScaleMetricsExporterInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -3909,6 +4059,26 @@ pub struct MaxScaleMetricsExporterInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<MaxScaleMetricsExporterInitContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleMetricsExporterInitContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -4007,6 +4177,8 @@ pub struct MaxScaleMetricsExporterInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -4015,6 +4187,28 @@ pub struct MaxScaleMetricsExporterInitContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -4162,6 +4356,10 @@ pub struct MaxScaleMetricsExporterPodMetadata {
 /// SecurityContext holds pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterPodSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<MaxScaleMetricsExporterPodSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
@@ -4241,6 +4439,25 @@ pub struct MaxScaleMetricsExporterPodSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<MaxScaleMetricsExporterPodSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleMetricsExporterPodSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -4491,6 +4708,11 @@ pub struct MaxScaleMetricsExporterSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<MaxScaleMetricsExporterSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -4555,6 +4777,26 @@ pub struct MaxScaleMetricsExporterSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<MaxScaleMetricsExporterSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleMetricsExporterSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -4725,8 +4967,12 @@ pub struct MaxScaleMetricsExporterSidecarContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4766,8 +5012,12 @@ pub struct MaxScaleMetricsExporterSidecarContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4793,8 +5043,12 @@ pub struct MaxScaleMetricsExporterSidecarContainersEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterSidecarContainersEnvFromConfigMapRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -4806,8 +5060,12 @@ pub struct MaxScaleMetricsExporterSidecarContainersEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterSidecarContainersEnvFromSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -5112,6 +5370,11 @@ pub struct MaxScaleMetricsExporterSidecarContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<MaxScaleMetricsExporterSidecarContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -5176,6 +5439,26 @@ pub struct MaxScaleMetricsExporterSidecarContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<MaxScaleMetricsExporterSidecarContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleMetricsExporterSidecarContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -5274,6 +5557,8 @@ pub struct MaxScaleMetricsExporterSidecarContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -5282,6 +5567,28 @@ pub struct MaxScaleMetricsExporterSidecarContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -5384,9 +5691,6 @@ pub struct MaxScaleMetricsExporterTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    /// 
-    /// 
-    /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
@@ -5487,6 +5791,8 @@ pub struct MaxScaleMetricsExporterVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -5495,6 +5801,28 @@ pub struct MaxScaleMetricsExporterVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -5757,8 +6085,12 @@ pub struct MaxScaleMetricsExporterVolumesCephfs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesCephfsSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5793,8 +6125,12 @@ pub struct MaxScaleMetricsExporterVolumesCinder {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesCinderSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5821,8 +6157,12 @@ pub struct MaxScaleMetricsExporterVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<MaxScaleMetricsExporterVolumesConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -5886,8 +6226,12 @@ pub struct MaxScaleMetricsExporterVolumesCsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesCsiNodePublishSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5913,7 +6257,7 @@ pub struct MaxScaleMetricsExporterVolumesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MaxScaleMetricsExporterVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -5932,7 +6276,7 @@ pub struct MaxScaleMetricsExporterVolumesDownwardApiItems {
     pub resource_field_ref: Option<MaxScaleMetricsExporterVolumesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -6149,7 +6493,7 @@ pub struct MaxScaleMetricsExporterVolumesEphemeralVolumeClaimTemplateSpec {
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
@@ -6333,8 +6677,12 @@ pub struct MaxScaleMetricsExporterVolumesFlexVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesFlexVolumeSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6490,8 +6838,12 @@ pub struct MaxScaleMetricsExporterVolumesIscsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesIscsiSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6699,8 +7051,12 @@ pub struct MaxScaleMetricsExporterVolumesProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<MaxScaleMetricsExporterVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -6739,7 +7095,7 @@ pub struct MaxScaleMetricsExporterVolumesProjectedSourcesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MaxScaleMetricsExporterVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -6758,7 +7114,7 @@ pub struct MaxScaleMetricsExporterVolumesProjectedSourcesDownwardApiItems {
     pub resource_field_ref: Option<MaxScaleMetricsExporterVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -6796,8 +7152,12 @@ pub struct MaxScaleMetricsExporterVolumesProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<MaxScaleMetricsExporterVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -6926,8 +7286,12 @@ pub struct MaxScaleMetricsExporterVolumesRbd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesRbdSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6977,8 +7341,12 @@ pub struct MaxScaleMetricsExporterVolumesScaleIo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesScaleIoSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -7069,8 +7437,12 @@ pub struct MaxScaleMetricsExporterVolumesStorageos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterVolumesStorageosSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -7173,6 +7545,10 @@ pub struct MaxScalePodMetadata {
 /// SecurityContext holds pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScalePodSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<MaxScalePodSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
@@ -7252,6 +7628,25 @@ pub struct MaxScalePodSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<MaxScalePodSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScalePodSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -7502,6 +7897,11 @@ pub struct MaxScaleSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<MaxScaleSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -7566,6 +7966,26 @@ pub struct MaxScaleSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<MaxScaleSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -7812,8 +8232,12 @@ pub struct MaxScaleSidecarContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -7853,8 +8277,12 @@ pub struct MaxScaleSidecarContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7880,8 +8308,12 @@ pub struct MaxScaleSidecarContainersEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleSidecarContainersEnvFromConfigMapRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -7893,8 +8325,12 @@ pub struct MaxScaleSidecarContainersEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleSidecarContainersEnvFromSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -8199,6 +8635,11 @@ pub struct MaxScaleSidecarContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<MaxScaleSidecarContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8263,6 +8704,26 @@ pub struct MaxScaleSidecarContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<MaxScaleSidecarContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleSidecarContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -8361,6 +8822,8 @@ pub struct MaxScaleSidecarContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -8369,6 +8832,28 @@ pub struct MaxScaleSidecarContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -8471,9 +8956,6 @@ pub struct MaxScaleTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    /// 
-    /// 
-    /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
@@ -8606,6 +9088,8 @@ pub struct MaxScaleVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -8614,6 +9098,28 @@ pub struct MaxScaleVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -8876,8 +9382,12 @@ pub struct MaxScaleVolumesCephfs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesCephfsSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -8912,8 +9422,12 @@ pub struct MaxScaleVolumesCinder {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesCinderSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -8940,8 +9454,12 @@ pub struct MaxScaleVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<MaxScaleVolumesConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -9005,8 +9523,12 @@ pub struct MaxScaleVolumesCsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesCsiNodePublishSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -9032,7 +9554,7 @@ pub struct MaxScaleVolumesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MaxScaleVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -9051,7 +9573,7 @@ pub struct MaxScaleVolumesDownwardApiItems {
     pub resource_field_ref: Option<MaxScaleVolumesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -9268,7 +9790,7 @@ pub struct MaxScaleVolumesEphemeralVolumeClaimTemplateSpec {
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
@@ -9452,8 +9974,12 @@ pub struct MaxScaleVolumesFlexVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesFlexVolumeSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -9609,8 +10135,12 @@ pub struct MaxScaleVolumesIscsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesIscsiSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -9818,8 +10348,12 @@ pub struct MaxScaleVolumesProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<MaxScaleVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -9858,7 +10392,7 @@ pub struct MaxScaleVolumesProjectedSourcesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MaxScaleVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -9877,7 +10411,7 @@ pub struct MaxScaleVolumesProjectedSourcesDownwardApiItems {
     pub resource_field_ref: Option<MaxScaleVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -9915,8 +10449,12 @@ pub struct MaxScaleVolumesProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<MaxScaleVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -10045,8 +10583,12 @@ pub struct MaxScaleVolumesRbd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesRbdSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -10096,8 +10638,12 @@ pub struct MaxScaleVolumesScaleIo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesScaleIoSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -10188,8 +10734,12 @@ pub struct MaxScaleVolumesStorageos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumesStorageosSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

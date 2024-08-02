@@ -292,23 +292,23 @@ pub struct RestoreAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecu
     pub label_selector: Option<RestoreAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -413,23 +413,23 @@ pub struct RestoreAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecut
     pub label_selector: Option<RestoreAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -565,23 +565,23 @@ pub struct RestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
     pub label_selector: Option<RestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -686,23 +686,23 @@ pub struct RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
     pub label_selector: Option<RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -797,8 +797,12 @@ pub struct RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreBackupRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -808,8 +812,12 @@ pub struct RestoreBackupRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreImagePullSecrets {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -880,6 +888,10 @@ pub struct RestorePodMetadata {
 /// SecurityContext holds pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestorePodSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<RestorePodSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
@@ -959,6 +971,25 @@ pub struct RestorePodSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<RestorePodSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RestorePodSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -1117,8 +1148,12 @@ pub struct RestoreS3AccessKeyIdSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1132,8 +1167,12 @@ pub struct RestoreS3SecretAccessKeySecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1147,8 +1186,12 @@ pub struct RestoreS3SessionTokenSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1175,8 +1218,12 @@ pub struct RestoreS3TlsCaSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1196,6 +1243,11 @@ pub struct RestoreSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<RestoreSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -1260,6 +1312,26 @@ pub struct RestoreSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<RestoreSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RestoreSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -1623,8 +1695,12 @@ pub struct RestoreVolumeCephfs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeCephfsSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1659,8 +1735,12 @@ pub struct RestoreVolumeCinder {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeCinderSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1687,8 +1767,12 @@ pub struct RestoreVolumeConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<RestoreVolumeConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -1752,8 +1836,12 @@ pub struct RestoreVolumeCsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeCsiNodePublishSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1779,7 +1867,7 @@ pub struct RestoreVolumeDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RestoreVolumeDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -1798,7 +1886,7 @@ pub struct RestoreVolumeDownwardApiItems {
     pub resource_field_ref: Option<RestoreVolumeDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -2015,7 +2103,7 @@ pub struct RestoreVolumeEphemeralVolumeClaimTemplateSpec {
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
@@ -2199,8 +2287,12 @@ pub struct RestoreVolumeFlexVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeFlexVolumeSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2356,8 +2448,12 @@ pub struct RestoreVolumeIscsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeIscsiSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2565,8 +2661,12 @@ pub struct RestoreVolumeProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<RestoreVolumeProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -2605,7 +2705,7 @@ pub struct RestoreVolumeProjectedSourcesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RestoreVolumeProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -2624,7 +2724,7 @@ pub struct RestoreVolumeProjectedSourcesDownwardApiItems {
     pub resource_field_ref: Option<RestoreVolumeProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -2662,8 +2762,12 @@ pub struct RestoreVolumeProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<RestoreVolumeProjectedSourcesSecretItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -2792,8 +2896,12 @@ pub struct RestoreVolumeRbd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeRbdSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2843,8 +2951,12 @@ pub struct RestoreVolumeScaleIo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeScaleIoSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2935,8 +3047,12 @@ pub struct RestoreVolumeStorageos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreVolumeStorageosSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

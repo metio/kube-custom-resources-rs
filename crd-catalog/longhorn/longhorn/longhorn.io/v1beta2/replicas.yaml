@@ -2,11 +2,11 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.7.0"
+    controller-gen.kubebuilder.io/version: "v0.15.0"
   labels:
     app.kubernetes.io/instance: "longhorn"
     app.kubernetes.io/name: "longhorn"
-    app.kubernetes.io/version: "v1.6.0-dev"
+    app.kubernetes.io/version: "v1.8.0-dev"
     longhorn-manager: ""
   name: "replicas.longhorn.io"
 spec:
@@ -55,10 +55,10 @@ spec:
           description: "Replica is where Longhorn stores replica object."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -68,7 +68,7 @@ spec:
                 active:
                   type: "boolean"
                 backendStoreDriver:
-                  description: "Deprecated: Replaced by field `dataEngine`."
+                  description: "Deprecated:Replaced by field `dataEngine`."
                   type: "string"
                 backingImage:
                   type: "string"
@@ -93,20 +93,20 @@ spec:
                 evictionRequested:
                   type: "boolean"
                 failedAt:
-                  description: "FailedAt is set when a running replica fails or when a running engine is unable to use a replica for any reason. FailedAt indicates the time the failure occurred. When FailedAt is set, a replica is likely to have useful (though possibly stale) data. A replica with FailedAt set must be rebuilt from a non-failed replica (or it can be used in a salvage if all replicas are failed). FailedAt is cleared before a rebuild or salvage. FailedAt may be later than the corresponding entry in an engine's replicaTransitionTimeMap because it is set when the volume controller acknowledges the change."
+                  description: "FailedAt is set when a running replica fails or when a running engine is unable to use a replica for any reason.\nFailedAt indicates the time the failure occurred. When FailedAt is set, a replica is likely to have useful\n(though possibly stale) data. A replica with FailedAt set must be rebuilt from a non-failed replica (or it can\nbe used in a salvage if all replicas are failed). FailedAt is cleared before a rebuild or salvage. FailedAt may\nbe later than the corresponding entry in an engine's replicaTransitionTimeMap because it is set when the volume\ncontroller acknowledges the change."
                   type: "string"
                 hardNodeAffinity:
                   type: "string"
                 healthyAt:
-                  description: "HealthyAt is set the first time a replica becomes read/write in an engine after creation or rebuild. HealthyAt indicates the time the last successful rebuild occurred. When HealthyAt is set, a replica is likely to have useful (though possibly stale) data. HealthyAt is cleared before a rebuild. HealthyAt may be later than the corresponding entry in an engine's replicaTransitionTimeMap because it is set when the volume controller acknowledges the change."
+                  description: "HealthyAt is set the first time a replica becomes read/write in an engine after creation or rebuild. HealthyAt\nindicates the time the last successful rebuild occurred. When HealthyAt is set, a replica is likely to have\nuseful (though possibly stale) data. HealthyAt is cleared before a rebuild. HealthyAt may be later than the\ncorresponding entry in an engine's replicaTransitionTimeMap because it is set when the volume controller\nacknowledges the change."
                   type: "string"
                 image:
                   type: "string"
                 lastFailedAt:
-                  description: "LastFailedAt is always set at the same time as FailedAt. Unlike FailedAt, LastFailedAt is never cleared. LastFailedAt is not a reliable indicator of the state of a replica's data. For example, a replica with LastFailedAt may already be healthy and in use again. However, because it is never cleared, it can be compared to LastHealthyAt to help prevent dangerous replica deletion in some corner cases. LastFailedAt may be later than the corresponding entry in an engine's replicaTransitionTimeMap because it is set when the volume controller acknowledges the change."
+                  description: "LastFailedAt is always set at the same time as FailedAt. Unlike FailedAt, LastFailedAt is never cleared.\nLastFailedAt is not a reliable indicator of the state of a replica's data. For example, a replica with\nLastFailedAt may already be healthy and in use again. However, because it is never cleared, it can be compared to\nLastHealthyAt to help prevent dangerous replica deletion in some corner cases. LastFailedAt may be later than the\ncorresponding entry in an engine's replicaTransitionTimeMap because it is set when the volume controller\nacknowledges the change."
                   type: "string"
                 lastHealthyAt:
-                  description: "LastHealthyAt is set every time a replica becomes read/write in an engine. Unlike HealthyAt, LastHealthyAt is never cleared. LastHealthyAt is not a reliable indicator of the state of a replica's data. For example, a replica with LastHealthyAt set may be in the middle of a rebuild. However, because it is never cleared, it can be compared to LastFailedAt to help prevent dangerous replica deletion in some corner cases. LastHealthyAt may be later than the corresponding entry in an engine's replicaTransitionTimeMap because it is set when the volume controller acknowledges the change."
+                  description: "LastHealthyAt is set every time a replica becomes read/write in an engine. Unlike HealthyAt, LastHealthyAt is\nnever cleared. LastHealthyAt is not a reliable indicator of the state of a replica's data. For example, a\nreplica with LastHealthyAt set may be in the middle of a rebuild. However, because it is never cleared, it can be\ncompared to LastFailedAt to help prevent dangerous replica deletion in some corner cases. LastHealthyAt may be\nlater than the corresponding entry in an engine's replicaTransitionTimeMap because it is set when the volume\ncontroller acknowledges the change."
                   type: "string"
                 logRequested:
                   type: "boolean"
@@ -150,7 +150,7 @@ spec:
                         description: "Unique, one-word, CamelCase reason for the condition's last transition."
                         type: "string"
                       status:
-                        description: "Status is the status of the condition. Can be True, False, Unknown."
+                        description: "Status is the status of the condition.\nCan be True, False, Unknown."
                         type: "string"
                       type:
                         description: "Type is the type of the condition."
@@ -187,9 +187,3 @@ spec:
       storage: true
       subresources:
         status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

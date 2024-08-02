@@ -3403,11 +3403,13 @@ pub struct CcRuntimeConfigPreInstallVolumesVsphereVolume {
     pub volume_path: String,
 }
 
-/// RuntimeClass holds the name and the snapshotter to be used by a runtime class
+/// RuntimeClass holds the name and basic customizations to be used by a runtime class
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CcRuntimeConfigRuntimeClasses {
     /// Name of the runtime class
     pub name: String,
+    /// The pulling image method to be used by the runtime class
+    pub pulltype: String,
     /// The snapshotter to be used by the runtime class
     pub snapshotter: String,
 }

@@ -85,6 +85,20 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                backup:
+                  description: "Cluster-wide backup configurations"
+                  properties:
+                    s3:
+                      description: "Configurations for backups to s3 and s3-compatible storage"
+                      properties:
+                        caCertificateSecretName:
+                          description: "Secret name that holds the S3 CA certificate, which contains the TLS certificate mapped to the key in the secret 'cert'"
+                          type: "string"
+                        url:
+                          description: "Specifies the URL for S3 export and import"
+                          type: "string"
+                      type: "object"
+                  type: "object"
                 bootstrapperImageSpec:
                   description: "Specification for Bootstrapper container image"
                   properties:

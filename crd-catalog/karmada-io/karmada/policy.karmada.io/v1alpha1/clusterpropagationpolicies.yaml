@@ -17,7 +17,17 @@ spec:
     singular: "clusterpropagationpolicy"
   scope: "Cluster"
   versions:
-    - name: "v1alpha1"
+    - additionalPrinterColumns:
+        - jsonPath: ".spec.conflictResolution"
+          name: "CONFLICT-RESOLUTION"
+          type: "string"
+        - jsonPath: ".spec.priority"
+          name: "PRIORITY"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "AGE"
+          type: "date"
+      name: "v1alpha1"
       schema:
         openAPIV3Schema:
           description: "ClusterPropagationPolicy represents the cluster-wide policy that propagates a group of resources to one or more clusters.\nDifferent with PropagationPolicy that could only propagate resources in its own namespace, ClusterPropagationPolicy\nis able to propagate cluster level resources and resources in any namespace other than system reserved ones.\nSystem reserved namespaces are: karmada-system, karmada-cluster, karmada-es-*."
@@ -122,6 +132,7 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                   required:
                                     - "key"
                                     - "operator"
@@ -147,11 +158,13 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                   required:
                                     - "key"
                                     - "operator"
                                   type: "object"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
@@ -195,6 +208,7 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 required:
                                   - "key"
                                   - "operator"
@@ -220,11 +234,13 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 required:
                                   - "key"
                                   - "operator"
                                 type: "object"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                             matchLabels:
                               additionalProperties:
                                 type: "string"
@@ -317,6 +333,7 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
@@ -342,11 +359,13 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -437,11 +456,13 @@ spec:
                                   items:
                                     type: "string"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                               required:
                                 - "key"
                                 - "operator"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           matchLabels:
                             additionalProperties:
                               type: "string"
@@ -473,3 +494,4 @@ spec:
           type: "object"
       served: true
       storage: true
+      subresources: {}

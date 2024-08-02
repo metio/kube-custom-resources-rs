@@ -49,6 +49,9 @@ pub struct FlowCollectorSpec {
     /// Namespace where NetObserv pods are deployed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// `networkPolicy` defines ingress network policy settings for NetObserv components isolation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicy")]
+    pub network_policy: Option<FlowCollectorNetworkPolicy>,
     /// `processor` defines the settings of the component that receives the flows from the agent,
     /// enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2366,6 +2369,9 @@ pub struct FlowCollectorExporters {
     /// Kafka configuration, such as the address and topic, to send enriched flows to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<FlowCollectorExportersKafka>,
+    /// Open telemetry configuration, such as the IP address and port to send enriched logs, metrics and or traces to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
+    pub open_telemetry: Option<FlowCollectorExportersOpenTelemetry>,
     /// `type` selects the type of exporters. The available options are `Kafka` and `IPFIX`.
     #[serde(rename = "type")]
     pub r#type: FlowCollectorExportersType,
@@ -2564,12 +2570,160 @@ pub enum FlowCollectorExportersKafkaTlsUserCertType {
     Secret,
 }
 
+/// Open telemetry configuration, such as the IP address and port to send enriched logs, metrics and or traces to.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorExportersOpenTelemetry {
+    /// Custom fields mapping to an OpenTelemetry conformant format.
+    /// By default, NetObserv format proposal is used: https://github.com/rhobs/observability-data-model/blob/main/network-observability.md#format-proposal .
+    /// As there is currently no accepted otlp standard for L3/4 network logs, you can freely override it with your own.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldsMapping")]
+    pub fields_mapping: Option<Vec<FlowCollectorExportersOpenTelemetryFieldsMapping>>,
+    /// Headers to add to messages (optional)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub headers: Option<BTreeMap<String, String>>,
+    /// Open telemetry configuration for logs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logs: Option<FlowCollectorExportersOpenTelemetryLogs>,
+    /// Open telemetry configuration for metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<FlowCollectorExportersOpenTelemetryMetrics>,
+    /// Protocol of Open Telemetry connection. The available options are `http` and `grpc`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<FlowCollectorExportersOpenTelemetryProtocol>,
+    /// Address of the Open Telemetry receiver
+    #[serde(rename = "targetHost")]
+    pub target_host: String,
+    /// Port for the Open Telemetry receiver
+    #[serde(rename = "targetPort")]
+    pub target_port: i64,
+    /// TLS client configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<FlowCollectorExportersOpenTelemetryTls>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorExportersOpenTelemetryFieldsMapping {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub input: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub multiplier: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output: Option<String>,
+}
+
+/// Open telemetry configuration for logs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorExportersOpenTelemetryLogs {
+    /// Set `enable` to `true` to send logs to Open Telemetry receiver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+}
+
+/// Open telemetry configuration for metrics.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorExportersOpenTelemetryMetrics {
+    /// Set `enable` to `true` to send metrics to Open Telemetry receiver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+    /// How often should metrics be sent to collector
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pushTimeInterval")]
+    pub push_time_interval: Option<String>,
+}
+
+/// Open telemetry configuration, such as the IP address and port to send enriched logs, metrics and or traces to.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorExportersOpenTelemetryProtocol {
+    #[serde(rename = "http")]
+    Http,
+    #[serde(rename = "grpc")]
+    Grpc,
+}
+
+/// TLS client configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorExportersOpenTelemetryTls {
+    /// `caCert` defines the reference of the certificate for the Certificate Authority
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
+    pub ca_cert: Option<FlowCollectorExportersOpenTelemetryTlsCaCert>,
+    /// Enable TLS
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+    /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
+    /// If set to `true`, the `caCert` field is ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
+    pub user_cert: Option<FlowCollectorExportersOpenTelemetryTlsUserCert>,
+}
+
+/// `caCert` defines the reference of the certificate for the Certificate Authority
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorExportersOpenTelemetryTlsCaCert {
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
+    pub cert_key: Option<String>,
+    /// Name of the config map or secret containing certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Type for the certificate reference: `configmap` or `secret`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<FlowCollectorExportersOpenTelemetryTlsCaCertType>,
+}
+
+/// `caCert` defines the reference of the certificate for the Certificate Authority
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorExportersOpenTelemetryTlsCaCertType {
+    #[serde(rename = "configmap")]
+    Configmap,
+    #[serde(rename = "secret")]
+    Secret,
+}
+
+/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorExportersOpenTelemetryTlsUserCert {
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
+    pub cert_key: Option<String>,
+    /// Name of the config map or secret containing certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Type for the certificate reference: `configmap` or `secret`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<FlowCollectorExportersOpenTelemetryTlsUserCertType>,
+}
+
+/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorExportersOpenTelemetryTlsUserCertType {
+    #[serde(rename = "configmap")]
+    Configmap,
+    #[serde(rename = "secret")]
+    Secret,
+}
+
 /// `FlowCollectorExporter` defines an additional exporter to send enriched flows to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorExportersType {
     Kafka,
     #[serde(rename = "IPFIX")]
     Ipfix,
+    OpenTelemetry,
 }
 
 /// Kafka configuration, allowing to use Kafka as a broker as part of the flow collection pipeline. Available when the `spec.deploymentModel` is `Kafka`.
@@ -3232,6 +3386,21 @@ pub enum FlowCollectorLokiMonolithicTlsUserCertType {
     Configmap,
     #[serde(rename = "secret")]
     Secret,
+}
+
+/// `networkPolicy` defines ingress network policy settings for NetObserv components isolation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorNetworkPolicy {
+    /// `additionalNamespaces` contains additional namespaces allowed to connect to the NetObserv namespace.
+    /// It gives some flexibility in the network policy configuration, however should you need a more specific
+    /// configuration, you can disable it and install your own instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalNamespaces")]
+    pub additional_namespaces: Option<Vec<String>>,
+    /// Set `enable` to `true` to deploy network policies on the namespaces used by NetObserv (main and privileged). It is disabled by default.
+    /// These network policies better isolate the NetObserv components to prevent undesired connections to them.
+    /// We recommend you either enable it, or create your own network policy for NetObserv.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
 }
 
 /// `processor` defines the settings of the component that receives the flows from the agent,

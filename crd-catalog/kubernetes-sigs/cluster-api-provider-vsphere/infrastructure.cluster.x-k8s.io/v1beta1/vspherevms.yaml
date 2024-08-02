@@ -302,11 +302,14 @@ spec:
                         description: "CustomLabel is the hardware label of a virtual machine's PCI device.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                         type: "string"
                       deviceId:
-                        description: "DeviceID is the device ID of a virtual machine's PCI, in integer.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                        description: "DeviceID is the device ID of a virtual machine's PCI, in integer.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nMutually exclusive with VGPUProfile as VGPUProfile and DeviceID + VendorID\nare two independent ways to define PCI devices."
                         format: "int32"
                         type: "integer"
+                      vGPUProfile:
+                        description: "VGPUProfile is the profile name of a virtual machine's vGPU, in string.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nMutually exclusive with DeviceID and VendorID as VGPUProfile and DeviceID + VendorID\nare two independent ways to define PCI devices."
+                        type: "string"
                       vendorId:
-                        description: "VendorId is the vendor ID of a virtual machine's PCI, in integer.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                        description: "VendorId is the vendor ID of a virtual machine's PCI, in integer.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nMutually exclusive with VGPUProfile as VGPUProfile and DeviceID + VendorID\nare two independent ways to define PCI devices."
                         format: "int32"
                         type: "integer"
                     type: "object"

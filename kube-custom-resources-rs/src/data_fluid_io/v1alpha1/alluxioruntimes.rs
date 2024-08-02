@@ -30,13 +30,17 @@ pub struct AlluxioRuntimeSpec {
     /// Management strategies for the dataset to which the runtime is bound
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<AlluxioRuntimeData>,
-    /// Disable monitoring for Alluxio Runtime Prometheus is enabled by default
+    /// Disable monitoring for Alluxio Runtime
+    /// Prometheus is enabled by default
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePrometheus")]
     pub disable_prometheus: Option<bool>,
     /// The component spec of Alluxio Fuse
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fuse: Option<AlluxioRuntimeFuse>,
-    /// Name of the configMap used to support HDFS configurations when using HDFS as Alluxio's UFS. The configMap must be in the same namespace with the AlluxioRuntime. The configMap should contain user-specific HDFS conf files in it. For now, only "hdfs-site.xml" and "core-site.xml" are supported. It must take the filename of the conf file as the key and content of the file as the value.
+    /// Name of the configMap used to support HDFS configurations when using HDFS as Alluxio's UFS. The configMap
+    /// must be in the same namespace with the AlluxioRuntime. The configMap should contain user-specific HDFS conf files in it.
+    /// For now, only "hdfs-site.xml" and "core-site.xml" are supported. It must take the filename of the conf file as the key and content
+    /// of the file as the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hadoopConfig")]
     pub hadoop_config: Option<String>,
     /// The spec of init users
@@ -60,7 +64,8 @@ pub struct AlluxioRuntimeSpec {
     /// PodMetadata defines labels and annotations that will be propagated to Alluxio's pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<AlluxioRuntimePodMetadata>,
-    /// Configurable properties for Alluxio system. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
+    /// Configurable properties for Alluxio system. <br>
+    /// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<BTreeMap<String, String>>,
     /// The replicas of the worker, need to be specified
@@ -118,13 +123,19 @@ pub struct AlluxioRuntimeApiGateway {
     /// Ports used by Alluxio(e.g. rpc: 19998 for master)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<BTreeMap<String, i64>>,
-    /// Configurable properties for the Alluxio component. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
+    /// Configurable properties for the Alluxio component. <br>
+    /// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<BTreeMap<String, String>>,
-    /// Replicas is the desired number of replicas of the given template. If unspecified, defaults to 1. replicas is the min replicas of dataset in the cluster
+    /// Replicas is the desired number of replicas of the given template.
+    /// If unspecified, defaults to 1.
+    /// replicas is the min replicas of dataset in the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resources that will be requested by the Alluxio component. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+    /// Resources that will be requested by the Alluxio component. <br>
+    /// <br>
+    /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+    /// already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AlluxioRuntimeApiGatewayResources>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
@@ -152,18 +163,31 @@ pub struct AlluxioRuntimeApiGatewayPodMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Resources that will be requested by the Alluxio component. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+/// Resources that will be requested by the Alluxio component. <br>
+/// <br>
+/// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+/// already allocated to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeApiGatewayResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AlluxioRuntimeApiGatewayResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -171,28 +195,39 @@ pub struct AlluxioRuntimeApiGatewayResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeApiGatewayResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeApiGatewayVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
@@ -214,7 +249,11 @@ pub struct AlluxioRuntimeFuse {
     /// Arguments that will be passed to Alluxio Fuse
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// CleanPolicy decides when to clean Alluxio Fuse pods. Currently Fluid supports two policies: OnDemand and OnRuntimeDeleted OnDemand cleans fuse pod once the fuse pod on some node is not needed OnRuntimeDeleted cleans fuse pod only when the cache runtime is deleted Defaults to OnRuntimeDeleted
+    /// CleanPolicy decides when to clean Alluxio Fuse pods.
+    /// Currently Fluid supports two policies: OnDemand and OnRuntimeDeleted
+    /// OnDemand cleans fuse pod once the fuse pod on some node is not needed
+    /// OnRuntimeDeleted cleans fuse pod only when the cache runtime is deleted
+    /// Defaults to OnRuntimeDeleted
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanPolicy")]
     pub clean_policy: Option<String>,
     /// Environment variables that will be used by Alluxio Fuse
@@ -235,16 +274,21 @@ pub struct AlluxioRuntimeFuse {
     /// Whether to use hostnetwork or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkMode")]
     pub network_mode: Option<AlluxioRuntimeFuseNetworkMode>,
-    /// NodeSelector is a selector which must be true for the fuse client to fit on a node, this option only effect when global is enabled
+    /// NodeSelector is a selector which must be true for the fuse client to fit on a node,
+    /// this option only effect when global is enabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodMetadata defines labels and annotations that will be propagated to Alluxio's fuse pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<AlluxioRuntimeFusePodMetadata>,
-    /// Configurable properties for Alluxio System. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
+    /// Configurable properties for Alluxio System. <br>
+    /// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<BTreeMap<String, String>>,
-    /// Resources that will be requested by Alluxio Fuse. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+    /// Resources that will be requested by Alluxio Fuse. <br>
+    /// <br>
+    /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+    /// already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AlluxioRuntimeFuseResources>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
@@ -272,18 +316,31 @@ pub struct AlluxioRuntimeFusePodMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Resources that will be requested by Alluxio Fuse. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+/// Resources that will be requested by Alluxio Fuse. <br>
+/// <br>
+/// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+/// already allocated to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeFuseResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AlluxioRuntimeFuseResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -291,28 +348,39 @@ pub struct AlluxioRuntimeFuseResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeFuseResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeFuseVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
@@ -332,23 +400,39 @@ pub struct AlluxioRuntimeInitUsers {
     /// Image Tag for initialize the users for runtime(e.g. 2.3.0-SNAPSHOT)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
-    /// Resources that will be requested by initialize the users for runtime. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+    /// Resources that will be requested by initialize the users for runtime. <br>
+    /// <br>
+    /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+    /// already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AlluxioRuntimeInitUsersResources>,
 }
 
-/// Resources that will be requested by initialize the users for runtime. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+/// Resources that will be requested by initialize the users for runtime. <br>
+/// <br>
+/// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+/// already allocated to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeInitUsersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AlluxioRuntimeInitUsersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -356,7 +440,9 @@ pub struct AlluxioRuntimeInitUsersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeInitUsersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -384,13 +470,19 @@ pub struct AlluxioRuntimeJobMaster {
     /// Ports used by Alluxio(e.g. rpc: 19998 for master)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<BTreeMap<String, i64>>,
-    /// Configurable properties for the Alluxio component. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
+    /// Configurable properties for the Alluxio component. <br>
+    /// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<BTreeMap<String, String>>,
-    /// Replicas is the desired number of replicas of the given template. If unspecified, defaults to 1. replicas is the min replicas of dataset in the cluster
+    /// Replicas is the desired number of replicas of the given template.
+    /// If unspecified, defaults to 1.
+    /// replicas is the min replicas of dataset in the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resources that will be requested by the Alluxio component. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+    /// Resources that will be requested by the Alluxio component. <br>
+    /// <br>
+    /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+    /// already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AlluxioRuntimeJobMasterResources>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
@@ -418,18 +510,31 @@ pub struct AlluxioRuntimeJobMasterPodMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Resources that will be requested by the Alluxio component. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+/// Resources that will be requested by the Alluxio component. <br>
+/// <br>
+/// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+/// already allocated to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeJobMasterResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AlluxioRuntimeJobMasterResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -437,28 +542,39 @@ pub struct AlluxioRuntimeJobMasterResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeJobMasterResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeJobMasterVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
@@ -487,13 +603,19 @@ pub struct AlluxioRuntimeJobWorker {
     /// Ports used by Alluxio(e.g. rpc: 19998 for master)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<BTreeMap<String, i64>>,
-    /// Configurable properties for the Alluxio component. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
+    /// Configurable properties for the Alluxio component. <br>
+    /// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<BTreeMap<String, String>>,
-    /// Replicas is the desired number of replicas of the given template. If unspecified, defaults to 1. replicas is the min replicas of dataset in the cluster
+    /// Replicas is the desired number of replicas of the given template.
+    /// If unspecified, defaults to 1.
+    /// replicas is the min replicas of dataset in the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resources that will be requested by the Alluxio component. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+    /// Resources that will be requested by the Alluxio component. <br>
+    /// <br>
+    /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+    /// already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AlluxioRuntimeJobWorkerResources>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
@@ -521,18 +643,31 @@ pub struct AlluxioRuntimeJobWorkerPodMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Resources that will be requested by the Alluxio component. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+/// Resources that will be requested by the Alluxio component. <br>
+/// <br>
+/// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+/// already allocated to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeJobWorkerResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AlluxioRuntimeJobWorkerResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -540,28 +675,39 @@ pub struct AlluxioRuntimeJobWorkerResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeJobWorkerResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeJobWorkerVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
@@ -580,10 +726,18 @@ pub struct AlluxioRuntimeManagement {
 /// CleanCachePolicy defines the policy of cleaning cache when shutting down the runtime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeManagementCleanCachePolicy {
-    /// Optional duration in seconds the cache needs to clean gracefully. May be decreased in delete runtime request. Value must be non-negative integer. The value zero indicates clean immediately via the timeout command (no opportunity to shut down). If this value is nil, the default grace period will be used instead. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with timeout command. Set this value longer than the expected cleanup time for your process.
+    /// Optional duration in seconds the cache needs to clean gracefully. May be decreased in delete runtime request.
+    /// Value must be non-negative integer. The value zero indicates clean immediately via the timeout
+    /// command (no opportunity to shut down).
+    /// If this value is nil, the default grace period will be used instead.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with timeout command.
+    /// Set this value longer than the expected cleanup time for your process.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
     pub grace_period_seconds: Option<i32>,
-    /// Optional max retry Attempts when cleanCache function returns an error after execution, runtime attempts to run it three more times by default. With Maximum Retry Attempts, you can customize the maximum number of retries. This gives you the option to continue processing retries.
+    /// Optional max retry Attempts when cleanCache function returns an error after execution, runtime attempts
+    /// to run it three more times by default. With Maximum Retry Attempts, you can customize the maximum number
+    /// of retries. This gives you the option to continue processing retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryAttempts")]
     pub max_retry_attempts: Option<i32>,
 }
@@ -620,13 +774,19 @@ pub struct AlluxioRuntimeMaster {
     /// Ports used by Alluxio(e.g. rpc: 19998 for master)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<BTreeMap<String, i64>>,
-    /// Configurable properties for the Alluxio component. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
+    /// Configurable properties for the Alluxio component. <br>
+    /// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<BTreeMap<String, String>>,
-    /// Replicas is the desired number of replicas of the given template. If unspecified, defaults to 1. replicas is the min replicas of dataset in the cluster
+    /// Replicas is the desired number of replicas of the given template.
+    /// If unspecified, defaults to 1.
+    /// replicas is the min replicas of dataset in the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resources that will be requested by the Alluxio component. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+    /// Resources that will be requested by the Alluxio component. <br>
+    /// <br>
+    /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+    /// already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AlluxioRuntimeMasterResources>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
@@ -654,18 +814,31 @@ pub struct AlluxioRuntimeMasterPodMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Resources that will be requested by the Alluxio component. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+/// Resources that will be requested by the Alluxio component. <br>
+/// <br>
+/// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+/// already allocated to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeMasterResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AlluxioRuntimeMasterResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -673,28 +846,39 @@ pub struct AlluxioRuntimeMasterResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeMasterResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeMasterVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
@@ -731,7 +915,8 @@ pub struct AlluxioRuntimeTieredstore {
     pub levels: Option<Vec<AlluxioRuntimeTieredstoreLevels>>,
 }
 
-/// Level describes configurations a tier needs. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/core-services/Caching.html#configuring-tiered-storage">Configuring Tiered Storage</a> for more info
+/// Level describes configurations a tier needs. <br>
+/// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/core-services/Caching.html#configuring-tiered-storage">Configuring Tiered Storage</a> for more info
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevels {
     /// Ratio of high watermark of the tier (e.g. 0.9)
@@ -742,24 +927,35 @@ pub struct AlluxioRuntimeTieredstoreLevels {
     pub low: Option<String>,
     /// Medium Type of the tier. One of the three types: `MEM`, `SSD`, `HDD`
     pub mediumtype: AlluxioRuntimeTieredstoreLevelsMediumtype,
-    /// File paths to be used for the tier. Multiple paths are supported. Multiple paths should be separated with comma. For example: "/mnt/cache1,/mnt/cache2".
+    /// File paths to be used for the tier. Multiple paths are supported.
+    /// Multiple paths should be separated with comma. For example: "/mnt/cache1,/mnt/cache2".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Quota for the whole tier. (e.g. 100Gi) Please note that if there're multiple paths used for this tierstore, the quota will be equally divided into these paths. If you'd like to set quota for each, path, see QuotaList for more information.
+    /// Quota for the whole tier. (e.g. 100Gi)
+    /// Please note that if there're multiple paths used for this tierstore,
+    /// the quota will be equally divided into these paths. If you'd like to
+    /// set quota for each, path, see QuotaList for more information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quota: Option<IntOrString>,
-    /// QuotaList are quotas used to set quota on multiple paths. Quotas should be separated with comma. Quotas in this list will be set to paths with the same order in Path. For example, with Path defined with "/mnt/cache1,/mnt/cache2" and QuotaList set to "100Gi, 50Gi", then we get 100GiB cache storage under "/mnt/cache1" and 50GiB under "/mnt/cache2". Also note that num of quotas must be consistent with the num of paths defined in Path.
+    /// QuotaList are quotas used to set quota on multiple paths. Quotas should be separated with comma.
+    /// Quotas in this list will be set to paths with the same order in Path.
+    /// For example, with Path defined with "/mnt/cache1,/mnt/cache2" and QuotaList set to "100Gi, 50Gi",
+    /// then we get 100GiB cache storage under "/mnt/cache1" and 50GiB under "/mnt/cache2".
+    /// Also note that num of quotas must be consistent with the num of paths defined in Path.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "quotaList")]
     pub quota_list: Option<String>,
-    /// VolumeSource is the volume source of the tier. It follows the form of corev1.VolumeSource. For now, users should only specify VolumeSource when VolumeType is set to emptyDir.
+    /// VolumeSource is the volume source of the tier. It follows the form of corev1.VolumeSource.
+    /// For now, users should only specify VolumeSource when VolumeType is set to emptyDir.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<AlluxioRuntimeTieredstoreLevelsVolumeSource>,
-    /// VolumeType is the volume type of the tier. Should be one of the three types: `hostPath`, `emptyDir` and `volumeTemplate`. If not set, defaults to hostPath.
+    /// VolumeType is the volume type of the tier. Should be one of the three types: `hostPath`, `emptyDir` and `volumeTemplate`.
+    /// If not set, defaults to hostPath.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeType")]
     pub volume_type: Option<AlluxioRuntimeTieredstoreLevelsVolumeType>,
 }
 
-/// Level describes configurations a tier needs. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/core-services/Caching.html#configuring-tiered-storage">Configuring Tiered Storage</a> for more info
+/// Level describes configurations a tier needs. <br>
+/// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/core-services/Caching.html#configuring-tiered-storage">Configuring Tiered Storage</a> for more info
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum AlluxioRuntimeTieredstoreLevelsMediumtype {
     #[serde(rename = "MEM")]
@@ -770,10 +966,13 @@ pub enum AlluxioRuntimeTieredstoreLevelsMediumtype {
     Hdd,
 }
 
-/// VolumeSource is the volume source of the tier. It follows the form of corev1.VolumeSource. For now, users should only specify VolumeSource when VolumeType is set to emptyDir.
+/// VolumeSource is the volume source of the tier. It follows the form of corev1.VolumeSource.
+/// For now, users should only specify VolumeSource when VolumeType is set to emptyDir.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSource {
-    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
@@ -785,7 +984,8 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSource {
     /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceCephfs>,
-    /// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceCinder>,
     /// configMap represents a configMap that should populate this volume
@@ -797,44 +997,87 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSource {
     /// downwardAPI represents downward API about the pod that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceDownwardApi>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// emptyDir represents a temporary directory that shares a pod's lifetime.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceEmptyDir>,
-    /// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
-    ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
-    ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
-    ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
-    ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
+    /// ephemeral represents a volume that is handled by a cluster storage driver.
+    /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+    /// and deleted when the pod is removed.
+    /// 
+    /// 
+    /// Use this if:
+    /// a) the volume is only needed while the pod runs,
+    /// b) features of normal volumes like restoring from snapshot or capacity
+    ///    tracking are needed,
+    /// c) the storage driver is specified through a storage class, and
+    /// d) the storage driver supports dynamic volume provisioning through
+    ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+    ///    information on the connection between this volume type
+    ///    and PersistentVolumeClaim).
+    /// 
+    /// 
+    /// Use PersistentVolumeClaim or one of the vendor-specific
+    /// APIs for volumes that persist for longer than the lifecycle
+    /// of an individual pod.
+    /// 
+    /// 
+    /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+    /// be used that way - see the documentation of the driver for
+    /// more information.
+    /// 
+    /// 
+    /// A pod can use both types of ephemeral volumes and
+    /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeral>,
     /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceFc>,
-    /// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+    /// flexVolume represents a generic volume resource that is
+    /// provisioned/attached using an exec based plugin.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceFlocker>,
-    /// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// gcePersistentDisk represents a GCE Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceGcePersistentDisk>,
-    /// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+    /// gitRepo represents a git repository at a particular revision.
+    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+    /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceGitRepo>,
-    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceGlusterfs>,
-    /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+    /// hostPath represents a pre-existing file or directory on the host
+    /// machine that is directly exposed to the container. This is generally
+    /// used for system agents or other privileged things that are allowed
+    /// to see the host machine. Most containers will NOT need this.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// ---
+    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+    /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceHostPath>,
-    /// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+    /// iscsi represents an ISCSI Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://examples.k8s.io/volumes/iscsi/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceIscsi>,
-    /// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceNfs>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// persistentVolumeClaimVolumeSource represents a reference to a
+    /// PersistentVolumeClaim in the same namespace.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourcePersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
@@ -849,13 +1092,15 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSource {
     /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceQuobyte>,
-    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceScaleIo>,
-    /// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    /// secret represents a secret that should populate this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
@@ -866,19 +1111,30 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSource {
     pub vsphere_volume: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceVsphereVolume>,
 }
 
-/// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+/// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceAwsElasticBlockStore {
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// readOnly value true will force the readOnly setting in VolumeMounts. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// readOnly value true will force the readOnly setting in VolumeMounts.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume). More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
@@ -895,13 +1151,16 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceAzureDisk {
     /// diskURI is the URI of data disk in the blob storage
     #[serde(rename = "diskURI")]
     pub disk_uri: String,
-    /// fsType is Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is Filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
@@ -909,7 +1168,8 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceAzureDisk {
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceAzureFile {
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// secretName is the  name of secret that contains Azure Storage Account Name and Key
@@ -923,54 +1183,74 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceAzureFile {
 /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceCephfs {
-    /// monitors is Required: Monitors is a collection of Ceph monitors More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// monitors is Required: Monitors is a collection of Ceph monitors
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     pub monitors: Vec<String>,
     /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
-    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceCephfsSecretRef>,
-    /// user is optional: User is the rados user name, default is admin More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// user is optional: User is the rados user name, default is admin
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+/// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceCephfsSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+/// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceCinder {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
+    /// secretRef is optional: points to a secret object containing parameters used to connect
+    /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceCinderSecretRef>,
-    /// volumeID used to identify the volume in cinder. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// volumeID used to identify the volume in cinder.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
 
-/// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
+/// secretRef is optional: points to a secret object containing parameters used to connect
+/// to OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceCinderSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -978,13 +1258,27 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceCinderSecretRef {
 /// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode is optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AlluxioRuntimeTieredstoreLevelsVolumeSourceConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -997,36 +1291,59 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceConfigMap {
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceConfigMapItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceCsi {
-    /// driver is the name of the CSI driver that handles this volume. Consult with your admin for the correct name as registered in the cluster.
+    /// driver is the name of the CSI driver that handles this volume.
+    /// Consult with your admin for the correct name as registered in the cluster.
     pub driver: String,
-    /// fsType to mount. Ex. "ext4", "xfs", "ntfs". If not provided, the empty value is passed to the associated CSI driver which will determine the default filesystem to apply.
+    /// fsType to mount. Ex. "ext4", "xfs", "ntfs".
+    /// If not provided, the empty value is passed to the associated CSI driver
+    /// which will determine the default filesystem to apply.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+    /// nodePublishSecretRef is a reference to the secret object containing
+    /// sensitive information to pass to the CSI driver to complete the CSI
+    /// NodePublishVolume and NodeUnpublishVolume calls.
+    /// This field is optional, and  may be empty if no secret is required. If the
+    /// secret object contains more than one secret, all secret references are passed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceCsiNodePublishSecretRef>,
-    /// readOnly specifies a read-only configuration for the volume. Defaults to false (read/write).
+    /// readOnly specifies a read-only configuration for the volume.
+    /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
+    /// volumeAttributes stores driver-specific properties that are passed to the CSI
+    /// driver. Consult your driver's documentation for supported values.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
-/// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+/// nodePublishSecretRef is a reference to the secret object containing
+/// sensitive information to pass to the CSI driver to complete the CSI
+/// NodePublishVolume and NodeUnpublishVolume calls.
+/// This field is optional, and  may be empty if no secret is required. If the
+/// secret object contains more than one secret, all secret references are passed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceCsiNodePublishSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1034,7 +1351,14 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceCsiNodePublishSecretRef {
 /// downwardAPI represents downward API about the pod that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceDownwardApi {
-    /// Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits to use on created files by default. Must be a
+    /// Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
@@ -1048,12 +1372,18 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsResourceFieldRef>,
 }
@@ -1069,7 +1399,8 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -1082,72 +1413,204 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsResourceFi
     pub resource: String,
 }
 
-/// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+/// emptyDir represents a temporary directory that shares a pod's lifetime.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEmptyDir {
-    /// medium represents what type of storage medium should back this directory. The default is "" which means to use the node's default medium. Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// medium represents what type of storage medium should back this directory.
+    /// The default is "" which means to use the node's default medium.
+    /// Must be an empty string (default) or Memory.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: http://kubernetes.io/docs/user-guide/volumes#emptydir
+    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
+    /// The size limit is also applicable for memory medium.
+    /// The maximum usage on memory medium EmptyDir would be the minimum value between
+    /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
+    /// The default is nil which means that the limit is undefined.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
 
-/// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
-///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
-///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
-///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
-///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
+/// ephemeral represents a volume that is handled by a cluster storage driver.
+/// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+/// and deleted when the pod is removed.
+/// 
+/// 
+/// Use this if:
+/// a) the volume is only needed while the pod runs,
+/// b) features of normal volumes like restoring from snapshot or capacity
+///    tracking are needed,
+/// c) the storage driver is specified through a storage class, and
+/// d) the storage driver supports dynamic volume provisioning through
+///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+///    information on the connection between this volume type
+///    and PersistentVolumeClaim).
+/// 
+/// 
+/// Use PersistentVolumeClaim or one of the vendor-specific
+/// APIs for volumes that persist for longer than the lifecycle
+/// of an individual pod.
+/// 
+/// 
+/// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+/// be used that way - see the documentation of the driver for
+/// more information.
+/// 
+/// 
+/// A pod can use both types of ephemeral volumes and
+/// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeral {
-    /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
-    ///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
-    ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
-    ///  Required, must not be nil.
+    /// Will be used to create a stand-alone PVC to provision the volume.
+    /// The pod in which this EphemeralVolumeSource is embedded will be the
+    /// owner of the PVC, i.e. the PVC will be deleted together with the
+    /// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+    /// `<volume name>` is the name from the `PodSpec.Volumes` array
+    /// entry. Pod validation will reject the pod if the concatenated name
+    /// is not valid for a PVC (for example, too long).
+    /// 
+    /// 
+    /// An existing PVC with that name that is not owned by the pod
+    /// will *not* be used for the pod to avoid using an unrelated
+    /// volume by mistake. Starting the pod is then blocked until
+    /// the unrelated PVC is removed. If such a pre-created PVC is
+    /// meant to be used by the pod, the PVC has to updated with an
+    /// owner reference to the pod once the pod exists. Normally
+    /// this should not be necessary, but it may be useful when
+    /// manually reconstructing a broken cluster.
+    /// 
+    /// 
+    /// This field is read-only and no changes will be made by Kubernetes
+    /// to the PVC after it has been created.
+    /// 
+    /// 
+    /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplate>,
 }
 
-/// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
-///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
-///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
-///  Required, must not be nil.
+/// Will be used to create a stand-alone PVC to provision the volume.
+/// The pod in which this EphemeralVolumeSource is embedded will be the
+/// owner of the PVC, i.e. the PVC will be deleted together with the
+/// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+/// `<volume name>` is the name from the `PodSpec.Volumes` array
+/// entry. Pod validation will reject the pod if the concatenated name
+/// is not valid for a PVC (for example, too long).
+/// 
+/// 
+/// An existing PVC with that name that is not owned by the pod
+/// will *not* be used for the pod to avoid using an unrelated
+/// volume by mistake. Starting the pod is then blocked until
+/// the unrelated PVC is removed. If such a pre-created PVC is
+/// meant to be used by the pod, the PVC has to updated with an
+/// owner reference to the pod once the pod exists. Normally
+/// this should not be necessary, but it may be useful when
+/// manually reconstructing a broken cluster.
+/// 
+/// 
+/// This field is read-only and no changes will be made by Kubernetes
+/// to the PVC after it has been created.
+/// 
+/// 
+/// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplate {
-    /// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
+    /// May contain labels and annotations that will be copied into the PVC
+    /// when creating it. No other fields are allowed and will be rejected during
+    /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateMetadata>,
-    /// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
+    /// The specification for the PersistentVolumeClaim. The entire content is
+    /// copied unchanged into the PVC that gets created from this
+    /// template. The same fields as in a PersistentVolumeClaim
+    /// are also valid here.
     pub spec: AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpec,
 }
 
-/// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
+/// May contain labels and annotations that will be copied into the PVC
+/// when creating it. No other fields are allowed and will be rejected during
+/// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateMetadata {
 }
 
-/// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
+/// The specification for the PersistentVolumeClaim. The entire content is
+/// copied unchanged into the PVC that gets created from this
+/// template. The same fields as in a PersistentVolumeClaim
+/// are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpec {
-    /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource>,
-    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef>,
-    /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelector>,
-    /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
@@ -1155,10 +1618,19 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     pub volume_name: Option<String>,
 }
 
-/// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource {
-    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
@@ -1167,42 +1639,64 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     pub name: String,
 }
 
-/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef {
-    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
     pub kind: String,
     /// Name is the name of resource being referenced
     pub name: String,
-    /// Namespace is the namespace of resource being referenced Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details. (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -1211,19 +1705,26 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -1231,46 +1732,65 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
 /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceFc {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// lun is Optional: FC target lun number
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
-    /// wwids Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+    /// wwids Optional: FC volume world wide identifiers (wwids)
+    /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
 }
 
-/// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+/// flexVolume represents a generic volume resource that is
+/// provisioned/attached using an exec based plugin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceFlexVolume {
     /// driver is the name of the driver to use for this volume.
     pub driver: String,
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// options is Optional: this field holds extra command options if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
-    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+    /// secretRef is Optional: secretRef is reference to the secret object containing
+    /// sensitive information to pass to the plugin scripts. This may be
+    /// empty if no secret object is specified. If the secret object
+    /// contains more than one secret, all secrets are passed to the plugin
+    /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceFlexVolumeSecretRef>,
 }
 
-/// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+/// secretRef is Optional: secretRef is reference to the secret object containing
+/// sensitive information to pass to the plugin scripts. This may be
+/// empty if no secret object is specified. If the secret object
+/// contains more than one secret, all secrets are passed to the plugin
+/// scripts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceFlexVolumeSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1278,7 +1798,8 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceFlexVolumeSecretRef {
 /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceFlocker {
-    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
+    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
+    /// should be considered as deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
@@ -1286,27 +1807,46 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceFlocker {
     pub dataset_uuid: Option<String>,
 }
 
-/// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+/// gcePersistentDisk represents a GCE Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceGcePersistentDisk {
-    /// fsType is filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty). More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(rename = "pdName")]
     pub pd_name: String,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+/// gitRepo represents a git repository at a particular revision.
+/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+/// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceGitRepo {
-    /// directory is the target directory name. Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the git repository.  Otherwise, if specified, the volume will contain the git repository in the subdirectory with the given name.
+    /// directory is the target directory name.
+    /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
+    /// git repository.  Otherwise, if specified, the volume will contain the git repository in
+    /// the subdirectory with the given name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub directory: Option<String>,
     /// repository is the URL
@@ -1316,29 +1856,47 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceGitRepo {
     pub revision: Option<String>,
 }
 
-/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceGlusterfs {
-    /// endpoints is the endpoint name that details Glusterfs topology. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// endpoints is the endpoint name that details Glusterfs topology.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub endpoints: String,
-    /// path is the Glusterfs volume path. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// path is the Glusterfs volume path.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub path: String,
-    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions. Defaults to false. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+/// hostPath represents a pre-existing file or directory on the host
+/// machine that is directly exposed to the container. This is generally
+/// used for system agents or other privileged things that are allowed
+/// to see the host machine. Most containers will NOT need this.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+/// ---
+/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+/// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceHostPath {
-    /// path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// path of the directory on the host.
+    /// If the path is a symlink, it will follow the link to the real path.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     pub path: String,
-    /// type for HostPath Volume Defaults to "" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// type for HostPath Volume
+    /// Defaults to ""
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+/// iscsi represents an ISCSI Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://examples.k8s.io/volumes/iscsi/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
@@ -1347,29 +1905,39 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceIscsi {
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// initiatorName is the custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface <target portal>:<volume name> will be created for the connection.
+    /// initiatorName is the custom iSCSI Initiator Name.
+    /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
+    /// <target portal>:<volume name> will be created for the connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
-    /// iscsiInterface is the interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
+    /// iscsiInterface is the interface Name that uses an iSCSI transport.
+    /// Defaults to 'default' (tcp).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
-    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub portals: Option<Vec<String>>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false.
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceIscsiSecretRef>,
-    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
     pub target_portal: String,
 }
@@ -1377,30 +1945,41 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceIscsi {
 /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceIscsiSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+/// nfs represents an NFS mount on the host that shares a pod's lifetime
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceNfs {
-    /// path that is exported by the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// path that is exported by the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub path: String,
-    /// readOnly here will force the NFS export to be mounted with read-only permissions. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// readOnly here will force the NFS export to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// server is the hostname or IP address of the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// server is the hostname or IP address of the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub server: String,
 }
 
-/// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+/// persistentVolumeClaimVolumeSource represents a reference to a
+/// PersistentVolumeClaim in the same namespace.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourcePersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
@@ -1408,7 +1987,9 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourcePersistentVolumeClaim {
 /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourcePhotonPersistentDisk {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// pdID is the ID that identifies Photon Controller persistent disk
@@ -1419,10 +2000,13 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourcePhotonPersistentDisk {
 /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourcePortworxVolume {
-    /// fSType represents the filesystem type to mount Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fSType represents the filesystem type to mount
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeID uniquely identifies a Portworx volume
@@ -1433,7 +2017,12 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourcePortworxVolume {
 /// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode are the mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
@@ -1444,6 +2033,24 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjected {
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSources {
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+    /// of ClusterTrustBundle objects in an auto-updating file.
+    /// 
+    /// 
+    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+    /// 
+    /// 
+    /// ClusterTrustBundle objects can either be selected by name, or by the
+    /// combination of signer name and a label selector.
+    /// 
+    /// 
+    /// Kubelet performs aggressive normalization of the PEM contents written
+    /// into the pod filesystem.  Esoteric PEM features such as inter-block
+    /// comments and block headers are stripped.  Certificates are deduplicated.
+    /// The ordering of certificates within the file is arbitrary, and Kubelet
+    /// may change the order over time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMap>,
@@ -1458,13 +2065,98 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSources {
     pub service_account_token: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+/// of ClusterTrustBundle objects in an auto-updating file.
+/// 
+/// 
+/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+/// 
+/// 
+/// ClusterTrustBundle objects can either be selected by name, or by the
+/// combination of signer name and a label selector.
+/// 
+/// 
+/// Kubelet performs aggressive normalization of the PEM contents written
+/// into the pod filesystem.  Esoteric PEM features such as inter-block
+/// comments and block headers are stripped.  Certificates are deduplicated.
+/// The ordering of certificates within the file is arbitrary, and Kubelet
+/// may change the order over time.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundle {
+    /// Select all ClusterTrustBundles that match this label selector.  Only has
+    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+    /// interpreted as "match nothing".  If set but empty, interpreted as "match
+    /// everything".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector>,
+    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
+    /// with signerName and labelSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
+    /// aren't available.  If using name, then the named ClusterTrustBundle is
+    /// allowed not to exist.  If using signerName, then the combination of
+    /// signerName and labelSelector is allowed to match zero
+    /// ClusterTrustBundles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Relative path from the volume root to write the bundle.
+    pub path: String,
+    /// Select all ClusterTrustBundles that match this signer name.
+    /// Mutually-exclusive with name.  The contents of all selected
+    /// ClusterTrustBundles will be unified and deduplicated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+/// Select all ClusterTrustBundles that match this label selector.  Only has
+/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+/// interpreted as "match nothing".  If set but empty, interpreted as "match
+/// everything".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
 /// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -1477,10 +2169,18 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMap 
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMapItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
@@ -1498,12 +2198,18 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardAp
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
@@ -1519,7 +2225,8 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardAp
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -1535,10 +2242,18 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardAp
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesSecretItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -1551,78 +2266,124 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesSecret {
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesSecretItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
+    /// audience is the intended audience of the token. A recipient of a token
+    /// must identify itself with an identifier specified in the audience of the
+    /// token, and otherwise should reject the token. The audience defaults to the
+    /// identifier of the apiserver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
+    /// expirationSeconds is the requested duration of validity of the service
+    /// account token. As the token approaches expiration, the kubelet volume
+    /// plugin will proactively rotate the service account token. The kubelet will
+    /// start trying to rotate the token if the token is older than 80 percent of
+    /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
+    /// and must be at least 10 minutes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the token into.
+    /// path is the path relative to the mount point of the file to project the
+    /// token into.
     pub path: String,
 }
 
 /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceQuobyte {
-    /// group to map volume access to Default is no group
+    /// group to map volume access to
+    /// Default is no group
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions. Defaults to false.
+    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// registry represents a single or multiple Quobyte Registry services specified as a string as host:port pair (multiple entries are separated with commas) which acts as the central registry for volumes
+    /// registry represents a single or multiple Quobyte Registry services
+    /// specified as a string as host:port pair (multiple entries are separated with commas)
+    /// which acts as the central registry for volumes
     pub registry: String,
-    /// tenant owning the given Quobyte volume in the Backend Used with dynamically provisioned Quobyte volumes, value is set by the plugin
+    /// tenant owning the given Quobyte volume in the Backend
+    /// Used with dynamically provisioned Quobyte volumes, value is set by the plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
-    /// user to map volume access to Defaults to serivceaccount user
+    /// user to map volume access to
+    /// Defaults to serivceaccount user
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
     /// volume is a string that references an already created Quobyte volume by name.
     pub volume: String,
 }
 
-/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceRbd {
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// image is the rados image name. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// image is the rados image name.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub image: String,
-    /// keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// keyring is the path to key ring for RBDUser.
+    /// Default is /etc/ceph/keyring.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyring: Option<String>,
-    /// monitors is a collection of Ceph monitors. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// monitors is a collection of Ceph monitors.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub monitors: Vec<String>,
-    /// pool is the rados pool name. Default is rbd. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// pool is the rados pool name.
+    /// Default is rbd.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pool: Option<String>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// secretRef is name of the authentication secret for RBDUser. If provided
+    /// overrides keyring.
+    /// Default is nil.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceRbdSecretRef>,
-    /// user is the rados user name. Default is admin. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// user is the rados user name.
+    /// Default is admin.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+/// secretRef is name of the authentication secret for RBDUser. If provided
+/// overrides keyring.
+/// Default is nil.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceRbdSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1630,7 +2391,10 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceRbdSecretRef {
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceScaleIo {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Default is "xfs".
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs".
+    /// Default is "xfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// gateway is the host address of the ScaleIO API Gateway.
@@ -1638,16 +2402,19 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceScaleIo {
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+    /// secretRef references to the secret for ScaleIO user and other
+    /// sensitive information. If this is not provided, Login operation will fail.
     #[serde(rename = "secretRef")]
     pub secret_ref: AlluxioRuntimeTieredstoreLevelsVolumeSourceScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned. Default is ThinProvisioned.
+    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
+    /// Default is ThinProvisioned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
@@ -1655,32 +2422,50 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceScaleIo {
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
-    /// volumeName is the name of a volume already created in the ScaleIO system that is associated with this volume source.
+    /// volumeName is the name of a volume already created in the ScaleIO system
+    /// that is associated with this volume source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
-/// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+/// secretRef references to the secret for ScaleIO user and other
+/// sensitive information. If this is not provided, Login operation will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceScaleIoSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+/// secret represents a secret that should populate this volume.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values
+    /// for mode bits. Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items If unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AlluxioRuntimeTieredstoreLevelsVolumeSourceSecretItems>>,
     /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    /// secretName is the name of the secret in the pod's namespace to use.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
@@ -1690,37 +2475,58 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceSecret {
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceSecretItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceStorageos {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+    /// secretRef specifies the secret to use for obtaining the StorageOS API
+    /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeTieredstoreLevelsVolumeSourceStorageosSecretRef>,
-    /// volumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
+    /// volumeName is the human-readable name of the StorageOS volume.  Volume
+    /// names are only unique within a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
+    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
+    /// namespace is specified then the Pod's namespace will be used.  This allows the
+    /// Kubernetes name scoping to be mirrored within StorageOS for tighter integration.
+    /// Set VolumeName to any name to override the default behaviour.
+    /// Set to "default" if you are not using namespaces within StorageOS.
+    /// Namespaces that do not pre-exist within StorageOS will be created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
-/// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+/// secretRef specifies the secret to use for obtaining the StorageOS API
+/// credentials.  If not specified, default values will be attempted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceStorageosSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1728,7 +2534,9 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceStorageosSecretRef {
 /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceVsphereVolume {
-    /// fsType is filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
@@ -1742,7 +2550,8 @@ pub struct AlluxioRuntimeTieredstoreLevelsVolumeSourceVsphereVolume {
     pub volume_path: String,
 }
 
-/// Level describes configurations a tier needs. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/core-services/Caching.html#configuring-tiered-storage">Configuring Tiered Storage</a> for more info
+/// Level describes configurations a tier needs. <br>
+/// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/core-services/Caching.html#configuring-tiered-storage">Configuring Tiered Storage</a> for more info
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum AlluxioRuntimeTieredstoreLevelsVolumeType {
     #[serde(rename = "hostPath")]
@@ -1754,7 +2563,9 @@ pub enum AlluxioRuntimeTieredstoreLevelsVolumeType {
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumes {
-    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<AlluxioRuntimeVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
@@ -1766,7 +2577,8 @@ pub struct AlluxioRuntimeVolumes {
     /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<AlluxioRuntimeVolumesCephfs>,
-    /// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<AlluxioRuntimeVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
@@ -1778,46 +2590,91 @@ pub struct AlluxioRuntimeVolumes {
     /// downwardAPI represents downward API about the pod that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<AlluxioRuntimeVolumesDownwardApi>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// emptyDir represents a temporary directory that shares a pod's lifetime.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<AlluxioRuntimeVolumesEmptyDir>,
-    /// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
-    ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
-    ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
-    ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
-    ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
+    /// ephemeral represents a volume that is handled by a cluster storage driver.
+    /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+    /// and deleted when the pod is removed.
+    /// 
+    /// 
+    /// Use this if:
+    /// a) the volume is only needed while the pod runs,
+    /// b) features of normal volumes like restoring from snapshot or capacity
+    ///    tracking are needed,
+    /// c) the storage driver is specified through a storage class, and
+    /// d) the storage driver supports dynamic volume provisioning through
+    ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+    ///    information on the connection between this volume type
+    ///    and PersistentVolumeClaim).
+    /// 
+    /// 
+    /// Use PersistentVolumeClaim or one of the vendor-specific
+    /// APIs for volumes that persist for longer than the lifecycle
+    /// of an individual pod.
+    /// 
+    /// 
+    /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+    /// be used that way - see the documentation of the driver for
+    /// more information.
+    /// 
+    /// 
+    /// A pod can use both types of ephemeral volumes and
+    /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<AlluxioRuntimeVolumesEphemeral>,
     /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<AlluxioRuntimeVolumesFc>,
-    /// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+    /// flexVolume represents a generic volume resource that is
+    /// provisioned/attached using an exec based plugin.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<AlluxioRuntimeVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<AlluxioRuntimeVolumesFlocker>,
-    /// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// gcePersistentDisk represents a GCE Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<AlluxioRuntimeVolumesGcePersistentDisk>,
-    /// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+    /// gitRepo represents a git repository at a particular revision.
+    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+    /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<AlluxioRuntimeVolumesGitRepo>,
-    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<AlluxioRuntimeVolumesGlusterfs>,
-    /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+    /// hostPath represents a pre-existing file or directory on the host
+    /// machine that is directly exposed to the container. This is generally
+    /// used for system agents or other privileged things that are allowed
+    /// to see the host machine. Most containers will NOT need this.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// ---
+    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+    /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<AlluxioRuntimeVolumesHostPath>,
-    /// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+    /// iscsi represents an ISCSI Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://examples.k8s.io/volumes/iscsi/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<AlluxioRuntimeVolumesIscsi>,
-    /// name of the volume. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// name of the volume.
+    /// Must be a DNS_LABEL and unique within the pod.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
-    /// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<AlluxioRuntimeVolumesNfs>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// persistentVolumeClaimVolumeSource represents a reference to a
+    /// PersistentVolumeClaim in the same namespace.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<AlluxioRuntimeVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
@@ -1832,13 +2689,15 @@ pub struct AlluxioRuntimeVolumes {
     /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<AlluxioRuntimeVolumesQuobyte>,
-    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<AlluxioRuntimeVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<AlluxioRuntimeVolumesScaleIo>,
-    /// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    /// secret represents a secret that should populate this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlluxioRuntimeVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
@@ -1849,19 +2708,30 @@ pub struct AlluxioRuntimeVolumes {
     pub vsphere_volume: Option<AlluxioRuntimeVolumesVsphereVolume>,
 }
 
-/// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+/// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesAwsElasticBlockStore {
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// readOnly value true will force the readOnly setting in VolumeMounts. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// readOnly value true will force the readOnly setting in VolumeMounts.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume). More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
@@ -1878,13 +2748,16 @@ pub struct AlluxioRuntimeVolumesAzureDisk {
     /// diskURI is the URI of data disk in the blob storage
     #[serde(rename = "diskURI")]
     pub disk_uri: String,
-    /// fsType is Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is Filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
@@ -1892,7 +2765,8 @@ pub struct AlluxioRuntimeVolumesAzureDisk {
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesAzureFile {
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// secretName is the  name of secret that contains Azure Storage Account Name and Key
@@ -1906,54 +2780,74 @@ pub struct AlluxioRuntimeVolumesAzureFile {
 /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesCephfs {
-    /// monitors is Required: Monitors is a collection of Ceph monitors More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// monitors is Required: Monitors is a collection of Ceph monitors
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     pub monitors: Vec<String>,
     /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
-    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeVolumesCephfsSecretRef>,
-    /// user is optional: User is the rados user name, default is admin More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// user is optional: User is the rados user name, default is admin
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+/// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesCephfsSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+/// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesCinder {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
+    /// secretRef is optional: points to a secret object containing parameters used to connect
+    /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeVolumesCinderSecretRef>,
-    /// volumeID used to identify the volume in cinder. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// volumeID used to identify the volume in cinder.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
 
-/// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
+/// secretRef is optional: points to a secret object containing parameters used to connect
+/// to OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesCinderSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1961,13 +2855,27 @@ pub struct AlluxioRuntimeVolumesCinderSecretRef {
 /// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode is optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AlluxioRuntimeVolumesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -1980,36 +2888,59 @@ pub struct AlluxioRuntimeVolumesConfigMap {
 pub struct AlluxioRuntimeVolumesConfigMapItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesCsi {
-    /// driver is the name of the CSI driver that handles this volume. Consult with your admin for the correct name as registered in the cluster.
+    /// driver is the name of the CSI driver that handles this volume.
+    /// Consult with your admin for the correct name as registered in the cluster.
     pub driver: String,
-    /// fsType to mount. Ex. "ext4", "xfs", "ntfs". If not provided, the empty value is passed to the associated CSI driver which will determine the default filesystem to apply.
+    /// fsType to mount. Ex. "ext4", "xfs", "ntfs".
+    /// If not provided, the empty value is passed to the associated CSI driver
+    /// which will determine the default filesystem to apply.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+    /// nodePublishSecretRef is a reference to the secret object containing
+    /// sensitive information to pass to the CSI driver to complete the CSI
+    /// NodePublishVolume and NodeUnpublishVolume calls.
+    /// This field is optional, and  may be empty if no secret is required. If the
+    /// secret object contains more than one secret, all secret references are passed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<AlluxioRuntimeVolumesCsiNodePublishSecretRef>,
-    /// readOnly specifies a read-only configuration for the volume. Defaults to false (read/write).
+    /// readOnly specifies a read-only configuration for the volume.
+    /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
+    /// volumeAttributes stores driver-specific properties that are passed to the CSI
+    /// driver. Consult your driver's documentation for supported values.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
-/// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+/// nodePublishSecretRef is a reference to the secret object containing
+/// sensitive information to pass to the CSI driver to complete the CSI
+/// NodePublishVolume and NodeUnpublishVolume calls.
+/// This field is optional, and  may be empty if no secret is required. If the
+/// secret object contains more than one secret, all secret references are passed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesCsiNodePublishSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2017,7 +2948,14 @@ pub struct AlluxioRuntimeVolumesCsiNodePublishSecretRef {
 /// downwardAPI represents downward API about the pod that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesDownwardApi {
-    /// Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits to use on created files by default. Must be a
+    /// Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
@@ -2031,12 +2969,18 @@ pub struct AlluxioRuntimeVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<AlluxioRuntimeVolumesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<AlluxioRuntimeVolumesDownwardApiItemsResourceFieldRef>,
 }
@@ -2052,7 +2996,8 @@ pub struct AlluxioRuntimeVolumesDownwardApiItemsFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -2065,72 +3010,204 @@ pub struct AlluxioRuntimeVolumesDownwardApiItemsResourceFieldRef {
     pub resource: String,
 }
 
-/// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+/// emptyDir represents a temporary directory that shares a pod's lifetime.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesEmptyDir {
-    /// medium represents what type of storage medium should back this directory. The default is "" which means to use the node's default medium. Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// medium represents what type of storage medium should back this directory.
+    /// The default is "" which means to use the node's default medium.
+    /// Must be an empty string (default) or Memory.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: http://kubernetes.io/docs/user-guide/volumes#emptydir
+    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
+    /// The size limit is also applicable for memory medium.
+    /// The maximum usage on memory medium EmptyDir would be the minimum value between
+    /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
+    /// The default is nil which means that the limit is undefined.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
 
-/// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
-///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
-///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
-///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
-///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
+/// ephemeral represents a volume that is handled by a cluster storage driver.
+/// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+/// and deleted when the pod is removed.
+/// 
+/// 
+/// Use this if:
+/// a) the volume is only needed while the pod runs,
+/// b) features of normal volumes like restoring from snapshot or capacity
+///    tracking are needed,
+/// c) the storage driver is specified through a storage class, and
+/// d) the storage driver supports dynamic volume provisioning through
+///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+///    information on the connection between this volume type
+///    and PersistentVolumeClaim).
+/// 
+/// 
+/// Use PersistentVolumeClaim or one of the vendor-specific
+/// APIs for volumes that persist for longer than the lifecycle
+/// of an individual pod.
+/// 
+/// 
+/// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+/// be used that way - see the documentation of the driver for
+/// more information.
+/// 
+/// 
+/// A pod can use both types of ephemeral volumes and
+/// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesEphemeral {
-    /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
-    ///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
-    ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
-    ///  Required, must not be nil.
+    /// Will be used to create a stand-alone PVC to provision the volume.
+    /// The pod in which this EphemeralVolumeSource is embedded will be the
+    /// owner of the PVC, i.e. the PVC will be deleted together with the
+    /// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+    /// `<volume name>` is the name from the `PodSpec.Volumes` array
+    /// entry. Pod validation will reject the pod if the concatenated name
+    /// is not valid for a PVC (for example, too long).
+    /// 
+    /// 
+    /// An existing PVC with that name that is not owned by the pod
+    /// will *not* be used for the pod to avoid using an unrelated
+    /// volume by mistake. Starting the pod is then blocked until
+    /// the unrelated PVC is removed. If such a pre-created PVC is
+    /// meant to be used by the pod, the PVC has to updated with an
+    /// owner reference to the pod once the pod exists. Normally
+    /// this should not be necessary, but it may be useful when
+    /// manually reconstructing a broken cluster.
+    /// 
+    /// 
+    /// This field is read-only and no changes will be made by Kubernetes
+    /// to the PVC after it has been created.
+    /// 
+    /// 
+    /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<AlluxioRuntimeVolumesEphemeralVolumeClaimTemplate>,
 }
 
-/// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
-///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
-///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
-///  Required, must not be nil.
+/// Will be used to create a stand-alone PVC to provision the volume.
+/// The pod in which this EphemeralVolumeSource is embedded will be the
+/// owner of the PVC, i.e. the PVC will be deleted together with the
+/// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+/// `<volume name>` is the name from the `PodSpec.Volumes` array
+/// entry. Pod validation will reject the pod if the concatenated name
+/// is not valid for a PVC (for example, too long).
+/// 
+/// 
+/// An existing PVC with that name that is not owned by the pod
+/// will *not* be used for the pod to avoid using an unrelated
+/// volume by mistake. Starting the pod is then blocked until
+/// the unrelated PVC is removed. If such a pre-created PVC is
+/// meant to be used by the pod, the PVC has to updated with an
+/// owner reference to the pod once the pod exists. Normally
+/// this should not be necessary, but it may be useful when
+/// manually reconstructing a broken cluster.
+/// 
+/// 
+/// This field is read-only and no changes will be made by Kubernetes
+/// to the PVC after it has been created.
+/// 
+/// 
+/// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplate {
-    /// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
+    /// May contain labels and annotations that will be copied into the PVC
+    /// when creating it. No other fields are allowed and will be rejected during
+    /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateMetadata>,
-    /// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
+    /// The specification for the PersistentVolumeClaim. The entire content is
+    /// copied unchanged into the PVC that gets created from this
+    /// template. The same fields as in a PersistentVolumeClaim
+    /// are also valid here.
     pub spec: AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpec,
 }
 
-/// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
+/// May contain labels and annotations that will be copied into the PVC
+/// when creating it. No other fields are allowed and will be rejected during
+/// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateMetadata {
 }
 
-/// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
+/// The specification for the PersistentVolumeClaim. The entire content is
+/// copied unchanged into the PVC that gets created from this
+/// template. The same fields as in a PersistentVolumeClaim
+/// are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
-    /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
-    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
-    /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelector>,
-    /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
@@ -2138,10 +3215,19 @@ pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
     pub volume_name: Option<String>,
 }
 
-/// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSource {
-    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
@@ -2150,42 +3236,64 @@ pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     pub name: String,
 }
 
-/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
-    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
     pub kind: String,
     /// Name is the name of resource being referenced
     pub name: String,
-    /// Namespace is the namespace of resource being referenced Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details. (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -2194,19 +3302,26 @@ pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -2214,46 +3329,65 @@ pub struct AlluxioRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExp
 /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesFc {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// lun is Optional: FC target lun number
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
-    /// wwids Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+    /// wwids Optional: FC volume world wide identifiers (wwids)
+    /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
 }
 
-/// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+/// flexVolume represents a generic volume resource that is
+/// provisioned/attached using an exec based plugin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
     pub driver: String,
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// options is Optional: this field holds extra command options if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
-    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+    /// secretRef is Optional: secretRef is reference to the secret object containing
+    /// sensitive information to pass to the plugin scripts. This may be
+    /// empty if no secret object is specified. If the secret object
+    /// contains more than one secret, all secrets are passed to the plugin
+    /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeVolumesFlexVolumeSecretRef>,
 }
 
-/// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+/// secretRef is Optional: secretRef is reference to the secret object containing
+/// sensitive information to pass to the plugin scripts. This may be
+/// empty if no secret object is specified. If the secret object
+/// contains more than one secret, all secrets are passed to the plugin
+/// scripts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesFlexVolumeSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2261,7 +3395,8 @@ pub struct AlluxioRuntimeVolumesFlexVolumeSecretRef {
 /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesFlocker {
-    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
+    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
+    /// should be considered as deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
@@ -2269,27 +3404,46 @@ pub struct AlluxioRuntimeVolumesFlocker {
     pub dataset_uuid: Option<String>,
 }
 
-/// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+/// gcePersistentDisk represents a GCE Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesGcePersistentDisk {
-    /// fsType is filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty). More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(rename = "pdName")]
     pub pd_name: String,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+/// gitRepo represents a git repository at a particular revision.
+/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+/// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesGitRepo {
-    /// directory is the target directory name. Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the git repository.  Otherwise, if specified, the volume will contain the git repository in the subdirectory with the given name.
+    /// directory is the target directory name.
+    /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
+    /// git repository.  Otherwise, if specified, the volume will contain the git repository in
+    /// the subdirectory with the given name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub directory: Option<String>,
     /// repository is the URL
@@ -2299,29 +3453,47 @@ pub struct AlluxioRuntimeVolumesGitRepo {
     pub revision: Option<String>,
 }
 
-/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesGlusterfs {
-    /// endpoints is the endpoint name that details Glusterfs topology. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// endpoints is the endpoint name that details Glusterfs topology.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub endpoints: String,
-    /// path is the Glusterfs volume path. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// path is the Glusterfs volume path.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub path: String,
-    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions. Defaults to false. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+/// hostPath represents a pre-existing file or directory on the host
+/// machine that is directly exposed to the container. This is generally
+/// used for system agents or other privileged things that are allowed
+/// to see the host machine. Most containers will NOT need this.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+/// ---
+/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+/// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesHostPath {
-    /// path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// path of the directory on the host.
+    /// If the path is a symlink, it will follow the link to the real path.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     pub path: String,
-    /// type for HostPath Volume Defaults to "" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// type for HostPath Volume
+    /// Defaults to ""
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+/// iscsi represents an ISCSI Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://examples.k8s.io/volumes/iscsi/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
@@ -2330,29 +3502,39 @@ pub struct AlluxioRuntimeVolumesIscsi {
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// initiatorName is the custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface <target portal>:<volume name> will be created for the connection.
+    /// initiatorName is the custom iSCSI Initiator Name.
+    /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
+    /// <target portal>:<volume name> will be created for the connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
-    /// iscsiInterface is the interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
+    /// iscsiInterface is the interface Name that uses an iSCSI transport.
+    /// Defaults to 'default' (tcp).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
-    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub portals: Option<Vec<String>>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false.
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeVolumesIscsiSecretRef>,
-    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
     pub target_portal: String,
 }
@@ -2360,30 +3542,41 @@ pub struct AlluxioRuntimeVolumesIscsi {
 /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesIscsiSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+/// nfs represents an NFS mount on the host that shares a pod's lifetime
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesNfs {
-    /// path that is exported by the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// path that is exported by the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub path: String,
-    /// readOnly here will force the NFS export to be mounted with read-only permissions. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// readOnly here will force the NFS export to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// server is the hostname or IP address of the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// server is the hostname or IP address of the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub server: String,
 }
 
-/// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+/// persistentVolumeClaimVolumeSource represents a reference to a
+/// PersistentVolumeClaim in the same namespace.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesPersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
@@ -2391,7 +3584,9 @@ pub struct AlluxioRuntimeVolumesPersistentVolumeClaim {
 /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesPhotonPersistentDisk {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// pdID is the ID that identifies Photon Controller persistent disk
@@ -2402,10 +3597,13 @@ pub struct AlluxioRuntimeVolumesPhotonPersistentDisk {
 /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesPortworxVolume {
-    /// fSType represents the filesystem type to mount Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fSType represents the filesystem type to mount
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeID uniquely identifies a Portworx volume
@@ -2416,7 +3614,12 @@ pub struct AlluxioRuntimeVolumesPortworxVolume {
 /// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode are the mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
@@ -2427,6 +3630,24 @@ pub struct AlluxioRuntimeVolumesProjected {
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesProjectedSources {
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+    /// of ClusterTrustBundle objects in an auto-updating file.
+    /// 
+    /// 
+    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+    /// 
+    /// 
+    /// ClusterTrustBundle objects can either be selected by name, or by the
+    /// combination of signer name and a label selector.
+    /// 
+    /// 
+    /// Kubelet performs aggressive normalization of the PEM contents written
+    /// into the pod filesystem.  Esoteric PEM features such as inter-block
+    /// comments and block headers are stripped.  Certificates are deduplicated.
+    /// The ordering of certificates within the file is arbitrary, and Kubelet
+    /// may change the order over time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<AlluxioRuntimeVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<AlluxioRuntimeVolumesProjectedSourcesConfigMap>,
@@ -2441,13 +3662,98 @@ pub struct AlluxioRuntimeVolumesProjectedSources {
     pub service_account_token: Option<AlluxioRuntimeVolumesProjectedSourcesServiceAccountToken>,
 }
 
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+/// of ClusterTrustBundle objects in an auto-updating file.
+/// 
+/// 
+/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+/// 
+/// 
+/// ClusterTrustBundle objects can either be selected by name, or by the
+/// combination of signer name and a label selector.
+/// 
+/// 
+/// Kubelet performs aggressive normalization of the PEM contents written
+/// into the pod filesystem.  Esoteric PEM features such as inter-block
+/// comments and block headers are stripped.  Certificates are deduplicated.
+/// The ordering of certificates within the file is arbitrary, and Kubelet
+/// may change the order over time.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeVolumesProjectedSourcesClusterTrustBundle {
+    /// Select all ClusterTrustBundles that match this label selector.  Only has
+    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+    /// interpreted as "match nothing".  If set but empty, interpreted as "match
+    /// everything".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<AlluxioRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
+    /// with signerName and labelSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
+    /// aren't available.  If using name, then the named ClusterTrustBundle is
+    /// allowed not to exist.  If using signerName, then the combination of
+    /// signerName and labelSelector is allowed to match zero
+    /// ClusterTrustBundles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Relative path from the volume root to write the bundle.
+    pub path: String,
+    /// Select all ClusterTrustBundles that match this signer name.
+    /// Mutually-exclusive with name.  The contents of all selected
+    /// ClusterTrustBundles will be unified and deduplicated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+/// Select all ClusterTrustBundles that match this label selector.  Only has
+/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+/// interpreted as "match nothing".  If set but empty, interpreted as "match
+/// everything".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<AlluxioRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
 /// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AlluxioRuntimeVolumesProjectedSourcesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -2460,10 +3766,18 @@ pub struct AlluxioRuntimeVolumesProjectedSourcesConfigMap {
 pub struct AlluxioRuntimeVolumesProjectedSourcesConfigMapItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
@@ -2481,12 +3795,18 @@ pub struct AlluxioRuntimeVolumesProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<AlluxioRuntimeVolumesProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<AlluxioRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
@@ -2502,7 +3822,8 @@ pub struct AlluxioRuntimeVolumesProjectedSourcesDownwardApiItemsFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -2518,10 +3839,18 @@ pub struct AlluxioRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AlluxioRuntimeVolumesProjectedSourcesSecretItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -2534,78 +3863,124 @@ pub struct AlluxioRuntimeVolumesProjectedSourcesSecret {
 pub struct AlluxioRuntimeVolumesProjectedSourcesSecretItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
+    /// audience is the intended audience of the token. A recipient of a token
+    /// must identify itself with an identifier specified in the audience of the
+    /// token, and otherwise should reject the token. The audience defaults to the
+    /// identifier of the apiserver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
+    /// expirationSeconds is the requested duration of validity of the service
+    /// account token. As the token approaches expiration, the kubelet volume
+    /// plugin will proactively rotate the service account token. The kubelet will
+    /// start trying to rotate the token if the token is older than 80 percent of
+    /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
+    /// and must be at least 10 minutes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the token into.
+    /// path is the path relative to the mount point of the file to project the
+    /// token into.
     pub path: String,
 }
 
 /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesQuobyte {
-    /// group to map volume access to Default is no group
+    /// group to map volume access to
+    /// Default is no group
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions. Defaults to false.
+    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// registry represents a single or multiple Quobyte Registry services specified as a string as host:port pair (multiple entries are separated with commas) which acts as the central registry for volumes
+    /// registry represents a single or multiple Quobyte Registry services
+    /// specified as a string as host:port pair (multiple entries are separated with commas)
+    /// which acts as the central registry for volumes
     pub registry: String,
-    /// tenant owning the given Quobyte volume in the Backend Used with dynamically provisioned Quobyte volumes, value is set by the plugin
+    /// tenant owning the given Quobyte volume in the Backend
+    /// Used with dynamically provisioned Quobyte volumes, value is set by the plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
-    /// user to map volume access to Defaults to serivceaccount user
+    /// user to map volume access to
+    /// Defaults to serivceaccount user
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
     /// volume is a string that references an already created Quobyte volume by name.
     pub volume: String,
 }
 
-/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesRbd {
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// image is the rados image name. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// image is the rados image name.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub image: String,
-    /// keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// keyring is the path to key ring for RBDUser.
+    /// Default is /etc/ceph/keyring.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyring: Option<String>,
-    /// monitors is a collection of Ceph monitors. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// monitors is a collection of Ceph monitors.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub monitors: Vec<String>,
-    /// pool is the rados pool name. Default is rbd. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// pool is the rados pool name.
+    /// Default is rbd.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pool: Option<String>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// secretRef is name of the authentication secret for RBDUser. If provided
+    /// overrides keyring.
+    /// Default is nil.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeVolumesRbdSecretRef>,
-    /// user is the rados user name. Default is admin. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// user is the rados user name.
+    /// Default is admin.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+/// secretRef is name of the authentication secret for RBDUser. If provided
+/// overrides keyring.
+/// Default is nil.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesRbdSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2613,7 +3988,10 @@ pub struct AlluxioRuntimeVolumesRbdSecretRef {
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesScaleIo {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Default is "xfs".
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs".
+    /// Default is "xfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// gateway is the host address of the ScaleIO API Gateway.
@@ -2621,16 +3999,19 @@ pub struct AlluxioRuntimeVolumesScaleIo {
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+    /// secretRef references to the secret for ScaleIO user and other
+    /// sensitive information. If this is not provided, Login operation will fail.
     #[serde(rename = "secretRef")]
     pub secret_ref: AlluxioRuntimeVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned. Default is ThinProvisioned.
+    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
+    /// Default is ThinProvisioned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
@@ -2638,32 +4019,50 @@ pub struct AlluxioRuntimeVolumesScaleIo {
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
-    /// volumeName is the name of a volume already created in the ScaleIO system that is associated with this volume source.
+    /// volumeName is the name of a volume already created in the ScaleIO system
+    /// that is associated with this volume source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
-/// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+/// secretRef references to the secret for ScaleIO user and other
+/// sensitive information. If this is not provided, Login operation will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesScaleIoSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+/// secret represents a secret that should populate this volume.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values
+    /// for mode bits. Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items If unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AlluxioRuntimeVolumesSecretItems>>,
     /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    /// secretName is the name of the secret in the pod's namespace to use.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
@@ -2673,37 +4072,58 @@ pub struct AlluxioRuntimeVolumesSecret {
 pub struct AlluxioRuntimeVolumesSecretItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesStorageos {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+    /// secretRef specifies the secret to use for obtaining the StorageOS API
+    /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<AlluxioRuntimeVolumesStorageosSecretRef>,
-    /// volumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
+    /// volumeName is the human-readable name of the StorageOS volume.  Volume
+    /// names are only unique within a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
+    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
+    /// namespace is specified then the Pod's namespace will be used.  This allows the
+    /// Kubernetes name scoping to be mirrored within StorageOS for tighter integration.
+    /// Set VolumeName to any name to override the default behaviour.
+    /// Set to "default" if you are not using namespaces within StorageOS.
+    /// Namespaces that do not pre-exist within StorageOS will be created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
-/// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+/// secretRef specifies the secret to use for obtaining the StorageOS API
+/// credentials.  If not specified, default values will be attempted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesStorageosSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2711,7 +4131,9 @@ pub struct AlluxioRuntimeVolumesStorageosSecretRef {
 /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeVolumesVsphereVolume {
-    /// fsType is filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
@@ -2749,13 +4171,19 @@ pub struct AlluxioRuntimeWorker {
     /// Ports used by Alluxio(e.g. rpc: 19998 for master)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<BTreeMap<String, i64>>,
-    /// Configurable properties for the Alluxio component. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
+    /// Configurable properties for the Alluxio component. <br>
+    /// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Alluxio Configuration Properties</a> for more info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<BTreeMap<String, String>>,
-    /// Replicas is the desired number of replicas of the given template. If unspecified, defaults to 1. replicas is the min replicas of dataset in the cluster
+    /// Replicas is the desired number of replicas of the given template.
+    /// If unspecified, defaults to 1.
+    /// replicas is the min replicas of dataset in the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resources that will be requested by the Alluxio component. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+    /// Resources that will be requested by the Alluxio component. <br>
+    /// <br>
+    /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+    /// already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AlluxioRuntimeWorkerResources>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
@@ -2783,18 +4211,31 @@ pub struct AlluxioRuntimeWorkerPodMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Resources that will be requested by the Alluxio component. <br> <br> Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+/// Resources that will be requested by the Alluxio component. <br>
+/// <br>
+/// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+/// already allocated to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeWorkerResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AlluxioRuntimeWorkerResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -2802,28 +4243,39 @@ pub struct AlluxioRuntimeWorkerResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeWorkerResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeWorkerVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
@@ -2843,31 +4295,42 @@ pub struct AlluxioRuntimeStatus {
     /// Represents the latest available observations of a ddc runtime's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// The total number of nodes that can be running the runtime Fuse pod (including nodes correctly running the runtime Fuse pod).
+    /// The total number of nodes that can be running the runtime Fuse
+    /// pod (including nodes correctly running the runtime Fuse pod).
     #[serde(rename = "currentFuseNumberScheduled")]
     pub current_fuse_number_scheduled: i32,
-    /// The total number of nodes that should be running the runtime pod (including nodes correctly running the runtime master pod).
+    /// The total number of nodes that should be running the runtime
+    /// pod (including nodes correctly running the runtime master pod).
     #[serde(rename = "currentMasterNumberScheduled")]
     pub current_master_number_scheduled: i32,
-    /// The total number of nodes that can be running the runtime worker pod (including nodes correctly running the runtime worker pod).
+    /// The total number of nodes that can be running the runtime worker
+    /// pod (including nodes correctly running the runtime worker pod).
     #[serde(rename = "currentWorkerNumberScheduled")]
     pub current_worker_number_scheduled: i32,
-    /// The total number of nodes that should be running the runtime Fuse pod (including nodes correctly running the runtime Fuse pod).
+    /// The total number of nodes that should be running the runtime Fuse
+    /// pod (including nodes correctly running the runtime Fuse pod).
     #[serde(rename = "desiredFuseNumberScheduled")]
     pub desired_fuse_number_scheduled: i32,
-    /// The total number of nodes that should be running the runtime pod (including nodes correctly running the runtime master pod).
+    /// The total number of nodes that should be running the runtime
+    /// pod (including nodes correctly running the runtime master pod).
     #[serde(rename = "desiredMasterNumberScheduled")]
     pub desired_master_number_scheduled: i32,
-    /// The total number of nodes that should be running the runtime worker pod (including nodes correctly running the runtime worker pod).
+    /// The total number of nodes that should be running the runtime worker
+    /// pod (including nodes correctly running the runtime worker pod).
     #[serde(rename = "desiredWorkerNumberScheduled")]
     pub desired_worker_number_scheduled: i32,
-    /// The number of nodes that should be running the runtime Fuse pod and have one or more of the runtime Fuse pod running and available (ready for at least spec.minReadySeconds)
+    /// The number of nodes that should be running the
+    /// runtime Fuse pod and have one or more of the runtime Fuse pod running and
+    /// available (ready for at least spec.minReadySeconds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fuseNumberAvailable")]
     pub fuse_number_available: Option<i32>,
-    /// The number of nodes that should be running the runtime Fuse pod and have one or more of the runtime Fuse pod running and ready.
+    /// The number of nodes that should be running the runtime Fuse pod and have one
+    /// or more of the runtime Fuse pod running and ready.
     #[serde(rename = "fuseNumberReady")]
     pub fuse_number_ready: i32,
-    /// The number of nodes that should be running the runtime fuse pod and have none of the runtime fuse pod running and available (ready for at least spec.minReadySeconds)
+    /// The number of nodes that should be running the
+    /// runtime fuse pod and have none of the runtime fuse pod running and available
+    /// (ready for at least spec.minReadySeconds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fuseNumberUnavailable")]
     pub fuse_number_unavailable: Option<i32>,
     /// FusePhase is the Fuse running phase
@@ -2876,7 +4339,8 @@ pub struct AlluxioRuntimeStatus {
     /// Reason for the condition's last transition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fuseReason")]
     pub fuse_reason: Option<String>,
-    /// The number of nodes that should be running the runtime worker pod and have zero or more of the runtime master pod running and ready.
+    /// The number of nodes that should be running the runtime worker pod and have zero
+    /// or more of the runtime master pod running and ready.
     #[serde(rename = "masterNumberReady")]
     pub master_number_ready: i32,
     /// MasterPhase is the master running phase
@@ -2885,7 +4349,8 @@ pub struct AlluxioRuntimeStatus {
     /// Reason for Master's condition transition
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterReason")]
     pub master_reason: Option<String>,
-    /// MountTime represents time last mount happened if Mounttime is earlier than master starting time, remount will be required
+    /// MountTime represents time last mount happened
+    /// if Mounttime is earlier than master starting time, remount will be required
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountTime")]
     pub mount_time: Option<String>,
     /// MountPoints represents the mount points specified in the bounded dataset
@@ -2900,13 +4365,18 @@ pub struct AlluxioRuntimeStatus {
     /// config map used to set configurations
     #[serde(rename = "valueFile")]
     pub value_file: String,
-    /// The number of nodes that should be running the runtime worker pod and have one or more of the runtime worker pod running and available (ready for at least spec.minReadySeconds)
+    /// The number of nodes that should be running the
+    /// runtime worker pod and have one or more of the runtime worker pod running and
+    /// available (ready for at least spec.minReadySeconds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerNumberAvailable")]
     pub worker_number_available: Option<i32>,
-    /// The number of nodes that should be running the runtime worker pod and have one or more of the runtime worker pod running and ready.
+    /// The number of nodes that should be running the runtime worker pod and have one
+    /// or more of the runtime worker pod running and ready.
     #[serde(rename = "workerNumberReady")]
     pub worker_number_ready: i32,
-    /// The number of nodes that should be running the runtime worker pod and have none of the runtime worker pod running and available (ready for at least spec.minReadySeconds)
+    /// The number of nodes that should be running the
+    /// runtime worker pod and have none of the runtime worker pod running and available
+    /// (ready for at least spec.minReadySeconds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerNumberUnavailable")]
     pub worker_number_unavailable: Option<i32>,
     /// WorkerPhase is the worker running phase
@@ -2928,15 +4398,28 @@ pub struct AlluxioRuntimeStatusApiGateway {
 /// CacheAffinity represents the runtime worker pods node affinity including node selector
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeStatusCacheAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
+    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<AlluxioRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to an update), the system
+    /// may or may not try to eventually evict the pod from its node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<AlluxioRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+/// An empty preferred scheduling term matches all objects with implicit weight 0
+/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
@@ -2956,31 +4439,47 @@ pub struct AlluxioRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuri
     pub match_fields: Option<Vec<AlluxioRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+/// If the affinity requirements specified by this field are not met at
+/// scheduling time, the pod will not be scheduled onto the node.
+/// If the affinity requirements specified by this field cease to be met
+/// at some point during pod execution (e.g. due to an update), the system
+/// may or may not try to eventually evict the pod from its node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Required. A list of node selector terms. The terms are ORed.
@@ -2988,7 +4487,9 @@ pub struct AlluxioRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDurin
     pub node_selector_terms: Vec<AlluxioRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
@@ -2999,31 +4500,44 @@ pub struct AlluxioRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDurin
     pub match_fields: Option<Vec<AlluxioRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Mount describes a mounting. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">Alluxio Storage Integrations</a> for more info
+/// Mount describes a mounting. <br>
+/// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">Alluxio Storage Integrations</a> for more info
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeStatusMounts {
     /// The secret information
@@ -3035,7 +4549,10 @@ pub struct AlluxioRuntimeStatusMounts {
     /// The name of mount
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The Mount Options. <br> Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Mount Options</a>.  <br> The option has Prefix 'fs.' And you can Learn more from <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">The Storage Integrations</a>
+    /// The Mount Options. <br>
+    /// Refer to <a href="https://docs.alluxio.io/os/user/stable/en/reference/Properties-List.html">Mount Options</a>.  <br>
+    /// The option has Prefix 'fs.' And you can Learn more from
+    /// <a href="https://docs.alluxio.io/os/user/stable/en/ufs/S3.html">The Storage Integrations</a>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
     /// The path of mount, if not set will be /{Name}

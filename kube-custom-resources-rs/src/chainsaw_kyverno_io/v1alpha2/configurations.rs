@@ -115,31 +115,12 @@ pub struct ConfigurationError {
     pub catch: Option<Vec<ConfigurationErrorCatch>>,
 }
 
-/// Operation defines operation elements.
+/// CatchFinally defines actions to be executed in catch, finally and cleanup blocks.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatch {
-    /// Apply represents resources that should be applied for this test step. This can include things
-    /// like configuration settings or any other resources that need to be available during the test.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub apply: Option<ConfigurationErrorCatchApply>,
-    /// Assert represents an assertion to be made. It checks whether the conditions specified in the assertion hold true.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub assert: Option<ConfigurationErrorCatchAssert>,
-    /// Bindings defines additional binding key/values.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bindings: Option<Vec<ConfigurationErrorCatchBindings>>,
-    /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<String>,
-    /// Clusters holds a registry to clusters to support multi-cluster tests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub clusters: Option<BTreeMap<String, ConfigurationErrorCatchClusters>>,
     /// Command defines a command to run.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<ConfigurationErrorCatchCommand>,
-    /// Create represents a creation operation.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub create: Option<ConfigurationErrorCatchCreate>,
     /// Delete represents a deletion operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delete: Option<ConfigurationErrorCatchDelete>,
@@ -149,22 +130,12 @@ pub struct ConfigurationErrorCatch {
     /// Description contains a description of the operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Error represents the expected errors for this test step. If any of these errors occur, the test
-    /// will consider them as expected; otherwise, they will be treated as test failures.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error: Option<ConfigurationErrorCatchError>,
     /// Events determines the events collector to execute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<ConfigurationErrorCatchEvents>,
     /// Get determines the resource get collector to execute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub get: Option<ConfigurationErrorCatchGet>,
-    /// Outputs defines output bindings.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub outputs: Option<Vec<ConfigurationErrorCatchOutputs>>,
-    /// Patch represents a patch operation.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub patch: Option<ConfigurationErrorCatchPatch>,
     /// PodLogs determines the pod logs collector to execute.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podLogs")]
     pub pod_logs: Option<ConfigurationErrorCatchPodLogs>,
@@ -174,88 +145,9 @@ pub struct ConfigurationErrorCatch {
     /// Sleep defines zzzz.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<ConfigurationErrorCatchSleep>,
-    /// Update represents an update operation.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub update: Option<ConfigurationErrorCatchUpdate>,
     /// Wait determines the resource wait collector to execute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wait: Option<ConfigurationErrorCatchWait>,
-}
-
-/// Apply represents resources that should be applied for this test step. This can include things
-/// like configuration settings or any other resources that need to be available during the test.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchApply {
-    /// DryRun determines whether the file should be applied in dry run mode.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
-    pub dry_run: Option<bool>,
-    /// Expect defines a list of matched checks to validate the operation outcome.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expect: Option<Vec<ConfigurationErrorCatchApplyExpect>>,
-    /// File is the path to the referenced file. This can be a direct path to a file
-    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
-    /// files within the "manifest" directory.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub file: Option<String>,
-    /// Resource provides a resource to be applied.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<BTreeMap<String, serde_json::Value>>,
-    /// Template determines whether resources should be considered for templating.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<bool>,
-    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timeout: Option<String>,
-}
-
-/// Expectation represents a check to be applied on the result of an operation
-/// with a match filter to determine if the verification should be considered.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchApplyExpect {
-    /// Check defines the verification statement.
-    pub check: BTreeMap<String, serde_json::Value>,
-    /// Match defines the matching statement.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
-    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
-}
-
-/// Assert represents an assertion to be made. It checks whether the conditions specified in the assertion hold true.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchAssert {
-    /// File is the path to the referenced file. This can be a direct path to a file
-    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
-    /// files within the "manifest" directory.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub file: Option<String>,
-    /// Check provides a check used in assertions.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<BTreeMap<String, serde_json::Value>>,
-    /// Template determines whether resources should be considered for templating.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<bool>,
-    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timeout: Option<String>,
-}
-
-/// Binding represents a key/value set as a binding in an executing test.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchBindings {
-    /// Name the name of the binding.
-    pub name: String,
-    /// Value value of the binding.
-    pub value: serde_json::Value,
-}
-
-/// Clusters holds a registry to clusters to support multi-cluster tests.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchClusters {
-    /// Context is the name of the context to use.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub context: Option<String>,
-    /// Kubeconfig is the path to the referenced file.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubeconfig: Option<String>,
 }
 
 /// Command defines a command to run.
@@ -264,20 +156,52 @@ pub struct ConfigurationErrorCatchCommand {
     /// Args is the command arguments.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
+    /// Bindings defines additional binding key/values.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bindings: Option<Vec<ConfigurationErrorCatchCommandBindings>>,
     /// Check is an assertion tree to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub check: Option<BTreeMap<String, serde_json::Value>>,
+    /// Cluster defines the target cluster (will be inherited if not specified).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<String>,
+    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<BTreeMap<String, ConfigurationErrorCatchCommandClusters>>,
     /// Entrypoint is the command entry point to run.
     pub entrypoint: String,
     /// Env defines additional environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ConfigurationErrorCatchCommandEnv>>,
+    /// Outputs defines output bindings.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub outputs: Option<Vec<ConfigurationErrorCatchCommandOutputs>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+}
+
+/// Binding represents a key/value set as a binding in an executing test.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchCommandBindings {
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
+}
+
+/// Clusters holds a registry to clusters to support multi-cluster tests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchCommandClusters {
+    /// Context is the name of the context to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<String>,
+    /// Kubeconfig is the path to the referenced file.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubeconfig: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -289,45 +213,30 @@ pub struct ConfigurationErrorCatchCommandEnv {
     pub value: serde_json::Value,
 }
 
-/// Create represents a creation operation.
+/// Output represents an output binding with a match to determine if the binding must be considered or not.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchCreate {
-    /// DryRun determines whether the file should be applied in dry run mode.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
-    pub dry_run: Option<bool>,
-    /// Expect defines a list of matched checks to validate the operation outcome.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expect: Option<Vec<ConfigurationErrorCatchCreateExpect>>,
-    /// File is the path to the referenced file. This can be a direct path to a file
-    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
-    /// files within the "manifest" directory.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub file: Option<String>,
-    /// Resource provides a resource to be applied.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<BTreeMap<String, serde_json::Value>>,
-    /// Template determines whether resources should be considered for templating.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<bool>,
-    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timeout: Option<String>,
-}
-
-/// Expectation represents a check to be applied on the result of an operation
-/// with a match filter to determine if the verification should be considered.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchCreateExpect {
-    /// Check defines the verification statement.
-    pub check: BTreeMap<String, serde_json::Value>,
+pub struct ConfigurationErrorCatchCommandOutputs {
     /// Match defines the matching statement.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<BTreeMap<String, serde_json::Value>>,
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
 }
 
 /// Delete represents a deletion operation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatchDelete {
+    /// Bindings defines additional binding key/values.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bindings: Option<Vec<ConfigurationErrorCatchDeleteBindings>>,
+    /// Cluster defines the target cluster (will be inherited if not specified).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<String>,
+    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<BTreeMap<String, ConfigurationErrorCatchDeleteClusters>>,
     /// DeletionPropagationPolicy decides if a deletion will propagate to the dependents of
     /// the object, and how the garbage collector will handle the propagation.
     /// Overrides the deletion propagation policy set in the Configuration, the Test and the TestStep.
@@ -350,6 +259,26 @@ pub struct ConfigurationErrorCatchDelete {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+}
+
+/// Binding represents a key/value set as a binding in an executing test.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchDeleteBindings {
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
+}
+
+/// Clusters holds a registry to clusters to support multi-cluster tests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchDeleteClusters {
+    /// Context is the name of the context to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<String>,
+    /// Kubeconfig is the path to the referenced file.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubeconfig: Option<String>,
 }
 
 /// Delete represents a deletion operation.
@@ -381,8 +310,8 @@ pub struct ConfigurationErrorCatchDeleteRef {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ConfigurationErrorCatchDeleteRefLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -393,42 +322,18 @@ pub struct ConfigurationErrorCatchDeleteRef {
     pub namespace: Option<String>,
 }
 
-/// Label selector to match objects to delete
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchDeleteRefLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ConfigurationErrorCatchDeleteRefLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchDeleteRefLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
 /// Describe determines the resource describe collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatchDescribe {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
+    /// Cluster defines the target cluster (will be inherited if not specified).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<String>,
+    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<BTreeMap<String, ConfigurationErrorCatchDescribeClusters>>,
     /// Kind of the referent.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
@@ -451,29 +356,26 @@ pub struct ConfigurationErrorCatchDescribe {
     pub timeout: Option<String>,
 }
 
-/// Error represents the expected errors for this test step. If any of these errors occur, the test
-/// will consider them as expected; otherwise, they will be treated as test failures.
+/// Clusters holds a registry to clusters to support multi-cluster tests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchError {
-    /// File is the path to the referenced file. This can be a direct path to a file
-    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
-    /// files within the "manifest" directory.
+pub struct ConfigurationErrorCatchDescribeClusters {
+    /// Context is the name of the context to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub file: Option<String>,
-    /// Check provides a check used in assertions.
+    pub context: Option<String>,
+    /// Kubeconfig is the path to the referenced file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<BTreeMap<String, serde_json::Value>>,
-    /// Template determines whether resources should be considered for templating.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<bool>,
-    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timeout: Option<String>,
+    pub kubeconfig: Option<String>,
 }
 
 /// Events determines the events collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatchEvents {
+    /// Cluster defines the target cluster (will be inherited if not specified).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<String>,
+    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<BTreeMap<String, ConfigurationErrorCatchEventsClusters>>,
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
@@ -493,12 +395,29 @@ pub struct ConfigurationErrorCatchEvents {
     pub timeout: Option<String>,
 }
 
+/// Clusters holds a registry to clusters to support multi-cluster tests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchEventsClusters {
+    /// Context is the name of the context to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<String>,
+    /// Kubeconfig is the path to the referenced file.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubeconfig: Option<String>,
+}
+
 /// Get determines the resource get collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatchGet {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
+    /// Cluster defines the target cluster (will be inherited if not specified).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<String>,
+    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<BTreeMap<String, ConfigurationErrorCatchGetClusters>>,
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
@@ -521,57 +440,26 @@ pub struct ConfigurationErrorCatchGet {
     pub timeout: Option<String>,
 }
 
-/// Output represents an output binding with a match to determine if the binding must be considered or not.
+/// Clusters holds a registry to clusters to support multi-cluster tests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchOutputs {
-    /// Match defines the matching statement.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
-    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
-    /// Name the name of the binding.
-    pub name: String,
-    /// Value value of the binding.
-    pub value: serde_json::Value,
-}
-
-/// Patch represents a patch operation.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchPatch {
-    /// DryRun determines whether the file should be applied in dry run mode.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
-    pub dry_run: Option<bool>,
-    /// Expect defines a list of matched checks to validate the operation outcome.
+pub struct ConfigurationErrorCatchGetClusters {
+    /// Context is the name of the context to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expect: Option<Vec<ConfigurationErrorCatchPatchExpect>>,
-    /// File is the path to the referenced file. This can be a direct path to a file
-    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
-    /// files within the "manifest" directory.
+    pub context: Option<String>,
+    /// Kubeconfig is the path to the referenced file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub file: Option<String>,
-    /// Resource provides a resource to be applied.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<BTreeMap<String, serde_json::Value>>,
-    /// Template determines whether resources should be considered for templating.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<bool>,
-    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timeout: Option<String>,
-}
-
-/// Expectation represents a check to be applied on the result of an operation
-/// with a match filter to determine if the verification should be considered.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchPatchExpect {
-    /// Check defines the verification statement.
-    pub check: BTreeMap<String, serde_json::Value>,
-    /// Match defines the matching statement.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
-    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
+    pub kubeconfig: Option<String>,
 }
 
 /// PodLogs determines the pod logs collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatchPodLogs {
+    /// Cluster defines the target cluster (will be inherited if not specified).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<String>,
+    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<BTreeMap<String, ConfigurationErrorCatchPodLogsClusters>>,
     /// Container in pod to get logs from else --all-containers is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
@@ -596,18 +484,41 @@ pub struct ConfigurationErrorCatchPodLogs {
     pub timeout: Option<String>,
 }
 
+/// Clusters holds a registry to clusters to support multi-cluster tests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchPodLogsClusters {
+    /// Context is the name of the context to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<String>,
+    /// Kubeconfig is the path to the referenced file.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubeconfig: Option<String>,
+}
+
 /// Script defines a script to run.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatchScript {
+    /// Bindings defines additional binding key/values.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bindings: Option<Vec<ConfigurationErrorCatchScriptBindings>>,
     /// Check is an assertion tree to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub check: Option<BTreeMap<String, serde_json::Value>>,
+    /// Cluster defines the target cluster (will be inherited if not specified).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<String>,
+    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<BTreeMap<String, ConfigurationErrorCatchScriptClusters>>,
     /// Content defines a shell script (run with "sh -c ...").
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     /// Env defines additional environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ConfigurationErrorCatchScriptEnv>>,
+    /// Outputs defines output bindings.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub outputs: Option<Vec<ConfigurationErrorCatchScriptOutputs>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -618,7 +529,39 @@ pub struct ConfigurationErrorCatchScript {
 
 /// Binding represents a key/value set as a binding in an executing test.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchScriptBindings {
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
+}
+
+/// Clusters holds a registry to clusters to support multi-cluster tests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchScriptClusters {
+    /// Context is the name of the context to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<String>,
+    /// Kubeconfig is the path to the referenced file.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubeconfig: Option<String>,
+}
+
+/// Binding represents a key/value set as a binding in an executing test.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatchScriptEnv {
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
+}
+
+/// Output represents an output binding with a match to determine if the binding must be considered or not.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchScriptOutputs {
+    /// Match defines the matching statement.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
+    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
@@ -632,48 +575,18 @@ pub struct ConfigurationErrorCatchSleep {
     pub duration: String,
 }
 
-/// Update represents an update operation.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchUpdate {
-    /// DryRun determines whether the file should be applied in dry run mode.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
-    pub dry_run: Option<bool>,
-    /// Expect defines a list of matched checks to validate the operation outcome.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expect: Option<Vec<ConfigurationErrorCatchUpdateExpect>>,
-    /// File is the path to the referenced file. This can be a direct path to a file
-    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
-    /// files within the "manifest" directory.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub file: Option<String>,
-    /// Resource provides a resource to be applied.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<BTreeMap<String, serde_json::Value>>,
-    /// Template determines whether resources should be considered for templating.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<bool>,
-    /// Timeout for the operation. Overrides the global timeout set in the Configuration.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timeout: Option<String>,
-}
-
-/// Expectation represents a check to be applied on the result of an operation
-/// with a match filter to determine if the verification should be considered.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationErrorCatchUpdateExpect {
-    /// Check defines the verification statement.
-    pub check: BTreeMap<String, serde_json::Value>,
-    /// Match defines the matching statement.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
-    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
-}
-
 /// Wait determines the resource wait collector to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationErrorCatchWait {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
+    /// Cluster defines the target cluster (will be inherited if not specified).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<String>,
+    /// Clusters holds a registry to clusters to support multi-cluster tests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<BTreeMap<String, ConfigurationErrorCatchWaitClusters>>,
     /// WaitFor specifies the condition to wait for.
     #[serde(rename = "for")]
     pub r#for: ConfigurationErrorCatchWaitFor,
@@ -697,6 +610,17 @@ pub struct ConfigurationErrorCatchWait {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+}
+
+/// Clusters holds a registry to clusters to support multi-cluster tests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchWaitClusters {
+    /// Context is the name of the context to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<String>,
+    /// Kubeconfig is the path to the referenced file.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubeconfig: Option<String>,
 }
 
 /// WaitFor specifies the condition to wait for.

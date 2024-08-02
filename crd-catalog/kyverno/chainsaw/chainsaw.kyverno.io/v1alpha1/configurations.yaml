@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "(devel)"
   name: "configurations.chainsaw.kyverno.io"
 spec:
   group: "chainsaw.kyverno.io"
@@ -33,6 +33,25 @@ spec:
                   description: "Catch defines what the tests steps will execute when an error happens.\nThis will be combined with catch handlers defined at the test and step levels."
                   items:
                     description: "CatchFinally defines actions to be executed in catch, finally and cleanup blocks."
+                    oneOf:
+                      - required:
+                          - "command"
+                      - required:
+                          - "delete"
+                      - required:
+                          - "describe"
+                      - required:
+                          - "events"
+                      - required:
+                          - "get"
+                      - required:
+                          - "podLogs"
+                      - required:
+                          - "script"
+                      - required:
+                          - "sleep"
+                      - required:
+                          - "wait"
                     properties:
                       command:
                         description: "Command defines a command to run."
@@ -64,7 +83,7 @@ spec:
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -133,6 +152,10 @@ spec:
                         type: "object"
                       delete:
                         description: "Delete represents a deletion operation."
+                        not:
+                          required:
+                            - "file"
+                            - "ref"
                         properties:
                           bindings:
                             description: "Bindings defines additional binding key/values."
@@ -152,7 +175,7 @@ spec:
                               type: "object"
                             type: "array"
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -229,12 +252,16 @@ spec:
                         type: "object"
                       describe:
                         description: "Describe determines the resource describe collector to execute."
+                        not:
+                          required:
+                            - "name"
+                            - "selector"
                         properties:
                           apiVersion:
                             description: "API version of the referent."
                             type: "string"
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -278,9 +305,13 @@ spec:
                         type: "string"
                       events:
                         description: "Events determines the events collector to execute."
+                        not:
+                          required:
+                            - "name"
+                            - "selector"
                         properties:
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -316,12 +347,16 @@ spec:
                         type: "object"
                       get:
                         description: "Get determines the resource get collector to execute."
+                        not:
+                          required:
+                            - "name"
+                            - "selector"
                         properties:
                           apiVersion:
                             description: "API version of the referent."
                             type: "string"
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -363,9 +398,13 @@ spec:
                         type: "object"
                       podLogs:
                         description: "PodLogs determines the pod logs collector to execute."
+                        not:
+                          required:
+                            - "name"
+                            - "selector"
                         properties:
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -426,7 +465,7 @@ spec:
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -502,12 +541,16 @@ spec:
                         type: "object"
                       wait:
                         description: "Wait determines the resource wait collector to execute."
+                        not:
+                          required:
+                            - "name"
+                            - "selector"
                         properties:
                           apiVersion:
                             description: "API version of the referent."
                             type: "string"
                           cluster:
-                            description: "Cluster defines the target cluster (default cluster will be used if not specified and/or overridden)."
+                            description: "Cluster defines the target cluster (will be inherited if not specified)."
                             type: "string"
                           clusters:
                             additionalProperties:
@@ -657,6 +700,7 @@ spec:
                   description: "If set, do not delete the resources after running the tests (implies SkipClusterDelete)."
                   type: "boolean"
                 template:
+                  default: true
                   description: "Template determines whether resources should be considered for templating."
                   type: "boolean"
                 testFile:
@@ -664,24 +708,31 @@ spec:
                   description: "TestFile is the name of the file containing the test to run.\nIf no extension is provided, chainsaw will try with .yaml first and .yml if needed."
                   type: "string"
                 timeouts:
+                  default: {}
                   description: "Global timeouts configuration. Applies to all tests/test steps if not overridden."
                   properties:
                     apply:
+                      default: "5s"
                       description: "Apply defines the timeout for the apply operation"
                       type: "string"
                     assert:
+                      default: "30s"
                       description: "Assert defines the timeout for the assert operation"
                       type: "string"
                     cleanup:
+                      default: "30s"
                       description: "Cleanup defines the timeout for the cleanup operation"
                       type: "string"
                     delete:
+                      default: "15s"
                       description: "Delete defines the timeout for the delete operation"
                       type: "string"
                     error:
+                      default: "30s"
                       description: "Error defines the timeout for the error operation"
                       type: "string"
                     exec:
+                      default: "5s"
                       description: "Exec defines the timeout for exec operations"
                       type: "string"
                   type: "object"
@@ -690,4 +741,4 @@ spec:
             - "spec"
           type: "object"
       served: true
-      storage: true
+      storage: false

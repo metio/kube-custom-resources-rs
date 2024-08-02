@@ -19,6 +19,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ExtensionServiceSpec {
+    /// CircuitBreakerPolicy specifies the circuit breaker budget across the extension service.
+    /// If defined this overrides the global circuit breaker budget.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "circuitBreakerPolicy")]
+    pub circuit_breaker_policy: Option<ExtensionServiceCircuitBreakerPolicy>,
     /// The policy for load balancing GRPC service requests. Note that the
     /// `Cookie` and `RequestHash` load balancing strategies cannot be used
     /// here.
@@ -48,6 +52,28 @@ pub struct ExtensionServiceSpec {
     /// UpstreamValidation defines how to verify the backend service's certificate
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub validation: Option<ExtensionServiceValidation>,
+}
+
+/// CircuitBreakerPolicy specifies the circuit breaker budget across the extension service.
+/// If defined this overrides the global circuit breaker budget.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ExtensionServiceCircuitBreakerPolicy {
+    /// The maximum number of connections that a single Envoy instance allows to the Kubernetes Service; defaults to 1024.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
+    pub max_connections: Option<i32>,
+    /// The maximum number of pending requests that a single Envoy instance allows to the Kubernetes Service; defaults to 1024.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingRequests")]
+    pub max_pending_requests: Option<i32>,
+    /// The maximum parallel requests a single Envoy instance allows to the Kubernetes Service; defaults to 1024
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequests")]
+    pub max_requests: Option<i32>,
+    /// The maximum number of parallel retries a single Envoy instance allows to the Kubernetes Service; defaults to 3.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
+    pub max_retries: Option<i32>,
+    /// PerHostMaxConnections is the maximum number of connections
+    /// that Envoy will allow to each individual host in a cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perHostMaxConnections")]
+    pub per_host_max_connections: Option<i32>,
 }
 
 /// The policy for load balancing GRPC service requests. Note that the

@@ -20,9 +20,24 @@ pub struct NginxProxySpec {
     /// Default is false, meaning http2 will be enabled for all servers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHTTP2")]
     pub disable_http2: Option<bool>,
+    /// IPFamily specifies the IP family to be used by the NGINX.
+    /// Default is "dual", meaning the server will use both IPv4 and IPv6.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamily")]
+    pub ip_family: Option<NginxProxyIpFamily>,
     /// Telemetry specifies the OpenTelemetry configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telemetry: Option<NginxProxyTelemetry>,
+}
+
+/// Spec defines the desired state of the NginxProxy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NginxProxyIpFamily {
+    #[serde(rename = "dual")]
+    Dual,
+    #[serde(rename = "ipv4")]
+    Ipv4,
+    #[serde(rename = "ipv6")]
+    Ipv6,
 }
 
 /// Telemetry specifies the OpenTelemetry configuration.

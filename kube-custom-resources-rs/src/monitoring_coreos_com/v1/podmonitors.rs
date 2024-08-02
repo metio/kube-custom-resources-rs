@@ -23,7 +23,7 @@ pub struct PodMonitorSpec {
     /// discovered targets.
     /// 
     /// 
-    /// It requires Prometheus >= v2.37.0.
+    /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
     pub attach_metadata: Option<PodMonitorAttachMetadata>,
     /// When defined, bodySizeLimit specifies a job level limit on the size
@@ -72,11 +72,11 @@ pub struct PodMonitorSpec {
     /// It requires Prometheus >= v2.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelValueLengthLimit")]
     pub label_value_length_limit: Option<i64>,
-    /// Selector to select which namespaces the Kubernetes `Pods` objects
-    /// are discovered from.
+    /// `namespaceSelector` defines in which namespace(s) Prometheus should discover the pods.
+    /// By default, the pods are discovered in the same namespace as the `PodMonitor` object but it is possible to select pods across different/all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PodMonitorNamespaceSelector>,
-    /// List of endpoints part of this PodMonitor.
+    /// Defines how to scrape metrics from the selected pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetricsEndpoints")]
     pub pod_metrics_endpoints: Option<Vec<PodMonitorPodMetricsEndpoints>>,
     /// `podTargetLabels` defines the labels which are transferred from the
@@ -100,7 +100,7 @@ pub struct PodMonitorSpec {
     /// It requires Prometheus >= v2.49.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
     pub scrape_protocols: Option<Vec<String>>,
-    /// Label selector to select the Kubernetes `Pod` objects.
+    /// Label selector to select the Kubernetes `Pod` objects to scrape metrics from.
     pub selector: PodMonitorSelector,
     /// `targetLimit` defines a limit on the number of scraped targets that will
     /// be accepted.
@@ -112,17 +112,21 @@ pub struct PodMonitorSpec {
 /// discovered targets.
 /// 
 /// 
-/// It requires Prometheus >= v2.37.0.
+/// It requires Prometheus >= v2.35.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMonitorAttachMetadata {
-    /// When set to true, Prometheus must have the `get` permission on the
-    /// `Nodes` objects.
+    /// When set to true, Prometheus attaches node metadata to the discovered
+    /// targets.
+    /// 
+    /// 
+    /// The Prometheus service account must have the `list` and `watch`
+    /// permissions on the `Nodes` objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
 }
 
-/// Selector to select which namespaces the Kubernetes `Pods` objects
-/// are discovered from.
+/// `namespaceSelector` defines in which namespace(s) Prometheus should discover the pods.
+/// By default, the pods are discovered in the same namespace as the `PodMonitor` object but it is possible to select pods across different/all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMonitorNamespaceSelector {
     /// Boolean describing whether all namespaces are selected in contrast to a
@@ -718,6 +722,18 @@ pub struct PodMonitorPodMetricsEndpointsTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PodMonitorPodMetricsEndpointsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<PodMonitorPodMetricsEndpointsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<PodMonitorPodMetricsEndpointsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -840,7 +856,33 @@ pub struct PodMonitorPodMetricsEndpointsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// Label selector to select the Kubernetes `Pod` objects.
+/// TLS configuration to use when scraping the target.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PodMonitorPodMetricsEndpointsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use when scraping the target.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PodMonitorPodMetricsEndpointsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// Label selector to select the Kubernetes `Pod` objects to scrape metrics from.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMonitorSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

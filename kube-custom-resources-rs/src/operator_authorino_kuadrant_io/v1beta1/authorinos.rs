@@ -66,7 +66,8 @@ pub struct AuthorinoListener {
     /// Maximum payload (request body) size for the auth service (HTTP interface), in bytes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxHttpRequestBodySize")]
     pub max_http_request_body_size: Option<i64>,
-    /// Port number of the GRPC interface. DEPRECATED: use 'ports.grpc' instead.
+    /// Port number of the GRPC interface.
+    /// DEPRECATED: use 'ports.grpc' instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// Port numbers of the GRPC and HTTP auth interfaces.
@@ -91,17 +92,21 @@ pub struct AuthorinoListenerPorts {
 /// TLS configuration of the auth service (GRPC and HTTP interfaces).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorinoListenerTls {
-    /// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+    /// LocalObjectReference contains enough information to let you locate the
+    /// referenced object inside the same namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<AuthorinoListenerTlsCertSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
 
-/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorinoListenerTlsCertSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -123,17 +128,21 @@ pub struct AuthorinoOidcServer {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorinoOidcServerTls {
-    /// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+    /// LocalObjectReference contains enough information to let you locate the
+    /// referenced object inside the same namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<AuthorinoOidcServerTlsCertSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
 
-/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorinoOidcServerTlsCertSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -180,17 +189,26 @@ pub struct AuthorinoVolumesItems {
 pub struct AuthorinoVolumesItemsItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// AuthorinoStatus defines the observed state of Authorino
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorinoStatus {
-    /// Conditions is an array of the current Authorino's CR conditions Supported condition types: ConditionReady
+    /// Conditions is an array of the current Authorino's CR conditions
+    /// Supported condition types: ConditionReady
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

@@ -26,6 +26,9 @@ pub struct RedisEnterpriseClusterSpec {
     /// Additional antiAffinity terms in order to support installation on different zones/vcenters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityAdditionalTopologyKeys")]
     pub anti_affinity_additional_topology_keys: Option<Vec<String>>,
+    /// Cluster-wide backup configurations
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub backup: Option<RedisEnterpriseClusterBackup>,
     /// Specification for Bootstrapper container image
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapperImageSpec")]
     pub bootstrapper_image_spec: Option<RedisEnterpriseClusterBootstrapperImageSpec>,
@@ -216,6 +219,25 @@ pub enum RedisEnterpriseClusterActiveActiveMethod {
     OpenShiftRoute,
     #[serde(rename = "ingress")]
     Ingress,
+}
+
+/// Cluster-wide backup configurations
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterBackup {
+    /// Configurations for backups to s3 and s3-compatible storage
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub s3: Option<RedisEnterpriseClusterBackupS3>,
+}
+
+/// Configurations for backups to s3 and s3-compatible storage
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterBackupS3 {
+    /// Secret name that holds the S3 CA certificate, which contains the TLS certificate mapped to the key in the secret 'cert'
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificateSecretName")]
+    pub ca_certificate_secret_name: Option<String>,
+    /// Specifies the URL for S3 export and import
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Specification for Bootstrapper container image

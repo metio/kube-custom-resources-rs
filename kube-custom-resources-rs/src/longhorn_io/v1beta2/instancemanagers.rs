@@ -76,7 +76,7 @@ pub struct InstanceManagerStatusInstanceEngines {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstanceEnginesSpec {
-    /// Deprecated: Replaced by field `dataEngine`.
+    /// Deprecated:Replaced by field `dataEngine`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
@@ -103,6 +103,10 @@ pub struct InstanceManagerStatusInstanceEnginesStatus {
     pub resource_version: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortEnd")]
+    pub target_port_end: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortStart")]
+    pub target_port_start: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -117,7 +121,7 @@ pub struct InstanceManagerStatusInstanceReplicas {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstanceReplicasSpec {
-    /// Deprecated: Replaced by field `dataEngine`.
+    /// Deprecated:Replaced by field `dataEngine`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
@@ -144,6 +148,10 @@ pub struct InstanceManagerStatusInstanceReplicasStatus {
     pub resource_version: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortEnd")]
+    pub target_port_end: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortStart")]
+    pub target_port_start: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -159,7 +167,7 @@ pub struct InstanceManagerStatusInstances {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstancesSpec {
-    /// Deprecated: Replaced by field `dataEngine`.
+    /// Deprecated:Replaced by field `dataEngine`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
@@ -186,6 +194,10 @@ pub struct InstanceManagerStatusInstancesStatus {
     pub resource_version: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortEnd")]
+    pub target_port_end: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortStart")]
+    pub target_port_start: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }

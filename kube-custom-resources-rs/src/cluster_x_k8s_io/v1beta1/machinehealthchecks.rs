@@ -26,6 +26,9 @@ pub struct MachineHealthCheckSpec {
     pub cluster_name: String,
     /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
     /// "selector" are not healthy.
+    /// 
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
     /// NodeStartupTimeout allows to set the maximum time for MachineHealthCheck
@@ -65,6 +68,9 @@ pub struct MachineHealthCheckSpec {
     /// Eg. "[3-5]" - This means that remediation will be allowed only when:
     /// (a) there are at least 3 unhealthy machines (and)
     /// (b) there are at most 5 unhealthy machines
+    /// 
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyRange")]
     pub unhealthy_range: Option<String>,
 }

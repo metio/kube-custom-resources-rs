@@ -35,7 +35,7 @@ pub struct TeleportUserSpec {
     /// Traits are key/value pairs received from an identity provider (through OIDC claims or SAML assertions) or from a system administrator for local accounts. Traits are used to populate role variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub traits: Option<BTreeMap<String, String>>,
-    /// TrustedDeviceIDs contains the IDs of trusted devices enrolled by the user. Managed by the Device Trust subsystem, avoid manual edits.
+    /// TrustedDeviceIDs contains the IDs of trusted devices enrolled by the user.  Note that SSO users are transient and thus may contain an empty TrustedDeviceIDs field, even though the user->device association exists under the Device Trust subsystem. Do not rely on this field to determine device associations or ownership, it exists for legacy/informative purposes only.  Managed by the Device Trust subsystem, avoid manual edits.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub trusted_device_ids: Option<Vec<String>>,
 }

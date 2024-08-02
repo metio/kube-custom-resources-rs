@@ -125,6 +125,8 @@ pub struct UserPermissionsBoundaryRef {
 pub struct UserPermissionsBoundaryRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -149,6 +151,8 @@ pub struct UserPolicyRefs {
 pub struct UserPolicyRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// A structure that represents user-provided metadata that can be associated

@@ -80,7 +80,7 @@ pub struct NodeConfigLocalDiskSetupMounts {
     /// fsType specifies the filesystem on the device.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// mountPoint is a path where the device should be mounted at.
+    /// mountPoint is a path where the device should be mounted at. If the mountPoint is a symlink, the mount will be set up for the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPoint")]
     pub mount_point: Option<String>,
     /// unsupportedOptions is a list of mount options used during device mounting. unsupported in this field name means that we won't support all the available options passed down using this field.

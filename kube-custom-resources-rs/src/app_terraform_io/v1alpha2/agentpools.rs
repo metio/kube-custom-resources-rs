@@ -11,7 +11,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// AgentPoolSpec defines the desired stak get ste of AgentPool.
+/// AgentPoolSpec defines the desired state of AgentPool.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "app.terraform.io", version = "v1alpha2", kind = "AgentPool", plural = "agentpools")]
 #[kube(namespaced)]
@@ -6586,6 +6586,9 @@ pub struct AgentPoolAgentTokens {
 /// Agent deployment settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AgentPoolAutoscaling {
+    /// CoolDownPeriod configures the period to wait between scaling up and scaling down
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cooldownPeriod")]
+    pub cooldown_period: Option<AgentPoolAutoscalingCooldownPeriod>,
     /// CooldownPeriodSeconds is the time to wait between scaling events. Defaults to 300.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cooldownPeriodSeconds")]
     pub cooldown_period_seconds: Option<i32>,
@@ -6601,6 +6604,17 @@ pub struct AgentPoolAutoscaling {
     /// associated with the AgentPool.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWorkspaces")]
     pub target_workspaces: Option<Vec<AgentPoolAutoscalingTargetWorkspaces>>,
+}
+
+/// CoolDownPeriod configures the period to wait between scaling up and scaling down
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AgentPoolAutoscalingCooldownPeriod {
+    /// ScaleDownSeconds is the time to wait before scaling down.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleDownSeconds")]
+    pub scale_down_seconds: Option<i32>,
+    /// ScaleUpSeconds is the time to wait before scaling up.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleUpSeconds")]
+    pub scale_up_seconds: Option<i32>,
 }
 
 /// TargetWorkspace is the name or ID of the workspace you want autoscale against.

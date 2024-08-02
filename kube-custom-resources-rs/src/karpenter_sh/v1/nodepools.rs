@@ -8,6 +8,7 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -51,18 +52,12 @@ pub struct NodePoolDisruption {
     /// ConsolidateAfter is the duration the controller will wait
     /// before attempting to terminate nodes that are underutilized.
     /// Refer to ConsolidationPolicy for how underutilization is considered.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolidateAfter")]
-    pub consolidate_after: Option<String>,
+    #[serde(rename = "consolidateAfter")]
+    pub consolidate_after: String,
     /// ConsolidationPolicy describes which nodes Karpenter can disrupt through its consolidation
-    /// algorithm. This policy defaults to "WhenUnderutilized" if not specified
+    /// algorithm. This policy defaults to "WhenEmptyOrUnderutilized" if not specified
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolidationPolicy")]
     pub consolidation_policy: Option<NodePoolDisruptionConsolidationPolicy>,
-    /// ExpireAfter is the duration the controller will wait
-    /// before terminating a node, measured from when the node is created. This
-    /// is useful to implement features like eventually consistent node upgrade,
-    /// memory leak protection, and disruption testing.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expireAfter")]
-    pub expire_after: Option<String>,
 }
 
 /// Budget defines when Karpenter will restrict the
@@ -85,6 +80,11 @@ pub struct NodePoolDisruptionBudgets {
     /// checking for int nodes for IntOrString nodes.
     /// Ref: https://github.com/kubernetes-sigs/controller-tools/blob/55efe4be40394a288216dab63156b0a64fb82929/pkg/crd/markers/validation.go#L379-L388
     pub nodes: String,
+    /// Reasons is a list of disruption methods that this budget applies to. If Reasons is not set, this budget applies to all methods.
+    /// Otherwise, this will apply to each reason defined.
+    /// allowed reasons are Underutilized, Empty, and Drifted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reasons: Option<Vec<String>>,
     /// Schedule specifies when a budget begins being active, following
     /// the upstream cronjob syntax. If omitted, the budget is always active.
     /// Timezones are not supported.
@@ -97,7 +97,7 @@ pub struct NodePoolDisruptionBudgets {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NodePoolDisruptionConsolidationPolicy {
     WhenEmpty,
-    WhenUnderutilized,
+    WhenEmptyOrUnderutilized,
 }
 
 /// Template contains the template of possibilities for the provisioning logic to launch a NodeClaim with.
@@ -129,19 +129,17 @@ pub struct NodePoolTemplateMetadata {
 /// NodeClaimSpec describes the desired state of the NodeClaim
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePoolTemplateSpec {
-    /// Kubelet defines args to be used when configuring kubelet on provisioned nodes.
-    /// They are a subset of the upstream types, recognizing not all options may be supported.
-    /// Wherever possible, the types and names should reflect the upstream kubelet types.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubelet: Option<NodePoolTemplateSpecKubelet>,
+    /// ExpireAfter is the duration the controller will wait
+    /// before terminating a node, measured from when the node is created. This
+    /// is useful to implement features like eventually consistent node upgrade,
+    /// memory leak protection, and disruption testing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expireAfter")]
+    pub expire_after: Option<String>,
     /// NodeClassRef is a reference to an object that defines provider specific configuration
     #[serde(rename = "nodeClassRef")]
     pub node_class_ref: NodePoolTemplateSpecNodeClassRef,
     /// Requirements are layered with GetLabels and applied to every node.
     pub requirements: Vec<NodePoolTemplateSpecRequirements>,
-    /// Resources models the resource requirements for the NodeClaim to launch
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<NodePoolTemplateSpecResources>,
     /// StartupTaints are taints that are applied to nodes upon startup which are expected to be removed automatically
     /// within a short period of time, typically by a DaemonSet that tolerates the taint. These are commonly used by
     /// daemonsets to allow initialization and enforce startup ordering.  StartupTaints are ignored for provisioning
@@ -151,72 +149,34 @@ pub struct NodePoolTemplateSpec {
     /// Taints will be applied to the NodeClaim's node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<NodePoolTemplateSpecTaints>>,
-}
-
-/// Kubelet defines args to be used when configuring kubelet on provisioned nodes.
-/// They are a subset of the upstream types, recognizing not all options may be supported.
-/// Wherever possible, the types and names should reflect the upstream kubelet types.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodePoolTemplateSpecKubelet {
-    /// clusterDNS is a list of IP addresses for the cluster DNS server.
-    /// Note that not all providers may use all addresses.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDNS")]
-    pub cluster_dns: Option<Vec<String>>,
-    /// CPUCFSQuota enables CPU CFS quota enforcement for containers that specify CPU limits.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuCFSQuota")]
-    pub cpu_cfs_quota: Option<bool>,
-    /// EvictionHard is the map of signal names to quantities that define hard eviction thresholds
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionHard")]
-    pub eviction_hard: Option<BTreeMap<String, String>>,
-    /// EvictionMaxPodGracePeriod is the maximum allowed grace period (in seconds) to use when terminating pods in
-    /// response to soft eviction thresholds being met.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionMaxPodGracePeriod")]
-    pub eviction_max_pod_grace_period: Option<i32>,
-    /// EvictionSoft is the map of signal names to quantities that define soft eviction thresholds
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionSoft")]
-    pub eviction_soft: Option<BTreeMap<String, String>>,
-    /// EvictionSoftGracePeriod is the map of signal names to quantities that define grace periods for each eviction signal
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionSoftGracePeriod")]
-    pub eviction_soft_grace_period: Option<BTreeMap<String, String>>,
-    /// ImageGCHighThresholdPercent is the percent of disk usage after which image
-    /// garbage collection is always run. The percent is calculated by dividing this
-    /// field value by 100, so this field must be between 0 and 100, inclusive.
-    /// When specified, the value must be greater than ImageGCLowThresholdPercent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageGCHighThresholdPercent")]
-    pub image_gc_high_threshold_percent: Option<i32>,
-    /// ImageGCLowThresholdPercent is the percent of disk usage before which image
-    /// garbage collection is never run. Lowest disk usage to garbage collect to.
-    /// The percent is calculated by dividing this field value by 100,
-    /// so the field value must be between 0 and 100, inclusive.
-    /// When specified, the value must be less than imageGCHighThresholdPercent
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageGCLowThresholdPercent")]
-    pub image_gc_low_threshold_percent: Option<i32>,
-    /// KubeReserved contains resources reserved for Kubernetes system components.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeReserved")]
-    pub kube_reserved: Option<BTreeMap<String, String>>,
-    /// MaxPods is an override for the maximum number of pods that can run on
-    /// a worker node instance.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPods")]
-    pub max_pods: Option<i32>,
-    /// PodsPerCore is an override for the number of pods that can run on a worker node
-    /// instance based on the number of cpu cores. This value cannot exceed MaxPods, so, if
-    /// MaxPods is a lower value, that value will be used.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podsPerCore")]
-    pub pods_per_core: Option<i32>,
-    /// SystemReserved contains resources reserved for OS system daemons and kernel memory.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemReserved")]
-    pub system_reserved: Option<BTreeMap<String, String>>,
+    /// TerminationGracePeriod is the maximum duration the controller will wait before forcefully deleting the pods on a node, measured from when deletion is first initiated.
+    /// 
+    /// 
+    /// Warning: this feature takes precedence over a Pod's terminationGracePeriodSeconds value, and bypasses any blocked PDBs or the karpenter.sh/do-not-disrupt annotation.
+    /// 
+    /// 
+    /// This field is intended to be used by cluster administrators to enforce that nodes can be cycled within a given time period.
+    /// When set, drifted nodes will begin draining even if there are pods blocking eviction. Draining will respect PDBs and the do-not-disrupt annotation until the TGP is reached.
+    /// 
+    /// 
+    /// Karpenter will preemptively delete pods so their terminationGracePeriodSeconds align with the node's terminationGracePeriod.
+    /// If a pod would be terminated without being granted its full terminationGracePeriodSeconds prior to the node timeout,
+    /// that pod will be deleted at T = node timeout - pod terminationGracePeriodSeconds.
+    /// 
+    /// 
+    /// The feature can also be used to allow maximum time limits for long-running jobs which can delay node termination with preStop hooks.
+    /// If left undefined, the controller will wait indefinitely for pods to be drained.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriod")]
+    pub termination_grace_period: Option<String>,
 }
 
 /// NodeClassRef is a reference to an object that defines provider specific configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePoolTemplateSpecNodeClassRef {
     /// API version of the referent
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
+    pub group: String,
     /// Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
+    pub kind: String,
     /// Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
     pub name: String,
 }
@@ -253,14 +213,6 @@ pub enum NodePoolTemplateSpecRequirementsOperator {
     DoesNotExist,
     Gt,
     Lt,
-}
-
-/// Resources models the resource requirements for the NodeClaim to launch
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodePoolTemplateSpecResources {
-    /// Requests describes the minimum required resources for the NodeClaim to launch
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 /// The node this Taint is attached to has the "effect" on
@@ -322,6 +274,9 @@ pub enum NodePoolTemplateSpecTaintsEffect {
 /// NodePoolStatus defines the observed state of NodePool
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePoolStatus {
+    /// Conditions contains signals for health and readiness
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Resources is the list of resources that have been provisioned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BTreeMap<String, IntOrString>>,

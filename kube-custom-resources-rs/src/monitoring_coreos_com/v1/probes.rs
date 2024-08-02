@@ -750,6 +750,18 @@ pub struct ProbeTlsConfig {
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ProbeTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ProbeTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ProbeTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
@@ -870,5 +882,31 @@ pub struct ProbeTlsConfigKeySecret {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// TLS configuration to use when scraping the endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ProbeTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use when scraping the endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ProbeTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 

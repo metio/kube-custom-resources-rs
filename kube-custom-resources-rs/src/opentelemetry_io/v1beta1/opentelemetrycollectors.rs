@@ -51,6 +51,10 @@ pub struct OpenTelemetryCollectorSpec {
     pub ingress: Option<OpenTelemetryCollectorIngress>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<OpenTelemetryCollectorInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
+    pub ip_families: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
+    pub ip_family_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<OpenTelemetryCollectorLifecycle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]

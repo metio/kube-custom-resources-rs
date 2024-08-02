@@ -237,6 +237,30 @@ spec:
                     - type: "string"
                   description: "MaxUnavailable is the percentage/number of pods that can be allowed to go down or unavailable before application disruption. This value is used to create PodDisruptionBudget. Defaults to 1. Refer Aerospike documentation for more details."
                   x-kubernetes-int-or-string: true
+                operations:
+                  description: "Operations is a list of on-demand operations to be performed on the Aerospike cluster."
+                  items:
+                    properties:
+                      id:
+                        maxLength: 20
+                        minLength: 1
+                        type: "string"
+                      kind:
+                        description: "Kind is the type of operation to be performed on the Aerospike cluster."
+                        enum:
+                          - "WarmRestart"
+                          - "PodRestart"
+                        type: "string"
+                      podList:
+                        items:
+                          type: "string"
+                        type: "array"
+                    required:
+                      - "id"
+                      - "kind"
+                    type: "object"
+                  maxItems: 1
+                  type: "array"
                 operatorClientCert:
                   description: "Certificates to connect to Aerospike."
                   properties:
@@ -5521,6 +5545,29 @@ spec:
                 multiPodPerHost:
                   description: "If set true then multiple pods can be created per Kubernetes Node. This will create a NodePort service for each Pod. NodePort, as the name implies, opens a specific port on all the Kubernetes Nodes , and any traffic that is sent to this port is forwarded to the service. Here service picks a random port in range (30000-32767), so these port should be open. \n If set false then only single pod can be created per Kubernetes Node. This will create Pods using hostPort setting. The container port will be exposed to the external network at <hostIP>:<hostPort>, where the hostIP is the IP address of the Kubernetes Node where the container is running and the hostPort is the port requested by the user. Deprecated: MultiPodPerHost is now part of podSpec"
                   type: "boolean"
+                operations:
+                  description: "Operations is a list of on-demand operation to be performed on the Aerospike cluster."
+                  items:
+                    properties:
+                      id:
+                        maxLength: 20
+                        minLength: 1
+                        type: "string"
+                      kind:
+                        description: "Kind is the type of operation to be performed on the Aerospike cluster."
+                        enum:
+                          - "WarmRestart"
+                          - "PodRestart"
+                        type: "string"
+                      podList:
+                        items:
+                          type: "string"
+                        type: "array"
+                    required:
+                      - "id"
+                      - "kind"
+                    type: "object"
+                  type: "array"
                 operatorClientCertSpec:
                   description: "Certificates to connect to Aerospike. If omitted then certs are taken from the secret 'aerospike-secret'."
                   properties:

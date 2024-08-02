@@ -63,7 +63,7 @@ spec:
                   anyOf:
                     - type: "integer"
                     - type: "string"
-                  description: "Any further remediation is only allowed if at most \"MaxUnhealthy\" machines selected by\n\"selector\" are not healthy."
+                  description: "Any further remediation is only allowed if at most \"MaxUnhealthy\" machines selected by\n\"selector\" are not healthy.\n\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details."
                   x-kubernetes-int-or-string: true
                 nodeStartupTimeout:
                   description: "NodeStartupTimeout allows to set the maximum time for MachineHealthCheck\nto consider a Machine unhealthy if a corresponding Node isn't associated\nthrough a `Spec.ProviderID` field.\n\n\nThe duration set in this field is compared to the greatest of:\n- Cluster's infrastructure ready condition timestamp (if and when available)\n- Control Plane's initialized condition timestamp (if and when available)\n- Machine's infrastructure ready condition timestamp (if and when available)\n- Machine's metadata creation timestamp\n\n\nDefaults to 10 minutes.\nIf you wish to disable this feature, set the value explicitly to 0."
@@ -147,7 +147,7 @@ spec:
                     type: "object"
                   type: "array"
                 unhealthyRange:
-                  description: "Any further remediation is only allowed if the number of machines selected by \"selector\" as not healthy\nis within the range of \"UnhealthyRange\". Takes precedence over MaxUnhealthy.\nEg. \"[3-5]\" - This means that remediation will be allowed only when:\n(a) there are at least 3 unhealthy machines (and)\n(b) there are at most 5 unhealthy machines"
+                  description: "Any further remediation is only allowed if the number of machines selected by \"selector\" as not healthy\nis within the range of \"UnhealthyRange\". Takes precedence over MaxUnhealthy.\nEg. \"[3-5]\" - This means that remediation will be allowed only when:\n(a) there are at least 3 unhealthy machines (and)\n(b) there are at most 5 unhealthy machines\n\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details."
                   pattern: "^\\[[0-9]+-[0-9]+\\]$"
                   type: "string"
               required:

@@ -25,10 +25,12 @@ pub struct InputManifestSpec {
     /// LoadBalancers list of loadbalancer clusters the Kubernetes clusters may use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<InputManifestLoadBalancers>,
-    /// NodePool is a map of dynamic nodepools and static nodepools which will be used to form kubernetes or loadbalancer clusters.
+    /// NodePool is a map of dynamic nodepools and static nodepools which will be used to
+    /// form kubernetes or loadbalancer clusters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePools")]
     pub node_pools: Option<InputManifestNodePools>,
-    /// Providers list of defined cloud provider configuration that will be used while infrastructure provisioning.
+    /// Providers list of defined cloud provider configuration
+    /// that will be used while infrastructure provisioning.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<InputManifestProviders>>,
 }
@@ -50,7 +52,11 @@ pub struct InputManifestKubernetesClusters {
     pub network: String,
     /// List of nodepool names this cluster will use.
     pub pools: InputManifestKubernetesClustersPools,
-    /// Version should be defined in format vX.Y. In terms of supported versions of Kubernetes, Claudie follows kubeone releases and their supported versions. The current kubeone version used in Claudie is 1.5. To see the list of supported versions, please refer to kubeone documentation. https://docs.kubermatic.com/kubeone/v1.5/architecture/compatibility/supported-versions/#supported-kubernetes-versions
+    /// Version should be defined in format vX.Y. In terms of supported versions of Kubernetes,
+    /// Claudie follows kubeone releases and their supported versions.
+    /// The current kubeone version used in Claudie is 1.5.
+    /// To see the list of supported versions, please refer to kubeone documentation.
+    /// https://docs.kubermatic.com/kubeone/v1.8/architecture/compatibility/supported-versions/
     pub version: String,
 }
 
@@ -82,7 +88,8 @@ pub struct InputManifestLoadBalancersClusters {
     pub dns: Option<InputManifestLoadBalancersClustersDns>,
     /// Name of the loadbalancer.
     pub name: String,
-    /// List of nodepool names this loadbalancer will use. Remember, that nodepools defined in nodepools are only "blueprints". The actual nodepool will be created once referenced here.
+    /// List of nodepool names this loadbalancer will use. Remember, that nodepools defined
+    /// in nodepools are only "blueprints". The actual nodepool will be created once referenced here.
     pub pools: Vec<String>,
     /// List of roles the loadbalancer uses.
     pub roles: Vec<String>,
@@ -130,7 +137,8 @@ pub enum InputManifestLoadBalancersRolesProtocol {
     Udp,
 }
 
-/// NodePool is a map of dynamic nodepools and static nodepools which will be used to form kubernetes or loadbalancer clusters.
+/// NodePool is a map of dynamic nodepools and static nodepools which will be used to
+/// form kubernetes or loadbalancer clusters.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputManifestNodePools {
     /// Dynamic nodepools define nodepools dynamically created by Claudie.
@@ -141,8 +149,13 @@ pub struct InputManifestNodePools {
     pub r#static: Option<Vec<InputManifestNodePoolsStatic>>,
 }
 
-/// DynamicNodePool List of dynamically to-be-created nodepools of not yet existing machines, used for Kubernetes or loadbalancer clusters. These are only blueprints, and will only be created per reference in kubernetes or loadBalancer clusters. 
-///  E.g. if the nodepool isn't used, it won't even be created. Or if the same nodepool is used in two different clusters, it will be created twice. In OOP analogy, a dynamic nodepool would be a class that would get instantiated N >= 0 times depending on which clusters reference it.
+/// DynamicNodePool List of dynamically to-be-created nodepools of not yet existing machines, used for Kubernetes or loadbalancer clusters.
+/// These are only blueprints, and will only be created per reference in kubernetes or loadBalancer clusters.
+/// 
+/// 
+/// E.g. if the nodepool isn't used, it won't even be created. Or if the same nodepool is used in two different clusters,
+/// it will be created twice. In OOP analogy, a dynamic nodepool would be a class
+/// that would get instantiated N >= 0 times depending on which clusters reference it.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputManifestNodePoolsDynamic {
     /// User defined annotations for this nodepool.
@@ -167,10 +180,12 @@ pub struct InputManifestNodePoolsDynamic {
     /// Collection of provider data to be used while creating the nodepool.
     #[serde(rename = "providerSpec")]
     pub provider_spec: InputManifestNodePoolsDynamicProviderSpec,
-    /// Type of the machines in the nodepool. Currently, only AMD64 machines are supported.
+    /// 	Type of the machines in the nodepool. Currently, only AMD64 machines are supported.
     #[serde(rename = "serverType")]
     pub server_type: String,
-    /// Size of the storage disk on the nodes in the nodepool in GB. The OS disk is created automatically with predefined size of 100GB for kubernetes nodes and 50GB for Loadbalancer nodes. The value must be either -1 (no disk is created), or >= 50. If no value is specified, 50 is used.
+    /// Size of the storage disk on the nodes in the nodepool in GB. The OS disk is created automatically
+    /// with predefined size of 100GB for kubernetes nodes and 50GB for Loadbalancer nodes.
+    /// The value must be either -1 (no disk is created), or >= 50. If no value is specified, 50 is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageDiskSize")]
     pub storage_disk_size: Option<i32>,
     /// User defined taints for this nodepool.
@@ -210,14 +225,18 @@ pub struct InputManifestNodePoolsDynamicProviderSpec {
     pub zone: Option<String>,
 }
 
-/// The node this Taint is attached to has the "effect" on any pod that does not tolerate the Taint.
+/// The node this Taint is attached to has the "effect" on
+/// any pod that does not tolerate the Taint.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputManifestNodePoolsDynamicTaints {
-    /// Required. The effect of the taint on pods that do not tolerate the taint. Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Required. The effect of the taint on pods
+    /// that do not tolerate the taint.
+    /// Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
     pub effect: String,
     /// Required. The taint key to be applied to a node.
     pub key: String,
-    /// TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints.
+    /// TimeAdded represents the time at which the taint was added.
+    /// It is only written for NoExecute taints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAdded")]
     pub time_added: Option<String>,
     /// The taint value corresponding to the taint key.
@@ -264,14 +283,18 @@ pub struct InputManifestNodePoolsStaticNodesSecretRef {
     pub namespace: Option<String>,
 }
 
-/// The node this Taint is attached to has the "effect" on any pod that does not tolerate the Taint.
+/// The node this Taint is attached to has the "effect" on
+/// any pod that does not tolerate the Taint.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputManifestNodePoolsStaticTaints {
-    /// Required. The effect of the taint on pods that do not tolerate the taint. Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Required. The effect of the taint on pods
+    /// that do not tolerate the taint.
+    /// Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
     pub effect: String,
     /// Required. The taint key to be applied to a node.
     pub key: String,
-    /// TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints.
+    /// TimeAdded represents the time at which the taint was added.
+    /// It is only written for NoExecute taints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAdded")]
     pub time_added: Option<String>,
     /// The taint value corresponding to the taint key.
@@ -279,20 +302,24 @@ pub struct InputManifestNodePoolsStaticTaints {
     pub value: Option<String>,
 }
 
-/// Providers list of defined cloud provider configuration that will be used while infrastructure provisioning.
+/// Providers list of defined cloud provider configuration
+/// that will be used while infrastructure provisioning.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InputManifestProviders {
     /// Name is the name of the provider specification. It has to be unique across all providers.
     pub name: String,
-    /// ProviderType type of a provider. A list of available providers can be found at https://docs.claudie.io/v0.3.2/input-manifest/providers/aws/
+    /// ProviderType type of a provider.
+    /// A list of available providers can be found at https://docs.claudie.io/v0.3.2/input-manifest/providers/aws/
     #[serde(rename = "providerType")]
     pub provider_type: InputManifestProvidersProviderType,
-    /// SecretReference represents a Secret Reference. It has enough information to retrieve secret in any namespace
+    /// SecretReference represents a Secret Reference. It has enough information to retrieve secret
+    /// in any namespace
     #[serde(rename = "secretRef")]
     pub secret_ref: InputManifestProvidersSecretRef,
 }
 
-/// Providers list of defined cloud provider configuration that will be used while infrastructure provisioning.
+/// Providers list of defined cloud provider configuration
+/// that will be used while infrastructure provisioning.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum InputManifestProvidersProviderType {
     #[serde(rename = "gcp")]
@@ -313,7 +340,8 @@ pub enum InputManifestProvidersProviderType {
     Genesiscloud,
 }
 
-/// SecretReference represents a Secret Reference. It has enough information to retrieve secret in any namespace
+/// SecretReference represents a Secret Reference. It has enough information to retrieve secret
+/// in any namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputManifestProvidersSecretRef {
     /// name is unique within a namespace to reference a secret resource.

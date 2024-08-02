@@ -69,7 +69,7 @@ spec:
                   description: "Audience uniquely identifies our service provider."
                   type: "string"
                 cert:
-                  description: "Cert is the identity provider certificate PEM. IDP signs <Response> responses using this certificate."
+                  description: "Cert is the identity provider certificate PEM. IDP signs `<Response>` responses using this certificate."
                   type: "string"
                 client_redirect_settings:
                   description: "ClientRedirectSettings defines which client redirect URLs are allowed for non-browser SSO logins other than the standard localhost ones."
@@ -77,6 +77,12 @@ spec:
                   properties:
                     allowed_https_hostnames:
                       description: "a list of hostnames allowed for https client redirect URLs"
+                      items:
+                        type: "string"
+                      nullable: true
+                      type: "array"
+                    insecure_allowed_cidr_ranges:
+                      description: "a list of CIDRs allowed for HTTP or HTTPS client redirect URLs"
                       items:
                         type: "string"
                       nullable: true

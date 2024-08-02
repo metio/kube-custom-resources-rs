@@ -2176,6 +2176,15 @@ spec:
                         items:
                           type: "string"
                         type: "array"
+                      parallelPodManagementConcurrency:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        description: "Controls the concurrency of pods during initial scale up, when replacing pods on nodes,\nor when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.\nThe default Concurrency is 100%."
+                        x-kubernetes-int-or-string: true
+                      podUpdatePolicy:
+                        description: "PodUpdatePolicy indicates how pods should be updated\n\n\n- `StrictInPlace` indicates that only allows in-place upgrades.\nAny attempt to modify other fields will be rejected.\n- `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.\nIf that fails, it will fall back to the ReCreate, where pod will be recreated.\nDefault value is \"PreferInPlace\""
+                        type: "string"
                       replicas:
                         default: 1
                         description: "Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing."
@@ -2800,7 +2809,7 @@ spec:
                             type: "array"
                         type: "object"
                       serviceAccountName:
-                        description: "Specifies the name of the ServiceAccount required by the running Component.\nThis ServiceAccount is used to grant necessary permissions for the Component's Pods to interact\nwith other Kubernetes resources, such as modifying Pod labels or sending events.\n\n\nDefaults:\nIf not specified, KubeBlocks automatically assigns a default ServiceAccount named \"kb-{cluster.name}\",\nbound to a default role installed together with KubeBlocks.\n\n\nFuture Changes:\nFuture versions might change the default ServiceAccount creation strategy to one per Component,\npotentially revising the naming to \"kb-{cluster.name}-{component.name}\".\n\n\nUsers can override the automatic ServiceAccount assignment by explicitly setting the name of\nan existed ServiceAccount in this field."
+                        description: "Specifies the name of the ServiceAccount required by the running Component.\nThis ServiceAccount is used to grant necessary permissions for the Component's Pods to interact\nwith other Kubernetes resources, such as modifying Pod labels or sending events.\n\n\nDefaults:\nTo perform certain operational tasks, agent sidecars running in Pods require specific RBAC permissions.\nThe service account will be bound to a default role named \"kubeblocks-cluster-pod-role\" which is installed together with KubeBlocks.\nIf not specified, KubeBlocks automatically assigns a default ServiceAccount named \"kb-{cluster.name}\"\n\n\nFuture Changes:\nFuture versions might change the default ServiceAccount creation strategy to one per Component,\npotentially revising the naming to \"kb-{cluster.name}-{component.name}\".\n\n\nUsers can override the automatic ServiceAccount assignment by explicitly setting the name of\nan existed ServiceAccount in this field."
                         type: "string"
                       serviceRefs:
                         description: "Defines a list of ServiceRef for a Component, enabling access to both external services and\nServices provided by other Clusters.\n\n\nTypes of services:\n\n\n- External services: Not managed by KubeBlocks or managed by a different KubeBlocks operator;\n  Require a ServiceDescriptor for connection details.\n- Services provided by a Cluster: Managed by the same KubeBlocks operator;\n  identified using Cluster, Component and Service names.\n\n\nServiceRefs with identical `serviceRef.name` in the same Cluster are considered the same.\n\n\nExample:\n```yaml\nserviceRefs:\n  - name: \"redis-sentinel\"\n    serviceDescriptor:\n      name: \"external-redis-sentinel\"\n  - name: \"postgres-cluster\"\n    clusterServiceSelector:\n      cluster: \"my-postgres-cluster\"\n      service:\n        component: \"postgresql\"\n```\nThe example above includes ServiceRefs to an external Redis Sentinel service and a PostgreSQL Cluster."
@@ -2892,6 +2901,9 @@ spec:
                             - "name"
                           type: "object"
                         type: "array"
+                      stop:
+                        description: "Stop the Component.\nIf set, all the computing resources will be released."
+                        type: "boolean"
                       switchPolicy:
                         description: "Defines the strategy for switchover and failover when workloadType is Replication.\n\n\nDeprecated since v0.9.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
                         properties:
@@ -7004,6 +7016,15 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                          parallelPodManagementConcurrency:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            description: "Controls the concurrency of pods during initial scale up, when replacing pods on nodes,\nor when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.\nThe default Concurrency is 100%."
+                            x-kubernetes-int-or-string: true
+                          podUpdatePolicy:
+                            description: "PodUpdatePolicy indicates how pods should be updated\n\n\n- `StrictInPlace` indicates that only allows in-place upgrades.\nAny attempt to modify other fields will be rejected.\n- `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.\nIf that fails, it will fall back to the ReCreate, where pod will be recreated.\nDefault value is \"PreferInPlace\""
+                            type: "string"
                           replicas:
                             default: 1
                             description: "Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing."
@@ -7628,7 +7649,7 @@ spec:
                                 type: "array"
                             type: "object"
                           serviceAccountName:
-                            description: "Specifies the name of the ServiceAccount required by the running Component.\nThis ServiceAccount is used to grant necessary permissions for the Component's Pods to interact\nwith other Kubernetes resources, such as modifying Pod labels or sending events.\n\n\nDefaults:\nIf not specified, KubeBlocks automatically assigns a default ServiceAccount named \"kb-{cluster.name}\",\nbound to a default role installed together with KubeBlocks.\n\n\nFuture Changes:\nFuture versions might change the default ServiceAccount creation strategy to one per Component,\npotentially revising the naming to \"kb-{cluster.name}-{component.name}\".\n\n\nUsers can override the automatic ServiceAccount assignment by explicitly setting the name of\nan existed ServiceAccount in this field."
+                            description: "Specifies the name of the ServiceAccount required by the running Component.\nThis ServiceAccount is used to grant necessary permissions for the Component's Pods to interact\nwith other Kubernetes resources, such as modifying Pod labels or sending events.\n\n\nDefaults:\nTo perform certain operational tasks, agent sidecars running in Pods require specific RBAC permissions.\nThe service account will be bound to a default role named \"kubeblocks-cluster-pod-role\" which is installed together with KubeBlocks.\nIf not specified, KubeBlocks automatically assigns a default ServiceAccount named \"kb-{cluster.name}\"\n\n\nFuture Changes:\nFuture versions might change the default ServiceAccount creation strategy to one per Component,\npotentially revising the naming to \"kb-{cluster.name}-{component.name}\".\n\n\nUsers can override the automatic ServiceAccount assignment by explicitly setting the name of\nan existed ServiceAccount in this field."
                             type: "string"
                           serviceRefs:
                             description: "Defines a list of ServiceRef for a Component, enabling access to both external services and\nServices provided by other Clusters.\n\n\nTypes of services:\n\n\n- External services: Not managed by KubeBlocks or managed by a different KubeBlocks operator;\n  Require a ServiceDescriptor for connection details.\n- Services provided by a Cluster: Managed by the same KubeBlocks operator;\n  identified using Cluster, Component and Service names.\n\n\nServiceRefs with identical `serviceRef.name` in the same Cluster are considered the same.\n\n\nExample:\n```yaml\nserviceRefs:\n  - name: \"redis-sentinel\"\n    serviceDescriptor:\n      name: \"external-redis-sentinel\"\n  - name: \"postgres-cluster\"\n    clusterServiceSelector:\n      cluster: \"my-postgres-cluster\"\n      service:\n        component: \"postgresql\"\n```\nThe example above includes ServiceRefs to an external Redis Sentinel service and a PostgreSQL Cluster."
@@ -7720,6 +7741,9 @@ spec:
                                 - "name"
                               type: "object"
                             type: "array"
+                          stop:
+                            description: "Stop the Component.\nIf set, all the computing resources will be released."
+                            type: "boolean"
                           switchPolicy:
                             description: "Defines the strategy for switchover and failover when workloadType is Replication.\n\n\nDeprecated since v0.9.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
                             properties:

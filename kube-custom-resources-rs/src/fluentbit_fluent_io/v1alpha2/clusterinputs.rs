@@ -77,6 +77,9 @@ pub struct ClusterInputSpec {
     /// TCP defines the TCP input plugin configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tcp: Option<ClusterInputTcp>,
+    /// UDP defines the UDP input plugin configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub udp: Option<ClusterInputUdp>,
 }
 
 /// Collectd defines the Collectd input plugin configuration
@@ -267,8 +270,12 @@ pub struct ClusterInputHttpTlsKeyPasswordValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -419,6 +426,12 @@ pub struct ClusterInputOpenTelemetry {
     /// It allows to set successful response code. 200, 201 and 204 are supported(default 201).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulResponseCode")]
     pub successful_response_code: Option<i32>,
+    /// opentelemetry uses the tag value for incoming metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+    /// If true, tag will be created from uri. e.g. v1_metrics from /v1/metrics
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagFromURI")]
+    pub tag_from_uri: Option<bool>,
     /// Specify the key name to overwrite a tag. If set, the tag will be overwritten by a value of the key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagKey")]
     pub tag_key: Option<String>,
@@ -772,5 +785,39 @@ pub struct ClusterInputTcp {
     /// When the expected Format is set to none, Fluent Bit needs a separator string to split the records. By default it uses the breakline character (LF or 0x10).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
+}
+
+/// UDP defines the UDP input plugin configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterInputUdp {
+    /// BufferSize Specify the maximum buffer size in KB to receive a JSON message.
+    /// If not set, the default size will be the value of Chunk_Size.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferSize")]
+    pub buffer_size: Option<String>,
+    /// By default the buffer to store the incoming JSON messages, do not allocate the maximum memory allowed,
+    /// instead it allocate memory when is required.
+    /// The rounds of allocations are set by Chunk_Size in KB. If not set, Chunk_Size is equal to 32 (32KB).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkSize")]
+    pub chunk_size: Option<String>,
+    /// Format Specify the expected payload format. It support the options json and none.
+    /// When using json, it expects JSON maps, when is set to none,
+    /// it will split every record using the defined Separator (option below).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<String>,
+    /// Listen Listener network interface, default: 0.0.0.0
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub listen: Option<String>,
+    /// Port Specify the UDP port where listening for connections, default: 5170
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// Separator When the expected Format is set to none, Fluent Bit needs a separator string to split the records. By default it uses the breakline character (LF or 0x10).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub separator: Option<String>,
+    /// SourceAddressKey Specify the key where the source address will be injected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddressKey")]
+    pub source_address_key: Option<String>,
+    /// Threaded mechanism allows input plugin to run in a separate thread which helps to desaturate the main pipeline.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub threaded: Option<String>,
 }
 

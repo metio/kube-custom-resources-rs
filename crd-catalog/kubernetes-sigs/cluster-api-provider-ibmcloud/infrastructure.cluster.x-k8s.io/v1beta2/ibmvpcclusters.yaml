@@ -92,6 +92,70 @@ spec:
                       description: "public indicates that load balancer is public or private"
                       type: "boolean"
                   type: "object"
+                network:
+                  description: "network represents the VPC network to use for the cluster."
+                  properties:
+                    controlPlaneSubnets:
+                      description: "controlPlaneSubnets is a set of Subnet's which define the Control Plane subnets."
+                      items:
+                        description: "Subnet describes a subnet."
+                        properties:
+                          cidr:
+                            type: "string"
+                          id:
+                            maxLength: 64
+                            minLength: 1
+                            pattern: "^[-0-9a-z_]+$"
+                            type: "string"
+                          name:
+                            maxLength: 63
+                            minLength: 1
+                            pattern: "^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$"
+                            type: "string"
+                          zone:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    resourceGroup:
+                      description: "resourceGroup is the name of the Resource Group containing all of the newtork resources.\nThis can be different than the Resource Group containing the remaining cluster resources."
+                      type: "string"
+                    vpc:
+                      description: "vpc defines the IBM Cloud VPC for extended VPC Infrastructure support."
+                      properties:
+                        id:
+                          description: "id of the resource."
+                          minLength: 1
+                          type: "string"
+                        name:
+                          description: "name of the resource."
+                          minLength: 1
+                          type: "string"
+                      type: "object"
+                      x-kubernetes-validations:
+                        - message: "an id or name must be provided"
+                          rule: "has(self.id) || has(self.name)"
+                    workerSubnets:
+                      description: "workerSubnets is a set of Subnet's which define the Worker subnets."
+                      items:
+                        description: "Subnet describes a subnet."
+                        properties:
+                          cidr:
+                            type: "string"
+                          id:
+                            maxLength: 64
+                            minLength: 1
+                            pattern: "^[-0-9a-z_]+$"
+                            type: "string"
+                          name:
+                            maxLength: 63
+                            minLength: 1
+                            pattern: "^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$"
+                            type: "string"
+                          zone:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                  type: "object"
                 region:
                   description: "The IBM Cloud Region the cluster lives in."
                   type: "string"
@@ -144,9 +208,62 @@ spec:
                 controlPlaneLoadBalancerState:
                   description: "ControlPlaneLoadBalancerState is the status of the load balancer."
                   type: "string"
+                network:
+                  description: "network is the status of the VPC network resources for extended VPC Infrastructure support."
+                  properties:
+                    resourceGroup:
+                      description: "resourceGroup references the Resource Group for Network resources for the cluster.\nThis can be the same or unique from the cluster's Resource Group."
+                      properties:
+                        id:
+                          description: "id defines the Id of the IBM Cloud resource status."
+                          type: "string"
+                        name:
+                          description: "name defines the name of the IBM Cloud resource status."
+                          type: "string"
+                        ready:
+                          description: "ready defines whether the IBM Cloud resource is ready."
+                          type: "boolean"
+                      required:
+                        - "id"
+                        - "ready"
+                      type: "object"
+                    vpc:
+                      description: "vpc references the status of the IBM Cloud VPC as part of the extended VPC Infrastructure support."
+                      properties:
+                        id:
+                          description: "id defines the Id of the IBM Cloud resource status."
+                          type: "string"
+                        name:
+                          description: "name defines the name of the IBM Cloud resource status."
+                          type: "string"
+                        ready:
+                          description: "ready defines whether the IBM Cloud resource is ready."
+                          type: "boolean"
+                      required:
+                        - "id"
+                        - "ready"
+                      type: "object"
+                  type: "object"
                 ready:
+                  default: false
                   description: "Ready is true when the provider resource is ready."
                   type: "boolean"
+                resourceGroup:
+                  description: "resourceGroup is the status of the cluster's Resource Group for extended VPC Infrastructure support."
+                  properties:
+                    id:
+                      description: "id defines the Id of the IBM Cloud resource status."
+                      type: "string"
+                    name:
+                      description: "name defines the name of the IBM Cloud resource status."
+                      type: "string"
+                    ready:
+                      description: "ready defines whether the IBM Cloud resource is ready."
+                      type: "boolean"
+                  required:
+                    - "id"
+                    - "ready"
+                  type: "object"
                 subnet:
                   description: "Subnet describes a subnet."
                   properties:
@@ -166,7 +283,7 @@ spec:
                       type: "string"
                   type: "object"
                 vpc:
-                  description: "INSERT ADDITIONAL STATUS FIELD - define observed state of cluster\nImportant: Run \"make\" to regenerate code after modifying this file"
+                  description: "INSERT ADDITIONAL STATUS FIELD - define observed state of cluster\nImportant: Run \"make\" to regenerate code after modifying this file\ndep: rely on Network instead."
                   properties:
                     id:
                       type: "string"
