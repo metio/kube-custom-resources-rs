@@ -211,6 +211,8 @@ pub struct FileSystemKmsKeyRef {
 pub struct FileSystemKmsKeyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Describes a policy used by Lifecycle management that specifies when to transition

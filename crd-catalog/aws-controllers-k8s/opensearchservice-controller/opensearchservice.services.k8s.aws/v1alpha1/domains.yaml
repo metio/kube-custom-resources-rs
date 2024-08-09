@@ -30,15 +30,15 @@ spec:
               description: "DomainSpec defines the desired state of Domain."
               properties:
                 accessPolicies:
-                  description: "IAM access policy as a JSON-formatted string."
+                  description: "Identity and Access Management (IAM) policy document specifying the access\npolicies for the new domain."
                   type: "string"
                 advancedOptions:
                   additionalProperties:
                     type: "string"
-                  description: "Option to allow references to indices in an HTTP request body. Must be false\nwhen configuring access to individual sub-resources. By default, the value\nis true. See Advanced cluster parameters (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomain-configure-advanced-options)\nfor more information."
+                  description: "Key-value pairs to specify advanced configuration options. The following\nkey-value pairs are supported:\n\n\n   * \"rest.action.multi.allow_explicit_index\": \"true\" | \"false\" - Note the\n   use of a string rather than a boolean. Specifies whether explicit references\n   to indexes are allowed inside the body of HTTP requests. If you want to\n   configure access policies for domain sub-resources, such as specific indexes\n   and domain APIs, you must disable this property. Default is true.\n\n\n   * \"indices.fielddata.cache.size\": \"80\" - Note the use of a string rather\n   than a boolean. Specifies the percentage of heap space allocated to field\n   data. Default is unbounded.\n\n\n   * \"indices.query.bool.max_clause_count\": \"1024\" - Note the use of a string\n   rather than a boolean. Specifies the maximum number of clauses allowed\n   in a Lucene boolean query. Default is 1,024. Queries with more than the\n   permitted number of clauses result in a TooManyClauses error.\n\n\n   * \"override_main_response_version\": \"true\" | \"false\" - Note the use of\n   a string rather than a boolean. Specifies whether the domain reports its\n   version as 7.10 to allow Elasticsearch OSS clients and plugins to continue\n   working with it. Default is false when creating a domain and true when\n   upgrading a domain.\n\n\nFor more information, see Advanced cluster parameters (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomain-configure-advanced-options)."
                   type: "object"
                 advancedSecurityOptions:
-                  description: "Specifies advanced security options."
+                  description: "Options for fine-grained access control."
                   properties:
                     anonymousAuthEnabled:
                       type: "boolean"
@@ -46,11 +46,23 @@ spec:
                       type: "boolean"
                     internalUserDatabaseEnabled:
                       type: "boolean"
+                    jwtOptions:
+                      description: "The JWT authentication and authorization configuration for an Amazon OpenSearch\nService domain."
+                      properties:
+                        enabled:
+                          type: "boolean"
+                        publicKey:
+                          type: "string"
+                        rolesKey:
+                          type: "string"
+                        subjectKey:
+                          type: "string"
+                      type: "object"
                     masterUserOptions:
-                      description: "Credentials for the master user: username and password, ARN, or both."
+                      description: "Credentials for the master user for a domain."
                       properties:
                         masterUserARN:
-                          description: "The Amazon Resource Name (ARN) of the domain. See Identifiers for IAM Entities\n(http://docs.aws.amazon.com/IAM/latest/UserGuide/index.html) in Using AWS\nIdentity and Access Management for more information."
+                          description: "The Amazon Resource Name (ARN) of the domain. See Identifiers for IAM Entities\n(https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html) in Using Amazon\nWeb Services Identity and Access Management for more information."
                           type: "string"
                         masterUserName:
                           type: "string"
@@ -72,12 +84,12 @@ spec:
                           x-kubernetes-map-type: "atomic"
                       type: "object"
                     sAMLOptions:
-                      description: "The SAML application configuration for the domain."
+                      description: "The SAML authentication configuration for an Amazon OpenSearch Service domain."
                       properties:
                         enabled:
                           type: "boolean"
                         idp:
-                          description: "The SAML identity povider's information."
+                          description: "The SAML identity povider information."
                           properties:
                             entityID:
                               type: "string"
@@ -97,26 +109,36 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
+                aimlOptions:
+                  description: "Options for all machine learning features for the specified domain."
+                  properties:
+                    naturalLanguageQueryGenerationOptions:
+                      description: "Container for parameters required to enable the natural language query generation\nfeature."
+                      properties:
+                        desiredState:
+                          type: "string"
+                      type: "object"
+                  type: "object"
                 autoTuneOptions:
-                  description: "Specifies Auto-Tune options."
+                  description: "Options for Auto-Tune."
                   properties:
                     desiredState:
                       description: "The Auto-Tune desired state. Valid values are ENABLED and DISABLED."
                       type: "string"
                     maintenanceSchedules:
                       items:
-                        description: "Specifies the Auto-Tune maintenance schedule. See Auto-Tune for Amazon OpenSearch\nService (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)\nfor more information."
+                        description: "This object is deprecated. Use the domain's off-peak window (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html)\nto schedule Auto-Tune optimizations. For migration instructions, see Migrating\nfrom Auto-Tune maintenance windows (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html#off-peak-migrate).\n\n\nThe Auto-Tune maintenance schedule. For more information, see Auto-Tune for\nAmazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)."
                         properties:
                           cronExpressionForRecurrence:
                             type: "string"
                           duration:
-                            description: "The maintenance schedule duration: duration value and duration unit. See\nAuto-Tune for Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)\nfor more information."
+                            description: "The duration of a maintenance schedule. For more information, see Auto-Tune\nfor Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)."
                             properties:
                               unit:
-                                description: "The unit of a maintenance schedule duration. Valid value is HOUR. See Auto-Tune\nfor Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)\nfor more information."
+                                description: "The unit of a maintenance schedule duration. Valid value is HOUR."
                                 type: "string"
                               value:
-                                description: "Integer to specify the value of a maintenance schedule duration. See Auto-Tune\nfor Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)\nfor more information."
+                                description: "Integer that specifies the value of a maintenance schedule duration."
                                 format: "int64"
                                 type: "integer"
                             type: "object"
@@ -125,12 +147,14 @@ spec:
                             type: "string"
                         type: "object"
                       type: "array"
+                    useOffPeakWindow:
+                      type: "boolean"
                   type: "object"
                 clusterConfig:
-                  description: "Configuration options for a domain. Specifies the instance type and number\nof instances in the domain."
+                  description: "Container for the cluster configuration of a domain."
                   properties:
                     coldStorageOptions:
-                      description: "Specifies the configuration for cold storage options such as enabled"
+                      description: "Container for the parameters required to enable cold storage for an OpenSearch\nService domain. For more information, see Cold storage for Amazon OpenSearch\nService (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cold-storage.html)."
                       properties:
                         enabled:
                           type: "boolean"
@@ -147,6 +171,8 @@ spec:
                       type: "integer"
                     instanceType:
                       type: "string"
+                    multiAZWithStandbyEnabled:
+                      type: "boolean"
                     warmCount:
                       format: "int64"
                       type: "integer"
@@ -155,7 +181,7 @@ spec:
                     warmType:
                       type: "string"
                     zoneAwarenessConfig:
-                      description: "The zone awareness configuration for the domain cluster, such as the number\nof availability zones."
+                      description: "The zone awareness configuration for an Amazon OpenSearch Service domain."
                       properties:
                         availabilityZoneCount:
                           format: "int64"
@@ -165,7 +191,7 @@ spec:
                       type: "boolean"
                   type: "object"
                 cognitoOptions:
-                  description: "Options to specify the Cognito user and identity pools for OpenSearch Dashboards\nauthentication. For more information, see Configuring Amazon Cognito authentication\nfor OpenSearch Dashboards (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html)."
+                  description: "Key-value pairs to configure Amazon Cognito authentication. For more information,\nsee Configuring Amazon Cognito authentication for OpenSearch Dashboards (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html)."
                   properties:
                     enabled:
                       type: "boolean"
@@ -177,12 +203,12 @@ spec:
                       type: "string"
                   type: "object"
                 domainEndpointOptions:
-                  description: "Options to specify configurations that will be applied to the domain endpoint."
+                  description: "Additional options for the domain endpoint, such as whether to require HTTPS\nfor all traffic."
                   properties:
                     customEndpoint:
                       type: "string"
                     customEndpointCertificateARN:
-                      description: "The Amazon Resource Name (ARN) of the domain. See Identifiers for IAM Entities\n(http://docs.aws.amazon.com/IAM/latest/UserGuide/index.html) in Using AWS\nIdentity and Access Management for more information."
+                      description: "The Amazon Resource Name (ARN) of the domain. See Identifiers for IAM Entities\n(https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html) in Using Amazon\nWeb Services Identity and Access Management for more information."
                       type: "string"
                     customEndpointEnabled:
                       type: "boolean"
@@ -192,7 +218,7 @@ spec:
                       type: "string"
                   type: "object"
                 ebsOptions:
-                  description: "Options to enable, disable, and specify the type and size of EBS storage\nvolumes."
+                  description: "Container for the parameters required to enable EBS-based storage for an\nOpenSearch Service domain."
                   properties:
                     ebsEnabled:
                       type: "boolean"
@@ -206,11 +232,11 @@ spec:
                       format: "int64"
                       type: "integer"
                     volumeType:
-                      description: "The type of EBS volume, standard, gp2, gp3 or io1. See Configuring EBS-based\nStorage (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/opensearch-createupdatedomains.html#opensearch-createdomain-configure-ebs)\nfor more information."
+                      description: "The type of EBS volume that a domain uses. For more information, see Configuring\nEBS-based storage (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/opensearch-createupdatedomains.html#opensearch-createdomain-configure-ebs)."
                       type: "string"
                   type: "object"
                 encryptionAtRestOptions:
-                  description: "Options for encryption of data at rest."
+                  description: "Key-value pairs to enable encryption at rest."
                   properties:
                     enabled:
                       type: "boolean"
@@ -218,11 +244,14 @@ spec:
                       type: "string"
                   type: "object"
                 engineVersion:
-                  description: "String of format Elasticsearch_X.Y or OpenSearch_X.Y to specify the engine\nversion for the Amazon OpenSearch Service domain. For example, \"OpenSearch_1.0\"\nor \"Elasticsearch_7.9\". For more information, see Creating and managing Amazon\nOpenSearch Service domains (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomains)."
+                  description: "String of format Elasticsearch_X.Y or OpenSearch_X.Y to specify the engine\nversion for the OpenSearch Service domain. For example, OpenSearch_1.0 or\nElasticsearch_7.9. For more information, see Creating and managing Amazon\nOpenSearch Service domains (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomains)."
+                  type: "string"
+                ipAddressType:
+                  description: "Specify either dual stack or IPv4 as your IP address type. Dual stack allows\nyou to share domain resources across IPv4 and IPv6 address types, and is\nthe recommended option. If you set your IP address type to dual stack, you\ncan't change your address type later."
                   type: "string"
                 logPublishingOptions:
                   additionalProperties:
-                    description: "Log Publishing option that is set for a given domain. Attributes and their\ndetails:\n   * CloudWatchLogsLogGroupArn: ARN of the Cloudwatch log group to publish\n   logs to.\n\n\n   * Enabled: Whether the log publishing for a given log type is enabled\n   or not."
+                    description: "Specifies whether the Amazon OpenSearch Service domain publishes the OpenSearch\napplication and slow logs to Amazon CloudWatch. For more information, see\nMonitoring OpenSearch logs with Amazon CloudWatch Logs (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createdomain-configure-slow-logs.html).\n\n\nAfter you enable log publishing, you still have to enable the collection\nof slow logs using the OpenSearch REST API."
                     properties:
                       cloudWatchLogsLogGroupARN:
                         description: "ARN of the Cloudwatch log group to publish logs to."
@@ -230,32 +259,58 @@ spec:
                       enabled:
                         type: "boolean"
                     type: "object"
-                  description: "Map of LogType and LogPublishingOption, each containing options to publish\na given type of OpenSearch log."
+                  description: "Key-value pairs to configure log publishing."
                   type: "object"
                 name:
-                  description: "The name of the Amazon OpenSearch Service domain you're creating. Domain\nnames are unique across the domains owned by an account within an AWS region.\nDomain names must start with a lowercase letter and can contain the following\ncharacters: a-z (lowercase), 0-9, and - (hyphen)."
+                  description: "Name of the OpenSearch Service domain to create. Domain names are unique\nacross the domains owned by an account within an Amazon Web Services Region."
                   type: "string"
                 nodeToNodeEncryptionOptions:
-                  description: "Node-to-node encryption options."
+                  description: "Enables node-to-node encryption."
                   properties:
                     enabled:
                       type: "boolean"
                   type: "object"
+                offPeakWindowOptions:
+                  description: "Specifies a daily 10-hour time block during which OpenSearch Service can\nperform configuration changes on the domain, including service software updates\nand Auto-Tune enhancements that require a blue/green deployment. If no options\nare specified, the default start time of 10:00 P.M. local time (for the Region\nthat the domain is created in) is used."
+                  properties:
+                    enabled:
+                      type: "boolean"
+                    offPeakWindow:
+                      description: "A custom 10-hour, low-traffic window during which OpenSearch Service can\nperform mandatory configuration changes on the domain. These actions can\ninclude scheduled service software updates and blue/green Auto-Tune enhancements.\nOpenSearch Service will schedule these actions during the window that you\nspecify.\n\n\nIf you don't specify a window start time, it defaults to 10:00 P.M. local\ntime.\n\n\nFor more information, see Defining off-peak maintenance windows for Amazon\nOpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html)."
+                      properties:
+                        windowStartTime:
+                          description: "The desired start time for an off-peak maintenance window (https://docs.aws.amazon.com/opensearch-service/latest/APIReference/API_OffPeakWindow.html)."
+                          properties:
+                            hours:
+                              format: "int64"
+                              type: "integer"
+                            minutes:
+                              format: "int64"
+                              type: "integer"
+                          type: "object"
+                      type: "object"
+                  type: "object"
+                softwareUpdateOptions:
+                  description: "Software update options for the domain."
+                  properties:
+                    autoSoftwareUpdateEnabled:
+                      type: "boolean"
+                  type: "object"
                 tags:
-                  description: "A list of Tag added during domain creation."
+                  description: "List of tags to add to the domain upon creation."
                   items:
-                    description: "A key value pair for a resource tag."
+                    description: "A tag (key-value pair) for an Amazon OpenSearch Service resource."
                     properties:
                       key:
-                        description: "A string of length from 1 to 128 characters that specifies the key for a\ntag. Tag keys must be unique for the domain to which they're attached."
+                        description: "A string between 1 to 128 characters that specifies the key for a tag. Tag\nkeys must be unique for the domain to which they're attached."
                         type: "string"
                       value:
-                        description: "A string of length from 0 to 256 characters that specifies the value for\na tag. Tag values can be null and don't have to be unique in a tag set."
+                        description: "A string between 0 to 256 characters that specifies the value for a tag.\nTag values can be null and don't have to be unique in a tag set."
                         type: "string"
                     type: "object"
                   type: "array"
                 vpcOptions:
-                  description: "Options to specify the subnets and security groups for a VPC endpoint. For\nmore information, see Launching your Amazon OpenSearch Service domains using\na VPC (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html)."
+                  description: "Container for the values required to configure VPC access domains. If you\ndon't specify these values, OpenSearch Service creates the domain with a\npublic endpoint. For more information, see Launching your Amazon OpenSearch\nService domains using a VPC (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html)."
                   properties:
                     securityGroupIDs:
                       items:
@@ -289,11 +344,21 @@ spec:
                     - "region"
                   type: "object"
                 changeProgressDetails:
-                  description: "Specifies change details of the domain configuration change."
+                  description: "Information about a configuration change happening on the domain."
                   properties:
                     changeID:
                       type: "string"
+                    configChangeStatus:
+                      type: "string"
+                    initiatedBy:
+                      type: "string"
+                    lastUpdatedTime:
+                      format: "date-time"
+                      type: "string"
                     message:
+                      type: "string"
+                    startTime:
+                      format: "date-time"
                       type: "string"
                   type: "object"
                 conditions:
@@ -323,24 +388,48 @@ spec:
                     type: "object"
                   type: "array"
                 created:
-                  description: "The domain creation status. True if the creation of a domain is complete.\nFalse if domain creation is still in progress."
+                  description: "Creation status of an OpenSearch Service domain. True if domain creation\nis complete. False if domain creation is still in progress."
                   type: "boolean"
                 deleted:
-                  description: "The domain deletion status. True if a delete request has been received for\nthe domain but resource cleanup is still in progress. False if the domain\nhas not been deleted. Once domain deletion is complete, the status of the\ndomain is no longer returned."
+                  description: "Deletion status of an OpenSearch Service domain. True if domain deletion\nis complete. False if domain deletion is still in progress. Once deletion\nis complete, the status of the domain is no longer returned."
                   type: "boolean"
+                domainEndpointV2HostedZoneID:
+                  description: "The dual stack hosted zone ID for the domain."
+                  type: "string"
                 domainID:
-                  description: "The unique identifier for the specified domain."
+                  description: "Unique identifier for the domain."
+                  type: "string"
+                domainProcessingStatus:
+                  description: "The status of any changes that are currently in progress for the domain."
                   type: "string"
                 endpoint:
-                  description: "The domain endpoint that you use to submit index and search requests."
+                  description: "Domain-specific endpoint used to submit index, search, and data upload requests\nto the domain."
+                  type: "string"
+                endpointV2:
+                  description: "If IPAddressType to set to dualstack, a version 2 domain endpoint is provisioned.\nThis endpoint functions like a normal endpoint, except that it works with\nboth IPv4 and IPv6 IP addresses. Normal endpoints work only with IPv4 IP\naddresses."
                   type: "string"
                 endpoints:
                   additionalProperties:
                     type: "string"
-                  description: "Map containing the domain endpoints used to submit index and search requests.\nExample key, value: 'vpc','vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.us-east-1.es.amazonaws.com'."
+                  description: "The key-value pair that exists if the OpenSearch Service domain uses VPC\nendpoints. For example:\n\n\n   * IPv4 IP addresses - 'vpc','vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.us-east-1.es.amazonaws.com'\n\n\n   * Dual stack IP addresses - 'vpcv2':'vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.aos.us-east-1.on.aws'"
                   type: "object"
+                modifyingProperties:
+                  description: "Information about the domain properties that are currently being modified."
+                  items:
+                    description: "Information about the domain properties that are currently being modified."
+                    properties:
+                      activeValue:
+                        type: "string"
+                      name:
+                        type: "string"
+                      pendingValue:
+                        type: "string"
+                      valueType:
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 processing:
-                  description: "The status of the domain configuration. True if Amazon OpenSearch Service\nis processing configuration changes. False if the configuration is active."
+                  description: "The status of the domain configuration. True if OpenSearch Service is processing\nconfiguration changes. False if the configuration is active."
                   type: "boolean"
                 serviceSoftwareOptions:
                   description: "The current status of the domain's service software."
@@ -364,14 +453,14 @@ spec:
                       type: "string"
                   type: "object"
                 snapshotOptions:
-                  description: "The status of the SnapshotOptions."
+                  description: "DEPRECATED. Container for parameters required to configure automated snapshots\nof domain indexes."
                   properties:
                     automatedSnapshotStartHour:
                       format: "int64"
                       type: "integer"
                   type: "object"
                 upgradeProcessing:
-                  description: "The status of a domain version upgrade. True if Amazon OpenSearch Service\nis undergoing a version upgrade. False if the configuration is active."
+                  description: "The status of a domain version upgrade to a new version of OpenSearch or\nElasticsearch. True if OpenSearch Service is in the process of a version\nupgrade. False if the configuration is active."
                   type: "boolean"
               type: "object"
           type: "object"

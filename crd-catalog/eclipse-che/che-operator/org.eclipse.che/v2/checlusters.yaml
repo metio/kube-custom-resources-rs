@@ -16,7 +16,7 @@ spec:
     - name: "v2"
       schema:
         openAPIV3Schema:
-          description: "The `CheCluster` custom resource allows defining and managing Eclipse Che server installation.\nBased on these settings, the  Operator automatically creates and maintains several ConfigMaps:\n`che`, `plugin-registry`, `devfile-registry` that will contain the appropriate environment variables\nof the various components of the installation. These generated ConfigMaps must NOT be updated manually."
+          description: "The `CheCluster` custom resource allows defining and managing Eclipse Che server installation.\nBased on these settings, the  Operator automatically creates and maintains several ConfigMaps:\n`che`, `plugin-registry` that will contain the appropriate environment variables\nof the various components of the installation. These generated ConfigMaps must NOT be updated manually."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -453,7 +453,7 @@ spec:
                       description: "Configuration settings related to the devfile registry used by the Che installation."
                       properties:
                         deployment:
-                          description: "Deployment override options."
+                          description: "Deprecated deployment override options."
                           properties:
                             containers:
                               description: "List of containers belonging to the pod."
@@ -2854,7 +2854,7 @@ spec:
                   description: "Currently installed Che version."
                   type: "string"
                 devfileRegistryURL:
-                  description: "The public URL of the internal devfile registry."
+                  description: "Deprecated the public URL of the internal devfile registry."
                   type: "string"
                 gatewayPhase:
                   description: "Specifies the current phase of the gateway deployment."

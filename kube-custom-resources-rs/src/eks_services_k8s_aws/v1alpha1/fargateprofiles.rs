@@ -102,6 +102,8 @@ pub struct FargateProfileClusterRef {
 pub struct FargateProfileClusterRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -126,6 +128,8 @@ pub struct FargateProfilePodExecutionRoleRef {
 pub struct FargateProfilePodExecutionRoleRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// An object representing an Fargate profile selector.
@@ -159,6 +163,8 @@ pub struct FargateProfileSubnetRefs {
 pub struct FargateProfileSubnetRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// FargateProfileStatus defines the observed state of FargateProfile

@@ -495,9 +495,6 @@ pub struct HTTPRouteRules {
     /// 
     /// 
     /// Support: Extended
-    /// 
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeouts: Option<HTTPRouteRulesTimeouts>,
 }
@@ -2452,9 +2449,6 @@ pub enum HTTPRouteRulesSessionPersistenceType {
 /// 
 /// 
 /// Support: Extended
-/// 
-/// 
-/// 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesTimeouts {
     /// BackendRequest specifies a timeout for an individual request from the gateway
@@ -2473,8 +2467,10 @@ pub struct HTTPRouteRulesTimeouts {
     /// for example, if automatic retries are supported.
     /// 
     /// 
-    /// Because the Request timeout encompasses the BackendRequest timeout, the value of
-    /// BackendRequest must be <= the value of Request timeout.
+    /// The value of BackendRequest must be a Gateway API Duration string as defined by
+    /// GEP-2257.  When this field is unspecified, its behavior is implementation-specific;
+    /// when specified, the value of BackendRequest must be no more than the value of the
+    /// Request timeout (since the Request timeout encompasses the BackendRequest timeout).
     /// 
     /// 
     /// Support: Extended
@@ -2502,7 +2498,8 @@ pub struct HTTPRouteRulesTimeouts {
     /// initiated by the client.
     /// 
     /// 
-    /// When this field is unspecified, request timeout behavior is implementation-specific.
+    /// The value of Request is a Gateway API Duration string as defined by GEP-2257. When this
+    /// field is unspecified, request timeout behavior is implementation-specific.
     /// 
     /// 
     /// Support: Extended

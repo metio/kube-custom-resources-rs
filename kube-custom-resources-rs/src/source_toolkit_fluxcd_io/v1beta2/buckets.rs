@@ -84,6 +84,14 @@ pub struct BucketSpec {
     /// for the Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<BucketSecretRef>,
+    /// STS specifies the required configuration to use a Security Token
+    /// Service for fetching temporary credentials to authenticate in a
+    /// Bucket provider.
+    /// 
+    /// 
+    /// This field is only supported for the `aws` provider.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sts: Option<BucketSts>,
     /// Suspend tells the controller to suspend the reconciliation of this
     /// Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -169,6 +177,33 @@ pub struct BucketProxySecretRef {
 pub struct BucketSecretRef {
     /// Name of the referent.
     pub name: String,
+}
+
+/// STS specifies the required configuration to use a Security Token
+/// Service for fetching temporary credentials to authenticate in a
+/// Bucket provider.
+/// 
+/// 
+/// This field is only supported for the `aws` provider.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BucketSts {
+    /// Endpoint is the HTTP/S endpoint of the Security Token Service from
+    /// where temporary credentials will be fetched.
+    pub endpoint: String,
+    /// Provider of the Security Token Service.
+    pub provider: BucketStsProvider,
+}
+
+/// STS specifies the required configuration to use a Security Token
+/// Service for fetching temporary credentials to authenticate in a
+/// Bucket provider.
+/// 
+/// 
+/// This field is only supported for the `aws` provider.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BucketStsProvider {
+    #[serde(rename = "aws")]
+    Aws,
 }
 
 /// BucketStatus records the observed state of a Bucket.

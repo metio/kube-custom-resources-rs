@@ -366,6 +366,9 @@ spec:
                                   items:
                                     type: "string"
                                   type: "array"
+                                oneWayTls:
+                                  nullable: true
+                                  type: "boolean"
                                 parameters:
                                   properties:
                                     cipherSuites:
@@ -2291,6 +2294,9 @@ spec:
                                             items:
                                               type: "string"
                                             type: "array"
+                                          oneWayTls:
+                                            nullable: true
+                                            type: "boolean"
                                           parameters:
                                             properties:
                                               cipherSuites:

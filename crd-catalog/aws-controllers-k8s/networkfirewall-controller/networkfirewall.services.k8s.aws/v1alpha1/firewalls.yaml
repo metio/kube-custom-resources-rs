@@ -60,7 +60,7 @@ spec:
                   items:
                     description: "The ID for a subnet that you want to associate with the firewall. This is\nused with CreateFirewall and AssociateSubnets. Network Firewall creates an\ninstance of the associated firewall in each subnet that you specify, to filter\ntraffic in the subnet's Availability Zone."
                     properties:
-                      iPAddressType:
+                      ipAddressType:
                         type: "string"
                       subnetID:
                         type: "string"
@@ -162,7 +162,7 @@ spec:
                       items:
                         description: "The ID for a subnet that you want to associate with the firewall. This is\nused with CreateFirewall and AssociateSubnets. Network Firewall creates an\ninstance of the associated firewall in each subnet that you specify, to filter\ntraffic in the subnet's Availability Zone."
                         properties:
-                          iPAddressType:
+                          ipAddressType:
                             type: "string"
                           subnetID:
                             type: "string"

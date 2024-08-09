@@ -474,6 +474,10 @@ pub struct BackupStatusBackupMethodTargetConnectionCredential {
 /// Used to find the target pod. The volumes of the target pod will be backed up.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStatusBackupMethodTargetPodSelector {
+    /// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+    /// This only takes effect when the `strategy` field below is set to `Any`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackLabelSelector")]
+    pub fallback_label_selector: Option<BackupStatusBackupMethodTargetPodSelectorFallbackLabelSelector>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BackupStatusBackupMethodTargetPodSelectorMatchExpressions>>,
@@ -491,6 +495,37 @@ pub struct BackupStatusBackupMethodTargetPodSelector {
     /// will be stored in a subdirectory named after the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupStatusBackupMethodTargetPodSelectorStrategy>,
+}
+
+/// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+/// This only takes effect when the `strategy` field below is set to `Any`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusBackupMethodTargetPodSelectorFallbackLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupStatusBackupMethodTargetPodSelectorFallbackLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusBackupMethodTargetPodSelectorFallbackLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that
@@ -655,6 +690,10 @@ pub struct BackupStatusBackupMethodTargetsConnectionCredential {
 /// Used to find the target pod. The volumes of the target pod will be backed up.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStatusBackupMethodTargetsPodSelector {
+    /// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+    /// This only takes effect when the `strategy` field below is set to `Any`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackLabelSelector")]
+    pub fallback_label_selector: Option<BackupStatusBackupMethodTargetsPodSelectorFallbackLabelSelector>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BackupStatusBackupMethodTargetsPodSelectorMatchExpressions>>,
@@ -672,6 +711,37 @@ pub struct BackupStatusBackupMethodTargetsPodSelector {
     /// will be stored in a subdirectory named after the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupStatusBackupMethodTargetsPodSelectorStrategy>,
+}
+
+/// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+/// This only takes effect when the `strategy` field below is set to `Any`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusBackupMethodTargetsPodSelectorFallbackLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupStatusBackupMethodTargetsPodSelectorFallbackLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusBackupMethodTargetsPodSelectorFallbackLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that
@@ -851,6 +921,10 @@ pub struct BackupStatusTargetConnectionCredential {
 /// Used to find the target pod. The volumes of the target pod will be backed up.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStatusTargetPodSelector {
+    /// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+    /// This only takes effect when the `strategy` field below is set to `Any`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackLabelSelector")]
+    pub fallback_label_selector: Option<BackupStatusTargetPodSelectorFallbackLabelSelector>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BackupStatusTargetPodSelectorMatchExpressions>>,
@@ -868,6 +942,37 @@ pub struct BackupStatusTargetPodSelector {
     /// will be stored in a subdirectory named after the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupStatusTargetPodSelectorStrategy>,
+}
+
+/// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+/// This only takes effect when the `strategy` field below is set to `Any`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusTargetPodSelectorFallbackLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupStatusTargetPodSelectorFallbackLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusTargetPodSelectorFallbackLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that
@@ -992,6 +1097,10 @@ pub struct BackupStatusTargetsConnectionCredential {
 /// Used to find the target pod. The volumes of the target pod will be backed up.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStatusTargetsPodSelector {
+    /// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+    /// This only takes effect when the `strategy` field below is set to `Any`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackLabelSelector")]
+    pub fallback_label_selector: Option<BackupStatusTargetsPodSelectorFallbackLabelSelector>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BackupStatusTargetsPodSelectorMatchExpressions>>,
@@ -1009,6 +1118,37 @@ pub struct BackupStatusTargetsPodSelector {
     /// will be stored in a subdirectory named after the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupStatusTargetsPodSelectorStrategy>,
+}
+
+/// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+/// This only takes effect when the `strategy` field below is set to `Any`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusTargetsPodSelectorFallbackLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupStatusTargetsPodSelectorFallbackLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusTargetsPodSelectorFallbackLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that

@@ -97,6 +97,9 @@ pub struct SecretStoreProvider {
     /// AzureKV configures this store to sync secrets using Azure Key Vault provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub azurekv: Option<SecretStoreProviderAzurekv>,
+    /// Beyondtrust configures this store to sync secrets using Password Safe provider.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub beyondtrust: Option<SecretStoreProviderBeyondtrust>,
     /// BitwardenSecretsManager configures this store to sync secrets using BitwardenSecretsManager provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bitwardensecretsmanager: Option<SecretStoreProviderBitwardensecretsmanager>,
@@ -762,6 +765,154 @@ pub struct SecretStoreProviderAzurekvServiceAccountRef {
     /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Beyondtrust configures this store to sync secrets using Password Safe provider.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrust {
+    /// Auth configures how the operator authenticates with Beyondtrust.
+    pub auth: SecretStoreProviderBeyondtrustAuth,
+    /// Auth configures how API server works.
+    pub server: SecretStoreProviderBeyondtrustServer,
+}
+
+/// Auth configures how the operator authenticates with Beyondtrust.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustAuth {
+    /// Content of the certificate (cert.pem) for use when authenticating with an OAuth client Id using a Client Certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<SecretStoreProviderBeyondtrustAuthCertificate>,
+    /// Certificate private key (key.pem). For use when authenticating with an OAuth client Id
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateKey")]
+    pub certificate_key: Option<SecretStoreProviderBeyondtrustAuthCertificateKey>,
+    #[serde(rename = "clientId")]
+    pub client_id: SecretStoreProviderBeyondtrustAuthClientId,
+    #[serde(rename = "clientSecret")]
+    pub client_secret: SecretStoreProviderBeyondtrustAuthClientSecret,
+}
+
+/// Content of the certificate (cert.pem) for use when authenticating with an OAuth client Id using a Client Certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustAuthCertificate {
+    /// SecretRef references a key in a secret that will be used as value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<SecretStoreProviderBeyondtrustAuthCertificateSecretRef>,
+    /// Value can be specified directly to set a value without using a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// SecretRef references a key in a secret that will be used as value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustAuthCertificateSecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Certificate private key (key.pem). For use when authenticating with an OAuth client Id
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustAuthCertificateKey {
+    /// SecretRef references a key in a secret that will be used as value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<SecretStoreProviderBeyondtrustAuthCertificateKeySecretRef>,
+    /// Value can be specified directly to set a value without using a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// SecretRef references a key in a secret that will be used as value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustAuthCertificateKeySecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustAuthClientId {
+    /// SecretRef references a key in a secret that will be used as value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<SecretStoreProviderBeyondtrustAuthClientIdSecretRef>,
+    /// Value can be specified directly to set a value without using a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// SecretRef references a key in a secret that will be used as value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustAuthClientIdSecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustAuthClientSecret {
+    /// SecretRef references a key in a secret that will be used as value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<SecretStoreProviderBeyondtrustAuthClientSecretSecretRef>,
+    /// Value can be specified directly to set a value without using a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// SecretRef references a key in a secret that will be used as value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustAuthClientSecretSecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Auth configures how API server works.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustServer {
+    #[serde(rename = "apiUrl")]
+    pub api_url: String,
+    /// Timeout specifies a time limit for requests made by this Client. The timeout includes connection time, any redirects, and reading the response body. Defaults to 45 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientTimeOutSeconds")]
+    pub client_time_out_seconds: Option<i64>,
+    /// The secret retrieval type. SECRET = Secrets Safe (credential, text, file). MANAGED_ACCOUNT = Password Safe account associated with a system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retrievalType")]
+    pub retrieval_type: Option<String>,
+    /// A character that separates the folder names.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub separator: Option<String>,
+    #[serde(rename = "verifyCA")]
+    pub verify_ca: bool,
 }
 
 /// BitwardenSecretsManager configures this store to sync secrets using BitwardenSecretsManager provider

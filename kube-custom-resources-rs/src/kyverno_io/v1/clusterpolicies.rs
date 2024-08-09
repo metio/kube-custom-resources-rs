@@ -1939,9 +1939,9 @@ pub struct ClusterPolicyRulesValidate {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<ClusterPolicyRulesValidatePodSecurity>,
     /// ValidationFailureAction defines if a validation policy rule violation should block
-    /// the admission review request (enforce), or allow (audit) the admission review request
+    /// the admission review request (Enforce), or allow (Audit) the admission review request
     /// and report an error in a policy report. Optional.
-    /// Allowed values are audit or enforce.
+    /// Allowed values are Audit or Enforce.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
     pub validation_failure_action: Option<ClusterPolicyRulesValidateValidationFailureAction>,
     /// ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction
@@ -2936,14 +2936,8 @@ pub enum ClusterPolicyRulesValidatePodSecurityVersion {
 /// Validation is used to validate matching resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterPolicyRulesValidateValidationFailureAction {
-    #[serde(rename = "audit")]
     Audit,
-    #[serde(rename = "enforce")]
     Enforce,
-    #[serde(rename = "Audit")]
-    AuditX,
-    #[serde(rename = "Enforce")]
-    EnforceX,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3076,6 +3070,9 @@ pub struct ClusterPolicyRulesVerifyImages {
     /// UseCache enables caching of image verify responses for this rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useCache")]
     pub use_cache: Option<bool>,
+    /// Allowed values are Audit or Enforce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
+    pub validation_failure_action: Option<ClusterPolicyRulesVerifyImagesValidationFailureAction>,
     /// VerifyDigest validates that images have a digest.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDigest")]
     pub verify_digest: Option<bool>,
@@ -3685,6 +3682,15 @@ pub struct ClusterPolicyRulesVerifyImagesImageRegistryCredentials {
 pub enum ClusterPolicyRulesVerifyImagesType {
     Cosign,
     Notary,
+}
+
+/// ImageVerification validates that images that match the specified pattern
+/// are signed with the supplied public key. Once the image is verified it is
+/// mutated to include the SHA digest retrieved during the registration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPolicyRulesVerifyImagesValidationFailureAction {
+    Audit,
+    Enforce,
 }
 
 /// Spec declares policy behaviors.
@@ -5697,9 +5703,9 @@ pub struct ClusterPolicyStatusAutogenRulesValidate {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<ClusterPolicyStatusAutogenRulesValidatePodSecurity>,
     /// ValidationFailureAction defines if a validation policy rule violation should block
-    /// the admission review request (enforce), or allow (audit) the admission review request
+    /// the admission review request (Enforce), or allow (Audit) the admission review request
     /// and report an error in a policy report. Optional.
-    /// Allowed values are audit or enforce.
+    /// Allowed values are Audit or Enforce.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
     pub validation_failure_action: Option<ClusterPolicyStatusAutogenRulesValidateValidationFailureAction>,
     /// ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction
@@ -6694,14 +6700,8 @@ pub enum ClusterPolicyStatusAutogenRulesValidatePodSecurityVersion {
 /// Validation is used to validate matching resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterPolicyStatusAutogenRulesValidateValidationFailureAction {
-    #[serde(rename = "audit")]
     Audit,
-    #[serde(rename = "enforce")]
     Enforce,
-    #[serde(rename = "Audit")]
-    AuditX,
-    #[serde(rename = "Enforce")]
-    EnforceX,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6834,6 +6834,9 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImages {
     /// UseCache enables caching of image verify responses for this rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useCache")]
     pub use_cache: Option<bool>,
+    /// Allowed values are Audit or Enforce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
+    pub validation_failure_action: Option<ClusterPolicyStatusAutogenRulesVerifyImagesValidationFailureAction>,
     /// VerifyDigest validates that images have a digest.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDigest")]
     pub verify_digest: Option<bool>,
@@ -7443,6 +7446,15 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesImageRegistryCredentials {
 pub enum ClusterPolicyStatusAutogenRulesVerifyImagesType {
     Cosign,
     Notary,
+}
+
+/// ImageVerification validates that images that match the specified pattern
+/// are signed with the supplied public key. Once the image is verified it is
+/// mutated to include the SHA digest retrieved during the registration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPolicyStatusAutogenRulesVerifyImagesValidationFailureAction {
+    Audit,
+    Enforce,
 }
 
 /// RuleCountStatus contains four variables which describes counts for

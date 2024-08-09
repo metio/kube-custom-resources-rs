@@ -281,6 +281,8 @@ pub struct DBClusterDbSubnetGroupRef {
 pub struct DBClusterDbSubnetGroupRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -305,6 +307,8 @@ pub struct DBClusterKmsKeyRef {
 pub struct DBClusterKmsKeyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The password for the master database user. This password can contain any
@@ -357,6 +361,8 @@ pub struct DBClusterVpcSecurityGroupRefs {
 pub struct DBClusterVpcSecurityGroupRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// DBClusterStatus defines the observed state of DBCluster

@@ -124,6 +124,10 @@ pub struct MaxScaleSpec {
     /// SidecarContainers to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarContainers")]
     pub sidecar_containers: Option<Vec<MaxScaleSidecarContainers>>,
+    /// Suspend indicates whether the current resource should be suspended or not.
+    /// This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspend: Option<bool>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<MaxScaleTolerations>>,
@@ -7506,7 +7510,8 @@ pub struct MaxScaleMonitor {
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
-    /// Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this.
+    /// Suspend indicates whether the current resource should be suspended or not.
+    /// This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
 }
@@ -8113,7 +8118,8 @@ pub struct MaxScaleServices {
     pub params: Option<BTreeMap<String, String>>,
     /// Router is the type of router to use.
     pub router: MaxScaleServicesRouter,
-    /// Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this.
+    /// Suspend indicates whether the current resource should be suspended or not.
+    /// This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
 }
@@ -8135,7 +8141,8 @@ pub struct MaxScaleServicesListener {
     /// Protocol is the MaxScale protocol to use when communicating with the client. If not provided, it defaults to MariaDBProtocol.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this.
+    /// Suspend indicates whether the current resource should be suspended or not.
+    /// This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
 }

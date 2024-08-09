@@ -11,7 +11,8 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// BuildSpec defines the list of tasks to be execute for a Build. From Camel K version 2, it would be more appropriate to think it as pipeline.
+/// BuildSpec defines the list of tasks to be execute for a Build. From Camel K version 2, it would be more appropriate
+/// to think it as pipeline.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "camel.apache.org", version = "v1", kind = "Build", plural = "builds")]
 #[kube(namespaced)]
@@ -20,27 +21,35 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BuildSpec {
-    /// The configuration that should be used to perform the Build. Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
+    /// The configuration that should be used to perform the Build.
+    /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BuildConfiguration>,
-    /// the maximum amount of parallel running builds started by this operator instance Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
+    /// the maximum amount of parallel running builds started by this operator instance
+    /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRunningBuilds")]
     pub max_running_builds: Option<i32>,
-    /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation). Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
+    /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
+    /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// The sequence of tasks (pipeline) to be performed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tasks: Option<Vec<BuildTasks>>,
-    /// Timeout defines the Build maximum execution duration. The Build deadline is set to the Build start time plus the Timeout duration. If the Build deadline is exceeded, the Build context is canceled, and its phase set to BuildPhaseFailed.
+    /// Timeout defines the Build maximum execution duration.
+    /// The Build deadline is set to the Build start time plus the Timeout duration.
+    /// If the Build deadline is exceeded, the Build context is canceled,
+    /// and its phase set to BuildPhaseFailed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
-    /// The container image to be used to run the build. Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
+    /// The container image to be used to run the build.
+    /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toolImage")]
     pub tool_image: Option<String>,
 }
 
-/// The configuration that should be used to perform the Build. Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
+/// The configuration that should be used to perform the Build.
+/// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildConfiguration {
     /// Annotation to use for the builder pod. Only used for `pod` strategy
@@ -78,7 +87,8 @@ pub struct BuildConfiguration {
     pub tool_image: Option<String>,
 }
 
-/// The configuration that should be used to perform the Build. Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
+/// The configuration that should be used to perform the Build.
+/// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BuildConfigurationOrderStrategy {
     #[serde(rename = "dependencies")]
@@ -89,7 +99,8 @@ pub enum BuildConfigurationOrderStrategy {
     Sequential,
 }
 
-/// The configuration that should be used to perform the Build. Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
+/// The configuration that should be used to perform the Build.
+/// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BuildConfigurationStrategy {
     #[serde(rename = "routine")]
@@ -101,7 +112,8 @@ pub enum BuildConfigurationStrategy {
 /// Task represents the abstract task. Only one of the task should be configured to represent the specific task chosen.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasks {
-    /// a BuildahTask, for Buildah strategy Deprecated: use jib, s2i or a custom publishing strategy instead
+    /// a BuildahTask, for Buildah strategy
+    /// Deprecated: use jib, s2i or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buildah: Option<BuildTasksBuildah>,
     /// a BuilderTask, used to generate and build the project
@@ -113,21 +125,25 @@ pub struct BuildTasks {
     /// a JibTask, for Jib strategy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jib: Option<BuildTasksJib>,
-    /// a KanikoTask, for Kaniko strategy Deprecated: use jib, s2i or a custom publishing strategy instead
+    /// a KanikoTask, for Kaniko strategy
+    /// Deprecated: use jib, s2i or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kaniko: Option<BuildTasksKaniko>,
-    /// Application pre publishing a PackageTask, used to package the project
+    /// Application pre publishing
+    /// a PackageTask, used to package the project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub package: Option<BuildTasksPackage>,
     /// a S2iTask, for S2I strategy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s2i: Option<BuildTasksS2i>,
-    /// a SpectrumTask, for Spectrum strategy Deprecated: use jib, s2i or a custom publishing strategy instead
+    /// a SpectrumTask, for Spectrum strategy
+    /// Deprecated: use jib, s2i or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spectrum: Option<BuildTasksSpectrum>,
 }
 
-/// a BuildahTask, for Buildah strategy Deprecated: use jib, s2i or a custom publishing strategy instead
+/// a BuildahTask, for Buildah strategy
+/// Deprecated: use jib, s2i or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuildah {
     /// base image layer
@@ -330,19 +346,28 @@ pub enum BuildTasksBuilderConfigurationStrategy {
 /// the configuration required by Maven for the application build phase
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderMaven {
-    /// The Secrets name and key, containing the CA certificate(s) used to connect to remote Maven repositories. It can contain X.509 certificates, and PKCS#7 formatted certificate chains. A JKS formatted keystore is automatically created to store the CA certificate(s), and configured to be used as a trusted certificate(s) by the Maven commands. Note that the root CA certificates are also imported into the created keystore.
+    /// The Secrets name and key, containing the CA certificate(s) used to connect
+    /// to remote Maven repositories.
+    /// It can contain X.509 certificates, and PKCS#7 formatted certificate chains.
+    /// A JKS formatted keystore is automatically created to store the CA certificate(s),
+    /// and configured to be used as a trusted certificate(s) by the Maven commands.
+    /// Note that the root CA certificates are also imported into the created keystore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecrets")]
     pub ca_secrets: Option<Vec<BuildTasksBuilderMavenCaSecrets>>,
-    /// The CLI options that are appended to the list of arguments for Maven commands, e.g., `-V,--no-transfer-progress,-Dstyle.color=never`. See https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html.
+    /// The CLI options that are appended to the list of arguments for Maven commands,
+    /// e.g., `-V,--no-transfer-progress,-Dstyle.color=never`.
+    /// See https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOptions")]
     pub cli_options: Option<Vec<String>>,
-    /// The Maven build extensions. See https://maven.apache.org/guides/mini/guide-using-extensions.html.
+    /// The Maven build extensions.
+    /// See https://maven.apache.org/guides/mini/guide-using-extensions.html.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extension: Option<Vec<BuildTasksBuilderMavenExtension>>,
     /// The path of the local Maven repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localRepository")]
     pub local_repository: Option<String>,
-    /// A reference to the ConfigMap or Secret key that contains the Maven profile.
+    /// A reference to the ConfigMap or Secret key that contains
+    /// the Maven profile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profiles: Option<Vec<BuildTasksBuilderMavenProfiles>>,
     /// The Maven properties.
@@ -354,10 +379,12 @@ pub struct BuildTasksBuilderMaven {
     /// Servers (auth)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<BuildTasksBuilderMavenServers>>,
-    /// A reference to the ConfigMap or Secret key that contains the Maven settings.
+    /// A reference to the ConfigMap or Secret key that contains
+    /// the Maven settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub settings: Option<BuildTasksBuilderMavenSettings>,
-    /// A reference to the ConfigMap or Secret key that contains the security of the Maven settings.
+    /// A reference to the ConfigMap or Secret key that contains
+    /// the security of the Maven settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "settingsSecurity")]
     pub settings_security: Option<BuildTasksBuilderMavenSettingsSecurity>,
 }
@@ -367,7 +394,9 @@ pub struct BuildTasksBuilderMaven {
 pub struct BuildTasksBuilderMavenCaSecrets {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -411,7 +440,9 @@ pub struct BuildTasksBuilderMavenProfiles {
 pub struct BuildTasksBuilderMavenProfilesConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -424,7 +455,9 @@ pub struct BuildTasksBuilderMavenProfilesConfigMapKeyRef {
 pub struct BuildTasksBuilderMavenProfilesSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -453,12 +486,15 @@ pub struct BuildTasksBuilderMavenRepositories {
 /// can use stable releases
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderMavenRepositoriesReleases {
-    /// When Maven deploys files to the repository, it also deploys corresponding checksum files. Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
+    /// When Maven deploys files to the repository, it also deploys corresponding checksum files.
+    /// Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checksumPolicy")]
     pub checksum_policy: Option<String>,
     /// is the policy activated or not
     pub enabled: bool,
-    /// This element specifies how often updates should attempt to occur. Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote. The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
+    /// This element specifies how often updates should attempt to occur.
+    /// Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote.
+    /// The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<String>,
 }
@@ -466,12 +502,15 @@ pub struct BuildTasksBuilderMavenRepositoriesReleases {
 /// can use snapshot
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderMavenRepositoriesSnapshots {
-    /// When Maven deploys files to the repository, it also deploys corresponding checksum files. Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
+    /// When Maven deploys files to the repository, it also deploys corresponding checksum files.
+    /// Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checksumPolicy")]
     pub checksum_policy: Option<String>,
     /// is the policy activated or not
     pub enabled: bool,
-    /// This element specifies how often updates should attempt to occur. Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote. The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
+    /// This element specifies how often updates should attempt to occur.
+    /// Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote.
+    /// The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<String>,
 }
@@ -490,7 +529,8 @@ pub struct BuildTasksBuilderMavenServers {
     pub username: Option<String>,
 }
 
-/// A reference to the ConfigMap or Secret key that contains the Maven settings.
+/// A reference to the ConfigMap or Secret key that contains
+/// the Maven settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderMavenSettings {
     /// Selects a key of a ConfigMap.
@@ -506,7 +546,9 @@ pub struct BuildTasksBuilderMavenSettings {
 pub struct BuildTasksBuilderMavenSettingsConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -519,7 +561,9 @@ pub struct BuildTasksBuilderMavenSettingsConfigMapKeyRef {
 pub struct BuildTasksBuilderMavenSettingsSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -527,7 +571,8 @@ pub struct BuildTasksBuilderMavenSettingsSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// A reference to the ConfigMap or Secret key that contains the security of the Maven settings.
+/// A reference to the ConfigMap or Secret key that contains
+/// the security of the Maven settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderMavenSettingsSecurity {
     /// Selects a key of a ConfigMap.
@@ -543,7 +588,9 @@ pub struct BuildTasksBuilderMavenSettingsSecurity {
 pub struct BuildTasksBuilderMavenSettingsSecurityConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -556,7 +603,9 @@ pub struct BuildTasksBuilderMavenSettingsSecurityConfigMapKeyRef {
 pub struct BuildTasksBuilderMavenSettingsSecuritySecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -678,13 +727,15 @@ pub struct BuildTasksBuilderSources {
     /// True if the spec is generated from a Kamelet
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
-    /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader uses to pre/post process sources
+    /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
+    /// uses to pre/post process sources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interceptors: Option<Vec<String>>,
     /// specify which is the language (Camel DSL) used to interpret this source code
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub language: Option<String>,
-    /// Loader is an optional id of the org.apache.camel.k.RoutesLoader that will interpret this source at runtime
+    /// Loader is an optional id of the org.apache.camel.k.RoutesLoader that will
+    /// interpret this source at runtime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loader: Option<String>,
     /// the name of the specification
@@ -707,7 +758,8 @@ pub struct BuildTasksBuilderSources {
 /// User customizable task execution. These are executed after the build and before the package task.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksCustom {
-    /// the command to execute Deprecated: use ContainerCommands
+    /// the command to execute
+    /// Deprecated: use ContainerCommands
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<String>,
     /// the command to execute
@@ -889,7 +941,8 @@ pub struct BuildTasksJibRegistry {
     pub secret: Option<String>,
 }
 
-/// a KanikoTask, for Kaniko strategy Deprecated: use jib, s2i or a custom publishing strategy instead
+/// a KanikoTask, for Kaniko strategy
+/// Deprecated: use jib, s2i or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksKaniko {
     /// base image layer
@@ -1010,7 +1063,8 @@ pub struct BuildTasksKanikoRegistry {
     pub secret: Option<String>,
 }
 
-/// Application pre publishing a PackageTask, used to package the project
+/// Application pre publishing
+/// a PackageTask, used to package the project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackage {
     /// the base image layer
@@ -1103,19 +1157,28 @@ pub enum BuildTasksPackageConfigurationStrategy {
 /// the configuration required by Maven for the application build phase
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageMaven {
-    /// The Secrets name and key, containing the CA certificate(s) used to connect to remote Maven repositories. It can contain X.509 certificates, and PKCS#7 formatted certificate chains. A JKS formatted keystore is automatically created to store the CA certificate(s), and configured to be used as a trusted certificate(s) by the Maven commands. Note that the root CA certificates are also imported into the created keystore.
+    /// The Secrets name and key, containing the CA certificate(s) used to connect
+    /// to remote Maven repositories.
+    /// It can contain X.509 certificates, and PKCS#7 formatted certificate chains.
+    /// A JKS formatted keystore is automatically created to store the CA certificate(s),
+    /// and configured to be used as a trusted certificate(s) by the Maven commands.
+    /// Note that the root CA certificates are also imported into the created keystore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecrets")]
     pub ca_secrets: Option<Vec<BuildTasksPackageMavenCaSecrets>>,
-    /// The CLI options that are appended to the list of arguments for Maven commands, e.g., `-V,--no-transfer-progress,-Dstyle.color=never`. See https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html.
+    /// The CLI options that are appended to the list of arguments for Maven commands,
+    /// e.g., `-V,--no-transfer-progress,-Dstyle.color=never`.
+    /// See https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOptions")]
     pub cli_options: Option<Vec<String>>,
-    /// The Maven build extensions. See https://maven.apache.org/guides/mini/guide-using-extensions.html.
+    /// The Maven build extensions.
+    /// See https://maven.apache.org/guides/mini/guide-using-extensions.html.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extension: Option<Vec<BuildTasksPackageMavenExtension>>,
     /// The path of the local Maven repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localRepository")]
     pub local_repository: Option<String>,
-    /// A reference to the ConfigMap or Secret key that contains the Maven profile.
+    /// A reference to the ConfigMap or Secret key that contains
+    /// the Maven profile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profiles: Option<Vec<BuildTasksPackageMavenProfiles>>,
     /// The Maven properties.
@@ -1127,10 +1190,12 @@ pub struct BuildTasksPackageMaven {
     /// Servers (auth)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<BuildTasksPackageMavenServers>>,
-    /// A reference to the ConfigMap or Secret key that contains the Maven settings.
+    /// A reference to the ConfigMap or Secret key that contains
+    /// the Maven settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub settings: Option<BuildTasksPackageMavenSettings>,
-    /// A reference to the ConfigMap or Secret key that contains the security of the Maven settings.
+    /// A reference to the ConfigMap or Secret key that contains
+    /// the security of the Maven settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "settingsSecurity")]
     pub settings_security: Option<BuildTasksPackageMavenSettingsSecurity>,
 }
@@ -1140,7 +1205,9 @@ pub struct BuildTasksPackageMaven {
 pub struct BuildTasksPackageMavenCaSecrets {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1184,7 +1251,9 @@ pub struct BuildTasksPackageMavenProfiles {
 pub struct BuildTasksPackageMavenProfilesConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1197,7 +1266,9 @@ pub struct BuildTasksPackageMavenProfilesConfigMapKeyRef {
 pub struct BuildTasksPackageMavenProfilesSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1226,12 +1297,15 @@ pub struct BuildTasksPackageMavenRepositories {
 /// can use stable releases
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageMavenRepositoriesReleases {
-    /// When Maven deploys files to the repository, it also deploys corresponding checksum files. Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
+    /// When Maven deploys files to the repository, it also deploys corresponding checksum files.
+    /// Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checksumPolicy")]
     pub checksum_policy: Option<String>,
     /// is the policy activated or not
     pub enabled: bool,
-    /// This element specifies how often updates should attempt to occur. Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote. The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
+    /// This element specifies how often updates should attempt to occur.
+    /// Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote.
+    /// The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<String>,
 }
@@ -1239,12 +1313,15 @@ pub struct BuildTasksPackageMavenRepositoriesReleases {
 /// can use snapshot
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageMavenRepositoriesSnapshots {
-    /// When Maven deploys files to the repository, it also deploys corresponding checksum files. Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
+    /// When Maven deploys files to the repository, it also deploys corresponding checksum files.
+    /// Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checksumPolicy")]
     pub checksum_policy: Option<String>,
     /// is the policy activated or not
     pub enabled: bool,
-    /// This element specifies how often updates should attempt to occur. Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote. The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
+    /// This element specifies how often updates should attempt to occur.
+    /// Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote.
+    /// The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<String>,
 }
@@ -1263,7 +1340,8 @@ pub struct BuildTasksPackageMavenServers {
     pub username: Option<String>,
 }
 
-/// A reference to the ConfigMap or Secret key that contains the Maven settings.
+/// A reference to the ConfigMap or Secret key that contains
+/// the Maven settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageMavenSettings {
     /// Selects a key of a ConfigMap.
@@ -1279,7 +1357,9 @@ pub struct BuildTasksPackageMavenSettings {
 pub struct BuildTasksPackageMavenSettingsConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1292,7 +1372,9 @@ pub struct BuildTasksPackageMavenSettingsConfigMapKeyRef {
 pub struct BuildTasksPackageMavenSettingsSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1300,7 +1382,8 @@ pub struct BuildTasksPackageMavenSettingsSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// A reference to the ConfigMap or Secret key that contains the security of the Maven settings.
+/// A reference to the ConfigMap or Secret key that contains
+/// the security of the Maven settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageMavenSettingsSecurity {
     /// Selects a key of a ConfigMap.
@@ -1316,7 +1399,9 @@ pub struct BuildTasksPackageMavenSettingsSecurity {
 pub struct BuildTasksPackageMavenSettingsSecurityConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1329,7 +1414,9 @@ pub struct BuildTasksPackageMavenSettingsSecurityConfigMapKeyRef {
 pub struct BuildTasksPackageMavenSettingsSecuritySecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1451,13 +1538,15 @@ pub struct BuildTasksPackageSources {
     /// True if the spec is generated from a Kamelet
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
-    /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader uses to pre/post process sources
+    /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
+    /// uses to pre/post process sources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interceptors: Option<Vec<String>>,
     /// specify which is the language (Camel DSL) used to interpret this source code
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub language: Option<String>,
-    /// Loader is an optional id of the org.apache.camel.k.RoutesLoader that will interpret this source at runtime
+    /// Loader is an optional id of the org.apache.camel.k.RoutesLoader that will
+    /// interpret this source at runtime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loader: Option<String>,
     /// the name of the specification
@@ -1581,7 +1670,8 @@ pub struct BuildTasksS2iRegistry {
     pub secret: Option<String>,
 }
 
-/// a SpectrumTask, for Spectrum strategy Deprecated: use jib, s2i or a custom publishing strategy instead
+/// a SpectrumTask, for Spectrum strategy
+/// Deprecated: use jib, s2i or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksSpectrum {
     /// base image layer
@@ -1697,7 +1787,9 @@ pub struct BuildStatus {
     /// the digest from image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub digest: Option<String>,
-    /// how long it took for the build Change to Duration / ISO 8601 when CRD uses OpenAPI spec v3 https://github.com/OAI/OpenAPI-Specification/issues/845
+    /// how long it took for the build
+    /// Change to Duration / ISO 8601 when CRD uses OpenAPI spec v3
+    /// https://github.com/OAI/OpenAPI-Specification/issues/845
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
     /// the error description (if any)

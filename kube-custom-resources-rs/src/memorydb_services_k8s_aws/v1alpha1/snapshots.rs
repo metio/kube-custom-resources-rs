@@ -82,6 +82,8 @@ pub struct SnapshotClusterRef {
 pub struct SnapshotClusterRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -106,6 +108,8 @@ pub struct SnapshotKmsKeyRef {
 pub struct SnapshotKmsKeyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// A tag that can be added to an MemoryDB resource. Tags are composed of a Key/Value

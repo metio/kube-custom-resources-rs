@@ -152,8 +152,12 @@ pub struct PolicyOidc {
     pub client_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endSessionEndpoint")]
+    pub end_session_endpoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwksURI")]
     pub jwks_uri: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postLogoutRedirectURI")]
+    pub post_logout_redirect_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectURI")]
     pub redirect_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

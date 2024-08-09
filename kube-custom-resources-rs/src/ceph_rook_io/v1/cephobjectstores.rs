@@ -29,6 +29,9 @@ pub struct CephObjectStoreSpec {
     /// is being used to create buckets. The default is empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowUsersInNamespaces")]
     pub allow_users_in_namespaces: Option<Vec<String>>,
+    /// The authentication configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth: Option<CephObjectStoreAuth>,
     /// The data pool settings
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataPool")]
     pub data_pool: Option<CephObjectStoreDataPool>,
@@ -49,6 +52,9 @@ pub struct CephObjectStoreSpec {
     /// Preserve pools on object store deletion
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservePoolsOnDelete")]
     pub preserve_pools_on_delete: Option<bool>,
+    /// The protocol specification
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocols: Option<CephObjectStoreProtocols>,
     /// Security represents security settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<CephObjectStoreSecurity>,
@@ -58,6 +64,36 @@ pub struct CephObjectStoreSpec {
     /// The multisite info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<CephObjectStoreZone>,
+}
+
+/// The authentication configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreAuth {
+    /// The spec for Keystone
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keystone: Option<CephObjectStoreAuthKeystone>,
+}
+
+/// The spec for Keystone
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreAuthKeystone {
+    /// The roles requires to serve requests.
+    #[serde(rename = "acceptedRoles")]
+    pub accepted_roles: Vec<String>,
+    /// Create new users in their own tenants of the same name. Possible values are true, false, swift and s3. The latter have the effect of splitting the identity space such that only the indicated protocol will use implicit tenants.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "implicitTenants")]
+    pub implicit_tenants: Option<String>,
+    /// The number of seconds between token revocation checks.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revocationInterval")]
+    pub revocation_interval: Option<i64>,
+    /// The name of the secret containing the credentials for the service user account used by RGW. It has to be in the same namespace as the object store resource.
+    #[serde(rename = "serviceUserSecretName")]
+    pub service_user_secret_name: String,
+    /// The maximum number of entries in each Keystone token cache.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenCacheSize")]
+    pub token_cache_size: Option<i64>,
+    /// The URL for the Keystone server.
+    pub url: String,
 }
 
 /// The data pool settings
@@ -1199,6 +1235,42 @@ pub struct CephObjectStoreMetadataPoolStatusCheckMirror {
     pub interval: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+}
+
+/// The protocol specification
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreProtocols {
+    /// The spec for S3
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub s3: Option<CephObjectStoreProtocolsS3>,
+    /// The spec for Swift
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub swift: Option<CephObjectStoreProtocolsSwift>,
+}
+
+/// The spec for S3
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreProtocolsS3 {
+    /// Whether to use Keystone for authentication. This option maps directly to the rgw_s3_auth_use_keystone option. Enabling it allows generating S3 credentials via an OpenStack API call, see the docs. If not given, the defaults of the corresponding RGW option apply.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authUseKeystone")]
+    pub auth_use_keystone: Option<bool>,
+    /// Whether to enable S3. This defaults to true (even if protocols.s3 is not present in the CRD). This maintains backwards compatibility – by default S3 is enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// The spec for Swift
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreProtocolsSwift {
+    /// Whether or not the Swift account name should be included in the Swift API URL. If set to false (the default), then the Swift API will listen on a URL formed like http://host:port/<rgw_swift_url_prefix>/v1. If set to true, the Swift API URL will be http://host:port/<rgw_swift_url_prefix>/v1/AUTH_<account_name>. You must set this option to true (and update the Keystone service catalog) if you want radosgw to support publicly-readable containers and temporary URLs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountInUrl")]
+    pub account_in_url: Option<bool>,
+    /// The URL prefix for the Swift API, to distinguish it from the S3 API endpoint. The default is swift, which makes the Swift API available at the URL http://host:port/swift/v1 (or http://host:port/swift/v1/AUTH_%(tenant_id)s if rgw swift account in url is enabled).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPrefix")]
+    pub url_prefix: Option<String>,
+    /// Enables the Object Versioning of OpenStack Object Storage API. This allows clients to put the X-Versions-Location attribute on containers that should be versioned.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versioningEnabled")]
+    pub versioning_enabled: Option<bool>,
 }
 
 /// Security represents security settings

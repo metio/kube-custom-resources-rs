@@ -142,6 +142,8 @@ pub struct ClusterEncryptionConfigProviderKeyRef {
 pub struct ClusterEncryptionConfigProviderKeyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The Kubernetes network configuration for the cluster.
@@ -258,6 +260,8 @@ pub struct ClusterResourcesVpcConfigSecurityGroupRefs {
 pub struct ClusterResourcesVpcConfigSecurityGroupRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -282,6 +286,8 @@ pub struct ClusterResourcesVpcConfigSubnetRefs {
 pub struct ClusterResourcesVpcConfigSubnetRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -306,6 +312,8 @@ pub struct ClusterRoleRef {
 pub struct ClusterRoleRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// ClusterStatus defines the observed state of Cluster

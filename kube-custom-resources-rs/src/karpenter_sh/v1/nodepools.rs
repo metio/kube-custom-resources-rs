@@ -106,7 +106,9 @@ pub enum NodePoolDisruptionConsolidationPolicy {
 pub struct NodePoolTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<NodePoolTemplateMetadata>,
-    /// NodeClaimSpec describes the desired state of the NodeClaim
+    /// NodeClaimTemplateSpec describes the desired state of the NodeClaim in the Nodepool
+    /// NodeClaimTemplateSpec is used in the NodePool's NodeClaimTemplate, with the resource requests omitted since
+    /// users are not able to set resource requests in the NodePool.
     pub spec: NodePoolTemplateSpec,
 }
 
@@ -126,7 +128,9 @@ pub struct NodePoolTemplateMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// NodeClaimSpec describes the desired state of the NodeClaim
+/// NodeClaimTemplateSpec describes the desired state of the NodeClaim in the Nodepool
+/// NodeClaimTemplateSpec is used in the NodePool's NodeClaimTemplate, with the resource requests omitted since
+/// users are not able to set resource requests in the NodePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePoolTemplateSpec {
     /// ExpireAfter is the duration the controller will wait

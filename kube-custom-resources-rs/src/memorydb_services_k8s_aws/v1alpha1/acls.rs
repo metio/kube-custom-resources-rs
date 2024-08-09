@@ -72,6 +72,8 @@ pub struct ACLUserRefs {
 pub struct ACLUserRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// ACLStatus defines the observed state of ACL

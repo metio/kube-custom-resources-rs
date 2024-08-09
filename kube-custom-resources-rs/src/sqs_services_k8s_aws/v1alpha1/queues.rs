@@ -125,6 +125,8 @@ pub struct QueueKmsMasterKeyRef {
 pub struct QueueKmsMasterKeyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -149,6 +151,8 @@ pub struct QueuePolicyRef {
 pub struct QueuePolicyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// QueueStatus defines the observed state of Queue

@@ -3181,6 +3181,10 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTink {
     pub nginx: BundlesVersionsBundlesTinkerbellTinkerbellStackTinkNginx,
     #[serde(rename = "tinkController")]
     pub tink_controller: BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkController,
+    #[serde(rename = "tinkRelay")]
+    pub tink_relay: BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkRelay,
+    #[serde(rename = "tinkRelayInit")]
+    pub tink_relay_init: BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkRelayInit,
     #[serde(rename = "tinkServer")]
     pub tink_server: BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkServer,
     #[serde(rename = "tinkWorker")]
@@ -3247,6 +3251,74 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkController {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkControllerOs {
+    #[serde(rename = "linux")]
+    Linux,
+    #[serde(rename = "darwin")]
+    Darwin,
+    #[serde(rename = "windows")]
+    Windows,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkRelay {
+    /// Architectures of the asset
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub arch: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The SHA256 digest of the image manifest
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
+    pub image_digest: Option<String>,
+    /// The asset name
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Operating system of the asset
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub os: Option<BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkRelayOs>,
+    /// Name of the OS like ubuntu, bottlerocket
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "osName")]
+    pub os_name: Option<String>,
+    /// The image repository, name, and tag
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uri: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkRelayOs {
+    #[serde(rename = "linux")]
+    Linux,
+    #[serde(rename = "darwin")]
+    Darwin,
+    #[serde(rename = "windows")]
+    Windows,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkRelayInit {
+    /// Architectures of the asset
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub arch: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The SHA256 digest of the image manifest
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
+    pub image_digest: Option<String>,
+    /// The asset name
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Operating system of the asset
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub os: Option<BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkRelayInitOs>,
+    /// Name of the OS like ubuntu, bottlerocket
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "osName")]
+    pub os_name: Option<String>,
+    /// The image repository, name, and tag
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uri: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkRelayInitOs {
     #[serde(rename = "linux")]
     Linux,
     #[serde(rename = "darwin")]

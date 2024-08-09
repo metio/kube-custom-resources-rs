@@ -88,6 +88,8 @@ spec:
                       properties:
                         name:
                           type: "string"
+                        namespace:
+                          type: "string"
                       type: "object"
                   type: "object"
                 dbSnapshotIdentifier:
@@ -103,6 +105,8 @@ spec:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
                       properties:
                         name:
+                          type: "string"
+                        namespace:
                           type: "string"
                       type: "object"
                   type: "object"
@@ -150,6 +154,8 @@ spec:
                       properties:
                         name:
                           type: "string"
+                        namespace:
+                          type: "string"
                       type: "object"
                   type: "object"
                 licenseModel:
@@ -184,6 +190,8 @@ spec:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
                       properties:
                         name:
+                          type: "string"
+                        namespace:
                           type: "string"
                       type: "object"
                   type: "object"
@@ -309,6 +317,8 @@ spec:
                         description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
                         properties:
                           name:
+                            type: "string"
+                          namespace:
                             type: "string"
                         type: "object"
                     type: "object"

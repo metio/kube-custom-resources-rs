@@ -68,6 +68,8 @@ pub struct InternetGatewayRouteTableRefs {
 pub struct InternetGatewayRouteTableRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Describes a tag.
@@ -101,6 +103,8 @@ pub struct InternetGatewayVpcRef {
 pub struct InternetGatewayVpcRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// InternetGatewayStatus defines the observed state of InternetGateway

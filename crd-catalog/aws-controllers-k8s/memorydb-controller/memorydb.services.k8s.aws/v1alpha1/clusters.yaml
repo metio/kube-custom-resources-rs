@@ -40,6 +40,8 @@ spec:
                       properties:
                         name:
                           type: "string"
+                        namespace:
+                          type: "string"
                       type: "object"
                   type: "object"
                 autoMinorVersionUpgrade:
@@ -82,6 +84,8 @@ spec:
                       properties:
                         name:
                           type: "string"
+                        namespace:
+                          type: "string"
                       type: "object"
                   type: "object"
                 port:
@@ -102,6 +106,8 @@ spec:
                         properties:
                           name:
                             type: "string"
+                          namespace:
+                            type: "string"
                         type: "object"
                     type: "object"
                   type: "array"
@@ -120,6 +126,8 @@ spec:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
                       properties:
                         name:
+                          type: "string"
+                        namespace:
                           type: "string"
                       type: "object"
                   type: "object"
@@ -141,6 +149,8 @@ spec:
                       properties:
                         name:
                           type: "string"
+                        namespace:
+                          type: "string"
                       type: "object"
                   type: "object"
                 subnetGroupName:
@@ -153,6 +163,8 @@ spec:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
                       properties:
                         name:
+                          type: "string"
+                        namespace:
                           type: "string"
                       type: "object"
                   type: "object"

@@ -1644,6 +1644,8 @@ pub struct DBInstanceDbParameterGroupRef {
 pub struct DBInstanceDbParameterGroupRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -1668,6 +1670,8 @@ pub struct DBInstanceDbSubnetGroupRef {
 pub struct DBInstanceDbSubnetGroupRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -1692,6 +1696,8 @@ pub struct DBInstanceKmsKeyRef {
 pub struct DBInstanceKmsKeyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The password for the master user. The password can include any printable
@@ -1769,6 +1775,8 @@ pub struct DBInstanceMasterUserSecretKmsKeyRef {
 pub struct DBInstanceMasterUserSecretKmsKeyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Contains the processor features of a DB instance class.
@@ -1876,6 +1884,8 @@ pub struct DBInstanceVpcSecurityGroupRefs {
 pub struct DBInstanceVpcSecurityGroupRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// DBInstanceStatus defines the observed state of DBInstance

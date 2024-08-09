@@ -654,7 +654,10 @@ pub struct TableSeedDataRowsColumnsValue {
 /// TableStatus defines the observed state of Table
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableStatus {
-    /// We store the SHA of the table spec from the last time we executed a plan to make startup less noisy by skipping re-planning objects that have been planned we cannot use the resourceVersion or generation fields because updating them would cause the object to be modified again
+    /// We store the SHA of the table spec from the last time we executed a plan to
+    /// make startup less noisy by skipping re-planning objects that have been planned
+    /// we cannot use the resourceVersion or generation fields because updating them
+    /// would cause the object to be modified again
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPlannedTableSpecSHA")]
     pub last_planned_table_spec_sha: Option<String>,
 }

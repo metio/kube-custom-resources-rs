@@ -98,6 +98,8 @@ pub struct FlinkDeploymentJob {
     pub checkpoint_trigger_nonce: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryClass")]
     pub entry_class: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flinkStateSnapshotReference")]
+    pub flink_state_snapshot_reference: Option<FlinkDeploymentJobFlinkStateSnapshotReference>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialSavepointPath")]
     pub initial_savepoint_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jarURI")]
@@ -112,6 +114,16 @@ pub struct FlinkDeploymentJob {
     pub state: Option<FlinkDeploymentJobState>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeMode")]
     pub upgrade_mode: Option<FlinkDeploymentJobUpgradeMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobFlinkStateSnapshotReference {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -11252,6 +11264,8 @@ pub struct FlinkDeploymentStatusJobStatus {
     pub state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateTime")]
     pub update_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeSnapshotReference")]
+    pub upgrade_snapshot_reference: Option<FlinkDeploymentStatusJobStatusUpgradeSnapshotReference>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11436,6 +11450,16 @@ pub enum FlinkDeploymentStatusJobStatusSavepointInfoTriggerType {
     Unknown,
     #[serde(rename = "UPGRADE")]
     Upgrade,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentStatusJobStatusUpgradeSnapshotReference {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

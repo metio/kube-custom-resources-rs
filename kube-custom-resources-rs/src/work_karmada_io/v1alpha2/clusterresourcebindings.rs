@@ -84,6 +84,10 @@ pub struct ClusterResourceBindingSpec {
     /// It inherits directly from the associated PropagationPolicy(or ClusterPropagationPolicy).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
+    /// Suspension declares the policy for suspending different aspects of propagation.
+    /// nil means no suspension. no default values.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspension: Option<ClusterResourceBindingSuspension>,
 }
 
 /// TargetCluster represents the identifier of a member cluster.
@@ -140,7 +144,7 @@ pub struct ClusterResourceBindingFailoverApplication {
     /// Valid options are "Immediately", "Graciously" and "Never".
     /// Defaults to "Graciously".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "purgeMode")]
-    pub purge_mode: Option<String>,
+    pub purge_mode: Option<ClusterResourceBindingFailoverApplicationPurgeMode>,
 }
 
 /// DecisionConditions indicates the decision conditions of performing the failover process.
@@ -155,6 +159,17 @@ pub struct ClusterResourceBindingFailoverApplicationDecisionConditions {
     /// Defaults to 300s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i32>,
+}
+
+/// Application indicates failover behaviors in case of application failure.
+/// If this value is nil, failover is disabled.
+/// If set, the PropagateDeps should be true so that the dependencies could
+/// be migrated along with the application.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterResourceBindingFailoverApplicationPurgeMode {
+    Immediately,
+    Graciously,
+    Never,
 }
 
 /// GracefulEvictionTask represents a graceful eviction task.
@@ -822,6 +837,33 @@ pub struct ClusterResourceBindingResource {
     /// UID of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// Suspension declares the policy for suspending different aspects of propagation.
+/// nil means no suspension. no default values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterResourceBindingSuspension {
+    /// Dispatching controls whether dispatching should be suspended.
+    /// nil means not suspend, no default value, only accepts 'true'.
+    /// Note: true means stop propagating to all clusters. Can not co-exist
+    /// with DispatchingOnClusters which is used to suspend particular clusters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dispatching: Option<bool>,
+    /// DispatchingOnClusters declares a list of clusters to which the dispatching
+    /// should be suspended.
+    /// Note: Can not co-exist with Dispatching which is used to suspend all.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dispatchingOnClusters")]
+    pub dispatching_on_clusters: Option<ClusterResourceBindingSuspensionDispatchingOnClusters>,
+}
+
+/// DispatchingOnClusters declares a list of clusters to which the dispatching
+/// should be suspended.
+/// Note: Can not co-exist with Dispatching which is used to suspend all.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterResourceBindingSuspensionDispatchingOnClusters {
+    /// ClusterNames is the list of clusters to be selected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
+    pub cluster_names: Option<Vec<String>>,
 }
 
 /// Status represents the most recently observed status of the ResourceBinding.

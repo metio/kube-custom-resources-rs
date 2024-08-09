@@ -160,6 +160,8 @@ pub struct SecurityGroupEgressRulesUserIdGroupPairsGroupRef {
 pub struct SecurityGroupEgressRulesUserIdGroupPairsGroupRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Reference field for VPCID
@@ -177,6 +179,8 @@ pub struct SecurityGroupEgressRulesUserIdGroupPairsVpcRef {
 pub struct SecurityGroupEgressRulesUserIdGroupPairsVpcRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Describes a set of permissions for a security group rule.
@@ -271,6 +275,8 @@ pub struct SecurityGroupIngressRulesUserIdGroupPairsGroupRef {
 pub struct SecurityGroupIngressRulesUserIdGroupPairsGroupRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Reference field for VPCID
@@ -288,6 +294,8 @@ pub struct SecurityGroupIngressRulesUserIdGroupPairsVpcRef {
 pub struct SecurityGroupIngressRulesUserIdGroupPairsVpcRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Describes a tag.
@@ -321,6 +329,8 @@ pub struct SecurityGroupVpcRef {
 pub struct SecurityGroupVpcRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// SecurityGroupStatus defines the observed state of SecurityGroup
