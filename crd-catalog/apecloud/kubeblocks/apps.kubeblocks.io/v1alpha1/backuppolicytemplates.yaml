@@ -249,7 +249,7 @@ spec:
                               description: "Specifies the target information to back up, it will override the target in backup policy."
                               properties:
                                 account:
-                                  description: "If `backupPolicy.componentDefs` is set, this field is required to specify the system account name.\nThis account must match one listed in `componentDefinition.spec.systemAccounts[*].name`.\nThe corresponding secret created by this account is used to connect to the database.\n\n\nIf `backupPolicy.componentDefRef` (a legacy and deprecated API) is set, the secret defined in\n`clusterDefinition.spec.ConnectionCredential` is used instead."
+                                  description: "If `backupPolicy.componentDefs` is set, this field is required to specify the system account name.\nThis account must match one listed in `componentDefinition.spec.systemAccounts[*].name`.\nThe corresponding secret created by this account is used to connect to the database."
                                   type: "string"
                                 connectionCredential:
                                   description: "Specifies the connection credential to connect to the target database cluster."
@@ -275,28 +275,46 @@ spec:
                                   required:
                                     - "secretName"
                                   type: "object"
-                                connectionCredentialKey:
-                                  description: "Specifies the keys of the connection credential secret defined in `clusterDefinition.spec.ConnectionCredential`.\nIt will be ignored when the `account` is set."
-                                  properties:
-                                    hostKey:
-                                      description: "Defines the key of the host in the connection credential secret."
-                                      type: "string"
-                                    passwordKey:
-                                      description: "Represents the key of the password in the connection credential secret.\nIf not specified, the default key \"password\" is used."
-                                      type: "string"
-                                    portKey:
-                                      description: "Indicates map key of the port in the connection credential secret."
-                                      type: "string"
-                                    usernameKey:
-                                      description: "Represents the key of the username in the connection credential secret.\nIf not specified, the default key \"username\" is used."
-                                      type: "string"
-                                  type: "object"
+                                fallbackRole:
+                                  description: "Specifies the fallback role to select one replica for backup, this only takes effect when the\n`strategy` field below is set to `Any`."
+                                  type: "string"
                                 name:
                                   description: "Specifies a mandatory and unique identifier for each target when using the \"targets\" field.\nThe backup data for the current target is stored in a uniquely named subdirectory."
                                   type: "string"
                                 podSelector:
                                   description: "Used to find the target pod. The volumes of the target pod will be backed up."
                                   properties:
+                                    fallbackLabelSelector:
+                                      description: "fallbackLabelSelector is used to filter available pods when the labelSelector fails.\nThis only takes effect when the `strategy` field below is set to `Any`."
+                                      properties:
+                                        matchExpressions:
+                                          description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                          items:
+                                            description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                            properties:
+                                              key:
+                                                description: "key is the label key that the selector applies to."
+                                                type: "string"
+                                              operator:
+                                                description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                                type: "string"
+                                              values:
+                                                description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                            required:
+                                              - "key"
+                                              - "operator"
+                                            type: "object"
+                                          type: "array"
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                          type: "object"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
@@ -463,6 +481,37 @@ spec:
                                   podSelector:
                                     description: "Used to find the target pod. The volumes of the target pod will be backed up."
                                     properties:
+                                      fallbackLabelSelector:
+                                        description: "fallbackLabelSelector is used to filter available pods when the labelSelector fails.\nThis only takes effect when the `strategy` field below is set to `Any`."
+                                        properties:
+                                          matchExpressions:
+                                            description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                            items:
+                                              description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                              properties:
+                                                key:
+                                                  description: "key is the label key that the selector applies to."
+                                                  type: "string"
+                                                operator:
+                                                  description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                                  type: "string"
+                                                values:
+                                                  description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                                  items:
+                                                    type: "string"
+                                                  type: "array"
+                                              required:
+                                                - "key"
+                                                - "operator"
+                                              type: "object"
+                                            type: "array"
+                                          matchLabels:
+                                            additionalProperties:
+                                              type: "string"
+                                            description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                            type: "object"
+                                        type: "object"
+                                        x-kubernetes-map-type: "atomic"
                                       matchExpressions:
                                         description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                         items:
@@ -552,11 +601,6 @@ spec:
                             - "name"
                           type: "object"
                         type: "array"
-                      componentDefRef:
-                        description: "Specifies the name of ClusterComponentDefinition defined in the ClusterDefinition.\nMust comply with the IANA Service Naming rule.\n\n\nDeprecated since v0.9, should use `componentDefs` instead.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
-                        maxLength: 22
-                        pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
-                        type: "string"
                       componentDefs:
                         description: "Specifies a list of names of ComponentDefinitions that the specified ClusterDefinition references.\nThey should be different versions of definitions of the same component,\nthus allowing them to share a single BackupPolicy.\nEach name must adhere to the IANA Service Naming rule."
                         items:
@@ -588,24 +632,11 @@ spec:
                         description: "Defines the selection criteria of instance to be backed up, and the connection credential to be used\nduring the backup process."
                         properties:
                           account:
-                            description: "If `backupPolicy.componentDefs` is set, this field is required to specify the system account name.\nThis account must match one listed in `componentDefinition.spec.systemAccounts[*].name`.\nThe corresponding secret created by this account is used to connect to the database.\n\n\nIf `backupPolicy.componentDefRef` (a legacy and deprecated API) is set, the secret defined in\n`clusterDefinition.spec.ConnectionCredential` is used instead."
+                            description: "If `backupPolicy.componentDefs` is set, this field is required to specify the system account name.\nThis account must match one listed in `componentDefinition.spec.systemAccounts[*].name`.\nThe corresponding secret created by this account is used to connect to the database."
                             type: "string"
-                          connectionCredentialKey:
-                            description: "Specifies the keys of the connection credential secret defined in `clusterDefinition.spec.ConnectionCredential`.\nIt will be ignored when the `account` is set."
-                            properties:
-                              hostKey:
-                                description: "Defines the key of the host in the connection credential secret."
-                                type: "string"
-                              passwordKey:
-                                description: "Represents the key of the password in the connection credential secret.\nIf not specified, the default key \"password\" is used."
-                                type: "string"
-                              portKey:
-                                description: "Indicates map key of the port in the connection credential secret."
-                                type: "string"
-                              usernameKey:
-                                description: "Represents the key of the username in the connection credential secret.\nIf not specified, the default key \"username\" is used."
-                                type: "string"
-                            type: "object"
+                          fallbackRole:
+                            description: "Specifies the fallback role to select one replica for backup, this only takes effect when the\n`strategy` field below is set to `Any`."
+                            type: "string"
                           role:
                             description: "Specifies the role to select one or more replicas for backup.\n\n\n- If no replica with the specified role exists, the backup task will fail.\n  Special case: If there is only one replica in the cluster, it will be used for backup,\n  even if its role differs from the specified one.\n  For example, if you specify backing up on a secondary replica, but the cluster is single-node\n  with only one primary replica, the primary will be used for backup.\n  Future versions will address this special case using role priorities.\n- If multiple replicas satisfy the specified role, the choice (`Any` or `All`) will be made according to\n  the `strategy` field below."
                             type: "string"
@@ -623,13 +654,6 @@ spec:
                     type: "object"
                   minItems: 1
                   type: "array"
-                clusterDefinitionRef:
-                  description: "Specifies the name of a ClusterDefinition.\nThis is an immutable attribute that cannot be changed after creation.\nAnd this field is deprecated since v0.9, consider using the ComponentDef instead."
-                  pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                  type: "string"
-                  x-kubernetes-validations:
-                    - message: "clusterDefinitionRef is immutable"
-                      rule: "self == oldSelf"
                 identifier:
                   description: "Specifies a unique identifier for the BackupPolicyTemplate.\n\n\nThis identifier will be used as the suffix of the name of automatically generated BackupPolicy.\nThis prevents unintended overwriting of BackupPolicies due to name conflicts when multiple BackupPolicyTemplates\nare present.\nFor instance, using \"backup-policy\" for regular backups and \"backup-policy-hscale\" for horizontal-scale ops\ncan differentiate the policies."
                   maxLength: 20

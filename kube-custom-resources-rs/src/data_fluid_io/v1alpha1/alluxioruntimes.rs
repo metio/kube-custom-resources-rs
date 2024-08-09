@@ -43,6 +43,9 @@ pub struct AlluxioRuntimeSpec {
     /// of the file as the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hadoopConfig")]
     pub hadoop_config: Option<String>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<AlluxioRuntimeImagePullSecrets>>,
     /// The spec of init users
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initUsers")]
     pub init_users: Option<AlluxioRuntimeInitUsers>,
@@ -108,6 +111,9 @@ pub struct AlluxioRuntimeApiGateway {
     /// Environment variables that will be used by Alluxio component. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<AlluxioRuntimeApiGatewayImagePullSecrets>>,
     /// Options for JVM
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
@@ -141,6 +147,17 @@ pub struct AlluxioRuntimeApiGateway {
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<AlluxioRuntimeApiGatewayVolumeMounts>>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeApiGatewayImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The component spec of Alluxio API Gateway
@@ -265,6 +282,9 @@ pub struct AlluxioRuntimeFuse {
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<AlluxioRuntimeFuseImagePullSecrets>>,
     /// Image Tag for Alluxio Fuse(e.g. 2.3.0-SNAPSHOT)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
@@ -294,6 +314,17 @@ pub struct AlluxioRuntimeFuse {
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<AlluxioRuntimeFuseVolumeMounts>>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeFuseImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The component spec of Alluxio Fuse
@@ -385,6 +416,17 @@ pub struct AlluxioRuntimeFuseVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// The spec of init users
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlluxioRuntimeInitUsers {
@@ -455,6 +497,9 @@ pub struct AlluxioRuntimeJobMaster {
     /// Environment variables that will be used by Alluxio component. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<AlluxioRuntimeJobMasterImagePullSecrets>>,
     /// Options for JVM
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
@@ -488,6 +533,17 @@ pub struct AlluxioRuntimeJobMaster {
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<AlluxioRuntimeJobMasterVolumeMounts>>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeJobMasterImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The component spec of Alluxio job master
@@ -588,6 +644,9 @@ pub struct AlluxioRuntimeJobWorker {
     /// Environment variables that will be used by Alluxio component. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<AlluxioRuntimeJobWorkerImagePullSecrets>>,
     /// Options for JVM
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
@@ -621,6 +680,17 @@ pub struct AlluxioRuntimeJobWorker {
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<AlluxioRuntimeJobWorkerVolumeMounts>>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeJobWorkerImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The component spec of Alluxio job Worker
@@ -759,6 +829,9 @@ pub struct AlluxioRuntimeMaster {
     /// Environment variables that will be used by Alluxio component. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<AlluxioRuntimeMasterImagePullSecrets>>,
     /// Options for JVM
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
@@ -792,6 +865,17 @@ pub struct AlluxioRuntimeMaster {
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<AlluxioRuntimeMasterVolumeMounts>>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeMasterImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The component spec of Alluxio master
@@ -4156,6 +4240,9 @@ pub struct AlluxioRuntimeWorker {
     /// Environment variables that will be used by Alluxio component. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<AlluxioRuntimeWorkerImagePullSecrets>>,
     /// Options for JVM
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
@@ -4189,6 +4276,17 @@ pub struct AlluxioRuntimeWorker {
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the alluxio runtime component's filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<AlluxioRuntimeWorkerVolumeMounts>>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlluxioRuntimeWorkerImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The component spec of Alluxio worker

@@ -128,6 +128,8 @@ pub struct VPCEndpointRouteTableRefs {
 pub struct VPCEndpointRouteTableRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -152,6 +154,8 @@ pub struct VPCEndpointSecurityGroupRefs {
 pub struct VPCEndpointSecurityGroupRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -176,6 +180,8 @@ pub struct VPCEndpointSubnetRefs {
 pub struct VPCEndpointSubnetRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Describes a tag.
@@ -209,6 +215,8 @@ pub struct VPCEndpointVpcRef {
 pub struct VPCEndpointVpcRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// VPCEndpointStatus defines the observed state of VPCEndpoint

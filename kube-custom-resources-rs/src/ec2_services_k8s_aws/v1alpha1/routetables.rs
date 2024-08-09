@@ -106,6 +106,8 @@ pub struct RouteTableRoutesGatewayRef {
 pub struct RouteTableRoutesGatewayRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Reference field for NATGatewayID
@@ -123,6 +125,8 @@ pub struct RouteTableRoutesNatGatewayRef {
 pub struct RouteTableRoutesNatGatewayRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Reference field for TransitGatewayID
@@ -140,6 +144,8 @@ pub struct RouteTableRoutesTransitGatewayRef {
 pub struct RouteTableRoutesTransitGatewayRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Reference field for VPCEndpointID
@@ -157,6 +163,8 @@ pub struct RouteTableRoutesVpcEndpointRef {
 pub struct RouteTableRoutesVpcEndpointRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Reference field for VPCPeeringConnectionID
@@ -174,6 +182,8 @@ pub struct RouteTableRoutesVpcPeeringConnectionRef {
 pub struct RouteTableRoutesVpcPeeringConnectionRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Describes a tag.
@@ -207,6 +217,8 @@ pub struct RouteTableVpcRef {
 pub struct RouteTableVpcRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// RouteTableStatus defines the observed state of RouteTable

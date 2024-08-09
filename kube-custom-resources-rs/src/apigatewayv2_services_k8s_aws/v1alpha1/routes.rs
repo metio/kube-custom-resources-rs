@@ -101,6 +101,8 @@ pub struct RouteApiRef {
 pub struct RouteApiRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -125,6 +127,8 @@ pub struct RouteAuthorizerRef {
 pub struct RouteAuthorizerRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -155,6 +159,8 @@ pub struct RouteTargetRef {
 pub struct RouteTargetRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// RouteStatus defines the observed state of Route

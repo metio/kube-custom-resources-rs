@@ -95,8 +95,8 @@ pub struct FirewallEncryptionConfiguration {
 /// traffic in the subnet's Availability Zone.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FirewallSubnetMappings {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iPAddressType")]
-    pub i_p_address_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressType")]
+    pub ip_address_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetID")]
     pub subnet_id: Option<String>,
 }
@@ -222,8 +222,8 @@ pub struct FirewallStatusFirewallEncryptionConfiguration {
 /// traffic in the subnet's Availability Zone.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FirewallStatusFirewallSubnetMappings {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iPAddressType")]
-    pub i_p_address_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressType")]
+    pub ip_address_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetID")]
     pub subnet_id: Option<String>,
 }

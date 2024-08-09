@@ -216,6 +216,8 @@ pub struct GrantKeyRef {
 pub struct GrantKeyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// GrantStatus defines the observed state of Grant

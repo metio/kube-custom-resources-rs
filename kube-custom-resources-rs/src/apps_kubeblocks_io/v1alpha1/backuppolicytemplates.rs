@@ -22,11 +22,6 @@ pub struct BackupPolicyTemplateSpec {
     /// or to a group of ComponentDefinitions that are different versions of definitions of the same component.
     #[serde(rename = "backupPolicies")]
     pub backup_policies: Vec<BackupPolicyTemplateBackupPolicies>,
-    /// Specifies the name of a ClusterDefinition.
-    /// This is an immutable attribute that cannot be changed after creation.
-    /// And this field is deprecated since v0.9, consider using the ComponentDef instead.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDefinitionRef")]
-    pub cluster_definition_ref: Option<String>,
     /// Specifies a unique identifier for the BackupPolicyTemplate.
     /// 
     /// 
@@ -49,15 +44,6 @@ pub struct BackupPolicyTemplateBackupPolicies {
     /// Defines an array of BackupMethods to be used.
     #[serde(rename = "backupMethods")]
     pub backup_methods: Vec<BackupPolicyTemplateBackupPoliciesBackupMethods>,
-    /// Specifies the name of ClusterComponentDefinition defined in the ClusterDefinition.
-    /// Must comply with the IANA Service Naming rule.
-    /// 
-    /// 
-    /// Deprecated since v0.9, should use `componentDefs` instead.
-    /// This field is maintained for backward compatibility and its use is discouraged.
-    /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefRef")]
-    pub component_def_ref: Option<String>,
     /// Specifies a list of names of ComponentDefinitions that the specified ClusterDefinition references.
     /// They should be different versions of definitions of the same component,
     /// thus allowing them to share a single BackupPolicy.
@@ -308,19 +294,15 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTarget {
     /// If `backupPolicy.componentDefs` is set, this field is required to specify the system account name.
     /// This account must match one listed in `componentDefinition.spec.systemAccounts[*].name`.
     /// The corresponding secret created by this account is used to connect to the database.
-    /// 
-    /// 
-    /// If `backupPolicy.componentDefRef` (a legacy and deprecated API) is set, the secret defined in
-    /// `clusterDefinition.spec.ConnectionCredential` is used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
     /// Specifies the connection credential to connect to the target database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetConnectionCredential>,
-    /// Specifies the keys of the connection credential secret defined in `clusterDefinition.spec.ConnectionCredential`.
-    /// It will be ignored when the `account` is set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredentialKey")]
-    pub connection_credential_key: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetConnectionCredentialKey>,
+    /// Specifies the fallback role to select one replica for backup, this only takes effect when the
+    /// `strategy` field below is set to `Any`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackRole")]
+    pub fallback_role: Option<String>,
     /// Specifies a mandatory and unique identifier for each target when using the "targets" field.
     /// The backup data for the current target is stored in a uniquely named subdirectory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -379,29 +361,13 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetConnectionCreden
     pub username_key: Option<String>,
 }
 
-/// Specifies the keys of the connection credential secret defined in `clusterDefinition.spec.ConnectionCredential`.
-/// It will be ignored when the `account` is set.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetConnectionCredentialKey {
-    /// Defines the key of the host in the connection credential secret.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostKey")]
-    pub host_key: Option<String>,
-    /// Represents the key of the password in the connection credential secret.
-    /// If not specified, the default key "password" is used.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
-    pub password_key: Option<String>,
-    /// Indicates map key of the port in the connection credential secret.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
-    pub port_key: Option<String>,
-    /// Represents the key of the username in the connection credential secret.
-    /// If not specified, the default key "username" is used.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
-    pub username_key: Option<String>,
-}
-
 /// Used to find the target pod. The volumes of the target pod will be backed up.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelector {
+    /// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+    /// This only takes effect when the `strategy` field below is set to `Any`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackLabelSelector")]
+    pub fallback_label_selector: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelectorFallbackLabelSelector>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelectorMatchExpressions>>,
@@ -419,6 +385,37 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelector {
     /// will be stored in a subdirectory named after the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelectorStrategy>,
+}
+
+/// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+/// This only takes effect when the `strategy` field below is set to `Any`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelectorFallbackLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelectorFallbackLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelectorFallbackLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that
@@ -590,6 +587,10 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetsConnectionCrede
 /// Used to find the target pod. The volumes of the target pod will be backed up.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetsPodSelector {
+    /// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+    /// This only takes effect when the `strategy` field below is set to `Any`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackLabelSelector")]
+    pub fallback_label_selector: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetsPodSelectorFallbackLabelSelector>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetsPodSelectorMatchExpressions>>,
@@ -607,6 +608,37 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetsPodSelector {
     /// will be stored in a subdirectory named after the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetsPodSelectorStrategy>,
+}
+
+/// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
+/// This only takes effect when the `strategy` field below is set to `Any`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetsPodSelectorFallbackLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetsPodSelectorFallbackLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetsPodSelectorFallbackLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that
@@ -720,16 +752,12 @@ pub struct BackupPolicyTemplateBackupPoliciesTarget {
     /// If `backupPolicy.componentDefs` is set, this field is required to specify the system account name.
     /// This account must match one listed in `componentDefinition.spec.systemAccounts[*].name`.
     /// The corresponding secret created by this account is used to connect to the database.
-    /// 
-    /// 
-    /// If `backupPolicy.componentDefRef` (a legacy and deprecated API) is set, the secret defined in
-    /// `clusterDefinition.spec.ConnectionCredential` is used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
-    /// Specifies the keys of the connection credential secret defined in `clusterDefinition.spec.ConnectionCredential`.
-    /// It will be ignored when the `account` is set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredentialKey")]
-    pub connection_credential_key: Option<BackupPolicyTemplateBackupPoliciesTargetConnectionCredentialKey>,
+    /// Specifies the fallback role to select one replica for backup, this only takes effect when the
+    /// `strategy` field below is set to `Any`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackRole")]
+    pub fallback_role: Option<String>,
     /// Specifies the role to select one or more replicas for backup.
     /// 
     /// 
@@ -751,26 +779,6 @@ pub struct BackupPolicyTemplateBackupPoliciesTarget {
     /// - All: Selects all pods that match the labelsSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyTemplateBackupPoliciesTargetStrategy>,
-}
-
-/// Specifies the keys of the connection credential secret defined in `clusterDefinition.spec.ConnectionCredential`.
-/// It will be ignored when the `account` is set.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BackupPolicyTemplateBackupPoliciesTargetConnectionCredentialKey {
-    /// Defines the key of the host in the connection credential secret.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostKey")]
-    pub host_key: Option<String>,
-    /// Represents the key of the password in the connection credential secret.
-    /// If not specified, the default key "password" is used.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
-    pub password_key: Option<String>,
-    /// Indicates map key of the port in the connection credential secret.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
-    pub port_key: Option<String>,
-    /// Represents the key of the username in the connection credential secret.
-    /// If not specified, the default key "username" is used.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
-    pub username_key: Option<String>,
 }
 
 /// Defines the selection criteria of instance to be backed up, and the connection credential to be used

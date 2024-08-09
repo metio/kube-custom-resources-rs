@@ -154,7 +154,8 @@ pub struct MariaDBSpec {
     /// Storage defines the storage options to be used for provisioning the PVCs mounted by MariaDB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<MariaDBStorage>,
-    /// Suspend defines whether the MariaDB reconciliation loop is enabled. This can be useful for maintenance, as disabling the reconciliation loop prevents the operator from interfering with user operations during maintenance activities.
+    /// Suspend indicates whether the current resource should be suspended or not.
+    /// This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
     /// TimeZone sets the default timezone. If not provided, it defaults to SYSTEM and the timezone data is not loaded.
@@ -12792,7 +12793,8 @@ pub struct MariaDBMaxScaleMonitor {
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
-    /// Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this.
+    /// Suspend indicates whether the current resource should be suspended or not.
+    /// This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
 }
@@ -12834,7 +12836,8 @@ pub struct MariaDBMaxScaleServices {
     pub params: Option<BTreeMap<String, String>>,
     /// Router is the type of router to use.
     pub router: MariaDBMaxScaleServicesRouter,
-    /// Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this.
+    /// Suspend indicates whether the current resource should be suspended or not.
+    /// This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
 }
@@ -12856,7 +12859,8 @@ pub struct MariaDBMaxScaleServicesListener {
     /// Protocol is the MaxScale protocol to use when communicating with the client. If not provided, it defaults to MariaDBProtocol.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this.
+    /// Suspend indicates whether the current resource should be suspended or not.
+    /// This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
 }

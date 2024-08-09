@@ -120,6 +120,10 @@ pub struct ClusterPropagationPolicySpec {
     /// If not specified, the policy will be dispatched by default scheduler.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
+    /// Suspension declares the policy for suspending different aspects of propagation.
+    /// nil means no suspension. no default values.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspension: Option<ClusterPropagationPolicySuspension>,
 }
 
 /// Spec represents the desired behavior of ClusterPropagationPolicy.
@@ -172,7 +176,7 @@ pub struct ClusterPropagationPolicyFailoverApplication {
     /// Valid options are "Immediately", "Graciously" and "Never".
     /// Defaults to "Graciously".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "purgeMode")]
-    pub purge_mode: Option<String>,
+    pub purge_mode: Option<ClusterPropagationPolicyFailoverApplicationPurgeMode>,
 }
 
 /// DecisionConditions indicates the decision conditions of performing the failover process.
@@ -187,6 +191,17 @@ pub struct ClusterPropagationPolicyFailoverApplicationDecisionConditions {
     /// Defaults to 300s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i32>,
+}
+
+/// Application indicates failover behaviors in case of application failure.
+/// If this value is nil, failover is disabled.
+/// If set, the PropagateDeps should be true so that the dependencies could
+/// be migrated along with the application.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPropagationPolicyFailoverApplicationPurgeMode {
+    Immediately,
+    Graciously,
+    Never,
 }
 
 /// Placement represents the rule for select clusters to propagate resources.
@@ -694,5 +709,32 @@ pub struct ClusterPropagationPolicyResourceSelectorsLabelSelectorMatchExpression
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Suspension declares the policy for suspending different aspects of propagation.
+/// nil means no suspension. no default values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPropagationPolicySuspension {
+    /// Dispatching controls whether dispatching should be suspended.
+    /// nil means not suspend, no default value, only accepts 'true'.
+    /// Note: true means stop propagating to all clusters. Can not co-exist
+    /// with DispatchingOnClusters which is used to suspend particular clusters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dispatching: Option<bool>,
+    /// DispatchingOnClusters declares a list of clusters to which the dispatching
+    /// should be suspended.
+    /// Note: Can not co-exist with Dispatching which is used to suspend all.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dispatchingOnClusters")]
+    pub dispatching_on_clusters: Option<ClusterPropagationPolicySuspensionDispatchingOnClusters>,
+}
+
+/// DispatchingOnClusters declares a list of clusters to which the dispatching
+/// should be suspended.
+/// Note: Can not co-exist with Dispatching which is used to suspend all.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPropagationPolicySuspensionDispatchingOnClusters {
+    /// ClusterNames is the list of clusters to be selected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
+    pub cluster_names: Option<Vec<String>>,
 }
 

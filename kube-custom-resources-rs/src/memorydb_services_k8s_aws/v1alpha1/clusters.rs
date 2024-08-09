@@ -181,6 +181,8 @@ pub struct ClusterAclRef {
 pub struct ClusterAclRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -205,6 +207,8 @@ pub struct ClusterParameterGroupRef {
 pub struct ClusterParameterGroupRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -229,6 +233,8 @@ pub struct ClusterSecurityGroupRefs {
 pub struct ClusterSecurityGroupRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -253,6 +259,8 @@ pub struct ClusterSnapshotRef {
 pub struct ClusterSnapshotRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -277,6 +285,8 @@ pub struct ClusterSnsTopicRef {
 pub struct ClusterSnsTopicRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -301,6 +311,8 @@ pub struct ClusterSubnetGroupRef {
 pub struct ClusterSubnetGroupRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// A tag that can be added to an MemoryDB resource. Tags are composed of a Key/Value

@@ -79,6 +79,8 @@ pub struct AuthorizerApiRef {
 pub struct AuthorizerApiRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Represents the configuration of a JWT authorizer. Required for the JWT authorizer

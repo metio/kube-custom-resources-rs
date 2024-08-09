@@ -194,6 +194,8 @@ pub struct NodegroupClusterRef {
 pub struct NodegroupClusterRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// An object representing a node group's launch template specification. If specified,
@@ -231,6 +233,8 @@ pub struct NodegroupNodeRoleRef {
 pub struct NodegroupNodeRoleRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The remote access configuration to use with your node group. For Linux, the
@@ -272,6 +276,8 @@ pub struct NodegroupRemoteAccessSourceSecurityGroupRefs {
 pub struct NodegroupRemoteAccessSourceSecurityGroupRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The scaling configuration details for the Auto Scaling group that is created
@@ -308,6 +314,8 @@ pub struct NodegroupSubnetRefs {
 pub struct NodegroupSubnetRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// A property that allows a node to repel a Pod. For more information, see Node

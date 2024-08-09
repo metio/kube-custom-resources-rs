@@ -574,7 +574,7 @@ pub struct CheClusterComponentsDevWorkspace {
 /// Configuration settings related to the devfile registry used by the Che installation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDevfileRegistry {
-    /// Deployment override options.
+    /// Deprecated deployment override options.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<CheClusterComponentsDevfileRegistryDeployment>,
     /// Disables internal devfile registry.
@@ -585,7 +585,7 @@ pub struct CheClusterComponentsDevfileRegistry {
     pub external_devfile_registries: Option<Vec<CheClusterComponentsDevfileRegistryExternalDevfileRegistries>>,
 }
 
-/// Deployment override options.
+/// Deprecated deployment override options.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDevfileRegistryDeployment {
     /// List of containers belonging to the pod.
@@ -4089,7 +4089,7 @@ pub struct CheClusterStatus {
     /// Currently installed Che version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cheVersion")]
     pub che_version: Option<String>,
-    /// The public URL of the internal devfile registry.
+    /// Deprecated the public URL of the internal devfile registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "devfileRegistryURL")]
     pub devfile_registry_url: Option<String>,
     /// Specifies the current phase of the gateway deployment.

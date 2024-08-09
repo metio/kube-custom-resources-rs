@@ -203,6 +203,9 @@ pub struct FlowCollectorAgentEbpfFlowFilter {
     /// To filter a range of ports, use a "start-end" range, string format. For example sourcePorts: "80-100".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourcePorts")]
     pub source_ports: Option<IntOrString>,
+    /// `tcpFlags` defines the TCP flags to filter flows by.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpFlags")]
+    pub tcp_flags: Option<FlowCollectorAgentEbpfFlowFilterTcpFlags>,
 }
 
 /// `flowFilter` defines the eBPF agent configuration regarding flow filtering
@@ -232,6 +235,31 @@ pub enum FlowCollectorAgentEbpfFlowFilterProtocol {
     IcmPv6,
     #[serde(rename = "SCTP")]
     Sctp,
+}
+
+/// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorAgentEbpfFlowFilterTcpFlags {
+    #[serde(rename = "SYN")]
+    Syn,
+    #[serde(rename = "SYN-ACK")]
+    SynAck,
+    #[serde(rename = "ACK")]
+    Ack,
+    #[serde(rename = "FIN")]
+    Fin,
+    #[serde(rename = "RST")]
+    Rst,
+    #[serde(rename = "URG")]
+    Urg,
+    #[serde(rename = "ECE")]
+    Ece,
+    #[serde(rename = "CWR")]
+    Cwr,
+    #[serde(rename = "FIN-ACK")]
+    FinAck,
+    #[serde(rename = "RST-ACK")]
+    RstAck,
 }
 
 /// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type`

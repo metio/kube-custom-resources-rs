@@ -125,6 +125,8 @@ pub struct SubnetRouteTableRefs {
 pub struct SubnetRouteTableRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Describes a tag.
@@ -158,6 +160,8 @@ pub struct SubnetVpcRef {
 pub struct SubnetVpcRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// SubnetStatus defines the observed state of Subnet

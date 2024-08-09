@@ -268,6 +268,20 @@ pub struct JobSetReplicatedJobsTemplateSpec {
     /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completions: Option<i32>,
+    /// ManagedBy field indicates the controller that manages a Job. The k8s Job
+    /// controller reconciles jobs which don't have this field at all or the field
+    /// value is the reserved string `kubernetes.io/job-controller`, but skips
+    /// reconciling Jobs with a custom value for this field.
+    /// The value must be a valid domain-prefixed path (e.g. acme.io/foo) -
+    /// all characters before the first "/" must be a valid subdomain as defined
+    /// by RFC 1123. All characters trailing the first "/" must be valid HTTP Path
+    /// characters as defined by RFC 3986. The value cannot exceed 64 characters.
+    /// 
+    /// 
+    /// This field is alpha-level. The job controller accepts setting the field
+    /// when the feature gate JobManagedBy is enabled (disabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedBy")]
+    pub managed_by: Option<String>,
     /// manualSelector controls generation of pod labels and pod selectors.
     /// Leave `manualSelector` unset unless you are certain what you are doing.
     /// When false or unset, the system pick labels unique to this job
@@ -331,6 +345,17 @@ pub struct JobSetReplicatedJobsTemplateSpec {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<JobSetReplicatedJobsTemplateSpecSelector>,
+    /// successPolicy specifies the policy when the Job can be declared as succeeded.
+    /// If empty, the default behavior applies - the Job is declared as succeeded
+    /// only when the number of succeeded pods equals to the completions.
+    /// When the field is specified, it must be immutable and works only for the Indexed Jobs.
+    /// Once the Job meets the SuccessPolicy, the lingering pods are terminated.
+    /// 
+    /// 
+    /// This field  is alpha-level. To use this field, you must enable the
+    /// `JobSuccessPolicy` feature gate (disabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successPolicy")]
+    pub success_policy: Option<JobSetReplicatedJobsTemplateSpecSuccessPolicy>,
     /// suspend specifies whether the Job controller should create Pods or not. If
     /// a Job is created with suspend set to true, no Pods are created by the Job
     /// controller. If a Job is suspended after creation (i.e. the flag goes from
@@ -484,6 +509,57 @@ pub struct JobSetReplicatedJobsTemplateSpecSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
+/// successPolicy specifies the policy when the Job can be declared as succeeded.
+/// If empty, the default behavior applies - the Job is declared as succeeded
+/// only when the number of succeeded pods equals to the completions.
+/// When the field is specified, it must be immutable and works only for the Indexed Jobs.
+/// Once the Job meets the SuccessPolicy, the lingering pods are terminated.
+/// 
+/// 
+/// This field  is alpha-level. To use this field, you must enable the
+/// `JobSuccessPolicy` feature gate (disabled by default).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobSetReplicatedJobsTemplateSpecSuccessPolicy {
+    /// rules represents the list of alternative rules for the declaring the Jobs
+    /// as successful before `.status.succeeded >= .spec.completions`. Once any of the rules are met,
+    /// the "SucceededCriteriaMet" condition is added, and the lingering pods are removed.
+    /// The terminal state for such a Job has the "Complete" condition.
+    /// Additionally, these rules are evaluated in order; Once the Job meets one of the rules,
+    /// other rules are ignored. At most 20 elements are allowed.
+    pub rules: Vec<JobSetReplicatedJobsTemplateSpecSuccessPolicyRules>,
+}
+
+/// SuccessPolicyRule describes rule for declaring a Job as succeeded.
+/// Each rule must have at least one of the "succeededIndexes" or "succeededCount" specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobSetReplicatedJobsTemplateSpecSuccessPolicyRules {
+    /// succeededCount specifies the minimal required size of the actual set of the succeeded indexes
+    /// for the Job. When succeededCount is used along with succeededIndexes, the check is
+    /// constrained only to the set of indexes specified by succeededIndexes.
+    /// For example, given that succeededIndexes is "1-4", succeededCount is "3",
+    /// and completed indexes are "1", "3", and "5", the Job isn't declared as succeeded
+    /// because only "1" and "3" indexes are considered in that rules.
+    /// When this field is null, this doesn't default to any value and
+    /// is never evaluated at any time.
+    /// When specified it needs to be a positive integer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "succeededCount")]
+    pub succeeded_count: Option<i32>,
+    /// succeededIndexes specifies the set of indexes
+    /// which need to be contained in the actual set of the succeeded indexes for the Job.
+    /// The list of indexes must be within 0 to ".spec.completions-1" and
+    /// must not contain duplicates. At least one element is required.
+    /// The indexes are represented as intervals separated by commas.
+    /// The intervals can be a decimal integer or a pair of decimal integers separated by a hyphen.
+    /// The number are listed in represented by the first and last element of the series,
+    /// separated by a hyphen.
+    /// For example, if the completed indexes are 1, 3, 4, 5 and 7, they are
+    /// represented as "1,3-5,7".
+    /// When this field is null, this field doesn't default to any value
+    /// and is never evaluated at any time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "succeededIndexes")]
+    pub succeeded_indexes: Option<String>,
+}
+
 /// Describes the pod that will be created when executing a job.
 /// The only allowed template.spec.restartPolicy values are "Never" or "OnFailure".
 /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
@@ -560,7 +636,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralContainers")]
     pub ephemeral_containers: Option<Vec<JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainers>>,
     /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts
-    /// file if specified. This is only valid for non-hostNetwork pods.
+    /// file if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<JobSetReplicatedJobsTemplateSpecTemplateSpecHostAliases>>,
     /// Use the host's ipc namespace.
@@ -633,6 +709,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpec {
     /// - spec.hostPID
     /// - spec.hostIPC
     /// - spec.hostUsers
+    /// - spec.securityContext.appArmorProfile
     /// - spec.securityContext.seLinuxOptions
     /// - spec.securityContext.seccompProfile
     /// - spec.securityContext.fsGroup
@@ -642,6 +719,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpec {
     /// - spec.securityContext.runAsUser
     /// - spec.securityContext.runAsGroup
     /// - spec.securityContext.supplementalGroups
+    /// - spec.containers[*].securityContext.appArmorProfile
     /// - spec.containers[*].securityContext.seLinuxOptions
     /// - spec.containers[*].securityContext.seccompProfile
     /// - spec.containers[*].securityContext.capabilities
@@ -724,16 +802,13 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpec {
     /// 
     /// 
     /// SchedulingGates can only be set at pod creation time, and be removed only afterwards.
-    /// 
-    /// 
-    /// This is a beta feature enabled by the PodSchedulingReadiness feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
     pub scheduling_gates: Option<Vec<JobSetReplicatedJobsTemplateSpecTemplateSpecSchedulingGates>>,
     /// SecurityContext holds pod-level security attributes and common container settings.
     /// Optional: Defaults to empty.  See type description for default values of each field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecSecurityContext>,
-    /// DeprecatedServiceAccount is a depreciated alias for ServiceAccountName.
+    /// DeprecatedServiceAccount is a deprecated alias for ServiceAccountName.
     /// Deprecated: Use serviceAccountName instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
@@ -983,23 +1058,23 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAffinityPrefer
     pub label_selector: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -1104,23 +1179,23 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAffinityRequir
     pub label_selector: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -1256,23 +1331,23 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAntiAffinityPr
     pub label_selector: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -1377,23 +1452,23 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAntiAffinityRe
     pub label_selector: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
@@ -1697,8 +1772,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersEnvValueFromCon
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1738,8 +1817,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersEnvValueFromSec
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1765,8 +1848,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersEnvFromConfigMapRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1778,8 +1865,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersEnvFromConfigMa
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersEnvFromSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -2330,6 +2421,11 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersSecurityContext
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2394,6 +2490,26 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersSecurityContext
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -2629,6 +2745,8 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -2637,6 +2755,28 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -2877,8 +3017,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersEnvVal
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2918,8 +3062,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersEnvVal
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2945,8 +3093,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersEnvFro
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersEnvFromConfigMapRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -2958,8 +3110,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersEnvFro
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersEnvFromSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -3501,6 +3657,11 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersSecuri
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -3565,6 +3726,26 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersSecuri
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -3794,6 +3975,8 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersVolume
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -3802,6 +3985,28 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersVolume
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -3822,8 +4027,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostnames: Option<Vec<String>>,
     /// IP address of the host file entry.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ip: Option<String>,
+    pub ip: String,
 }
 
 /// LocalObjectReference contains enough information to let you locate the
@@ -3831,8 +4035,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecHostAliases {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecImagePullSecrets {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -4050,8 +4258,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersEnvValueFro
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4091,8 +4303,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersEnvValueFro
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4118,8 +4334,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersEnvFromConfigMapRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -4131,8 +4351,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersEnvFromConf
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersEnvFromSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -4683,6 +4907,11 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersSecurityCon
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -4747,6 +4976,26 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersSecurityCon
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -4982,6 +5231,8 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersVolumeMount
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -4990,6 +5241,28 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersVolumeMount
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -5014,6 +5287,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersVolumeMount
 /// - spec.hostPID
 /// - spec.hostIPC
 /// - spec.hostUsers
+/// - spec.securityContext.appArmorProfile
 /// - spec.securityContext.seLinuxOptions
 /// - spec.securityContext.seccompProfile
 /// - spec.securityContext.fsGroup
@@ -5023,6 +5297,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersVolumeMount
 /// - spec.securityContext.runAsUser
 /// - spec.securityContext.runAsGroup
 /// - spec.securityContext.supplementalGroups
+/// - spec.containers[*].securityContext.appArmorProfile
 /// - spec.containers[*].securityContext.seLinuxOptions
 /// - spec.containers[*].securityContext.seccompProfile
 /// - spec.containers[*].securityContext.capabilities
@@ -5099,6 +5374,10 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecSchedulingGates {
 /// Optional: Defaults to empty.  See type description for default values of each field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
@@ -5178,6 +5457,25 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -5350,9 +5648,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecTopologySpreadConstraints
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    /// 
-    /// 
-    /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
@@ -5692,8 +5987,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesCephfs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesCephfsSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5728,8 +6027,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesCinder {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesCinderSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5756,8 +6059,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -5821,8 +6128,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesCsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesCsiNodePublishSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5848,7 +6159,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -5867,7 +6178,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesDownwardApiItems {
     pub resource_field_ref: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -6094,7 +6405,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesEphemeralVolumeCla
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
@@ -6278,8 +6589,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesFlexVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesFlexVolumeSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6435,8 +6750,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesIscsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesIscsiSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6644,8 +6963,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesProjectedSourcesCo
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -6684,7 +7007,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesProjectedSourcesDo
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -6703,7 +7026,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesProjectedSourcesDo
     pub resource_field_ref: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -6741,8 +7064,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesProjectedSourcesSe
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -6871,8 +7198,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesRbd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesRbdSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6922,8 +7253,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesScaleIo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesScaleIoSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -7014,8 +7349,12 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesStorageos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesStorageosSecretRef {
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

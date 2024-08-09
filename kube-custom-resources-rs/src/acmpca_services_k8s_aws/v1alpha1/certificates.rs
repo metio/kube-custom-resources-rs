@@ -428,6 +428,8 @@ pub struct CertificateCertificateAuthorityRef {
 pub struct CertificateCertificateAuthorityRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -452,6 +454,8 @@ pub struct CertificateCertificateSigningRequestRef {
 pub struct CertificateCertificateSigningRequestRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Information describing the end of the validity period of the certificate.

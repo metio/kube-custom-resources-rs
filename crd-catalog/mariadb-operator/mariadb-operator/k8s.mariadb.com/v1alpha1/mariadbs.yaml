@@ -9071,7 +9071,8 @@ spec:
                           description: "Params defines extra parameters to pass to the monitor.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-common-monitor-parameters/.\nMonitor specific parameter are also suported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-galera-monitor/#galera-monitor-optional-parameters.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration."
                           type: "object"
                         suspend:
-                          description: "Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this."
+                          default: false
+                          description: "Suspend indicates whether the current resource should be suspended or not.\nThis can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities."
                           type: "boolean"
                       type: "object"
                     podDisruptionBudget:
@@ -9121,7 +9122,8 @@ spec:
                                 description: "Protocol is the MaxScale protocol to use when communicating with the client. If not provided, it defaults to MariaDBProtocol."
                                 type: "string"
                               suspend:
-                                description: "Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this."
+                                default: false
+                                description: "Suspend indicates whether the current resource should be suspended or not.\nThis can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities."
                                 type: "boolean"
                             type: "object"
                           name:
@@ -9139,7 +9141,8 @@ spec:
                               - "readconnroute"
                             type: "string"
                           suspend:
-                            description: "Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this."
+                            default: false
+                            description: "Suspend indicates whether the current resource should be suspended or not.\nThis can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities."
                             type: "boolean"
                         required:
                           - "listener"
@@ -14096,7 +14099,7 @@ spec:
                   type: "object"
                 suspend:
                   default: false
-                  description: "Suspend defines whether the MariaDB reconciliation loop is enabled. This can be useful for maintenance, as disabling the reconciliation loop prevents the operator from interfering with user operations during maintenance activities."
+                  description: "Suspend indicates whether the current resource should be suspended or not.\nThis can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities."
                   type: "boolean"
                 timeZone:
                   description: "TimeZone sets the default timezone. If not provided, it defaults to SYSTEM and the timezone data is not loaded."

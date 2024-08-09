@@ -41,6 +41,8 @@ pub struct SyslogNGOutputSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openobserve: Option<SyslogNGOutputOpenobserve>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub opentelemetry: Option<SyslogNGOutputOpentelemetry>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redis: Option<SyslogNGOutputRedis>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<SyslogNGOutputS3>,
@@ -2063,6 +2065,197 @@ pub enum SyslogNGOutputOpenobserveTlsSslVersion {
     Tlsv12,
     #[serde(rename = "tlsv1_3")]
     Tlsv13,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetry {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth: Option<SyslogNGOutputOpentelemetryAuth>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-bytes")]
+    pub batch_bytes: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
+    pub batch_lines: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
+    pub batch_timeout: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub channel_args: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compression: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disk_buffer: Option<SyslogNGOutputOpentelemetryDiskBuffer>,
+    pub url: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuth {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub adc: Option<SyslogNGOutputOpentelemetryAuthAdc>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub alts: Option<SyslogNGOutputOpentelemetryAuthAlts>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure: Option<SyslogNGOutputOpentelemetryAuthInsecure>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<SyslogNGOutputOpentelemetryAuthTls>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthAdc {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthAlts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target-service-accounts")]
+    pub target_service_accounts: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthInsecure {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTls {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca_file: Option<SyslogNGOutputOpentelemetryAuthTlsCaFile>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert_file: Option<SyslogNGOutputOpentelemetryAuthTlsCertFile>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key_file: Option<SyslogNGOutputOpentelemetryAuthTlsKeyFile>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsCaFile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<SyslogNGOutputOpentelemetryAuthTlsCaFileMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<SyslogNGOutputOpentelemetryAuthTlsCaFileValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsCaFileMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGOutputOpentelemetryAuthTlsCaFileMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsCaFileMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsCaFileValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGOutputOpentelemetryAuthTlsCaFileValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsCaFileValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsCertFile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<SyslogNGOutputOpentelemetryAuthTlsCertFileMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<SyslogNGOutputOpentelemetryAuthTlsCertFileValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsCertFileMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGOutputOpentelemetryAuthTlsCertFileMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsCertFileMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsCertFileValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGOutputOpentelemetryAuthTlsCertFileValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsCertFileValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsKeyFile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<SyslogNGOutputOpentelemetryAuthTlsKeyFileMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<SyslogNGOutputOpentelemetryAuthTlsKeyFileValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsKeyFileMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGOutputOpentelemetryAuthTlsKeyFileMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsKeyFileMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsKeyFileValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGOutputOpentelemetryAuthTlsKeyFileValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryAuthTlsKeyFileValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SyslogNGOutputOpentelemetryDiskBuffer {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compaction: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dir: Option<String>,
+    pub disk_buf_size: i64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mem_buf_length: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mem_buf_size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub q_out_size: Option<i64>,
+    pub reliable: bool,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

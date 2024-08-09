@@ -86,11 +86,6 @@ pub struct NodePoolDisruptionBudgets {
     /// checking for int nodes for IntOrString nodes.
     /// Ref: https://github.com/kubernetes-sigs/controller-tools/blob/55efe4be40394a288216dab63156b0a64fb82929/pkg/crd/markers/validation.go#L379-L388
     pub nodes: String,
-    /// Reasons is a list of disruption methods that this budget applies to. If Reasons is not set, this budget applies to all methods.
-    /// Otherwise, this will apply to each reason defined.
-    /// allowed reasons are Underutilized, Empty, and Drifted.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub reasons: Option<Vec<String>>,
     /// Schedule specifies when a budget begins being active, following
     /// the upstream cronjob syntax. If omitted, the budget is always active.
     /// Timezones are not supported.

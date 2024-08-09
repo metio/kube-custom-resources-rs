@@ -77,7 +77,7 @@ pub struct DNSZoneAwsCredentialsAssumeRole {
 /// CredentialsSecretRef contains a reference to a secret that contains AWS credentials for CRUD operations
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSZoneAwsCredentialsSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -111,7 +111,7 @@ pub enum DNSZoneAzureCloudName {
 /// CredentialsSecretRef references a secret that will be used to authenticate with Azure CloudDNS. It will need permission to create and manage CloudDNS Hosted Zones. Secret should have a key named 'osServicePrincipal.json'. The credentials must specify the project to use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSZoneAzureCredentialsSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -127,7 +127,7 @@ pub struct DNSZoneGcp {
 /// CredentialsSecretRef references a secret that will be used to authenticate with GCP CloudDNS. It will need permission to create and manage CloudDNS Hosted Zones. Secret should have a key named 'osServiceAccount.json'. The credentials must specify the project to use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSZoneGcpCredentialsSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

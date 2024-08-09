@@ -84,6 +84,8 @@ pub struct NATGatewayAllocationRef {
 pub struct NATGatewayAllocationRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -108,6 +110,8 @@ pub struct NATGatewaySubnetRef {
 pub struct NATGatewaySubnetRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Describes a tag.

@@ -176,6 +176,8 @@ pub struct BrokerSecurityGroupRefs {
 pub struct BrokerSecurityGroupRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -200,6 +202,8 @@ pub struct BrokerSubnetRefs {
 pub struct BrokerSubnetRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// A user associated with the broker. For RabbitMQ brokers, one and only one

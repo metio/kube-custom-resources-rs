@@ -773,6 +773,8 @@ pub struct RecordSetHostedZoneRef {
 pub struct RecordSetHostedZoneRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Information specific to the resource record.

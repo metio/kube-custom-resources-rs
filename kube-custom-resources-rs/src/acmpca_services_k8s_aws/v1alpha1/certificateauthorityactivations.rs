@@ -84,6 +84,8 @@ pub struct CertificateAuthorityActivationCertificateAuthorityRef {
 pub struct CertificateAuthorityActivationCertificateAuthorityRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// SecretKeyReference combines a k8s corev1.SecretReference with a

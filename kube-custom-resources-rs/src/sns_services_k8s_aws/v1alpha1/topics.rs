@@ -112,6 +112,8 @@ pub struct TopicKmsMasterKeyRef {
 pub struct TopicKmsMasterKeyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -136,6 +138,8 @@ pub struct TopicPolicyRef {
 pub struct TopicPolicyRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The list of tags to be added to the specified topic.

@@ -1262,9 +1262,41 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2 {
     /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2ProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
+    pub proxy_url: Option<String>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
+    /// TLS configuration to use when connecting to the OAuth2 server.
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfig>,
     /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
@@ -1338,6 +1370,203 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2ClientSecr
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2ProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration to use when connecting to the OAuth2 server.
+/// It requires Prometheus >= v2.43.0.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfig {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCa>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCert>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigMinVersion>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration to use when connecting to the OAuth2 server.
+/// It requires Prometheus >= v2.43.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use when connecting to the OAuth2 server.
+/// It requires Prometheus >= v2.43.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2TlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// TLS configuration for the client.
@@ -7281,6 +7510,9 @@ pub struct AlertmanagerStatus {
     /// Total number of non-terminated pods targeted by this Alertmanager
     /// object (their labels match the selector).
     pub replicas: i32,
+    /// The selector used to match the pods targeted by this Alertmanager object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<String>,
     /// Total number of unavailable pods targeted by this Alertmanager object.
     #[serde(rename = "unavailableReplicas")]
     pub unavailable_replicas: i32,
