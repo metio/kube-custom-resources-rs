@@ -235,6 +235,9 @@ pub struct ClusterFluentBitConfigService {
     /// enable Health check feature at http://127.0.0.1:2020/api/v1/health Note: Enabling this will not automatically configure kubernetes to use fluentbit's healthcheck endpoint
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<bool>,
+    /// If true enable reloading via HTTP
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hotReload")]
+    pub hot_reload: Option<bool>,
     /// Address to listen
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpListen")]
     pub http_listen: Option<String>,

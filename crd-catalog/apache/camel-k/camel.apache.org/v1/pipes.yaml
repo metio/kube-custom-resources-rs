@@ -4253,7 +4253,7 @@ spec:
                               description: "Propagates the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables (default `true`)"
                               type: "boolean"
                             vars:
-                              description: "A list of environment variables to be added to the integration container.\nThe syntax is KEY=VALUE, e.g., `MY_VAR=\"my value\"`.\nThese take precedence over the previously defined environment variables."
+                              description: "A list of environment variables to be added to the integration container.\nThe syntax is either VAR=VALUE or VAR=[configmap|secret]:name/key, where name represents the resource name,\nand key represents the resource key to be mapped as and environment variable.\nThese take precedence over any previously defined environment variables."
                               items:
                                 type: "string"
                               type: "array"
@@ -4741,7 +4741,7 @@ spec:
                                 type: "string"
                               type: "array"
                             scanKameletsImplicitLabelSecrets:
-                              description: "Deprecated: include your properties in an explicit property file backed by a secret.\nLet the operator to scan for secret labeled with `camel.apache.org/kamelet` and `camel.apache.org/kamelet.configuration`.\nThese secrets are mounted to the application and treated as plain properties file with their key/value list\n(ie .spec.data[\"camel.my-property\"] = my-value) (default `true`)."
+                              description: "Deprecated: no longer available since version 2.5."
                               type: "boolean"
                             volumes:
                               description: "A list of Persistent Volume Claims to be mounted. Syntax: [pvcname:/container/path]"

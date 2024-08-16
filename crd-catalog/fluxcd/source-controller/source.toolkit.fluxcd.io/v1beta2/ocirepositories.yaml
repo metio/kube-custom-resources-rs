@@ -85,6 +85,15 @@ spec:
                     - "azure"
                     - "gcp"
                   type: "string"
+                proxySecretRef:
+                  description: "ProxySecretRef specifies the Secret containing the proxy configuration\nto use while communicating with the container registry."
+                  properties:
+                    name:
+                      description: "Name of the referent."
+                      type: "string"
+                  required:
+                    - "name"
+                  type: "object"
                 ref:
                   description: "The OCI reference to pull and monitor for changes,\ndefaults to the latest tag."
                   properties:

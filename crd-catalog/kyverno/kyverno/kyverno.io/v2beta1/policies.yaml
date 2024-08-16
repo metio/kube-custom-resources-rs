@@ -1927,6 +1927,9 @@ spec:
                                               issuer:
                                                 description: "Issuer is the certificate issuer used for keyless signing."
                                                 type: "string"
+                                              issuerRegExp:
+                                                description: "IssuerRegExp is the regular expression to match certificate issuer used for keyless signing."
+                                                type: "string"
                                               rekor:
                                                 description: "Rekor provides configuration for the Rekor transparency log service. If an empty object\nis provided the public instance of Rekor (https://rekor.sigstore.dev) is used."
                                                 properties:
@@ -1945,6 +1948,9 @@ spec:
                                                 type: "string"
                                               subject:
                                                 description: "Subject is the verified identity used for keyless signing, for example the email address."
+                                                type: "string"
+                                              subjectRegExp:
+                                                description: "SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address."
                                                 type: "string"
                                             type: "object"
                                           keys:
@@ -2266,6 +2272,9 @@ spec:
                                                   issuer:
                                                     description: "Issuer is the certificate issuer used for keyless signing."
                                                     type: "string"
+                                                  issuerRegExp:
+                                                    description: "IssuerRegExp is the regular expression to match certificate issuer used for keyless signing."
+                                                    type: "string"
                                                   rekor:
                                                     description: "Rekor provides configuration for the Rekor transparency log service. If an empty object\nis provided the public instance of Rekor (https://rekor.sigstore.dev) is used."
                                                     properties:
@@ -2284,6 +2293,9 @@ spec:
                                                     type: "string"
                                                   subject:
                                                     description: "Subject is the verified identity used for keyless signing, for example the email address."
+                                                    type: "string"
+                                                  subjectRegExp:
+                                                    description: "SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address."
                                                     type: "string"
                                                 type: "object"
                                               keys:
@@ -2513,6 +2525,9 @@ spec:
                                             issuer:
                                               description: "Issuer is the certificate issuer used for keyless signing."
                                               type: "string"
+                                            issuerRegExp:
+                                              description: "IssuerRegExp is the regular expression to match certificate issuer used for keyless signing."
+                                              type: "string"
                                             rekor:
                                               description: "Rekor provides configuration for the Rekor transparency log service. If an empty object\nis provided the public instance of Rekor (https://rekor.sigstore.dev) is used."
                                               properties:
@@ -2531,6 +2546,9 @@ spec:
                                               type: "string"
                                             subject:
                                               description: "Subject is the verified identity used for keyless signing, for example the email address."
+                                              type: "string"
+                                            subjectRegExp:
+                                              description: "SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address."
                                               type: "string"
                                           type: "object"
                                         keys:
@@ -4740,6 +4758,9 @@ spec:
                                                   issuer:
                                                     description: "Issuer is the certificate issuer used for keyless signing."
                                                     type: "string"
+                                                  issuerRegExp:
+                                                    description: "IssuerRegExp is the regular expression to match certificate issuer used for keyless signing."
+                                                    type: "string"
                                                   rekor:
                                                     description: "Rekor provides configuration for the Rekor transparency log service. If an empty object\nis provided the public instance of Rekor (https://rekor.sigstore.dev) is used."
                                                     properties:
@@ -4758,6 +4779,9 @@ spec:
                                                     type: "string"
                                                   subject:
                                                     description: "Subject is the verified identity used for keyless signing, for example the email address."
+                                                    type: "string"
+                                                  subjectRegExp:
+                                                    description: "SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address."
                                                     type: "string"
                                                 type: "object"
                                               keys:
@@ -5089,6 +5113,9 @@ spec:
                                                       issuer:
                                                         description: "Issuer is the certificate issuer used for keyless signing."
                                                         type: "string"
+                                                      issuerRegExp:
+                                                        description: "IssuerRegExp is the regular expression to match certificate issuer used for keyless signing."
+                                                        type: "string"
                                                       rekor:
                                                         description: "Rekor provides configuration for the Rekor transparency log service. If an empty object\nis provided the public instance of Rekor (https://rekor.sigstore.dev) is used."
                                                         properties:
@@ -5107,6 +5134,9 @@ spec:
                                                         type: "string"
                                                       subject:
                                                         description: "Subject is the verified identity used for keyless signing, for example the email address."
+                                                        type: "string"
+                                                      subjectRegExp:
+                                                        description: "SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address."
                                                         type: "string"
                                                     type: "object"
                                                   keys:
@@ -5336,6 +5366,9 @@ spec:
                                                 issuer:
                                                   description: "Issuer is the certificate issuer used for keyless signing."
                                                   type: "string"
+                                                issuerRegExp:
+                                                  description: "IssuerRegExp is the regular expression to match certificate issuer used for keyless signing."
+                                                  type: "string"
                                                 rekor:
                                                   description: "Rekor provides configuration for the Rekor transparency log service. If an empty object\nis provided the public instance of Rekor (https://rekor.sigstore.dev) is used."
                                                   properties:
@@ -5354,6 +5387,9 @@ spec:
                                                   type: "string"
                                                 subject:
                                                   description: "Subject is the verified identity used for keyless signing, for example the email address."
+                                                  type: "string"
+                                                subjectRegExp:
+                                                  description: "SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address."
                                                   type: "string"
                                               type: "object"
                                             keys:

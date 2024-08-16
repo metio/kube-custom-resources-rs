@@ -100,7 +100,7 @@ spec:
                 conditions:
                   - lastTransitionTime: 1970-01-01T00:00:00Z
                     message: "Waiting for controller"
-                    reason: "Waiting"
+                    reason: "Pending"
                     status: "Unknown"
                     type: "Accepted"
               description: "Status defines the current state of GatewayClass.\n\n\nImplementations MUST populate status on all GatewayClass resources which\nspecify their controller name."

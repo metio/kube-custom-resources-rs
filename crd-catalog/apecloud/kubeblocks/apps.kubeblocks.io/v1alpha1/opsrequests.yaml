@@ -2581,130 +2581,6 @@ spec:
                   required:
                     - "backupName"
                   type: "object"
-                scriptSpec:
-                  description: "Specifies the image and scripts for executing engine-specific operations such as creating databases or users.\nIt supports limited engines including MySQL, PostgreSQL, Redis, MongoDB.\n\n\nScriptSpec has been replaced by the more versatile OpsDefinition.\nIt is recommended to use OpsDefinition instead.\nScriptSpec is deprecated and will be removed in a future version."
-                  properties:
-                    componentName:
-                      description: "Specifies the name of the Component."
-                      type: "string"
-                    image:
-                      description: "Specifies the image to be used to execute scripts.\n\n\nBy default, the image \"apecloud/kubeblocks-datascript:latest\" is used."
-                      type: "string"
-                    script:
-                      description: "Defines the content of scripts to be executed.\n\n\nAll scripts specified in this field will be executed in the order they are provided.\n\n\nNote: this field cannot be modified once set."
-                      items:
-                        type: "string"
-                      type: "array"
-                      x-kubernetes-validations:
-                        - message: "forbidden to update spec.scriptSpec.script"
-                          rule: "self == oldSelf"
-                    scriptFrom:
-                      description: "Specifies the sources of the scripts to be executed.\nEach script can be imported either from a ConfigMap or a Secret.\n\n\nAll scripts obtained from the sources specified in this field will be executed after\nany scripts provided in the `script` field.\n\n\nExecution order:\n1. Scripts provided in the `script` field, in the order of the scripts listed.\n2. Scripts imported from ConfigMaps, in the order of the sources listed.\n3. Scripts imported from Secrets, in the order of the sources listed.\n\n\nNote: this field cannot be modified once set."
-                      properties:
-                        configMapRef:
-                          description: "A list of ConfigMapKeySelector objects, each specifies a ConfigMap and a key containing the script.\n\n\nNote: This field cannot be modified once set."
-                          items:
-                            description: "Selects a key from a ConfigMap."
-                            properties:
-                              key:
-                                description: "The key to select."
-                                type: "string"
-                              name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                                type: "string"
-                              optional:
-                                description: "Specify whether the ConfigMap or its key must be defined"
-                                type: "boolean"
-                            required:
-                              - "key"
-                            type: "object"
-                            x-kubernetes-map-type: "atomic"
-                          type: "array"
-                          x-kubernetes-validations:
-                            - message: "forbidden to update spec.scriptSpec.scriptFrom.configMapRef"
-                              rule: "self == oldSelf"
-                        secretRef:
-                          description: "A list of SecretKeySelector objects, each specifies a Secret and a key containing the script.\n\n\nNote: This field cannot be modified once set."
-                          items:
-                            description: "SecretKeySelector selects a key of a Secret."
-                            properties:
-                              key:
-                                description: "The key of the secret to select from.  Must be a valid secret key."
-                                type: "string"
-                              name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
-                                type: "string"
-                              optional:
-                                description: "Specify whether the Secret or its key must be defined"
-                                type: "boolean"
-                            required:
-                              - "key"
-                            type: "object"
-                            x-kubernetes-map-type: "atomic"
-                          type: "array"
-                          x-kubernetes-validations:
-                            - message: "forbidden to update spec.scriptSpec.scriptFrom.secretRef"
-                              rule: "self == oldSelf"
-                      type: "object"
-                      x-kubernetes-validations:
-                        - message: "forbidden to update spec.scriptSpec.scriptFrom"
-                          rule: "self == oldSelf"
-                    secret:
-                      description: "Defines the secret to be used to execute the script. If not specified, the default cluster root credential secret is used."
-                      properties:
-                        name:
-                          description: "Specifies the name of the secret."
-                          maxLength: 63
-                          pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                          type: "string"
-                        passwordKey:
-                          default: "password"
-                          description: "Used to specify the password part of the secret."
-                          type: "string"
-                        usernameKey:
-                          default: "username"
-                          description: "Used to specify the username part of the secret."
-                          type: "string"
-                      required:
-                        - "name"
-                      type: "object"
-                    selector:
-                      description: "Specifies the labels used to select the Pods on which the script should be executed.\n\n\nBy default, the script is executed on the Pod associated with the service named \"{clusterName}-{componentName}\",\nwhich typically routes to the Pod with the primary/leader role.\n\n\nHowever, some Components, such as Redis, do not synchronize account information between primary and secondary Pods.\nIn these cases, the script must be executed on all replica Pods matching the selector.\n\n\nNote: this field cannot be modified once set."
-                      properties:
-                        matchExpressions:
-                          description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                          items:
-                            description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                            properties:
-                              key:
-                                description: "key is the label key that the selector applies to."
-                                type: "string"
-                              operator:
-                                description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                type: "string"
-                              values:
-                                description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                items:
-                                  type: "string"
-                                type: "array"
-                            required:
-                              - "key"
-                              - "operator"
-                            type: "object"
-                          type: "array"
-                        matchLabels:
-                          additionalProperties:
-                            type: "string"
-                          description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                          type: "object"
-                      type: "object"
-                      x-kubernetes-map-type: "atomic"
-                      x-kubernetes-validations:
-                        - message: "forbidden to update spec.scriptSpec.script.selector"
-                          rule: "self == oldSelf"
-                  required:
-                    - "componentName"
-                  type: "object"
                 switchover:
                   description: "Lists Switchover objects, each specifying a Component to perform the switchover operation."
                   items:
@@ -2739,7 +2615,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 type:
-                  description: "Specifies the type of this operation. Supported types include \"Start\", \"Stop\", \"Restart\", \"Switchover\",\n\"VerticalScaling\", \"HorizontalScaling\", \"VolumeExpansion\", \"Reconfiguring\", \"Upgrade\", \"Backup\", \"Restore\",\n\"Expose\", \"DataScript\", \"RebuildInstance\", \"Custom\".\n\n\nNote: This field is immutable once set."
+                  description: "Specifies the type of this operation. Supported types include \"Start\", \"Stop\", \"Restart\", \"Switchover\",\n\"VerticalScaling\", \"HorizontalScaling\", \"VolumeExpansion\", \"Reconfiguring\", \"Upgrade\", \"Backup\", \"Restore\",\n\"Expose\", \"RebuildInstance\", \"Custom\".\n\n\nNote: This field is immutable once set."
                   enum:
                     - "Upgrade"
                     - "VerticalScaling"
@@ -2751,7 +2627,6 @@ spec:
                     - "Stop"
                     - "Expose"
                     - "Switchover"
-                    - "DataScript"
                     - "Backup"
                     - "Restore"
                     - "RebuildInstance"
@@ -3102,7 +2977,7 @@ spec:
                   description: "Records the status information of Components changed due to the OpsRequest."
                   type: "object"
                 conditions:
-                  description: "Describes the detailed status of the OpsRequest.\nPossible condition types include \"Cancelled\", \"WaitForProgressing\", \"Validated\", \"Succeed\", \"Failed\", \"Restarting\",\n\"VerticalScaling\", \"HorizontalScaling\", \"VolumeExpanding\", \"Reconfigure\", \"Switchover\", \"Stopping\", \"Starting\",\n\"VersionUpgrading\", \"Exposing\", \"ExecuteDataScript\", \"Backup\", \"InstancesRebuilding\", \"CustomOperation\"."
+                  description: "Describes the detailed status of the OpsRequest.\nPossible condition types include \"Cancelled\", \"WaitForProgressing\", \"Validated\", \"Succeed\", \"Failed\", \"Restarting\",\n\"VerticalScaling\", \"HorizontalScaling\", \"VolumeExpanding\", \"Reconfigure\", \"Switchover\", \"Stopping\", \"Starting\",\n\"VersionUpgrading\", \"Exposing\", \"Backup\", \"InstancesRebuilding\", \"CustomOperation\"."
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
                     properties:

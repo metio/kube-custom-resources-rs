@@ -49,6 +49,9 @@ pub struct AerospikeClusterSpec {
     /// Certificates to connect to Aerospike.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorClientCert")]
     pub operator_client_cert: Option<AerospikeClusterOperatorClientCert>,
+    /// Paused flag is used to pause the reconciliation for the AerospikeCluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub paused: Option<bool>,
     /// Specify additional configuration for the Aerospike pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSpec")]
     pub pod_spec: Option<AerospikeClusterPodSpec>,

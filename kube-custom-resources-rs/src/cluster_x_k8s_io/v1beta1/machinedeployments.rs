@@ -41,7 +41,6 @@ pub struct MachineDeploymentSpec {
     /// Number of desired machines.
     /// This is a pointer to distinguish between explicit zero and not specified.
     /// 
-    /// 
     /// Defaults to:
     /// * if the Kubernetes autoscaler min size and max size annotations are set:
     ///   - if it's a new MachineDeployment, use min size
@@ -61,7 +60,6 @@ pub struct MachineDeploymentSpec {
     /// The number of old MachineSets to retain to allow rollback.
     /// This is a pointer to distinguish between explicit zero and not specified.
     /// Defaults to 1.
-    /// 
     /// 
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10479 for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionHistoryLimit")]
@@ -142,19 +140,15 @@ pub struct MachineDeploymentStrategy {
 pub struct MachineDeploymentStrategyRemediation {
     /// MaxInFlight determines how many in flight remediations should happen at the same time.
     /// 
-    /// 
     /// Remediation only happens on the MachineSet with the most current revision, while
     /// older MachineSets (usually present during rollout operations) aren't allowed to remediate.
-    /// 
     /// 
     /// Note: In general (independent of remediations), unhealthy machines are always
     /// prioritized during scale down operations over healthy ones.
     /// 
-    /// 
     /// MaxInFlight can be set to a fixed number or a percentage.
     /// Example: when this is set to 20%, the MachineSet controller deletes at most 20% of
     /// the desired replicas.
-    /// 
     /// 
     /// If not set, remediation is limited to all machines (bounded by replicas)
     /// under the active MachineSet's management.
@@ -332,7 +326,6 @@ pub struct MachineDeploymentTemplateSpecBootstrapConfigRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -371,7 +364,6 @@ pub struct MachineDeploymentTemplateSpecInfrastructureRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.

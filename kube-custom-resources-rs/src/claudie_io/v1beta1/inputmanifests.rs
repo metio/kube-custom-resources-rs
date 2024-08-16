@@ -309,13 +309,16 @@ pub struct InputManifestProviders {
     /// Name is the name of the provider specification. It has to be unique across all providers.
     pub name: String,
     /// ProviderType type of a provider.
-    /// A list of available providers can be found at https://docs.claudie.io/v0.3.2/input-manifest/providers/aws/
+    /// A list of available providers can be found at https://docs.claudie.io/v0.8.1/input-manifest/providers/aws/
     #[serde(rename = "providerType")]
     pub provider_type: InputManifestProvidersProviderType,
     /// SecretReference represents a Secret Reference. It has enough information to retrieve secret
     /// in any namespace
     #[serde(rename = "secretRef")]
     pub secret_ref: InputManifestProvidersSecretRef,
+    /// External templates for building the cluster infrastructure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub templates: Option<InputManifestProvidersTemplates>,
 }
 
 /// Providers list of defined cloud provider configuration
@@ -350,6 +353,15 @@ pub struct InputManifestProvidersSecretRef {
     /// namespace defines the space within which the secret name must be unique.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// External templates for building the cluster infrastructure.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InputManifestProvidersTemplates {
+    pub path: String,
+    pub repository: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
 }
 
 /// Most recently observed status of the InputManifest

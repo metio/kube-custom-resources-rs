@@ -2254,6 +2254,9 @@ spec:
                         x-kubernetes-int-or-string: true
                       podUpdatePolicy:
                         description: "PodUpdatePolicy indicates how pods should be updated\n\n\n- `StrictInPlace` indicates that only allows in-place upgrades.\nAny attempt to modify other fields will be rejected.\n- `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.\nIf that fails, it will fall back to the ReCreate, where pod will be recreated.\nDefault value is \"PreferInPlace\""
+                        enum:
+                          - "StrictInPlace"
+                          - "PreferInPlace"
                         type: "string"
                       replicas:
                         default: 1
@@ -7282,6 +7285,9 @@ spec:
                             x-kubernetes-int-or-string: true
                           podUpdatePolicy:
                             description: "PodUpdatePolicy indicates how pods should be updated\n\n\n- `StrictInPlace` indicates that only allows in-place upgrades.\nAny attempt to modify other fields will be rejected.\n- `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.\nIf that fails, it will fall back to the ReCreate, where pod will be recreated.\nDefault value is \"PreferInPlace\""
+                            enum:
+                              - "StrictInPlace"
+                              - "PreferInPlace"
                             type: "string"
                           replicas:
                             default: 1

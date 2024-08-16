@@ -181,6 +181,11 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                domainOwners:
+                  description: "DomainOwners is a list of all the owners working against the root domain of this record"
+                  items:
+                    type: "string"
+                  type: "array"
                 endpoints:
                   description: "endpoints are the last endpoints that were successfully published by the provider\n\n\nProvides a simple mechanism to store the current provider records in order to\ndelete any that are no longer present in DNSRecordSpec.Endpoints\n\n\nNote: This will not be required if/when we switch to using external-dns since when\nrunning with a \"sync\" policy it will clean up unused records automatically."
                   items:

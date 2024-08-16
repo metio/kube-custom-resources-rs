@@ -374,7 +374,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -1036,7 +1036,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -1561,7 +1561,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -2083,7 +2083,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -2612,7 +2612,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -3210,7 +3210,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -3691,7 +3691,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -4230,7 +4230,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -4727,7 +4727,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -5190,7 +5190,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -5646,7 +5646,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:
@@ -6143,7 +6143,7 @@ spec:
                                       description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\nIf unset, Prometheus uses its default value.\n\n\nIt requires Prometheus >= v2.43.0."
                                       type: "boolean"
                                     proxyUrl:
-                                      description: "`proxyURL` defines the HTTP proxy server to use.\n\n\nIt requires Prometheus >= v2.43.0."
+                                      description: "`proxyURL` defines the HTTP proxy server to use."
                                       pattern: "^http(s)?://.+$"
                                       type: "string"
                                     scopes:

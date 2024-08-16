@@ -43,14 +43,12 @@ pub struct ClusterClassControlPlane {
     /// MachineTemplate defines the metadata and infrastructure information
     /// for control plane machines.
     /// 
-    /// 
     /// This field is supported if and only if the control plane provider template
     /// referenced above is Machine based and supports setting replicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineInfrastructure")]
     pub machine_infrastructure: Option<ClusterClassControlPlaneMachineInfrastructure>,
     /// Metadata is the metadata applied to the machines of the ControlPlane.
     /// At runtime this metadata is merged with the corresponding metadata from the topology.
-    /// 
     /// 
     /// This field is supported if and only if the control plane provider template
     /// referenced is Machine based.
@@ -64,7 +62,6 @@ pub struct ClusterClassControlPlane {
 
 /// MachineTemplate defines the metadata and infrastructure information
 /// for control plane machines.
-/// 
 /// 
 /// This field is supported if and only if the control plane provider template
 /// referenced above is Machine based and supports setting replicas.
@@ -90,7 +87,6 @@ pub struct ClusterClassControlPlaneMachineInfrastructureRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -117,7 +113,6 @@ pub struct ClusterClassControlPlaneMachineInfrastructureRef {
 
 /// Metadata is the metadata applied to the machines of the ControlPlane.
 /// At runtime this metadata is merged with the corresponding metadata from the topology.
-/// 
 /// 
 /// This field is supported if and only if the control plane provider template
 /// referenced is Machine based.
@@ -151,7 +146,6 @@ pub struct ClusterClassControlPlaneRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -203,7 +197,6 @@ pub struct ClusterClassInfrastructureRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -292,7 +285,6 @@ pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrapRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -341,7 +333,6 @@ pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructureRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.

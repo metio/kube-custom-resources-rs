@@ -109,7 +109,6 @@ spec:
                       description: "Version defines the version of the resource."
                       type: "string"
                   required:
-                    - "group"
                     - "resource"
                     - "version"
                   type: "object"

@@ -275,6 +275,16 @@ spec:
                                   required:
                                     - "secretName"
                                   type: "object"
+                                containerPort:
+                                  description: "Specifies the container port in the target pod.\nIf not specified, the first container and its first port will be used."
+                                  properties:
+                                    containerName:
+                                      description: "Specifies the name of container with the port."
+                                      type: "string"
+                                    portName:
+                                      description: "Specifies the port name."
+                                      type: "string"
+                                  type: "object"
                                 fallbackRole:
                                   description: "Specifies the fallback role to select one replica for backup, this only takes effect when the\n`strategy` field below is set to `Any`."
                                   type: "string"
@@ -475,6 +485,16 @@ spec:
                                     required:
                                       - "secretName"
                                     type: "object"
+                                  containerPort:
+                                    description: "Specifies the container port in the target pod.\nIf not specified, the first container and its first port will be used."
+                                    properties:
+                                      containerName:
+                                        description: "Specifies the name of container with the port."
+                                        type: "string"
+                                      portName:
+                                        description: "Specifies the port name."
+                                        type: "string"
+                                    type: "object"
                                   name:
                                     description: "Specifies a mandatory and unique identifier for each target when using the \"targets\" field.\nThe backup data for the current target is stored in a uniquely named subdirectory."
                                     type: "string"
@@ -634,6 +654,16 @@ spec:
                           account:
                             description: "If `backupPolicy.componentDefs` is set, this field is required to specify the system account name.\nThis account must match one listed in `componentDefinition.spec.systemAccounts[*].name`.\nThe corresponding secret created by this account is used to connect to the database."
                             type: "string"
+                          containerPort:
+                            description: "Specifies the container port in the target pod.\nIf not specified, the first container and its first port will be used."
+                            properties:
+                              containerName:
+                                description: "Specifies the name of container with the port."
+                                type: "string"
+                              portName:
+                                description: "Specifies the port name."
+                                type: "string"
+                            type: "object"
                           fallbackRole:
                             description: "Specifies the fallback role to select one replica for backup, this only takes effect when the\n`strategy` field below is set to `Any`."
                             type: "string"

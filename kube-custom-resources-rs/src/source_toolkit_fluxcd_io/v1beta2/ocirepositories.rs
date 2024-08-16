@@ -60,6 +60,10 @@ pub struct OCIRepositorySpec {
     /// When not specified, defaults to 'generic'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider: Option<OCIRepositoryProvider>,
+    /// ProxySecretRef specifies the Secret containing the proxy configuration
+    /// to use while communicating with the container registry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySecretRef")]
+    pub proxy_secret_ref: Option<OCIRepositoryProxySecretRef>,
     /// The OCI reference to pull and monitor for changes,
     /// defaults to the latest tag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ref")]
@@ -152,6 +156,14 @@ pub enum OCIRepositoryProvider {
     Azure,
     #[serde(rename = "gcp")]
     Gcp,
+}
+
+/// ProxySecretRef specifies the Secret containing the proxy configuration
+/// to use while communicating with the container registry.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OCIRepositoryProxySecretRef {
+    /// Name of the referent.
+    pub name: String,
 }
 
 /// The OCI reference to pull and monitor for changes,

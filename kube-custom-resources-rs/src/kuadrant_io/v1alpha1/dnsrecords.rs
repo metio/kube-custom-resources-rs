@@ -115,6 +115,9 @@ pub struct DNSRecordStatus {
     /// reason and message describing the cause of the failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// DomainOwners is a list of all the owners working against the root domain of this record
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainOwners")]
+    pub domain_owners: Option<Vec<String>>,
     /// endpoints are the last endpoints that were successfully published by the provider
     /// 
     /// 

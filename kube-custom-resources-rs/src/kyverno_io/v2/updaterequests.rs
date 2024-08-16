@@ -19,9 +19,11 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct UpdateRequestSpec {
-    /// Context ...
+    /// Context represents admission request context.
+    /// It is used upon admission review only and is shared across rules within the same UR.
     pub context: UpdateRequestContext,
     /// DeleteDownstream represents whether the downstream needs to be deleted.
+    /// Deprecated
     #[serde(rename = "deleteDownstream")]
     pub delete_downstream: bool,
     /// Specifies the name of the policy.
@@ -33,13 +35,19 @@ pub struct UpdateRequestSpec {
     pub resource: UpdateRequestResource,
     /// Rule is the associate rule name of the current UR.
     pub rule: String,
+    /// RuleContext is the associate context to apply rules.
+    /// optional
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleContext")]
+    pub rule_context: Option<Vec<UpdateRequestRuleContext>>,
     /// Synchronize represents the sync behavior of the corresponding rule
     /// Optional. Defaults to "false" if not specified.
+    /// Deprecated, will be removed in 1.14.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub synchronize: Option<bool>,
 }
 
-/// Context ...
+/// Context represents admission request context.
+/// It is used upon admission review only and is shared across rules within the same UR.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestContext {
     /// AdmissionRequestInfoObject stores the admission request and operation details
@@ -259,6 +267,41 @@ pub enum UpdateRequestRequestType {
 /// ResourceSpec is the information to identify the trigger resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestResource {
+    /// APIVersion specifies resource apiVersion.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Kind specifies resource kind.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name specifies the resource name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace specifies resource namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// UID specifies the resource uid.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UpdateRequestRuleContext {
+    /// DeleteDownstream represents whether the downstream needs to be deleted.
+    #[serde(rename = "deleteDownstream")]
+    pub delete_downstream: bool,
+    /// Rule is the associate rule name of the current UR.
+    pub rule: String,
+    /// Synchronize represents the sync behavior of the corresponding rule
+    /// Optional. Defaults to "false" if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub synchronize: Option<bool>,
+    /// ResourceSpec is the information to identify the trigger resource.
+    pub trigger: UpdateRequestRuleContextTrigger,
+}
+
+/// ResourceSpec is the information to identify the trigger resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UpdateRequestRuleContextTrigger {
     /// APIVersion specifies resource apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,

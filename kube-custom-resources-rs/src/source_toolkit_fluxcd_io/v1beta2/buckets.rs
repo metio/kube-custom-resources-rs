@@ -72,9 +72,6 @@ pub struct BucketSpec {
     pub provider: Option<BucketProvider>,
     /// ProxySecretRef specifies the Secret containing the proxy configuration
     /// to use while communicating with the Bucket server.
-    /// 
-    /// 
-    /// Only supported for the generic provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySecretRef")]
     pub proxy_secret_ref: Option<BucketProxySecretRef>,
     /// Region of the Endpoint where the BucketName is located in.
@@ -162,9 +159,6 @@ pub enum BucketProvider {
 
 /// ProxySecretRef specifies the Secret containing the proxy configuration
 /// to use while communicating with the Bucket server.
-/// 
-/// 
-/// Only supported for the generic provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketProxySecretRef {
     /// Name of the referent.

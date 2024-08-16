@@ -121,6 +121,9 @@ pub struct MariaDBSpec {
     /// Replicas indicates the number of desired instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
+    /// disables the validation check for an odd number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasAllowEvenNumber")]
+    pub replicas_allow_even_number: Option<bool>,
     /// Replication configures high availability via replication. This feature is still in alpha, use Galera if you are looking for a more production-ready HA.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replication: Option<MariaDBReplication>,
@@ -3677,10 +3680,10 @@ pub struct MariaDBGalera {
     /// More info: https://galeracluster.com/library/documentation/mysql-wsrep-options.html#wsrep-provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "galeraLibPath")]
     pub galera_lib_path: Option<String>,
-    /// InitContainer is an init container that co-operates with mariadb-operator.
+    /// InitContainer is an init container that runs in the MariaDB Pod and co-operates with mariadb-operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainer")]
     pub init_container: Option<MariaDBGaleraInitContainer>,
-    /// InitJob defines additional properties for the Job used to perform the initialization.
+    /// InitJob defines a Job that co-operates with mariadb-operator by performing initialization tasks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initJob")]
     pub init_job: Option<MariaDBGaleraInitJob>,
     /// Primary is the Galera configuration for the primary node.
@@ -4659,7 +4662,7 @@ pub struct MariaDBGaleraConfigVolumeClaimTemplateSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// InitContainer is an init container that co-operates with mariadb-operator.
+/// InitContainer is an init container that runs in the MariaDB Pod and co-operates with mariadb-operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraInitContainer {
     /// Args to be used in the Container.
@@ -4848,7 +4851,7 @@ pub struct MariaDBGaleraInitContainerEnvFromSecretRef {
     pub optional: Option<bool>,
 }
 
-/// InitContainer is an init container that co-operates with mariadb-operator.
+/// InitContainer is an init container that runs in the MariaDB Pod and co-operates with mariadb-operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MariaDBGaleraInitContainerImagePullPolicy {
     Always,
@@ -5376,7 +5379,7 @@ pub struct MariaDBGaleraInitContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// InitJob defines additional properties for the Job used to perform the initialization.
+/// InitJob defines a Job that co-operates with mariadb-operator by performing initialization tasks.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraInitJob {
     /// Affinity to be used in the Pod.
@@ -6178,7 +6181,7 @@ pub struct MariaDBGaleraRecovery {
     /// IMPORTANT: Ensure you unset this field after completing the bootstrap to allow the operator to choose the appropriate Pod to bootstrap from in an event of cluster recovery.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceClusterBootstrapInPod")]
     pub force_cluster_bootstrap_in_pod: Option<String>,
-    /// Job allows configuration of the Galera recovery Job, which is used to recover the Galera cluster.
+    /// Job defines a Job that co-operates with mariadb-operator by performing the Galera cluster recovery .
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub job: Option<MariaDBGaleraRecoveryJob>,
     /// MinClusterSize is the minimum number of replicas to consider the cluster healthy. It can be either a number of replicas (3) or a percentage (50%).
@@ -6194,7 +6197,7 @@ pub struct MariaDBGaleraRecovery {
     pub pod_sync_timeout: Option<String>,
 }
 
-/// Job allows configuration of the Galera recovery Job, which is used to recover the Galera cluster.
+/// Job defines a Job that co-operates with mariadb-operator by performing the Galera cluster recovery .
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraRecoveryJob {
     /// Metadata defines additional metadata for the Galera recovery Jobs.

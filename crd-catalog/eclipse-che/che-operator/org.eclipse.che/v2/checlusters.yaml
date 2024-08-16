@@ -2018,6 +2018,9 @@ spec:
                     persistUserHome:
                       description: "PersistUserHome defines configuration options for persisting the\nuser home directory in workspaces."
                       properties:
+                        disableInitContainer:
+                          description: "Determines whether the init container that initializes the persistent home directory should be disabled.\nWhen the `/home/user` directory is persisted, the init container is used to initialize the directory before\nthe workspace starts. If set to true, the init container will not be created.\nDisabling the init container allows home persistence to be initialized by the entrypoint present in the workspace's first container component.\nThis field is not used if the `devEnvironments.persistUserHome.enabled` field is set to false.\nThe init container is enabled by default."
+                          type: "boolean"
                         enabled:
                           description: "Determines whether the user home directory in workspaces should persist between\nworkspace shutdown and startup.\nMust be used with the 'per-user' or 'per-workspace' PVC strategy in order to take effect.\nDisabled by default."
                           type: "boolean"

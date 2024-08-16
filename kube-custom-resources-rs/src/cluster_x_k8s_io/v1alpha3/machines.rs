@@ -69,7 +69,6 @@ pub struct MachineBootstrap {
     /// Data contains the bootstrap data, such as cloud-init details scripts.
     /// If nil, the Machine should remain in the Pending state.
     /// 
-    /// 
     /// Deprecated: Switch to DataSecretName.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
@@ -95,7 +94,6 @@ pub struct MachineBootstrapConfigRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -134,7 +132,6 @@ pub struct MachineInfrastructureRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -176,7 +173,6 @@ pub struct MachineStatus {
     /// reconciling the Machine and will contain a more verbose string suitable
     /// for logging and human consumption.
     /// 
-    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
@@ -185,7 +181,6 @@ pub struct MachineStatus {
     /// of terminal errors would be invalid combinations of settings in the
     /// spec, values that are unsupported by the controller, or the
     /// responsible controller itself being critically misconfigured.
-    /// 
     /// 
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the Machine object and/or logged in the
@@ -196,7 +191,6 @@ pub struct MachineStatus {
     /// reconciling the Machine and will contain a succinct value suitable
     /// for machine interpretation.
     /// 
-    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
@@ -205,7 +199,6 @@ pub struct MachineStatus {
     /// of terminal errors would be invalid combinations of settings in the
     /// spec, values that are unsupported by the controller, or the
     /// responsible controller itself being critically misconfigured.
-    /// 
     /// 
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the Machine object and/or logged in the
@@ -259,7 +252,6 @@ pub struct MachineStatusNodeRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.

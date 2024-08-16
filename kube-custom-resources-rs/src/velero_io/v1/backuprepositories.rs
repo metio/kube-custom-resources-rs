@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
@@ -24,6 +25,9 @@ pub struct BackupRepositorySpec {
     /// MaintenanceFrequency is how often maintenance should be run.
     #[serde(rename = "maintenanceFrequency")]
     pub maintenance_frequency: String,
+    /// RepositoryConfig is for repository-specific configuration fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryConfig")]
+    pub repository_config: Option<BTreeMap<String, String>>,
     /// RepositoryType indicates the type of the backend repository
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryType")]
     pub repository_type: Option<BackupRepositoryRepositoryType>,

@@ -103,15 +103,6 @@ pub struct OpsRequestSpec {
     /// Note that this restore operation will roll back cluster services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreSpec")]
     pub restore_spec: Option<OpsRequestRestoreSpec>,
-    /// Specifies the image and scripts for executing engine-specific operations such as creating databases or users.
-    /// It supports limited engines including MySQL, PostgreSQL, Redis, MongoDB.
-    /// 
-    /// 
-    /// ScriptSpec has been replaced by the more versatile OpsDefinition.
-    /// It is recommended to use OpsDefinition instead.
-    /// ScriptSpec is deprecated and will be removed in a future version.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpec")]
-    pub script_spec: Option<OpsRequestScriptSpec>,
     /// Lists Switchover objects, each specifying a Component to perform the switchover operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub switchover: Option<Vec<OpsRequestSwitchover>>,
@@ -130,7 +121,7 @@ pub struct OpsRequestSpec {
     pub ttl_seconds_after_unsuccessful_completion: Option<i32>,
     /// Specifies the type of this operation. Supported types include "Start", "Stop", "Restart", "Switchover",
     /// "VerticalScaling", "HorizontalScaling", "VolumeExpansion", "Reconfiguring", "Upgrade", "Backup", "Restore",
-    /// "Expose", "DataScript", "RebuildInstance", "Custom".
+    /// "Expose", "RebuildInstance", "Custom".
     /// 
     /// 
     /// Note: This field is immutable once set.
@@ -3776,184 +3767,6 @@ pub enum OpsRequestRestoreSpecVolumeRestorePolicy {
     Parallel,
 }
 
-/// Specifies the image and scripts for executing engine-specific operations such as creating databases or users.
-/// It supports limited engines including MySQL, PostgreSQL, Redis, MongoDB.
-/// 
-/// 
-/// ScriptSpec has been replaced by the more versatile OpsDefinition.
-/// It is recommended to use OpsDefinition instead.
-/// ScriptSpec is deprecated and will be removed in a future version.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestScriptSpec {
-    /// Specifies the name of the Component.
-    #[serde(rename = "componentName")]
-    pub component_name: String,
-    /// Specifies the image to be used to execute scripts.
-    /// 
-    /// 
-    /// By default, the image "apecloud/kubeblocks-datascript:latest" is used.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
-    /// Defines the content of scripts to be executed.
-    /// 
-    /// 
-    /// All scripts specified in this field will be executed in the order they are provided.
-    /// 
-    /// 
-    /// Note: this field cannot be modified once set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub script: Option<Vec<String>>,
-    /// Specifies the sources of the scripts to be executed.
-    /// Each script can be imported either from a ConfigMap or a Secret.
-    /// 
-    /// 
-    /// All scripts obtained from the sources specified in this field will be executed after
-    /// any scripts provided in the `script` field.
-    /// 
-    /// 
-    /// Execution order:
-    /// 1. Scripts provided in the `script` field, in the order of the scripts listed.
-    /// 2. Scripts imported from ConfigMaps, in the order of the sources listed.
-    /// 3. Scripts imported from Secrets, in the order of the sources listed.
-    /// 
-    /// 
-    /// Note: this field cannot be modified once set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptFrom")]
-    pub script_from: Option<OpsRequestScriptSpecScriptFrom>,
-    /// Defines the secret to be used to execute the script. If not specified, the default cluster root credential secret is used.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<OpsRequestScriptSpecSecret>,
-    /// Specifies the labels used to select the Pods on which the script should be executed.
-    /// 
-    /// 
-    /// By default, the script is executed on the Pod associated with the service named "{clusterName}-{componentName}",
-    /// which typically routes to the Pod with the primary/leader role.
-    /// 
-    /// 
-    /// However, some Components, such as Redis, do not synchronize account information between primary and secondary Pods.
-    /// In these cases, the script must be executed on all replica Pods matching the selector.
-    /// 
-    /// 
-    /// Note: this field cannot be modified once set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<OpsRequestScriptSpecSelector>,
-}
-
-/// Specifies the sources of the scripts to be executed.
-/// Each script can be imported either from a ConfigMap or a Secret.
-/// 
-/// 
-/// All scripts obtained from the sources specified in this field will be executed after
-/// any scripts provided in the `script` field.
-/// 
-/// 
-/// Execution order:
-/// 1. Scripts provided in the `script` field, in the order of the scripts listed.
-/// 2. Scripts imported from ConfigMaps, in the order of the sources listed.
-/// 3. Scripts imported from Secrets, in the order of the sources listed.
-/// 
-/// 
-/// Note: this field cannot be modified once set.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestScriptSpecScriptFrom {
-    /// A list of ConfigMapKeySelector objects, each specifies a ConfigMap and a key containing the script.
-    /// 
-    /// 
-    /// Note: This field cannot be modified once set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
-    pub config_map_ref: Option<Vec<OpsRequestScriptSpecScriptFromConfigMapRef>>,
-    /// A list of SecretKeySelector objects, each specifies a Secret and a key containing the script.
-    /// 
-    /// 
-    /// Note: This field cannot be modified once set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<Vec<OpsRequestScriptSpecScriptFromSecretRef>>,
-}
-
-/// Selects a key from a ConfigMap.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestScriptSpecScriptFromConfigMapRef {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// SecretKeySelector selects a key of a Secret.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestScriptSpecScriptFromSecretRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Defines the secret to be used to execute the script. If not specified, the default cluster root credential secret is used.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestScriptSpecSecret {
-    /// Specifies the name of the secret.
-    pub name: String,
-    /// Used to specify the password part of the secret.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
-    pub password_key: Option<String>,
-    /// Used to specify the username part of the secret.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
-    pub username_key: Option<String>,
-}
-
-/// Specifies the labels used to select the Pods on which the script should be executed.
-/// 
-/// 
-/// By default, the script is executed on the Pod associated with the service named "{clusterName}-{componentName}",
-/// which typically routes to the Pod with the primary/leader role.
-/// 
-/// 
-/// However, some Components, such as Redis, do not synchronize account information between primary and secondary Pods.
-/// In these cases, the script must be executed on all replica Pods matching the selector.
-/// 
-/// 
-/// Note: this field cannot be modified once set.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestScriptSpecSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<OpsRequestScriptSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestScriptSpecSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestSwitchover {
     /// Specifies the name of the Component.
@@ -3993,7 +3806,6 @@ pub enum OpsRequestType {
     Stop,
     Expose,
     Switchover,
-    DataScript,
     Backup,
     Restore,
     RebuildInstance,
@@ -4176,7 +3988,7 @@ pub struct OpsRequestStatus {
     /// Describes the detailed status of the OpsRequest.
     /// Possible condition types include "Cancelled", "WaitForProgressing", "Validated", "Succeed", "Failed", "Restarting",
     /// "VerticalScaling", "HorizontalScaling", "VolumeExpanding", "Reconfigure", "Switchover", "Stopping", "Starting",
-    /// "VersionUpgrading", "Exposing", "ExecuteDataScript", "Backup", "InstancesRebuilding", "CustomOperation".
+    /// "VersionUpgrading", "Exposing", "Backup", "InstancesRebuilding", "CustomOperation".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// A collection of additional key-value pairs that provide supplementary information for the OpsRequest.

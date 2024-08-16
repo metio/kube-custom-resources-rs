@@ -106,26 +106,21 @@ pub struct ClientSettingsPolicyStatus {
     /// the controller first sees the policy and SHOULD update the entry as
     /// appropriate when the relevant ancestor is modified.
     /// 
-    /// 
     /// Note that choosing the relevant ancestor is left to the Policy designers;
     /// an important part of Policy design is designing the right object level at
     /// which to namespace this status.
-    /// 
     /// 
     /// Note also that implementations MUST ONLY populate ancestor status for
     /// the Ancestor resources they are responsible for. Implementations MUST
     /// use the ControllerName field to uniquely identify the entries in this list
     /// that they are responsible for.
     /// 
-    /// 
     /// Note that to achieve this, the list of PolicyAncestorStatus structs
     /// MUST be treated as a map with a composite key, made up of the AncestorRef
     /// and ControllerName fields combined.
     /// 
-    /// 
     /// A maximum of 16 ancestors will be represented in this list. An empty list
     /// means the Policy is not relevant for any ancestors.
-    /// 
     /// 
     /// If this slice is full, implementations MUST NOT add further entries.
     /// Instead they MUST consider the policy unimplementable and signal that
@@ -139,7 +134,6 @@ pub struct ClientSettingsPolicyStatus {
 /// PolicyAncestorStatus describes the status of a route with respect to an
 /// associated Ancestor.
 /// 
-/// 
 /// Ancestors refer to objects that are either the Target of a policy or above it
 /// in terms of object hierarchy. For example, if a policy targets a Service, the
 /// Policy's Ancestors are, in order, the Service, the HTTPRoute, the Gateway, and
@@ -148,27 +142,22 @@ pub struct ClientSettingsPolicyStatus {
 /// SHOULD use Gateway as the PolicyAncestorStatus object unless the designers
 /// have a _very_ good reason otherwise.
 /// 
-/// 
 /// In the context of policy attachment, the Ancestor is used to distinguish which
 /// resource results in a distinct application of this policy. For example, if a policy
 /// targets a Service, it may have a distinct result per attached Gateway.
-/// 
 /// 
 /// Policies targeting the same resource may have different effects depending on the
 /// ancestors of those resources. For example, different Gateways targeting the same
 /// Service may have different capabilities, especially if they have different underlying
 /// implementations.
 /// 
-/// 
 /// For example, in BackendTLSPolicy, the Policy attaches to a Service that is
 /// used as a backend in a HTTPRoute that is itself attached to a Gateway.
 /// In this case, the relevant object for status is the Gateway, and that is the
 /// ancestor object referred to in this status.
 /// 
-/// 
 /// Note that a parent is also an ancestor, so for objects where the parent is the
 /// relevant object for status, this struct SHOULD still be used.
-/// 
 /// 
 /// This struct is intended to be used in a slice that's effectively a map,
 /// with a composite key made up of the AncestorRef and the ControllerName.
@@ -185,14 +174,11 @@ pub struct ClientSettingsPolicyStatusAncestors {
     /// controller that wrote this status. This corresponds with the
     /// controllerName field on GatewayClass.
     /// 
-    /// 
     /// Example: "example.net/gateway-controller".
-    /// 
     /// 
     /// The format of this field is DOMAIN "/" PATH, where DOMAIN and PATH are
     /// valid Kubernetes names
     /// (https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names).
-    /// 
     /// 
     /// Controllers MUST populate this field when writing status. Controllers should ensure that
     /// entries to status populated with their ControllerName are cleaned up when they are no
@@ -210,31 +196,25 @@ pub struct ClientSettingsPolicyStatusAncestorsAncestorRef {
     /// To set the core API group (such as for a "Service" kind referent),
     /// Group must be explicitly set to "" (empty string).
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     /// Kind is kind of the referent.
     /// 
-    /// 
     /// There are two kinds of parent resources with "Core" support:
-    /// 
     /// 
     /// * Gateway (Gateway conformance profile)
     /// * Service (Mesh conformance profile, ClusterIP Services only)
-    /// 
     /// 
     /// Support for other resources is Implementation-Specific.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     /// Name is the name of the referent.
     /// 
-    /// 
     /// Support: Core
     pub name: String,
     /// Namespace is the namespace of the referent. When unspecified, this refers
     /// to the local namespace of the Route.
-    /// 
     /// 
     /// Note that there are specific rules for ParentRefs which cross namespace
     /// boundaries. Cross-namespace references are only valid if they are explicitly
@@ -242,12 +222,10 @@ pub struct ClientSettingsPolicyStatusAncestorsAncestorRef {
     /// Gateway has the AllowedRoutes field, and ReferenceGrant provides a
     /// generic way to enable any other kind of cross-namespace reference.
     /// 
-    /// 
     /// <gateway:experimental:description>
     /// ParentRefs from a Route to a Service in the same namespace are "producer"
     /// routes, which apply default routing rules to inbound connections from
     /// any namespace to the Service.
-    /// 
     /// 
     /// ParentRefs from a Route to a Service in a different namespace are
     /// "consumer" routes, and these routing rules are only applied to outbound
@@ -256,13 +234,11 @@ pub struct ClientSettingsPolicyStatusAncestorsAncestorRef {
     /// ParentRef of the Route.
     /// </gateway:experimental:description>
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Port is the network port this Route targets. It can be interpreted
     /// differently based on the type of parent resource.
-    /// 
     /// 
     /// When the parent resource is a Gateway, this targets all listeners
     /// listening on the specified port that also support this kind of Route(and
@@ -272,18 +248,15 @@ pub struct ClientSettingsPolicyStatusAncestorsAncestorRef {
     /// and SectionName are specified, the name and port of the selected listener
     /// must match both specified values.
     /// 
-    /// 
     /// <gateway:experimental:description>
     /// When the parent resource is a Service, this targets a specific port in the
     /// Service spec. When both Port (experimental) and SectionName are specified,
     /// the name and port of the selected port must match both specified values.
     /// </gateway:experimental:description>
     /// 
-    /// 
     /// Implementations MAY choose to support other parent resources.
     /// Implementations supporting other types of parent resources MUST clearly
     /// document how/if Port is interpreted.
-    /// 
     /// 
     /// For the purpose of status, an attachment is considered successful as
     /// long as the parent resource accepts it partially. For example, Gateway
@@ -293,13 +266,11 @@ pub struct ClientSettingsPolicyStatusAncestorsAncestorRef {
     /// attached. If no Gateway listeners accept attachment from this Route,
     /// the Route MUST be considered detached from the Gateway.
     /// 
-    /// 
     /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SectionName is the name of a section within the target resource. In the
     /// following resources, SectionName is interpreted as the following:
-    /// 
     /// 
     /// * Gateway: Listener name. When both Port (experimental) and SectionName
     /// are specified, the name and port of the selected listener must match
@@ -308,11 +279,9 @@ pub struct ClientSettingsPolicyStatusAncestorsAncestorRef {
     /// are specified, the name and port of the selected listener must match
     /// both specified values.
     /// 
-    /// 
     /// Implementations MAY choose to support attaching Routes to other resources.
     /// If that is the case, they MUST clearly document how SectionName is
     /// interpreted.
-    /// 
     /// 
     /// When unspecified (empty string), this will reference the entire resource.
     /// For the purpose of status, an attachment is considered successful if at
@@ -322,7 +291,6 @@ pub struct ClientSettingsPolicyStatusAncestorsAncestorRef {
     /// the referencing Route, the Route MUST be considered successfully
     /// attached. If no Gateway listeners accept attachment from this Route, the
     /// Route MUST be considered detached from the Gateway.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]

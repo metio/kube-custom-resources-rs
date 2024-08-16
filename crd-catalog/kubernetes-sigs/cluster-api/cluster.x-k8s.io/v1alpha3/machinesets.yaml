@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "machinesets.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -34,7 +34,7 @@ spec:
       name: "v1alpha3"
       schema:
         openAPIV3Schema:
-          description: "MachineSet is the Schema for the machinesets API.\n\n\nDeprecated: This type will be removed in one of the next releases."
+          description: "MachineSet is the Schema for the machinesets API.\n\nDeprecated: This type will be removed in one of the next releases."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -111,7 +111,7 @@ spec:
                           description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
                           type: "object"
                         generateName:
-                          description: "GenerateName is an optional prefix, used by the server, to generate a unique\nname ONLY IF the Name field has not been provided.\nIf this field is used, the name returned to the client will be different\nthan the name passed. This value will also be combined with a unique suffix.\nThe provided value has the same validation rules as the Name field,\nand may be truncated by the length of the suffix required to make the value\nunique on the server.\n\n\nIf this field is specified and the generated name exists, the server will\nNOT return a 409 - instead, it will either return 201 Created or 500 with Reason\nServerTimeout indicating a unique name could not be found in the time allotted, and the client\nshould retry (optionally after the time indicated in the Retry-After header).\n\n\nApplied only if Name is not specified.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency\n\n\nDeprecated: This field has no function and is going to be removed in a next release."
+                          description: "GenerateName is an optional prefix, used by the server, to generate a unique\nname ONLY IF the Name field has not been provided.\nIf this field is used, the name returned to the client will be different\nthan the name passed. This value will also be combined with a unique suffix.\nThe provided value has the same validation rules as the Name field,\nand may be truncated by the length of the suffix required to make the value\nunique on the server.\n\nIf this field is specified and the generated name exists, the server will\nNOT return a 409 - instead, it will either return 201 Created or 500 with Reason\nServerTimeout indicating a unique name could not be found in the time allotted, and the client\nshould retry (optionally after the time indicated in the Retry-After header).\n\nApplied only if Name is not specified.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency\n\nDeprecated: This field has no function and is going to be removed in a next release."
                           type: "string"
                         labels:
                           additionalProperties:
@@ -119,13 +119,13 @@ spec:
                           description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
                           type: "object"
                         name:
-                          description: "Name must be unique within a namespace. Is required when creating resources, although\nsome resources may allow a client to request the generation of an appropriate name\nautomatically. Name is primarily intended for creation idempotence and configuration\ndefinition.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/identifiers#names\n\n\nDeprecated: This field has no function and is going to be removed in a next release."
+                          description: "Name must be unique within a namespace. Is required when creating resources, although\nsome resources may allow a client to request the generation of an appropriate name\nautomatically. Name is primarily intended for creation idempotence and configuration\ndefinition.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/identifiers#names\n\nDeprecated: This field has no function and is going to be removed in a next release."
                           type: "string"
                         namespace:
-                          description: "Namespace defines the space within each name must be unique. An empty namespace is\nequivalent to the \"default\" namespace, but \"default\" is the canonical representation.\nNot all objects are required to be scoped to a namespace - the value of this field for\nthose objects will be empty.\n\n\nMust be a DNS_LABEL.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/namespaces\n\n\nDeprecated: This field has no function and is going to be removed in a next release."
+                          description: "Namespace defines the space within each name must be unique. An empty namespace is\nequivalent to the \"default\" namespace, but \"default\" is the canonical representation.\nNot all objects are required to be scoped to a namespace - the value of this field for\nthose objects will be empty.\n\nMust be a DNS_LABEL.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/namespaces\n\nDeprecated: This field has no function and is going to be removed in a next release."
                           type: "string"
                         ownerReferences:
-                          description: "List of objects depended by this object. If ALL objects in the list have\nbeen deleted, this object will be garbage collected. If this object is managed by a controller,\nthen an entry in this list will point to this controller, with the controller field set to true.\nThere cannot be more than one managing controller.\n\n\nDeprecated: This field has no function and is going to be removed in a next release."
+                          description: "List of objects depended by this object. If ALL objects in the list have\nbeen deleted, this object will be garbage collected. If this object is managed by a controller,\nthen an entry in this list will point to this controller, with the controller field set to true.\nThere cannot be more than one managing controller.\n\nDeprecated: This field has no function and is going to be removed in a next release."
                           items:
                             description: "OwnerReference contains enough information to let you identify an owning\nobject. An owning object must be in the same namespace as the dependent, or\nbe cluster-scoped, so there is no namespace field."
                             properties:
@@ -169,7 +169,7 @@ spec:
                                   description: "API version of the referent."
                                   type: "string"
                                 fieldPath:
-                                  description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                                  description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                                   type: "string"
                                 kind:
                                   description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
@@ -189,7 +189,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             data:
-                              description: "Data contains the bootstrap data, such as cloud-init details scripts.\nIf nil, the Machine should remain in the Pending state.\n\n\nDeprecated: Switch to DataSecretName."
+                              description: "Data contains the bootstrap data, such as cloud-init details scripts.\nIf nil, the Machine should remain in the Pending state.\n\nDeprecated: Switch to DataSecretName."
                               type: "string"
                             dataSecretName:
                               description: "DataSecretName is the name of the secret that stores the bootstrap data script.\nIf nil, the Machine should remain in the Pending state."
@@ -209,7 +209,7 @@ spec:
                               description: "API version of the referent."
                               type: "string"
                             fieldPath:
-                              description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                              description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                               type: "string"
                             kind:
                               description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
@@ -257,7 +257,7 @@ spec:
                 failureMessage:
                   type: "string"
                 failureReason:
-                  description: "In the event that there is a terminal problem reconciling the\nreplicas, both FailureReason and FailureMessage will be set. FailureReason\nwill be populated with a succinct value suitable for machine\ninterpretation, while FailureMessage will contain a more verbose\nstring suitable for logging and human consumption.\n\n\nThese fields should not be set for transitive errors that a\ncontroller faces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the MachineTemplate's spec or the configuration of\nthe machine controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the machine controller, or the\nresponsible machine controller itself being critically misconfigured.\n\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the MachineSet object and/or logged in the\ncontroller's output."
+                  description: "In the event that there is a terminal problem reconciling the\nreplicas, both FailureReason and FailureMessage will be set. FailureReason\nwill be populated with a succinct value suitable for machine\ninterpretation, while FailureMessage will contain a more verbose\nstring suitable for logging and human consumption.\n\nThese fields should not be set for transitive errors that a\ncontroller faces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the MachineTemplate's spec or the configuration of\nthe machine controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the machine controller, or the\nresponsible machine controller itself being critically misconfigured.\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the MachineSet object and/or logged in the\ncontroller's output."
                   type: "string"
                 fullyLabeledReplicas:
                   description: "The number of replicas that have labels matching the labels of the machine template of the MachineSet."

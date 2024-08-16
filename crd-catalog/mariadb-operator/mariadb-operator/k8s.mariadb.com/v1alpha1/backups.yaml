@@ -2196,6 +2196,8 @@ spec:
                   format: "int32"
                   minimum: 0.0
                   type: "integer"
+                timeZone:
+                  type: "string"
                 tolerations:
                   description: "Tolerations to be used in the Pod."
                   items:
