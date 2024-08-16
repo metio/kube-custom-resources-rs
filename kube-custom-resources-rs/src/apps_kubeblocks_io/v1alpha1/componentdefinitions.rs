@@ -762,16 +762,11 @@ pub struct ComponentDefinitionLifecycleActions {
     /// a consensus algorithm.
     /// 
     /// 
-    /// The container executing this action has access to following environment variables:
+    /// The container executing this action has access to following variables:
     /// 
     /// 
-    /// - KB_SERVICE_PORT: The port used by the database service.
-    /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
-    /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
-    /// - KB_PRIMARY_POD_FQDN: The FQDN of the primary Pod within the replication group.
-    /// - KB_MEMBER_ADDRESSES: A comma-separated list of Pod addresses for all replicas in the group.
-    /// - KB_NEW_MEMBER_POD_NAME: The pod name of the replica being added to the group.
-    /// - KB_NEW_MEMBER_POD_IP: The IP address of the replica being added to the group.
+    /// - KB_JOIN_MEMBER_POD_FQDN: The pod FQDN of the replica being added to the group.
+    /// - KB_JOIN_MEMBER_POD_NAME: The pod name of the replica being added to the group.
     /// 
     /// 
     /// Expected action output:
@@ -787,11 +782,8 @@ pub struct ComponentDefinitionLifecycleActions {
     /// - bash
     /// - -c
     /// - |
-    ///    ADDRESS=$(KB_MEMBER_ADDRESSES%%,*)
-    ///    HOST=$(echo $ADDRESS | cut -d ':' -f 1)
-    ///    PORT=$(echo $ADDRESS | cut -d ':' -f 2)
-    ///    CLIENT="mysql -u $KB_SERVICE_USER -p$KB_SERVICE_PASSWORD -P $PORT -h $HOST -e"
-    /// 	  $CLIENT "ALTER SYSTEM ADD SERVER '$KB_NEW_MEMBER_POD_IP:$KB_SERVICE_PORT' ZONE 'zone1'"
+    ///    CLIENT="mysql -u $SERVICE_USER -p$SERVICE_PASSWORD -P $SERVICE_PORT -h $SERVICE_HOST -e"
+    /// 	  $CLIENT "ALTER SYSTEM ADD SERVER '$KB_POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
     /// ```
     /// 
     /// 
@@ -810,16 +802,11 @@ pub struct ComponentDefinitionLifecycleActions {
     /// Data migration is generally not part of this action and should be handled separately if needed.
     /// 
     /// 
-    /// The container executing this action has access to following environment variables:
+    /// The container executing this action has access to following variables:
     /// 
     /// 
-    /// - KB_SERVICE_PORT: The port used by the database service.
-    /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
-    /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
-    /// - KB_PRIMARY_POD_FQDN: The FQDN of the primary Pod within the replication group.
-    /// - KB_MEMBER_ADDRESSES: A comma-separated list of Pod addresses for all replicas in the group.
+    /// - KB_LEAVE_MEMBER_POD_FQDN: The pod name of the replica being removed from the group.
     /// - KB_LEAVE_MEMBER_POD_NAME: The pod name of the replica being removed from the group.
-    /// - KB_LEAVE_MEMBER_POD_IP: The IP address of the replica being removed from the group.
     /// 
     /// 
     /// Expected action output:
@@ -834,11 +821,8 @@ pub struct ComponentDefinitionLifecycleActions {
     /// - bash
     /// - -c
     /// - |
-    ///    ADDRESS=$(KB_MEMBER_ADDRESSES%%,*)
-    ///    HOST=$(echo $ADDRESS | cut -d ':' -f 1)
-    ///    PORT=$(echo $ADDRESS | cut -d ':' -f 2)
-    ///    CLIENT="mysql -u $KB_SERVICE_USER  -p$KB_SERVICE_PASSWORD -P $PORT -h $HOST -e"
-    /// 	  $CLIENT "ALTER SYSTEM DELETE SERVER '$KB_LEAVE_MEMBER_POD_IP:$KB_SERVICE_PORT' ZONE 'zone1'"
+    ///    CLIENT="mysql -u $SERVICE_USER -p$SERVICE_PASSWORD -P $SERVICE_PORT -h $SERVICE_HOST -e"
+    /// 	  $CLIENT "ALTER SYSTEM DELETE SERVER '$KB_POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
     /// ```
     /// 
     /// 
@@ -947,9 +931,6 @@ pub struct ComponentDefinitionLifecycleActions {
     /// 
     /// 
     /// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
-    /// - KB_SERVICE_PORT: The port used by the database service.
-    /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
-    /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
     /// 
     /// 
     /// Expected action output:
@@ -972,9 +953,6 @@ pub struct ComponentDefinitionLifecycleActions {
     /// 
     /// 
     /// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
-    /// - KB_SERVICE_PORT: The port used by the database service.
-    /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
-    /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
     /// 
     /// 
     /// Expected action output:
@@ -996,7 +974,7 @@ pub struct ComponentDefinitionLifecycleActions {
     /// Defines the procedure which is invoked regularly to assess the role of replicas.
     /// 
     /// 
-    /// This action is periodically triggered by Lorry at the specified interval to determine the role of each replica.
+    /// This action is periodically triggered at the specified interval to determine the role of each replica.
     /// Upon successful execution, the action's output designates the role of the replica,
     /// which should match one of the predefined role names within `componentDefinition.spec.roles`.
     /// The output is then compared with the previous successful execution result.
@@ -1009,13 +987,10 @@ pub struct ComponentDefinitionLifecycleActions {
     /// Without this, services that rely on roleSelectors might improperly direct traffic to wrong replicas.
     /// 
     /// 
-    /// The container executing this action has access to following environment variables:
+    /// The container executing this action has access to following variables:
     /// 
     /// 
     /// - KB_POD_FQDN: The FQDN of the Pod whose role is being assessed.
-    /// - KB_SERVICE_PORT: The port used by the database service.
-    /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
-    /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
     /// 
     /// 
     /// Expected output of this action:
@@ -1036,18 +1011,11 @@ pub struct ComponentDefinitionLifecycleActions {
     /// The container executing this action has access to following environment variables:
     /// 
     /// 
-    /// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).
-    /// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).
     /// - KB_LEADER_POD_IP: The IP address of the current leader's pod prior to the switchover.
     /// - KB_LEADER_POD_NAME: The name of the current leader's pod prior to the switchover.
     /// - KB_LEADER_POD_FQDN: The FQDN of the current leader's pod prior to the switchover.
-    /// 
-    /// 
-    /// The environment variables with the following prefixes are deprecated and will be removed in future releases:
-    /// 
-    /// 
-    /// - KB_REPLICATION_PRIMARY_POD_
-    /// - KB_CONSENSUS_LEADER_POD_
+    /// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).
+    /// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).
     /// 
     /// 
     /// Note: This field is immutable once it has been set.
@@ -1066,86 +1034,12 @@ pub struct ComponentDefinitionLifecycleActions {
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsAccountProvision {
-    /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    /// 
-    /// 
-    /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
-    /// includes a suite of built-in action implementations that are tailored to different database engines.
-    /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    /// 
-    /// 
-    /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
-    /// to execute the specified lifecycle actions.
-    /// 
-    /// 
-    /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
-    /// which represents the name of the built-in handler.
-    /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
-    /// actions.
-    /// This means that if you specify a built-in handler for one action, you should use the same handler
-    /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    /// 
-    /// 
-    /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
-    /// or when the pre-existing built-in handlers do not meet your specific needs,
-    /// you can use the `customHandler` field to define your own action implementation.
-    /// 
-    /// 
-    /// Deprecation Notice:
-    /// 
-    /// 
-    /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
-    ///   for configuring all lifecycle actions.
-    /// - Instead of using a name to indicate the built-in action implementations in Lorry,
-    ///   the recommended approach will be to explicitly invoke the desired action implementation through
-    ///   a gRPC interface exposed by the sidecar agent.
-    /// - Developers will have the flexibility to either use the built-in action implementations provided by Lorry
-    ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
-    /// - This change will allow for greater customization and extensibility of lifecycle actions,
-    ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
-    /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-    /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-    /// tailored actions.
-    /// 
-    /// 
-    /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-    /// to support GRPCAction,
-    /// thereby accommodating unique logic for different database systems within the Action's framework.
-    /// 
-    /// 
-    /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-    /// This change means that Lorry or other sidecar agents will expose the implementation of actions
-    /// through a GRPC interface for external invocation.
-    /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandler>,
-}
-
-/// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-/// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-/// tailored actions.
-/// 
-/// 
-/// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-/// to support GRPCAction,
-/// thereby accommodating unique logic for different database systems within the Action's framework.
-/// 
-/// 
-/// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-/// This change means that Lorry or other sidecar agents will expose the implementation of actions
-/// through a GRPC interface for external invocation.
-/// Then the controller will interact with these actions via GRPCAction calls.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandler {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsAccountProvisionExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -1175,7 +1069,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandler {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsAccountProvisionRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -1192,7 +1086,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandler {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExec {
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -1225,7 +1119,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExec 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsAccountProvisionExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -1261,12 +1155,12 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExec 
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsAccountProvisionExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnv {
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -1282,31 +1176,31 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecE
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsAccountProvisionExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsAccountProvisionExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsAccountProvisionExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsAccountProvisionExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsAccountProvisionExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -1322,7 +1216,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecE
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -1334,7 +1228,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecE
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -1347,7 +1241,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecE
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -1365,7 +1259,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecE
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsAccountProvisionExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -1381,7 +1275,7 @@ pub enum ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExecTar
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
@@ -1413,86 +1307,12 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerRetry
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataDump {
-    /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    /// 
-    /// 
-    /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
-    /// includes a suite of built-in action implementations that are tailored to different database engines.
-    /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    /// 
-    /// 
-    /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
-    /// to execute the specified lifecycle actions.
-    /// 
-    /// 
-    /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
-    /// which represents the name of the built-in handler.
-    /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
-    /// actions.
-    /// This means that if you specify a built-in handler for one action, you should use the same handler
-    /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    /// 
-    /// 
-    /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
-    /// or when the pre-existing built-in handlers do not meet your specific needs,
-    /// you can use the `customHandler` field to define your own action implementation.
-    /// 
-    /// 
-    /// Deprecation Notice:
-    /// 
-    /// 
-    /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
-    ///   for configuring all lifecycle actions.
-    /// - Instead of using a name to indicate the built-in action implementations in Lorry,
-    ///   the recommended approach will be to explicitly invoke the desired action implementation through
-    ///   a gRPC interface exposed by the sidecar agent.
-    /// - Developers will have the flexibility to either use the built-in action implementations provided by Lorry
-    ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
-    /// - This change will allow for greater customization and extensibility of lifecycle actions,
-    ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
-    /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-    /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-    /// tailored actions.
-    /// 
-    /// 
-    /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-    /// to support GRPCAction,
-    /// thereby accommodating unique logic for different database systems within the Action's framework.
-    /// 
-    /// 
-    /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-    /// This change means that Lorry or other sidecar agents will expose the implementation of actions
-    /// through a GRPC interface for external invocation.
-    /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandler>,
-}
-
-/// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-/// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-/// tailored actions.
-/// 
-/// 
-/// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-/// to support GRPCAction,
-/// thereby accommodating unique logic for different database systems within the Action's framework.
-/// 
-/// 
-/// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-/// This change means that Lorry or other sidecar agents will expose the implementation of actions
-/// through a GRPC interface for external invocation.
-/// Then the controller will interact with these actions via GRPCAction calls.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandler {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsDataDumpExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -1522,7 +1342,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandler {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsDataDumpRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -1539,7 +1359,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandler {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExec {
+pub struct ComponentDefinitionLifecycleActionsDataDumpExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -1572,7 +1392,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExec {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsDataDumpExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -1608,12 +1428,12 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExec {
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsDataDumpExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnv {
+pub struct ComponentDefinitionLifecycleActionsDataDumpExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -1629,31 +1449,31 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsDataDumpExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsDataDumpExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsDataDumpExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsDataDumpExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsDataDumpExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsDataDumpExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsDataDumpExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -1669,7 +1489,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueF
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsDataDumpExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -1681,7 +1501,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueF
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsDataDumpExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -1694,7 +1514,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueF
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsDataDumpExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -1712,7 +1532,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecEnvValueF
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsDataDumpExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -1728,7 +1548,7 @@ pub enum ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExecTargetPodSe
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsDataDumpRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
@@ -1759,86 +1579,12 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerRetryPolicy {
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataLoad {
-    /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    /// 
-    /// 
-    /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
-    /// includes a suite of built-in action implementations that are tailored to different database engines.
-    /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    /// 
-    /// 
-    /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
-    /// to execute the specified lifecycle actions.
-    /// 
-    /// 
-    /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
-    /// which represents the name of the built-in handler.
-    /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
-    /// actions.
-    /// This means that if you specify a built-in handler for one action, you should use the same handler
-    /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    /// 
-    /// 
-    /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
-    /// or when the pre-existing built-in handlers do not meet your specific needs,
-    /// you can use the `customHandler` field to define your own action implementation.
-    /// 
-    /// 
-    /// Deprecation Notice:
-    /// 
-    /// 
-    /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
-    ///   for configuring all lifecycle actions.
-    /// - Instead of using a name to indicate the built-in action implementations in Lorry,
-    ///   the recommended approach will be to explicitly invoke the desired action implementation through
-    ///   a gRPC interface exposed by the sidecar agent.
-    /// - Developers will have the flexibility to either use the built-in action implementations provided by Lorry
-    ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
-    /// - This change will allow for greater customization and extensibility of lifecycle actions,
-    ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
-    /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-    /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-    /// tailored actions.
-    /// 
-    /// 
-    /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-    /// to support GRPCAction,
-    /// thereby accommodating unique logic for different database systems within the Action's framework.
-    /// 
-    /// 
-    /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-    /// This change means that Lorry or other sidecar agents will expose the implementation of actions
-    /// through a GRPC interface for external invocation.
-    /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandler>,
-}
-
-/// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-/// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-/// tailored actions.
-/// 
-/// 
-/// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-/// to support GRPCAction,
-/// thereby accommodating unique logic for different database systems within the Action's framework.
-/// 
-/// 
-/// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-/// This change means that Lorry or other sidecar agents will expose the implementation of actions
-/// through a GRPC interface for external invocation.
-/// Then the controller will interact with these actions via GRPCAction calls.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandler {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsDataLoadExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -1868,7 +1614,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandler {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsDataLoadRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -1885,7 +1631,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandler {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExec {
+pub struct ComponentDefinitionLifecycleActionsDataLoadExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -1918,7 +1664,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExec {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsDataLoadExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -1954,12 +1700,12 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExec {
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsDataLoadExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnv {
+pub struct ComponentDefinitionLifecycleActionsDataLoadExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -1975,31 +1721,31 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsDataLoadExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsDataLoadExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsDataLoadExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsDataLoadExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsDataLoadExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsDataLoadExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsDataLoadExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -2015,7 +1761,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueF
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsDataLoadExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -2027,7 +1773,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueF
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsDataLoadExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -2040,7 +1786,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueF
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsDataLoadExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -2058,7 +1804,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecEnvValueF
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsDataLoadExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -2074,7 +1820,7 @@ pub enum ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExecTargetPodSe
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsDataLoadRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
@@ -2096,16 +1842,11 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerRetryPolicy {
 /// a consensus algorithm.
 /// 
 /// 
-/// The container executing this action has access to following environment variables:
+/// The container executing this action has access to following variables:
 /// 
 /// 
-/// - KB_SERVICE_PORT: The port used by the database service.
-/// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
-/// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
-/// - KB_PRIMARY_POD_FQDN: The FQDN of the primary Pod within the replication group.
-/// - KB_MEMBER_ADDRESSES: A comma-separated list of Pod addresses for all replicas in the group.
-/// - KB_NEW_MEMBER_POD_NAME: The pod name of the replica being added to the group.
-/// - KB_NEW_MEMBER_POD_IP: The IP address of the replica being added to the group.
+/// - KB_JOIN_MEMBER_POD_FQDN: The pod FQDN of the replica being added to the group.
+/// - KB_JOIN_MEMBER_POD_NAME: The pod name of the replica being added to the group.
 /// 
 /// 
 /// Expected action output:
@@ -2121,97 +1862,20 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerRetryPolicy {
 /// - bash
 /// - -c
 /// - |
-///    ADDRESS=$(KB_MEMBER_ADDRESSES%%,*)
-///    HOST=$(echo $ADDRESS | cut -d ':' -f 1)
-///    PORT=$(echo $ADDRESS | cut -d ':' -f 2)
-///    CLIENT="mysql -u $KB_SERVICE_USER -p$KB_SERVICE_PASSWORD -P $PORT -h $HOST -e"
-/// 	  $CLIENT "ALTER SYSTEM ADD SERVER '$KB_NEW_MEMBER_POD_IP:$KB_SERVICE_PORT' ZONE 'zone1'"
+///    CLIENT="mysql -u $SERVICE_USER -p$SERVICE_PASSWORD -P $SERVICE_PORT -h $SERVICE_HOST -e"
+/// 	  $CLIENT "ALTER SYSTEM ADD SERVER '$KB_POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
 /// ```
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberJoin {
-    /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    /// 
-    /// 
-    /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
-    /// includes a suite of built-in action implementations that are tailored to different database engines.
-    /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    /// 
-    /// 
-    /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
-    /// to execute the specified lifecycle actions.
-    /// 
-    /// 
-    /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
-    /// which represents the name of the built-in handler.
-    /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
-    /// actions.
-    /// This means that if you specify a built-in handler for one action, you should use the same handler
-    /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    /// 
-    /// 
-    /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
-    /// or when the pre-existing built-in handlers do not meet your specific needs,
-    /// you can use the `customHandler` field to define your own action implementation.
-    /// 
-    /// 
-    /// Deprecation Notice:
-    /// 
-    /// 
-    /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
-    ///   for configuring all lifecycle actions.
-    /// - Instead of using a name to indicate the built-in action implementations in Lorry,
-    ///   the recommended approach will be to explicitly invoke the desired action implementation through
-    ///   a gRPC interface exposed by the sidecar agent.
-    /// - Developers will have the flexibility to either use the built-in action implementations provided by Lorry
-    ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
-    /// - This change will allow for greater customization and extensibility of lifecycle actions,
-    ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
-    /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-    /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-    /// tailored actions.
-    /// 
-    /// 
-    /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-    /// to support GRPCAction,
-    /// thereby accommodating unique logic for different database systems within the Action's framework.
-    /// 
-    /// 
-    /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-    /// This change means that Lorry or other sidecar agents will expose the implementation of actions
-    /// through a GRPC interface for external invocation.
-    /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandler>,
-}
-
-/// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-/// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-/// tailored actions.
-/// 
-/// 
-/// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-/// to support GRPCAction,
-/// thereby accommodating unique logic for different database systems within the Action's framework.
-/// 
-/// 
-/// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-/// This change means that Lorry or other sidecar agents will expose the implementation of actions
-/// through a GRPC interface for external invocation.
-/// Then the controller will interact with these actions via GRPCAction calls.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandler {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsMemberJoinExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -2241,7 +1905,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandler {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsMemberJoinRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -2258,7 +1922,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandler {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExec {
+pub struct ComponentDefinitionLifecycleActionsMemberJoinExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -2291,7 +1955,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExec {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsMemberJoinExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -2327,12 +1991,12 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExec {
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsMemberJoinExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnv {
+pub struct ComponentDefinitionLifecycleActionsMemberJoinExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -2348,31 +2012,31 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsMemberJoinExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsMemberJoinExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsMemberJoinExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -2388,7 +2052,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValu
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsMemberJoinExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -2400,7 +2064,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValu
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsMemberJoinExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -2413,7 +2077,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValu
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsMemberJoinExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -2431,7 +2095,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecEnvValu
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsMemberJoinExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -2447,7 +2111,7 @@ pub enum ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExecTargetPod
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsMemberJoinRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
@@ -2470,16 +2134,11 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerRetryPolicy
 /// Data migration is generally not part of this action and should be handled separately if needed.
 /// 
 /// 
-/// The container executing this action has access to following environment variables:
+/// The container executing this action has access to following variables:
 /// 
 /// 
-/// - KB_SERVICE_PORT: The port used by the database service.
-/// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
-/// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
-/// - KB_PRIMARY_POD_FQDN: The FQDN of the primary Pod within the replication group.
-/// - KB_MEMBER_ADDRESSES: A comma-separated list of Pod addresses for all replicas in the group.
+/// - KB_LEAVE_MEMBER_POD_FQDN: The pod name of the replica being removed from the group.
 /// - KB_LEAVE_MEMBER_POD_NAME: The pod name of the replica being removed from the group.
-/// - KB_LEAVE_MEMBER_POD_IP: The IP address of the replica being removed from the group.
 /// 
 /// 
 /// Expected action output:
@@ -2494,97 +2153,20 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerRetryPolicy
 /// - bash
 /// - -c
 /// - |
-///    ADDRESS=$(KB_MEMBER_ADDRESSES%%,*)
-///    HOST=$(echo $ADDRESS | cut -d ':' -f 1)
-///    PORT=$(echo $ADDRESS | cut -d ':' -f 2)
-///    CLIENT="mysql -u $KB_SERVICE_USER  -p$KB_SERVICE_PASSWORD -P $PORT -h $HOST -e"
-/// 	  $CLIENT "ALTER SYSTEM DELETE SERVER '$KB_LEAVE_MEMBER_POD_IP:$KB_SERVICE_PORT' ZONE 'zone1'"
+///    CLIENT="mysql -u $SERVICE_USER -p$SERVICE_PASSWORD -P $SERVICE_PORT -h $SERVICE_HOST -e"
+/// 	  $CLIENT "ALTER SYSTEM DELETE SERVER '$KB_POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
 /// ```
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberLeave {
-    /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    /// 
-    /// 
-    /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
-    /// includes a suite of built-in action implementations that are tailored to different database engines.
-    /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    /// 
-    /// 
-    /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
-    /// to execute the specified lifecycle actions.
-    /// 
-    /// 
-    /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
-    /// which represents the name of the built-in handler.
-    /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
-    /// actions.
-    /// This means that if you specify a built-in handler for one action, you should use the same handler
-    /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    /// 
-    /// 
-    /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
-    /// or when the pre-existing built-in handlers do not meet your specific needs,
-    /// you can use the `customHandler` field to define your own action implementation.
-    /// 
-    /// 
-    /// Deprecation Notice:
-    /// 
-    /// 
-    /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
-    ///   for configuring all lifecycle actions.
-    /// - Instead of using a name to indicate the built-in action implementations in Lorry,
-    ///   the recommended approach will be to explicitly invoke the desired action implementation through
-    ///   a gRPC interface exposed by the sidecar agent.
-    /// - Developers will have the flexibility to either use the built-in action implementations provided by Lorry
-    ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
-    /// - This change will allow for greater customization and extensibility of lifecycle actions,
-    ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
-    /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-    /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-    /// tailored actions.
-    /// 
-    /// 
-    /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-    /// to support GRPCAction,
-    /// thereby accommodating unique logic for different database systems within the Action's framework.
-    /// 
-    /// 
-    /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-    /// This change means that Lorry or other sidecar agents will expose the implementation of actions
-    /// through a GRPC interface for external invocation.
-    /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandler>,
-}
-
-/// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-/// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-/// tailored actions.
-/// 
-/// 
-/// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-/// to support GRPCAction,
-/// thereby accommodating unique logic for different database systems within the Action's framework.
-/// 
-/// 
-/// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-/// This change means that Lorry or other sidecar agents will expose the implementation of actions
-/// through a GRPC interface for external invocation.
-/// Then the controller will interact with these actions via GRPCAction calls.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandler {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsMemberLeaveExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -2614,7 +2196,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandler {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsMemberLeaveRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -2631,7 +2213,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandler {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExec {
+pub struct ComponentDefinitionLifecycleActionsMemberLeaveExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -2664,7 +2246,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExec {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsMemberLeaveExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -2700,12 +2282,12 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExec {
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsMemberLeaveExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnv {
+pub struct ComponentDefinitionLifecycleActionsMemberLeaveExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -2721,31 +2303,31 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsMemberLeaveExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsMemberLeaveExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsMemberLeaveExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -2761,7 +2343,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvVal
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsMemberLeaveExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -2773,7 +2355,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvVal
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsMemberLeaveExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -2786,7 +2368,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvVal
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsMemberLeaveExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -2804,7 +2386,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecEnvVal
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsMemberLeaveExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -2820,7 +2402,7 @@ pub enum ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExecTargetPo
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsMemberLeaveRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
@@ -2873,86 +2455,12 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerRetryPolic
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPostProvision {
-    /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    /// 
-    /// 
-    /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
-    /// includes a suite of built-in action implementations that are tailored to different database engines.
-    /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    /// 
-    /// 
-    /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
-    /// to execute the specified lifecycle actions.
-    /// 
-    /// 
-    /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
-    /// which represents the name of the built-in handler.
-    /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
-    /// actions.
-    /// This means that if you specify a built-in handler for one action, you should use the same handler
-    /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    /// 
-    /// 
-    /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
-    /// or when the pre-existing built-in handlers do not meet your specific needs,
-    /// you can use the `customHandler` field to define your own action implementation.
-    /// 
-    /// 
-    /// Deprecation Notice:
-    /// 
-    /// 
-    /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
-    ///   for configuring all lifecycle actions.
-    /// - Instead of using a name to indicate the built-in action implementations in Lorry,
-    ///   the recommended approach will be to explicitly invoke the desired action implementation through
-    ///   a gRPC interface exposed by the sidecar agent.
-    /// - Developers will have the flexibility to either use the built-in action implementations provided by Lorry
-    ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
-    /// - This change will allow for greater customization and extensibility of lifecycle actions,
-    ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
-    /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-    /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-    /// tailored actions.
-    /// 
-    /// 
-    /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-    /// to support GRPCAction,
-    /// thereby accommodating unique logic for different database systems within the Action's framework.
-    /// 
-    /// 
-    /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-    /// This change means that Lorry or other sidecar agents will expose the implementation of actions
-    /// through a GRPC interface for external invocation.
-    /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandler>,
-}
-
-/// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-/// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-/// tailored actions.
-/// 
-/// 
-/// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-/// to support GRPCAction,
-/// thereby accommodating unique logic for different database systems within the Action's framework.
-/// 
-/// 
-/// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-/// This change means that Lorry or other sidecar agents will expose the implementation of actions
-/// through a GRPC interface for external invocation.
-/// Then the controller will interact with these actions via GRPCAction calls.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandler {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsPostProvisionExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -2982,7 +2490,7 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandler {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsPostProvisionRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -2999,7 +2507,7 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandler {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExec {
+pub struct ComponentDefinitionLifecycleActionsPostProvisionExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -3032,7 +2540,7 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExec {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsPostProvisionExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -3068,12 +2576,12 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExec {
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsPostProvisionExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnv {
+pub struct ComponentDefinitionLifecycleActionsPostProvisionExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -3089,31 +2597,31 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnv 
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsPostProvisionExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsPostProvisionExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsPostProvisionExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -3129,7 +2637,7 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvV
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsPostProvisionExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -3141,7 +2649,7 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvV
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsPostProvisionExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -3154,7 +2662,7 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvV
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsPostProvisionExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -3172,7 +2680,7 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecEnvV
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsPostProvisionExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -3188,7 +2696,7 @@ pub enum ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExecTarget
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsPostProvisionRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
@@ -3248,86 +2756,12 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerRetryPol
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPreTerminate {
-    /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    /// 
-    /// 
-    /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
-    /// includes a suite of built-in action implementations that are tailored to different database engines.
-    /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    /// 
-    /// 
-    /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
-    /// to execute the specified lifecycle actions.
-    /// 
-    /// 
-    /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
-    /// which represents the name of the built-in handler.
-    /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
-    /// actions.
-    /// This means that if you specify a built-in handler for one action, you should use the same handler
-    /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    /// 
-    /// 
-    /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
-    /// or when the pre-existing built-in handlers do not meet your specific needs,
-    /// you can use the `customHandler` field to define your own action implementation.
-    /// 
-    /// 
-    /// Deprecation Notice:
-    /// 
-    /// 
-    /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
-    ///   for configuring all lifecycle actions.
-    /// - Instead of using a name to indicate the built-in action implementations in Lorry,
-    ///   the recommended approach will be to explicitly invoke the desired action implementation through
-    ///   a gRPC interface exposed by the sidecar agent.
-    /// - Developers will have the flexibility to either use the built-in action implementations provided by Lorry
-    ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
-    /// - This change will allow for greater customization and extensibility of lifecycle actions,
-    ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
-    /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-    /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-    /// tailored actions.
-    /// 
-    /// 
-    /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-    /// to support GRPCAction,
-    /// thereby accommodating unique logic for different database systems within the Action's framework.
-    /// 
-    /// 
-    /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-    /// This change means that Lorry or other sidecar agents will expose the implementation of actions
-    /// through a GRPC interface for external invocation.
-    /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandler>,
-}
-
-/// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-/// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-/// tailored actions.
-/// 
-/// 
-/// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-/// to support GRPCAction,
-/// thereby accommodating unique logic for different database systems within the Action's framework.
-/// 
-/// 
-/// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-/// This change means that Lorry or other sidecar agents will expose the implementation of actions
-/// through a GRPC interface for external invocation.
-/// Then the controller will interact with these actions via GRPCAction calls.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandler {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsPreTerminateExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -3357,7 +2791,7 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandler {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsPreTerminateRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -3374,7 +2808,7 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandler {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExec {
+pub struct ComponentDefinitionLifecycleActionsPreTerminateExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -3407,7 +2841,7 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExec {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsPreTerminateExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -3443,12 +2877,12 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExec {
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsPreTerminateExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnv {
+pub struct ComponentDefinitionLifecycleActionsPreTerminateExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -3464,31 +2898,31 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsPreTerminateExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsPreTerminateExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsPreTerminateExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -3504,7 +2938,7 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvVa
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsPreTerminateExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -3516,7 +2950,7 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvVa
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsPreTerminateExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -3529,7 +2963,7 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvVa
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsPreTerminateExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -3547,7 +2981,7 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecEnvVa
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsPreTerminateExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -3563,7 +2997,7 @@ pub enum ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExecTargetP
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsPreTerminateRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
@@ -3585,9 +3019,6 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerRetryPoli
 /// 
 /// 
 /// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
-/// - KB_SERVICE_PORT: The port used by the database service.
-/// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
-/// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
 /// 
 /// 
 /// Expected action output:
@@ -3597,86 +3028,12 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerRetryPoli
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadonly {
-    /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    /// 
-    /// 
-    /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
-    /// includes a suite of built-in action implementations that are tailored to different database engines.
-    /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    /// 
-    /// 
-    /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
-    /// to execute the specified lifecycle actions.
-    /// 
-    /// 
-    /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
-    /// which represents the name of the built-in handler.
-    /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
-    /// actions.
-    /// This means that if you specify a built-in handler for one action, you should use the same handler
-    /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    /// 
-    /// 
-    /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
-    /// or when the pre-existing built-in handlers do not meet your specific needs,
-    /// you can use the `customHandler` field to define your own action implementation.
-    /// 
-    /// 
-    /// Deprecation Notice:
-    /// 
-    /// 
-    /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
-    ///   for configuring all lifecycle actions.
-    /// - Instead of using a name to indicate the built-in action implementations in Lorry,
-    ///   the recommended approach will be to explicitly invoke the desired action implementation through
-    ///   a gRPC interface exposed by the sidecar agent.
-    /// - Developers will have the flexibility to either use the built-in action implementations provided by Lorry
-    ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
-    /// - This change will allow for greater customization and extensibility of lifecycle actions,
-    ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
-    /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-    /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-    /// tailored actions.
-    /// 
-    /// 
-    /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-    /// to support GRPCAction,
-    /// thereby accommodating unique logic for different database systems within the Action's framework.
-    /// 
-    /// 
-    /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-    /// This change means that Lorry or other sidecar agents will expose the implementation of actions
-    /// through a GRPC interface for external invocation.
-    /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandler>,
-}
-
-/// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-/// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-/// tailored actions.
-/// 
-/// 
-/// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-/// to support GRPCAction,
-/// thereby accommodating unique logic for different database systems within the Action's framework.
-/// 
-/// 
-/// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-/// This change means that Lorry or other sidecar agents will expose the implementation of actions
-/// through a GRPC interface for external invocation.
-/// Then the controller will interact with these actions via GRPCAction calls.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandler {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsReadonlyExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -3706,7 +3063,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandler {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsReadonlyRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -3723,7 +3080,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandler {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExec {
+pub struct ComponentDefinitionLifecycleActionsReadonlyExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -3756,7 +3113,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExec {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsReadonlyExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -3792,12 +3149,12 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExec {
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReadonlyExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnv {
+pub struct ComponentDefinitionLifecycleActionsReadonlyExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -3813,31 +3170,31 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsReadonlyExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsReadonlyExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsReadonlyExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsReadonlyExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsReadonlyExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsReadonlyExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsReadonlyExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -3853,7 +3210,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueF
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsReadonlyExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -3865,7 +3222,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueF
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsReadonlyExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -3878,7 +3235,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueF
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsReadonlyExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -3896,7 +3253,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecEnvValueF
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsReadonlyExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -3912,7 +3269,7 @@ pub enum ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExecTargetPodSe
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsReadonlyRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
@@ -3936,9 +3293,6 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerRetryPolicy {
 /// 
 /// 
 /// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
-/// - KB_SERVICE_PORT: The port used by the database service.
-/// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
-/// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
 /// 
 /// 
 /// Expected action output:
@@ -3948,86 +3302,12 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerRetryPolicy {
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadwrite {
-    /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    /// 
-    /// 
-    /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
-    /// includes a suite of built-in action implementations that are tailored to different database engines.
-    /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    /// 
-    /// 
-    /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
-    /// to execute the specified lifecycle actions.
-    /// 
-    /// 
-    /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
-    /// which represents the name of the built-in handler.
-    /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
-    /// actions.
-    /// This means that if you specify a built-in handler for one action, you should use the same handler
-    /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    /// 
-    /// 
-    /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
-    /// or when the pre-existing built-in handlers do not meet your specific needs,
-    /// you can use the `customHandler` field to define your own action implementation.
-    /// 
-    /// 
-    /// Deprecation Notice:
-    /// 
-    /// 
-    /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
-    ///   for configuring all lifecycle actions.
-    /// - Instead of using a name to indicate the built-in action implementations in Lorry,
-    ///   the recommended approach will be to explicitly invoke the desired action implementation through
-    ///   a gRPC interface exposed by the sidecar agent.
-    /// - Developers will have the flexibility to either use the built-in action implementations provided by Lorry
-    ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
-    /// - This change will allow for greater customization and extensibility of lifecycle actions,
-    ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
-    /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-    /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-    /// tailored actions.
-    /// 
-    /// 
-    /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-    /// to support GRPCAction,
-    /// thereby accommodating unique logic for different database systems within the Action's framework.
-    /// 
-    /// 
-    /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-    /// This change means that Lorry or other sidecar agents will expose the implementation of actions
-    /// through a GRPC interface for external invocation.
-    /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandler>,
-}
-
-/// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-/// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-/// tailored actions.
-/// 
-/// 
-/// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-/// to support GRPCAction,
-/// thereby accommodating unique logic for different database systems within the Action's framework.
-/// 
-/// 
-/// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-/// This change means that Lorry or other sidecar agents will expose the implementation of actions
-/// through a GRPC interface for external invocation.
-/// Then the controller will interact with these actions via GRPCAction calls.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandler {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsReadwriteExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -4057,7 +3337,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandler {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsReadwriteRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -4074,7 +3354,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandler {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExec {
+pub struct ComponentDefinitionLifecycleActionsReadwriteExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -4107,7 +3387,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExec {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsReadwriteExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -4143,12 +3423,12 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExec {
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReadwriteExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnv {
+pub struct ComponentDefinitionLifecycleActionsReadwriteExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -4164,31 +3444,31 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsReadwriteExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsReadwriteExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsReadwriteExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsReadwriteExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsReadwriteExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsReadwriteExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsReadwriteExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -4204,7 +3484,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValue
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsReadwriteExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -4216,7 +3496,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValue
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsReadwriteExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -4229,7 +3509,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValue
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsReadwriteExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -4247,7 +3527,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecEnvValue
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsReadwriteExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -4263,7 +3543,7 @@ pub enum ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExecTargetPodS
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsReadwriteRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
@@ -4283,86 +3563,12 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerRetryPolicy 
 /// This Action is reserved for future versions.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReconfigure {
-    /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    /// 
-    /// 
-    /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
-    /// includes a suite of built-in action implementations that are tailored to different database engines.
-    /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    /// 
-    /// 
-    /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
-    /// to execute the specified lifecycle actions.
-    /// 
-    /// 
-    /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
-    /// which represents the name of the built-in handler.
-    /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
-    /// actions.
-    /// This means that if you specify a built-in handler for one action, you should use the same handler
-    /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    /// 
-    /// 
-    /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
-    /// or when the pre-existing built-in handlers do not meet your specific needs,
-    /// you can use the `customHandler` field to define your own action implementation.
-    /// 
-    /// 
-    /// Deprecation Notice:
-    /// 
-    /// 
-    /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
-    ///   for configuring all lifecycle actions.
-    /// - Instead of using a name to indicate the built-in action implementations in Lorry,
-    ///   the recommended approach will be to explicitly invoke the desired action implementation through
-    ///   a gRPC interface exposed by the sidecar agent.
-    /// - Developers will have the flexibility to either use the built-in action implementations provided by Lorry
-    ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
-    /// - This change will allow for greater customization and extensibility of lifecycle actions,
-    ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
-    /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-    /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-    /// tailored actions.
-    /// 
-    /// 
-    /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-    /// to support GRPCAction,
-    /// thereby accommodating unique logic for different database systems within the Action's framework.
-    /// 
-    /// 
-    /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-    /// This change means that Lorry or other sidecar agents will expose the implementation of actions
-    /// through a GRPC interface for external invocation.
-    /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandler>,
-}
-
-/// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
-/// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
-/// tailored actions.
-/// 
-/// 
-/// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
-/// to support GRPCAction,
-/// thereby accommodating unique logic for different database systems within the Action's framework.
-/// 
-/// 
-/// In future iterations, all built-in handlers are expected to transition to GRPCAction.
-/// This change means that Lorry or other sidecar agents will expose the implementation of actions
-/// through a GRPC interface for external invocation.
-/// Then the controller will interact with these actions via GRPCAction calls.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandler {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsReconfigureExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -4392,7 +3598,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandler {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsReconfigureRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -4409,7 +3615,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandler {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExec {
+pub struct ComponentDefinitionLifecycleActionsReconfigureExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -4442,7 +3648,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExec {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsReconfigureExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -4478,12 +3684,12 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExec {
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReconfigureExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnv {
+pub struct ComponentDefinitionLifecycleActionsReconfigureExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -4499,31 +3705,31 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsReconfigureExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsReconfigureExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsReconfigureExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsReconfigureExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsReconfigureExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsReconfigureExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsReconfigureExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -4539,7 +3745,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvVal
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsReconfigureExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -4551,7 +3757,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvVal
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsReconfigureExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -4564,7 +3770,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvVal
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsReconfigureExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -4582,7 +3788,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecEnvVal
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsReconfigureExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -4598,7 +3804,7 @@ pub enum ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExecTargetPo
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsReconfigureRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
@@ -4612,7 +3818,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerRetryPolic
 /// Defines the procedure which is invoked regularly to assess the role of replicas.
 /// 
 /// 
-/// This action is periodically triggered by Lorry at the specified interval to determine the role of each replica.
+/// This action is periodically triggered at the specified interval to determine the role of each replica.
 /// Upon successful execution, the action's output designates the role of the replica,
 /// which should match one of the predefined role names within `componentDefinition.spec.roles`.
 /// The output is then compared with the previous successful execution result.
@@ -4625,13 +3831,10 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerRetryPolic
 /// Without this, services that rely on roleSelectors might improperly direct traffic to wrong replicas.
 /// 
 /// 
-/// The container executing this action has access to following environment variables:
+/// The container executing this action has access to following variables:
 /// 
 /// 
 /// - KB_POD_FQDN: The FQDN of the Pod whose role is being assessed.
-/// - KB_SERVICE_PORT: The port used by the database service.
-/// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
-/// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
 /// 
 /// 
 /// Expected output of this action:
@@ -4643,9 +3846,6 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerRetryPolic
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsRoleProbe {
-    /// TODO: remove this later.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
-    pub builtin_handler: Option<String>,
     /// Defines the command to run.
     /// 
     /// 
@@ -4923,58 +4123,22 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeRetryPolicy {
 /// The container executing this action has access to following environment variables:
 /// 
 /// 
-/// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).
-/// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).
 /// - KB_LEADER_POD_IP: The IP address of the current leader's pod prior to the switchover.
 /// - KB_LEADER_POD_NAME: The name of the current leader's pod prior to the switchover.
 /// - KB_LEADER_POD_FQDN: The FQDN of the current leader's pod prior to the switchover.
-/// 
-/// 
-/// The environment variables with the following prefixes are deprecated and will be removed in future releases:
-/// 
-/// 
-/// - KB_REPLICATION_PRIMARY_POD_
-/// - KB_CONSENSUS_LEADER_POD_
+/// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).
+/// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchover {
-    /// Used to define the selectors for the scriptSpecs that need to be referenced.
-    /// If this field is set, the scripts defined under the 'scripts' field can be invoked or referenced within an Action.
-    /// 
-    /// 
-    /// This field is deprecated from v0.9.
-    /// This field is maintained for backward compatibility and its use is discouraged.
-    /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecSelectors")]
-    pub script_spec_selectors: Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverScriptSpecSelectors>>,
-    /// Represents the switchover process for a specified candidate primary or leader instance.
-    /// Note that only Action.Exec is currently supported, while Action.HTTP is not.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withCandidate")]
-    pub with_candidate: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidate>,
-    /// Represents a switchover process that does not involve a specific candidate primary or leader instance.
-    /// As with the previous field, only Action.Exec is currently supported, not Action.HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withoutCandidate")]
-    pub without_candidate: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidate>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverScriptSpecSelectors {
-    /// Represents the name of the ScriptSpec referent.
-    pub name: String,
-}
-
-/// Represents the switchover process for a specified candidate primary or leader instance.
-/// Note that only Action.Exec is currently supported, while Action.HTTP is not.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidate {
     /// Defines the command to run.
     /// 
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExec>,
+    pub exec: Option<ComponentDefinitionLifecycleActionsSwitchoverExec>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
     /// 
@@ -5004,7 +4168,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidate {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateRetryPolicy>,
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsSwitchoverRetryPolicy>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -5021,7 +4185,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidate {
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExec {
+pub struct ComponentDefinitionLifecycleActionsSwitchoverExec {
     /// Args represents the arguments that are passed to the `command` for execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
@@ -5054,7 +4218,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExec {
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnv>>,
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverExecEnv>>,
     /// Specifies the container image to be used for running the Action.
     /// 
     /// 
@@ -5090,12 +4254,12 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExec {
     /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecTargetPodSelector>,
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsSwitchoverExecTargetPodSelector>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnv {
+pub struct ComponentDefinitionLifecycleActionsSwitchoverExecEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -5111,31 +4275,31 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsSwitchoverExecEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValueFrom {
+pub struct ComponentDefinitionLifecycleActionsSwitchoverExecEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverExecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverExecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverExecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverExecEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValueFromConfigMapKeyRef {
+pub struct ComponentDefinitionLifecycleActionsSwitchoverExecEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -5151,7 +4315,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValu
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValueFromFieldRef {
+pub struct ComponentDefinitionLifecycleActionsSwitchoverExecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -5163,7 +4327,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValu
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValueFromResourceFieldRef {
+pub struct ComponentDefinitionLifecycleActionsSwitchoverExecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -5176,7 +4340,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValu
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValueFromSecretKeyRef {
+pub struct ComponentDefinitionLifecycleActionsSwitchoverExecEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -5194,7 +4358,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecEnvValu
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecTargetPodSelector {
+pub enum ComponentDefinitionLifecycleActionsSwitchoverExecTargetPodSelector {
     Any,
     All,
     Role,
@@ -5210,263 +4374,7 @@ pub enum ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExecTargetPod
 /// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateRetryPolicy {
-    /// Defines the maximum number of retry attempts that should be made for a given Action.
-    /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
-    pub max_retries: Option<i64>,
-    /// Indicates the duration of time to wait between each retry attempt.
-    /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
-    pub retry_interval: Option<i64>,
-}
-
-/// Represents a switchover process that does not involve a specific candidate primary or leader instance.
-/// As with the previous field, only Action.Exec is currently supported, not Action.HTTP.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidate {
-    /// Defines the command to run.
-    /// 
-    /// 
-    /// This field cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExec>,
-    /// Specifies the state that the cluster must reach before the Action is executed.
-    /// Currently, this is only applicable to the `postProvision` action.
-    /// 
-    /// 
-    /// The conditions are as follows:
-    /// 
-    /// 
-    /// - `Immediately`: Executed right after the Component object is created.
-    ///   The readiness of the Component and its resources is not guaranteed at this stage.
-    /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
-    ///   runtime resources (e.g. Pods) are in a ready state.
-    /// - `ComponentReady`: The Action is triggered after the Component itself is in a ready state.
-    ///   This process does not affect the readiness state of the Component or the Cluster.
-    /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
-    ///   This execution does not alter the Component or the Cluster's state of readiness.
-    /// 
-    /// 
-    /// This field cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
-    pub pre_condition: Option<String>,
-    /// Defines the strategy to be taken when retrying the Action after a failure.
-    /// 
-    /// 
-    /// It specifies the conditions under which the Action should be retried and the limits to apply,
-    /// such as the maximum number of retries and backoff strategy.
-    /// 
-    /// 
-    /// This field cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
-    pub retry_policy: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateRetryPolicy>,
-    /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    /// 
-    /// 
-    /// If the Action does not complete within this time frame, it will be terminated.
-    /// 
-    /// 
-    /// This field cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-/// Defines the command to run.
-/// 
-/// 
-/// This field cannot be updated.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExec {
-    /// Args represents the arguments that are passed to the `command` for execution.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub args: Option<Vec<String>>,
-    /// Specifies the command to be executed inside the container.
-    /// The working directory for this command is the container's root directory('/').
-    /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
-    /// If the shell is required, it must be explicitly invoked in the command.
-    /// 
-    /// 
-    /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
-    /// 
-    /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
-    /// 
-    /// 
-    /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub container: Option<String>,
-    /// Represents a list of environment variables that will be injected into the container.
-    /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    /// 
-    /// 
-    /// This field cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnv>>,
-    /// Specifies the container image to be used for running the Action.
-    /// 
-    /// 
-    /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    /// 
-    /// 
-    /// This field cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
-    /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
-    /// The impact of this field depends on the `targetPodSelector` value:
-    /// 
-    /// 
-    /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
-    /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
-    ///   will be selected for the Action.
-    /// 
-    /// 
-    /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
-    pub matching_key: Option<String>,
-    /// Defines the criteria used to select the target Pod(s) for executing the Action.
-    /// This is useful when there is no default target replica identified.
-    /// It allows for precise control over which Pod(s) the Action should run in.
-    /// 
-    /// 
-    /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
-    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecTargetPodSelector>,
-}
-
-/// EnvVar represents an environment variable present in a Container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
-    pub name: String,
-    /// Variable references $(VAR_NAME) are expanded
-    /// using the previously defined environment variables in the container and
-    /// any service environment variables. If a variable cannot be resolved,
-    /// the reference in the input string will be unchanged. Double $$ are reduced
-    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
-    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
-    /// Escaped references will never be expanded, regardless of whether the variable
-    /// exists or not.
-    /// Defaults to "".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnvValueFrom>,
-}
-
-/// Source for the environment variable's value. Cannot be used if value is not empty.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnvValueFrom {
-    /// Selects a key of a ConfigMap.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
-    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnvValueFromResourceFieldRef>,
-    /// Selects a key of a secret in the pod's namespace
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnvValueFromSecretKeyRef>,
-}
-
-/// Selects a key of a ConfigMap.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnvValueFromConfigMapKeyRef {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
-/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnvValueFromFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
-    #[serde(rename = "fieldPath")]
-    pub field_path: String,
-}
-
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnvValueFromResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<IntOrString>,
-    /// Required: resource to select
-    pub resource: String,
-}
-
-/// Selects a key of a secret in the pod's namespace
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecEnvValueFromSecretKeyRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Defines the command to run.
-/// 
-/// 
-/// This field cannot be updated.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExecTargetPodSelector {
-    Any,
-    All,
-    Role,
-    Ordinal,
-}
-
-/// Defines the strategy to be taken when retrying the Action after a failure.
-/// 
-/// 
-/// It specifies the conditions under which the Action should be retried and the limits to apply,
-/// such as the maximum number of retries and backoff strategy.
-/// 
-/// 
-/// This field cannot be updated.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateRetryPolicy {
+pub struct ComponentDefinitionLifecycleActionsSwitchoverRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]

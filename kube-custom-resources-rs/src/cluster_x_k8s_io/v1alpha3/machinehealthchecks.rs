@@ -35,7 +35,6 @@ pub struct MachineHealthCheckSpec {
     /// RemediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
     /// 
-    /// 
     /// This field is completely optional, when filled, the MachineHealthCheck controller
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
@@ -53,7 +52,6 @@ pub struct MachineHealthCheckSpec {
 /// RemediationTemplate is a reference to a remediation template
 /// provided by an infrastructure provider.
 /// 
-/// 
 /// This field is completely optional, when filled, the MachineHealthCheck controller
 /// creates a new object from the template referenced and hands off remediation of the machine to
 /// a controller that lives outside of Cluster API.
@@ -69,7 +67,6 @@ pub struct MachineHealthCheckRemediationTemplate {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.

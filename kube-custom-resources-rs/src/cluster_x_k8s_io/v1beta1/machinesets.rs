@@ -34,7 +34,6 @@ pub struct MachineSetSpec {
     /// Replicas is the number of desired replicas.
     /// This is a pointer to distinguish between explicit zero and unspecified.
     /// 
-    /// 
     /// Defaults to:
     /// * if the Kubernetes autoscaler min size and max size annotations are set:
     ///   - if it's a new MachineSet, use min size
@@ -219,7 +218,6 @@ pub struct MachineSetTemplateSpecBootstrapConfigRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -258,7 +256,6 @@ pub struct MachineSetTemplateSpecInfrastructureRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -300,7 +297,6 @@ pub struct MachineSetStatus {
     /// interpretation, while FailureMessage will contain a more verbose
     /// string suitable for logging and human consumption.
     /// 
-    /// 
     /// These fields should not be set for transitive errors that a
     /// controller faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
@@ -309,7 +305,6 @@ pub struct MachineSetStatus {
     /// of terminal errors would be invalid combinations of settings in the
     /// spec, values that are unsupported by the machine controller, or the
     /// responsible machine controller itself being critically misconfigured.
-    /// 
     /// 
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the MachineSet object and/or logged in the

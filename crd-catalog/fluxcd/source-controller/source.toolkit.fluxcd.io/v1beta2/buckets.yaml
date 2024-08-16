@@ -98,7 +98,7 @@ spec:
                     - "azure"
                   type: "string"
                 proxySecretRef:
-                  description: "ProxySecretRef specifies the Secret containing the proxy configuration\nto use while communicating with the Bucket server.\n\n\nOnly supported for the generic provider."
+                  description: "ProxySecretRef specifies the Secret containing the proxy configuration\nto use while communicating with the Bucket server."
                   properties:
                     name:
                       description: "Name of the referent."

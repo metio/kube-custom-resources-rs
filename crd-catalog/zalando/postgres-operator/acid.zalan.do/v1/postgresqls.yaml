@@ -356,7 +356,6 @@ spec:
                       type: "object"
                     version:
                       enum:
-                        - "11"
                         - "12"
                         - "13"
                         - "14"

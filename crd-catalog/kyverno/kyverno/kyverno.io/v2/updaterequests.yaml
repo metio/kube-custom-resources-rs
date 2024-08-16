@@ -56,7 +56,7 @@ spec:
               description: "ResourceSpec is the information to identify the trigger resource."
               properties:
                 context:
-                  description: "Context ..."
+                  description: "Context represents admission request context.\nIt is used upon admission review only and is shared across rules within the same UR."
                   properties:
                     admissionRequestInfo:
                       description: "AdmissionRequestInfoObject stores the admission request and operation details"
@@ -230,7 +230,7 @@ spec:
                       type: "object"
                   type: "object"
                 deleteDownstream:
-                  description: "DeleteDownstream represents whether the downstream needs to be deleted."
+                  description: "DeleteDownstream represents whether the downstream needs to be deleted.\nDeprecated"
                   type: "boolean"
                 policy:
                   description: "Specifies the name of the policy."
@@ -263,8 +263,46 @@ spec:
                 rule:
                   description: "Rule is the associate rule name of the current UR."
                   type: "string"
+                ruleContext:
+                  description: "RuleContext is the associate context to apply rules.\noptional"
+                  items:
+                    properties:
+                      deleteDownstream:
+                        description: "DeleteDownstream represents whether the downstream needs to be deleted."
+                        type: "boolean"
+                      rule:
+                        description: "Rule is the associate rule name of the current UR."
+                        type: "string"
+                      synchronize:
+                        description: "Synchronize represents the sync behavior of the corresponding rule\nOptional. Defaults to \"false\" if not specified."
+                        type: "boolean"
+                      trigger:
+                        description: "ResourceSpec is the information to identify the trigger resource."
+                        properties:
+                          apiVersion:
+                            description: "APIVersion specifies resource apiVersion."
+                            type: "string"
+                          kind:
+                            description: "Kind specifies resource kind."
+                            type: "string"
+                          name:
+                            description: "Name specifies the resource name."
+                            type: "string"
+                          namespace:
+                            description: "Namespace specifies resource namespace."
+                            type: "string"
+                          uid:
+                            description: "UID specifies the resource uid."
+                            type: "string"
+                        type: "object"
+                    required:
+                      - "deleteDownstream"
+                      - "rule"
+                      - "trigger"
+                    type: "object"
+                  type: "array"
                 synchronize:
-                  description: "Synchronize represents the sync behavior of the corresponding rule\nOptional. Defaults to \"false\" if not specified."
+                  description: "Synchronize represents the sync behavior of the corresponding rule\nOptional. Defaults to \"false\" if not specified.\nDeprecated, will be removed in 1.14."
                   type: "boolean"
               required:
                 - "context"

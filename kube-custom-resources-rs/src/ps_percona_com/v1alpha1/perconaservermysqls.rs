@@ -42,8 +42,6 @@ pub struct PerconaServerMySQLSpec {
     pub proxy: Option<PerconaServerMySQLProxy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretsName")]
     pub secrets_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslInternalSecretName")]
-    pub ssl_internal_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslSecretName")]
     pub ssl_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -74,7 +72,11 @@ pub struct PerconaServerMySQLBackup {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initImage")]
     pub init_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pitr: Option<PerconaServerMySQLBackupPitr>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaServerMySQLBackupResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schedule: Option<Vec<PerconaServerMySQLBackupSchedule>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -164,6 +166,988 @@ pub struct PerconaServerMySQLBackupImagePullSecrets {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitr {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "binlogServer")]
+    pub binlog_server: Option<PerconaServerMySQLBackupPitrBinlogServer>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServer {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<PerconaServerMySQLBackupPitrBinlogServerAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
+    pub connect_timeout: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
+    pub container_security_context: Option<PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerEnv>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
+    pub env_from: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerEnvFrom>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
+    pub grace_period: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTime")]
+    pub idle_time: Option<i32>,
+    pub image: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerImagePullSecrets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initImage")]
+    pub init_image: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<PerconaServerMySQLBackupPitrBinlogServerLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
+    pub pod_security_context: Option<PerconaServerMySQLBackupPitrBinlogServerPodSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeout")]
+    pub read_timeout: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<PerconaServerMySQLBackupPitrBinlogServerReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<PerconaServerMySQLBackupPitrBinlogServerResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
+    pub runtime_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
+    pub scheduler_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverId")]
+    pub server_id: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<PerconaServerMySQLBackupPitrBinlogServerStartupProbe>,
+    pub storage: PerconaServerMySQLBackupPitrBinlogServerStorage,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerTolerations>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSpec")]
+    pub volume_spec: Option<PerconaServerMySQLBackupPitrBinlogServerVolumeSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeTimeout")]
+    pub write_timeout: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinity {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub advanced: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvanced>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityTopologyKey")]
+    pub anti_affinity_topology_key: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvanced {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinity>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinity {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    pub preference: PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub weight: i32,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    #[serde(rename = "nodeSelectorTerms")]
+    pub node_selector_terms: Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinity {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub weight: i32,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinity {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub weight: i32,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerAffinityAdvancedPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContextAppArmorProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContextCapabilities>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
+    pub proc_mount: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContextCapabilities {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContextSeLinuxOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContextSeccompProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerContainerSecurityContextWindowsOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
+    pub gmsa_credential_spec: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
+    pub gmsa_credential_spec_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
+    pub host_process: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
+    pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerEnv {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<PerconaServerMySQLBackupPitrBinlogServerEnvValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerEnvValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<PerconaServerMySQLBackupPitrBinlogServerEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<PerconaServerMySQLBackupPitrBinlogServerEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<PerconaServerMySQLBackupPitrBinlogServerEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<PerconaServerMySQLBackupPitrBinlogServerEnvValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerEnvValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerEnvValueFromFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerEnvValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerEnvValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerEnvFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMySQLBackupPitrBinlogServerEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<PerconaServerMySQLBackupPitrBinlogServerEnvFromSecretRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerEnvFromConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerEnvFromSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerImagePullSecrets {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerLivenessProbe {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<PerconaServerMySQLBackupPitrBinlogServerLivenessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<PerconaServerMySQLBackupPitrBinlogServerLivenessProbeGrpc>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<PerconaServerMySQLBackupPitrBinlogServerLivenessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<PerconaServerMySQLBackupPitrBinlogServerLivenessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerLivenessProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerLivenessProbeGrpc {
+    pub port: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerLivenessProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerLivenessProbeHttpGetHttpHeaders {
+    pub name: String,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerLivenessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerPodSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextAppArmorProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
+    pub fs_group: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
+    pub fs_group_change_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sysctls: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextSysctls>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextSeLinuxOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextSeccompProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextSysctls {
+    pub name: String,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextWindowsOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
+    pub gmsa_credential_spec: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
+    pub gmsa_credential_spec_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
+    pub host_process: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
+    pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerReadinessProbe {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<PerconaServerMySQLBackupPitrBinlogServerReadinessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<PerconaServerMySQLBackupPitrBinlogServerReadinessProbeGrpc>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<PerconaServerMySQLBackupPitrBinlogServerReadinessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<PerconaServerMySQLBackupPitrBinlogServerReadinessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerReadinessProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerReadinessProbeGrpc {
+    pub port: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerReadinessProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerReadinessProbeHttpGetHttpHeaders {
+    pub name: String,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerReadinessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerResourcesClaims {
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerStartupProbe {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<PerconaServerMySQLBackupPitrBinlogServerStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<PerconaServerMySQLBackupPitrBinlogServerStartupProbeGrpc>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<PerconaServerMySQLBackupPitrBinlogServerStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<PerconaServerMySQLBackupPitrBinlogServerStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerStartupProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerStartupProbeGrpc {
+    pub port: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerStartupProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerStartupProbeHttpGetHttpHeaders {
+    pub name: String,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerStartupProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub s3: Option<PerconaServerMySQLBackupPitrBinlogServerStorageS3>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerStorageS3 {
+    pub bucket: String,
+    #[serde(rename = "credentialsSecret")]
+    pub credentials_secret: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointUrl")]
+    pub endpoint_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerTolerations {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerTopologySpreadConstraints {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PerconaServerMySQLBackupPitrBinlogServerTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(rename = "maxSkew")]
+    pub max_skew: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+    #[serde(rename = "whenUnsatisfiable")]
+    pub when_unsatisfiable: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerTopologySpreadConstraintsLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerTopologySpreadConstraintsLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerVolumeSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<PerconaServerMySQLBackupPitrBinlogServerVolumeSpecEmptyDir>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
+    pub host_path: Option<PerconaServerMySQLBackupPitrBinlogServerVolumeSpecHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaim>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerVolumeSpecEmptyDir {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
+    pub size_limit: Option<IntOrString>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerVolumeSpecHostPath {
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaim {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimDataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimDataSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    pub kind: String,
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimDataSourceRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    pub kind: String,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySQLBackupResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PerconaServerMySQLBackupResourcesClaims>>,
@@ -176,6 +1160,18 @@ pub struct PerconaServerMySQLBackupResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySQLBackupResourcesClaims {
     pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLBackupSchedule {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keep: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schedule: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageName")]
+    pub storage_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

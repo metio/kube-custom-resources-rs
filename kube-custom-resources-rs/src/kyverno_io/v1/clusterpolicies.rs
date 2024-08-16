@@ -2668,6 +2668,9 @@ pub struct ClusterPolicyRulesValidateManifestsAttestorsEntriesKeyless {
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
+    /// IssuerRegExp is the regular expression to match certificate issuer used for keyless signing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerRegExp")]
+    pub issuer_reg_exp: Option<String>,
     /// Rekor provides configuration for the Rekor transparency log service. If an empty object
     /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2679,6 +2682,9 @@ pub struct ClusterPolicyRulesValidateManifestsAttestorsEntriesKeyless {
     /// Subject is the verified identity used for keyless signing, for example the email address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
+    /// SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectRegExp")]
+    pub subject_reg_exp: Option<String>,
 }
 
 /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
@@ -3204,6 +3210,9 @@ pub struct ClusterPolicyRulesVerifyImagesAttestationsAttestorsEntriesKeyless {
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
+    /// IssuerRegExp is the regular expression to match certificate issuer used for keyless signing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerRegExp")]
+    pub issuer_reg_exp: Option<String>,
     /// Rekor provides configuration for the Rekor transparency log service. If an empty object
     /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3215,6 +3224,9 @@ pub struct ClusterPolicyRulesVerifyImagesAttestationsAttestorsEntriesKeyless {
     /// Subject is the verified identity used for keyless signing, for example the email address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
+    /// SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectRegExp")]
+    pub subject_reg_exp: Option<String>,
 }
 
 /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
@@ -3536,6 +3548,9 @@ pub struct ClusterPolicyRulesVerifyImagesAttestorsEntriesKeyless {
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
+    /// IssuerRegExp is the regular expression to match certificate issuer used for keyless signing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerRegExp")]
+    pub issuer_reg_exp: Option<String>,
     /// Rekor provides configuration for the Rekor transparency log service. If an empty object
     /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3547,6 +3562,9 @@ pub struct ClusterPolicyRulesVerifyImagesAttestorsEntriesKeyless {
     /// Subject is the verified identity used for keyless signing, for example the email address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
+    /// SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectRegExp")]
+    pub subject_reg_exp: Option<String>,
 }
 
 /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
@@ -6432,6 +6450,9 @@ pub struct ClusterPolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeyle
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
+    /// IssuerRegExp is the regular expression to match certificate issuer used for keyless signing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerRegExp")]
+    pub issuer_reg_exp: Option<String>,
     /// Rekor provides configuration for the Rekor transparency log service. If an empty object
     /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6443,6 +6464,9 @@ pub struct ClusterPolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeyle
     /// Subject is the verified identity used for keyless signing, for example the email address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
+    /// SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectRegExp")]
+    pub subject_reg_exp: Option<String>,
 }
 
 /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
@@ -6968,6 +6992,9 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntri
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
+    /// IssuerRegExp is the regular expression to match certificate issuer used for keyless signing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerRegExp")]
+    pub issuer_reg_exp: Option<String>,
     /// Rekor provides configuration for the Rekor transparency log service. If an empty object
     /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6979,6 +7006,9 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntri
     /// Subject is the verified identity used for keyless signing, for example the email address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
+    /// SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectRegExp")]
+    pub subject_reg_exp: Option<String>,
 }
 
 /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate
@@ -7300,6 +7330,9 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeyless {
     /// Issuer is the certificate issuer used for keyless signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
+    /// IssuerRegExp is the regular expression to match certificate issuer used for keyless signing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerRegExp")]
+    pub issuer_reg_exp: Option<String>,
     /// Rekor provides configuration for the Rekor transparency log service. If an empty object
     /// is provided the public instance of Rekor (https://rekor.sigstore.dev) is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7311,6 +7344,9 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeyless {
     /// Subject is the verified identity used for keyless signing, for example the email address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
+    /// SubjectRegExp is the regular expression to match identity used for keyless signing, for example the email address.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectRegExp")]
+    pub subject_reg_exp: Option<String>,
 }
 
 /// CTLog (certificate timestamp log) provides a configuration for validation of Signed Certificate

@@ -59,6 +59,8 @@ spec:
                         type: "string"
                       id:
                         type: "string"
+                      includeDeleted:
+                        type: "boolean"
                       labelSelector:
                         type: "string"
                       name:
@@ -66,6 +68,9 @@ spec:
                       namespace:
                         type: "string"
                       scope:
+                        type: "string"
+                      search:
+                        description: "Search query that applies to the resource name, tag & labels."
                         type: "string"
                       statuses:
                         items:
@@ -93,6 +98,8 @@ spec:
                   description: "Only applies when using lookup, when specified the components and properties\nspecified under ForEach will be templated using the components returned by the lookup\n${.properties} can be used to reference the properties of the component\n${.component} can be used to reference the component itself"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
+                health:
+                  type: "string"
                 hidden:
                   description: "If set to true, do not display in UI"
                   type: "boolean"
@@ -180,6 +187,8 @@ spec:
                                 type: "string"
                               id:
                                 type: "string"
+                              includeDeleted:
+                                type: "boolean"
                               labelSelector:
                                 type: "string"
                               name:
@@ -187,6 +196,9 @@ spec:
                               namespace:
                                 type: "string"
                               scope:
+                                type: "string"
+                              search:
+                                description: "Search query that applies to the resource name, tag & labels."
                                 type: "string"
                               statuses:
                                 items:
@@ -317,6 +329,8 @@ spec:
                         type: "string"
                       id:
                         type: "string"
+                      includeDeleted:
+                        type: "boolean"
                       labelSelector:
                         type: "string"
                       name:
@@ -324,6 +338,9 @@ spec:
                       namespace:
                         type: "string"
                       scope:
+                        type: "string"
+                      search:
+                        description: "Search query that applies to the resource name, tag & labels."
                         type: "string"
                       statuses:
                         items:

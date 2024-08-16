@@ -19,7 +19,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CiliumLoadBalancerIPPoolSpec {
-    /// AllowFirstLastIPs, if set to `yes` means that the first and last IPs of each CIDR will be allocatable. If `no` or undefined, these IPs will be reserved. This field is ignored for /{31,32} and /{127,128} CIDRs since reserving the first and last IPs would make the CIDRs unusable.
+    /// AllowFirstLastIPs, if set to `Yes` or undefined means that the first and last IPs of each CIDR will be allocatable. If `No`, these IPs will be reserved. This field is ignored for /{31,32} and /{127,128} CIDRs since reserving the first and last IPs would make the CIDRs unusable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowFirstLastIPs")]
     pub allow_first_last_i_ps: Option<CiliumLoadBalancerIPPoolAllowFirstLastIPs>,
     /// Blocks is a list of CIDRs comprising this IP Pool

@@ -505,7 +505,7 @@ pub struct ClusterComponentSpecs {
     /// If that fails, it will fall back to the ReCreate, where pod will be recreated.
     /// Default value is "PreferInPlace"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
-    pub pod_update_policy: Option<String>,
+    pub pod_update_policy: Option<ClusterComponentSpecsPodUpdatePolicy>,
     /// Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing.
     pub replicas: i32,
     /// Specifies the resources required by the Component.
@@ -3731,6 +3731,15 @@ pub struct ClusterComponentSpecsIssuerSecretRef {
     pub key: String,
     /// Name of the Secret that contains user-provided certificates.
     pub name: String,
+}
+
+/// ClusterComponentSpec defines the specification of a Component within a Cluster.
+/// TODO +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDefRef) || has(self.componentDefRef)", message="componentDefRef is required once set"
+/// TODO +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDef) || has(self.componentDef)", message="componentDef is required once set"
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterComponentSpecsPodUpdatePolicy {
+    StrictInPlace,
+    PreferInPlace,
 }
 
 /// Specifies the resources required by the Component.
@@ -8312,7 +8321,7 @@ pub struct ClusterShardingSpecsTemplate {
     /// If that fails, it will fall back to the ReCreate, where pod will be recreated.
     /// Default value is "PreferInPlace"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
-    pub pod_update_policy: Option<String>,
+    pub pod_update_policy: Option<ClusterShardingSpecsTemplatePodUpdatePolicy>,
     /// Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing.
     pub replicas: i32,
     /// Specifies the resources required by the Component.
@@ -11538,6 +11547,21 @@ pub struct ClusterShardingSpecsTemplateIssuerSecretRef {
     pub key: String,
     /// Name of the Secret that contains user-provided certificates.
     pub name: String,
+}
+
+/// The template for generating Components for shards, where each shard consists of one Component.
+/// This field is of type ClusterComponentSpec, which encapsulates all the required details and
+/// definitions for creating and managing the Components.
+/// KubeBlocks uses this template to generate a set of identical Components or shards.
+/// All the generated Components will have the same specifications and definitions as specified in the `template` field.
+/// 
+/// 
+/// This allows for the creation of multiple Components with consistent configurations,
+/// enabling sharding and distribution of workloads across Components.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterShardingSpecsTemplatePodUpdatePolicy {
+    StrictInPlace,
+    PreferInPlace,
 }
 
 /// Specifies the resources required by the Component.

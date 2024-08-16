@@ -434,6 +434,10 @@ pub struct BackupStatusBackupMethodTarget {
     /// Specifies the connection credential to connect to the target database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BackupStatusBackupMethodTargetConnectionCredential>,
+    /// Specifies the container port in the target pod.
+    /// If not specified, the first container and its first port will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerPort")]
+    pub container_port: Option<BackupStatusBackupMethodTargetContainerPort>,
     /// Specifies a mandatory and unique identifier for each target when using the "targets" field.
     /// The backup data for the current target is stored in a uniquely named subdirectory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -469,6 +473,18 @@ pub struct BackupStatusBackupMethodTargetConnectionCredential {
     /// Specifies the map key of the user in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
+}
+
+/// Specifies the container port in the target pod.
+/// If not specified, the first container and its first port will be used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusBackupMethodTargetContainerPort {
+    /// Specifies the name of container with the port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the port name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
+    pub port_name: Option<String>,
 }
 
 /// Used to find the target pod. The volumes of the target pod will be backed up.
@@ -650,6 +666,10 @@ pub struct BackupStatusBackupMethodTargets {
     /// Specifies the connection credential to connect to the target database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BackupStatusBackupMethodTargetsConnectionCredential>,
+    /// Specifies the container port in the target pod.
+    /// If not specified, the first container and its first port will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerPort")]
+    pub container_port: Option<BackupStatusBackupMethodTargetsContainerPort>,
     /// Specifies a mandatory and unique identifier for each target when using the "targets" field.
     /// The backup data for the current target is stored in a uniquely named subdirectory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -685,6 +705,18 @@ pub struct BackupStatusBackupMethodTargetsConnectionCredential {
     /// Specifies the map key of the user in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
+}
+
+/// Specifies the container port in the target pod.
+/// If not specified, the first container and its first port will be used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusBackupMethodTargetsContainerPort {
+    /// Specifies the name of container with the port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the port name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
+    pub port_name: Option<String>,
 }
 
 /// Used to find the target pod. The volumes of the target pod will be backed up.
@@ -878,6 +910,10 @@ pub struct BackupStatusTarget {
     /// Specifies the connection credential to connect to the target database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BackupStatusTargetConnectionCredential>,
+    /// Specifies the container port in the target pod.
+    /// If not specified, the first container and its first port will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerPort")]
+    pub container_port: Option<BackupStatusTargetContainerPort>,
     /// Specifies a mandatory and unique identifier for each target when using the "targets" field.
     /// The backup data for the current target is stored in a uniquely named subdirectory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -916,6 +952,18 @@ pub struct BackupStatusTargetConnectionCredential {
     /// Specifies the map key of the user in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
+}
+
+/// Specifies the container port in the target pod.
+/// If not specified, the first container and its first port will be used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusTargetContainerPort {
+    /// Specifies the name of container with the port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the port name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
+    pub port_name: Option<String>,
 }
 
 /// Used to find the target pod. The volumes of the target pod will be backed up.
@@ -1054,6 +1102,10 @@ pub struct BackupStatusTargets {
     /// Specifies the connection credential to connect to the target database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BackupStatusTargetsConnectionCredential>,
+    /// Specifies the container port in the target pod.
+    /// If not specified, the first container and its first port will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerPort")]
+    pub container_port: Option<BackupStatusTargetsContainerPort>,
     /// Specifies a mandatory and unique identifier for each target when using the "targets" field.
     /// The backup data for the current target is stored in a uniquely named subdirectory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1092,6 +1144,18 @@ pub struct BackupStatusTargetsConnectionCredential {
     /// Specifies the map key of the user in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
+}
+
+/// Specifies the container port in the target pod.
+/// If not specified, the first container and its first port will be used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusTargetsContainerPort {
+    /// Specifies the name of container with the port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the port name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
+    pub port_name: Option<String>,
 }
 
 /// Used to find the target pod. The volumes of the target pod will be backed up.

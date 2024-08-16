@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "machinedeployments.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -87,11 +87,11 @@ spec:
                   format: "int32"
                   type: "integer"
                 replicas:
-                  description: "Number of desired machines.\nThis is a pointer to distinguish between explicit zero and not specified.\n\n\nDefaults to:\n* if the Kubernetes autoscaler min size and max size annotations are set:\n  - if it's a new MachineDeployment, use min size\n  - if the replicas field of the old MachineDeployment is < min size, use min size\n  - if the replicas field of the old MachineDeployment is > max size, use max size\n  - if the replicas field of the old MachineDeployment is in the (min size, max size) range, keep the value from the oldMD\n* otherwise use 1\nNote: Defaulting will be run whenever the replicas field is not set:\n* A new MachineDeployment is created with replicas not set.\n* On an existing MachineDeployment the replicas field was first set and is now unset.\nThose cases are especially relevant for the following Kubernetes autoscaler use cases:\n* A new MachineDeployment is created and replicas should be managed by the autoscaler\n* An existing MachineDeployment which initially wasn't controlled by the autoscaler\n  should be later controlled by the autoscaler"
+                  description: "Number of desired machines.\nThis is a pointer to distinguish between explicit zero and not specified.\n\nDefaults to:\n* if the Kubernetes autoscaler min size and max size annotations are set:\n  - if it's a new MachineDeployment, use min size\n  - if the replicas field of the old MachineDeployment is < min size, use min size\n  - if the replicas field of the old MachineDeployment is > max size, use max size\n  - if the replicas field of the old MachineDeployment is in the (min size, max size) range, keep the value from the oldMD\n* otherwise use 1\nNote: Defaulting will be run whenever the replicas field is not set:\n* A new MachineDeployment is created with replicas not set.\n* On an existing MachineDeployment the replicas field was first set and is now unset.\nThose cases are especially relevant for the following Kubernetes autoscaler use cases:\n* A new MachineDeployment is created and replicas should be managed by the autoscaler\n* An existing MachineDeployment which initially wasn't controlled by the autoscaler\n  should be later controlled by the autoscaler"
                   format: "int32"
                   type: "integer"
                 revisionHistoryLimit:
-                  description: "The number of old MachineSets to retain to allow rollback.\nThis is a pointer to distinguish between explicit zero and not specified.\nDefaults to 1.\n\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10479 for more details."
+                  description: "The number of old MachineSets to retain to allow rollback.\nThis is a pointer to distinguish between explicit zero and not specified.\nDefaults to 1.\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10479 for more details."
                   format: "int32"
                   type: "integer"
                 rolloutAfter:
@@ -141,7 +141,7 @@ spec:
                           anyOf:
                             - type: "integer"
                             - type: "string"
-                          description: "MaxInFlight determines how many in flight remediations should happen at the same time.\n\n\nRemediation only happens on the MachineSet with the most current revision, while\nolder MachineSets (usually present during rollout operations) aren't allowed to remediate.\n\n\nNote: In general (independent of remediations), unhealthy machines are always\nprioritized during scale down operations over healthy ones.\n\n\nMaxInFlight can be set to a fixed number or a percentage.\nExample: when this is set to 20%, the MachineSet controller deletes at most 20% of\nthe desired replicas.\n\n\nIf not set, remediation is limited to all machines (bounded by replicas)\nunder the active MachineSet's management."
+                          description: "MaxInFlight determines how many in flight remediations should happen at the same time.\n\nRemediation only happens on the MachineSet with the most current revision, while\nolder MachineSets (usually present during rollout operations) aren't allowed to remediate.\n\nNote: In general (independent of remediations), unhealthy machines are always\nprioritized during scale down operations over healthy ones.\n\nMaxInFlight can be set to a fixed number or a percentage.\nExample: when this is set to 20%, the MachineSet controller deletes at most 20% of\nthe desired replicas.\n\nIf not set, remediation is limited to all machines (bounded by replicas)\nunder the active MachineSet's management."
                           x-kubernetes-int-or-string: true
                       type: "object"
                     rollingUpdate:
@@ -204,7 +204,7 @@ spec:
                                   description: "API version of the referent."
                                   type: "string"
                                 fieldPath:
-                                  description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                                  description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                                   type: "string"
                                 kind:
                                   description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
@@ -241,7 +241,7 @@ spec:
                               description: "API version of the referent."
                               type: "string"
                             fieldPath:
-                              description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                              description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                               type: "string"
                             kind:
                               description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"

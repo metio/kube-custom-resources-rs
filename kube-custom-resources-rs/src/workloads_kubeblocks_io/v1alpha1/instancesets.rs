@@ -3631,13 +3631,7 @@ pub struct InstanceSetMembershipReconfigurationSwitchoverAction {
 /// Provides method to probe role.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetRoleProbe {
-    /// Specifies the builtin handler name to use to probe the role of the main container.
-    /// Available handlers include: mysql, postgres, mongodb, redis, etcd, kafka.
-    /// Use CustomHandler to define a custom role probe function if none of the built-in handlers meet the requirement.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandlerName")]
-    pub builtin_handler_name: Option<String>,
     /// Defines a custom method for role probing.
-    /// If the BuiltinHandler meets the requirement, use it instead.
     /// Actions defined here are executed in series.
     /// Upon completion of all actions, the final output should be a single string representing the role name defined in spec.Roles.
     /// The latest [BusyBox](https://busybox.net/) image will be used if Image is not configured.

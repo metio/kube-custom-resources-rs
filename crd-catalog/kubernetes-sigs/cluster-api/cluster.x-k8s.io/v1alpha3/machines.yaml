@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "machines.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -39,7 +39,7 @@ spec:
       name: "v1alpha3"
       schema:
         openAPIV3Schema:
-          description: "Machine is the Schema for the machines API.\n\n\nDeprecated: This type will be removed in one of the next releases."
+          description: "Machine is the Schema for the machines API.\n\nDeprecated: This type will be removed in one of the next releases."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -62,7 +62,7 @@ spec:
                           description: "API version of the referent."
                           type: "string"
                         fieldPath:
-                          description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                          description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                           type: "string"
                         kind:
                           description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
@@ -82,7 +82,7 @@ spec:
                       type: "object"
                       x-kubernetes-map-type: "atomic"
                     data:
-                      description: "Data contains the bootstrap data, such as cloud-init details scripts.\nIf nil, the Machine should remain in the Pending state.\n\n\nDeprecated: Switch to DataSecretName."
+                      description: "Data contains the bootstrap data, such as cloud-init details scripts.\nIf nil, the Machine should remain in the Pending state.\n\nDeprecated: Switch to DataSecretName."
                       type: "string"
                     dataSecretName:
                       description: "DataSecretName is the name of the secret that stores the bootstrap data script.\nIf nil, the Machine should remain in the Pending state."
@@ -102,7 +102,7 @@ spec:
                       description: "API version of the referent."
                       type: "string"
                     fieldPath:
-                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                       type: "string"
                     kind:
                       description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
@@ -187,10 +187,10 @@ spec:
                     type: "object"
                   type: "array"
                 failureMessage:
-                  description: "FailureMessage will be set in the event that there is a terminal problem\nreconciling the Machine and will contain a more verbose string suitable\nfor logging and human consumption.\n\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the Machine's spec or the configuration of\nthe controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the controller, or the\nresponsible controller itself being critically misconfigured.\n\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the Machine object and/or logged in the\ncontroller's output."
+                  description: "FailureMessage will be set in the event that there is a terminal problem\nreconciling the Machine and will contain a more verbose string suitable\nfor logging and human consumption.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the Machine's spec or the configuration of\nthe controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the controller, or the\nresponsible controller itself being critically misconfigured.\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the Machine object and/or logged in the\ncontroller's output."
                   type: "string"
                 failureReason:
-                  description: "FailureReason will be set in the event that there is a terminal problem\nreconciling the Machine and will contain a succinct value suitable\nfor machine interpretation.\n\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the Machine's spec or the configuration of\nthe controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the controller, or the\nresponsible controller itself being critically misconfigured.\n\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the Machine object and/or logged in the\ncontroller's output."
+                  description: "FailureReason will be set in the event that there is a terminal problem\nreconciling the Machine and will contain a succinct value suitable\nfor machine interpretation.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the Machine's spec or the configuration of\nthe controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the controller, or the\nresponsible controller itself being critically misconfigured.\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the Machine object and/or logged in the\ncontroller's output."
                   type: "string"
                 infrastructureReady:
                   description: "InfrastructureReady is the state of the infrastructure provider."
@@ -206,7 +206,7 @@ spec:
                       description: "API version of the referent."
                       type: "string"
                     fieldPath:
-                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                       type: "string"
                     kind:
                       description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"

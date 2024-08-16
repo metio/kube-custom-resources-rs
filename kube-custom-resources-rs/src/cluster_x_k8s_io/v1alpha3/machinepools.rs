@@ -130,16 +130,13 @@ pub struct MachinePoolTemplateMetadata {
     /// and may be truncated by the length of the suffix required to make the value
     /// unique on the server.
     /// 
-    /// 
     /// If this field is specified and the generated name exists, the server will
     /// NOT return a 409 - instead, it will either return 201 Created or 500 with Reason
     /// ServerTimeout indicating a unique name could not be found in the time allotted, and the client
     /// should retry (optionally after the time indicated in the Retry-After header).
     /// 
-    /// 
     /// Applied only if Name is not specified.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency
-    /// 
     /// 
     /// Deprecated: This field has no function and is going to be removed in a next release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateName")]
@@ -157,7 +154,6 @@ pub struct MachinePoolTemplateMetadata {
     /// Cannot be updated.
     /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
     /// 
-    /// 
     /// Deprecated: This field has no function and is going to be removed in a next release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -166,11 +162,9 @@ pub struct MachinePoolTemplateMetadata {
     /// Not all objects are required to be scoped to a namespace - the value of this field for
     /// those objects will be empty.
     /// 
-    /// 
     /// Must be a DNS_LABEL.
     /// Cannot be updated.
     /// More info: http://kubernetes.io/docs/user-guide/namespaces
-    /// 
     /// 
     /// Deprecated: This field has no function and is going to be removed in a next release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -179,7 +173,6 @@ pub struct MachinePoolTemplateMetadata {
     /// been deleted, this object will be garbage collected. If this object is managed by a controller,
     /// then an entry in this list will point to this controller, with the controller field set to true.
     /// There cannot be more than one managing controller.
-    /// 
     /// 
     /// Deprecated: This field has no function and is going to be removed in a next release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerReferences")]
@@ -272,7 +265,6 @@ pub struct MachinePoolTemplateSpecBootstrap {
     /// Data contains the bootstrap data, such as cloud-init details scripts.
     /// If nil, the Machine should remain in the Pending state.
     /// 
-    /// 
     /// Deprecated: Switch to DataSecretName.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
@@ -298,7 +290,6 @@ pub struct MachinePoolTemplateSpecBootstrapConfigRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -337,7 +328,6 @@ pub struct MachinePoolTemplateSpecInfrastructureRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -411,22 +401,6 @@ pub struct MachinePoolStatus {
 }
 
 /// ObjectReference contains enough information to let you inspect or modify the referred object.
-/// ---
-/// New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs.
-///  1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage.
-///  2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular
-///     restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted".
-///     Those cannot be well described when embedded.
-///  3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen.
-///  4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity
-///     during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple
-///     and the version of the actual struct is irrelevant.
-///  5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type
-///     will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control.
-/// 
-/// 
-/// Instead of using this type, create a locally provided and used type that is well-focused on your reference.
-/// For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolStatusNodeRefs {
     /// API version of the referent.
@@ -439,7 +413,6 @@ pub struct MachinePoolStatusNodeRefs {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.

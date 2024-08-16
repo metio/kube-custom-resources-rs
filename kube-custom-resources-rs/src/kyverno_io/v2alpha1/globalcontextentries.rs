@@ -109,7 +109,8 @@ pub struct GlobalContextEntryApiCallService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GlobalContextEntryKubernetesResource {
     /// Group defines the group of the resource.
-    pub group: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
     /// Namespace defines the namespace of the resource. Leave empty for cluster scoped resources.
     /// If left empty for namespaced resources, all resources from all namespaces will be cached.
     #[serde(default, skip_serializing_if = "Option::is_none")]

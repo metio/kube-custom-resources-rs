@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "machinehealthchecks.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -63,19 +63,19 @@ spec:
                   anyOf:
                     - type: "integer"
                     - type: "string"
-                  description: "Any further remediation is only allowed if at most \"MaxUnhealthy\" machines selected by\n\"selector\" are not healthy.\n\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details."
+                  description: "Any further remediation is only allowed if at most \"MaxUnhealthy\" machines selected by\n\"selector\" are not healthy.\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details."
                   x-kubernetes-int-or-string: true
                 nodeStartupTimeout:
-                  description: "NodeStartupTimeout allows to set the maximum time for MachineHealthCheck\nto consider a Machine unhealthy if a corresponding Node isn't associated\nthrough a `Spec.ProviderID` field.\n\n\nThe duration set in this field is compared to the greatest of:\n- Cluster's infrastructure ready condition timestamp (if and when available)\n- Control Plane's initialized condition timestamp (if and when available)\n- Machine's infrastructure ready condition timestamp (if and when available)\n- Machine's metadata creation timestamp\n\n\nDefaults to 10 minutes.\nIf you wish to disable this feature, set the value explicitly to 0."
+                  description: "NodeStartupTimeout allows to set the maximum time for MachineHealthCheck\nto consider a Machine unhealthy if a corresponding Node isn't associated\nthrough a `Spec.ProviderID` field.\n\nThe duration set in this field is compared to the greatest of:\n- Cluster's infrastructure ready condition timestamp (if and when available)\n- Control Plane's initialized condition timestamp (if and when available)\n- Machine's infrastructure ready condition timestamp (if and when available)\n- Machine's metadata creation timestamp\n\nDefaults to 10 minutes.\nIf you wish to disable this feature, set the value explicitly to 0."
                   type: "string"
                 remediationTemplate:
-                  description: "RemediationTemplate is a reference to a remediation template\nprovided by an infrastructure provider.\n\n\nThis field is completely optional, when filled, the MachineHealthCheck controller\ncreates a new object from the template referenced and hands off remediation of the machine to\na controller that lives outside of Cluster API."
+                  description: "RemediationTemplate is a reference to a remediation template\nprovided by an infrastructure provider.\n\nThis field is completely optional, when filled, the MachineHealthCheck controller\ncreates a new object from the template referenced and hands off remediation of the machine to\na controller that lives outside of Cluster API."
                   properties:
                     apiVersion:
                       description: "API version of the referent."
                       type: "string"
                     fieldPath:
-                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                       type: "string"
                     kind:
                       description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
@@ -147,7 +147,7 @@ spec:
                     type: "object"
                   type: "array"
                 unhealthyRange:
-                  description: "Any further remediation is only allowed if the number of machines selected by \"selector\" as not healthy\nis within the range of \"UnhealthyRange\". Takes precedence over MaxUnhealthy.\nEg. \"[3-5]\" - This means that remediation will be allowed only when:\n(a) there are at least 3 unhealthy machines (and)\n(b) there are at most 5 unhealthy machines\n\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details."
+                  description: "Any further remediation is only allowed if the number of machines selected by \"selector\" as not healthy\nis within the range of \"UnhealthyRange\". Takes precedence over MaxUnhealthy.\nEg. \"[3-5]\" - This means that remediation will be allowed only when:\n(a) there are at least 3 unhealthy machines (and)\n(b) there are at most 5 unhealthy machines\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details."
                   pattern: "^\\[[0-9]+-[0-9]+\\]$"
                   type: "string"
               required:

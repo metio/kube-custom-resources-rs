@@ -2980,6 +2980,14 @@ pub enum CheClusterDevEnvironmentsImagePullPolicy {
 /// user home directory in workspaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsPersistUserHome {
+    /// Determines whether the init container that initializes the persistent home directory should be disabled.
+    /// When the `/home/user` directory is persisted, the init container is used to initialize the directory before
+    /// the workspace starts. If set to true, the init container will not be created.
+    /// Disabling the init container allows home persistence to be initialized by the entrypoint present in the workspace's first container component.
+    /// This field is not used if the `devEnvironments.persistUserHome.enabled` field is set to false.
+    /// The init container is enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableInitContainer")]
+    pub disable_init_container: Option<bool>,
     /// Determines whether the user home directory in workspaces should persist between
     /// workspace shutdown and startup.
     /// Must be used with the 'per-user' or 'per-workspace' PVC strategy in order to take effect.

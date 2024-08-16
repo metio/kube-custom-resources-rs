@@ -86,6 +86,8 @@ pub struct SqlJobSpec {
     pub sql_config_map_key_ref: Option<SqlJobSqlConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
+    pub time_zone: Option<String>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<SqlJobTolerations>>,

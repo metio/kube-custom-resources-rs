@@ -418,6 +418,10 @@ pub struct PrometheusAgentSpec {
     /// Defines on which Nodes the Pods are scheduled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// Settings related to the OTLP receiver feature.
+    /// It requires Prometheus >= v2.54.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub otlp: Option<PrometheusAgentOtlp>,
     /// When true, Prometheus resolves label conflicts by renaming the labels in the scraped data
     ///  to “exported_” for all targets created from ServiceMonitor, PodMonitor and
     /// ScrapeConfig objects. Otherwise the HonorLabels field of the service or pod monitor applies.
@@ -4379,6 +4383,15 @@ pub enum PrometheusAgentMode {
     DaemonSet,
 }
 
+/// Settings related to the OTLP receiver feature.
+/// It requires Prometheus >= v2.54.0.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusAgentOtlp {
+    /// List of OpenTelemetry Attributes that should be promoted to metric labels, defaults to none.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteResourceAttributes")]
+    pub promote_resource_attributes: Option<Vec<String>>,
+}
+
 /// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.
 /// The default behavior is all PVCs are retained.
 /// This is an alpha field from kubernetes 1.23 until 1.26 and a beta field from 1.26.
@@ -4690,9 +4703,6 @@ pub struct PrometheusAgentRemoteWrite {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
-    /// 
-    /// 
-    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// QueueConfig allows tuning of the remote write queue parameters.
@@ -4997,9 +5007,6 @@ pub struct PrometheusAgentRemoteWriteOauth2 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
-    /// 
-    /// 
-    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// `scopes` defines the OAuth2 scopes used for the token request.

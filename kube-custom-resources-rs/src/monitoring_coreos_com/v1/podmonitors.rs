@@ -542,9 +542,6 @@ pub struct PodMonitorPodMetricsEndpointsOauth2 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
-    /// 
-    /// 
-    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// `scopes` defines the OAuth2 scopes used for the token request.

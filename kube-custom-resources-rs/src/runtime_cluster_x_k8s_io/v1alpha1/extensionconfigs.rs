@@ -43,7 +43,6 @@ pub struct ExtensionConfigClientConfig {
     /// Service is a reference to the Kubernetes service for the Extension server.
     /// Note: Exactly one of `url` or `service` must be specified.
     /// 
-    /// 
     /// If the Extension server is running within a cluster, then you should use `service`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<ExtensionConfigClientConfigService>,
@@ -51,17 +50,13 @@ pub struct ExtensionConfigClientConfig {
     /// (`scheme://host:port/path`).
     /// Note: Exactly one of `url` or `service` must be specified.
     /// 
-    /// 
     /// The scheme must be "https".
-    /// 
     /// 
     /// The `host` should not refer to a service running in the cluster; use
     /// the `service` field instead.
     /// 
-    /// 
     /// A path is optional, and if present may be any string permissible in
     /// a URL. If a path is set it will be used as prefix to the hook-specific path.
-    /// 
     /// 
     /// Attempting to use a user or basic auth e.g. "user:password@" is not
     /// allowed. Fragments ("#...") and query parameters ("?...") are not
@@ -72,7 +67,6 @@ pub struct ExtensionConfigClientConfig {
 
 /// Service is a reference to the Kubernetes service for the Extension server.
 /// Note: Exactly one of `url` or `service` must be specified.
-/// 
 /// 
 /// If the Extension server is running within a cluster, then you should use `service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
