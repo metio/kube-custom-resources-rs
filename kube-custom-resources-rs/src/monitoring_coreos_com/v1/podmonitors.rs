@@ -22,13 +22,11 @@ pub struct PodMonitorSpec {
     /// `attachMetadata` defines additional metadata which is added to the
     /// discovered targets.
     /// 
-    /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
     pub attach_metadata: Option<PodMonitorAttachMetadata>,
     /// When defined, bodySizeLimit specifies a job level limit on the size
     /// of uncompressed response body that will be accepted by Prometheus.
-    /// 
     /// 
     /// It requires Prometheus >= v2.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodySizeLimit")]
@@ -37,11 +35,9 @@ pub struct PodMonitorSpec {
     /// `jobLabel` selects the label from the associated Kubernetes `Pod`
     /// object which will be used as the `job` label for all metrics.
     /// 
-    /// 
     /// For example if `jobLabel` is set to `foo` and the Kubernetes `Pod`
     /// object is labeled with `foo: bar`, then Prometheus adds the `job="bar"`
     /// label to all ingested metrics.
-    /// 
     /// 
     /// If the value of this field is empty, the `job` label of the metrics
     /// defaults to the namespace and name of the PodMonitor object (e.g. `<namespace>/<name>`).
@@ -50,24 +46,20 @@ pub struct PodMonitorSpec {
     /// Per-scrape limit on the number of targets dropped by relabeling
     /// that will be kept in memory. 0 means no limit.
     /// 
-    /// 
     /// It requires Prometheus >= v2.47.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepDroppedTargets")]
     pub keep_dropped_targets: Option<i64>,
     /// Per-scrape limit on number of labels that will be accepted for a sample.
-    /// 
     /// 
     /// It requires Prometheus >= v2.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelLimit")]
     pub label_limit: Option<i64>,
     /// Per-scrape limit on length of labels name that will be accepted for a sample.
     /// 
-    /// 
     /// It requires Prometheus >= v2.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelNameLengthLimit")]
     pub label_name_length_limit: Option<i64>,
     /// Per-scrape limit on length of labels value that will be accepted for a sample.
-    /// 
     /// 
     /// It requires Prometheus >= v2.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelValueLengthLimit")]
@@ -93,9 +85,7 @@ pub struct PodMonitorSpec {
     /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
     /// 
-    /// 
     /// If unset, Prometheus uses its default value.
-    /// 
     /// 
     /// It requires Prometheus >= v2.49.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
@@ -111,13 +101,11 @@ pub struct PodMonitorSpec {
 /// `attachMetadata` defines additional metadata which is added to the
 /// discovered targets.
 /// 
-/// 
 /// It requires Prometheus >= v2.35.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMonitorAttachMetadata {
     /// When set to true, Prometheus attaches node metadata to the discovered
     /// targets.
-    /// 
     /// 
     /// The Prometheus service account must have the `list` and `watch`
     /// permissions on the `Nodes` objects.
@@ -145,13 +133,11 @@ pub struct PodMonitorPodMetricsEndpoints {
     /// `authorization` configures the Authorization header credentials to use when
     /// scraping the target.
     /// 
-    /// 
     /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<PodMonitorPodMetricsEndpointsAuthorization>,
     /// `basicAuth` configures the Basic Authentication credentials to use when
     /// scraping the target.
-    /// 
     /// 
     /// Cannot be set at the same time as `authorization`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
@@ -159,7 +145,6 @@ pub struct PodMonitorPodMetricsEndpoints {
     /// `bearerTokenSecret` specifies a key of a Secret containing the bearer
     /// token for scraping targets. The secret needs to be in the same namespace
     /// as the PodMonitor object and readable by the Prometheus Operator.
-    /// 
     /// 
     /// Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
@@ -170,9 +155,7 @@ pub struct PodMonitorPodMetricsEndpoints {
     /// When true, the pods which are not running (e.g. either in Failed or
     /// Succeeded state) are dropped during the target discovery.
     /// 
-    /// 
     /// If unset, the filtering is enabled.
-    /// 
     /// 
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRunning")]
@@ -191,7 +174,6 @@ pub struct PodMonitorPodMetricsEndpoints {
     pub honor_timestamps: Option<bool>,
     /// Interval at which Prometheus scrapes the metrics from the target.
     /// 
-    /// 
     /// If empty, Prometheus uses the global scrape interval.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
@@ -201,9 +183,7 @@ pub struct PodMonitorPodMetricsEndpoints {
     pub metric_relabelings: Option<Vec<PodMonitorPodMetricsEndpointsMetricRelabelings>>,
     /// `oauth2` configures the OAuth2 settings to use when scraping the target.
     /// 
-    /// 
     /// It requires Prometheus >= 2.27.0.
-    /// 
     /// 
     /// Cannot be set at the same time as `authorization`, or `basicAuth`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -213,12 +193,10 @@ pub struct PodMonitorPodMetricsEndpoints {
     pub params: Option<BTreeMap<String, String>>,
     /// HTTP path from which to scrape for metrics.
     /// 
-    /// 
     /// If empty, Prometheus uses the default value (e.g. `/metrics`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Name of the Pod port which this endpoint refers to.
-    /// 
     /// 
     /// It takes precedence over `targetPort`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -230,28 +208,22 @@ pub struct PodMonitorPodMetricsEndpoints {
     /// `relabelings` configures the relabeling rules to apply the target's
     /// metadata labels.
     /// 
-    /// 
     /// The Operator automatically adds relabelings for a few standard Kubernetes fields.
     /// 
-    /// 
     /// The original scrape job's name is available via the `__tmp_prometheus_job_name` label.
-    /// 
     /// 
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<PodMonitorPodMetricsEndpointsRelabelings>>,
     /// HTTP scheme to use for scraping.
     /// 
-    /// 
     /// `http` and `https` are the expected values unless you rewrite the
     /// `__scheme__` label via relabeling.
-    /// 
     /// 
     /// If empty, Prometheus uses the default value `http`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<PodMonitorPodMetricsEndpointsScheme>,
     /// Timeout after which Prometheus considers the scrape to be failed.
-    /// 
     /// 
     /// If empty, Prometheus uses the global scrape timeout unless it is less
     /// than the target's scrape interval value in which the latter is used.
@@ -259,7 +231,6 @@ pub struct PodMonitorPodMetricsEndpoints {
     pub scrape_timeout: Option<String>,
     /// Name or number of the target port of the `Pod` object behind the Service, the
     /// port must be specified with container port property.
-    /// 
     /// 
     /// Deprecated: use 'port' instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
@@ -271,7 +242,6 @@ pub struct PodMonitorPodMetricsEndpoints {
     /// the metrics that have an explicit timestamp present in scraped data.
     /// Has no effect if `honorTimestamps` is false.
     /// 
-    /// 
     /// It requires Prometheus >= v2.48.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackTimestampsStaleness")]
     pub track_timestamps_staleness: Option<bool>,
@@ -279,7 +249,6 @@ pub struct PodMonitorPodMetricsEndpoints {
 
 /// `authorization` configures the Authorization header credentials to use when
 /// scraping the target.
-/// 
 /// 
 /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -289,9 +258,7 @@ pub struct PodMonitorPodMetricsEndpointsAuthorization {
     pub credentials: Option<PodMonitorPodMetricsEndpointsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
     /// 
-    /// 
     /// "Basic" is not a supported value.
-    /// 
     /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -307,9 +274,7 @@ pub struct PodMonitorPodMetricsEndpointsAuthorizationCredentials {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -319,7 +284,6 @@ pub struct PodMonitorPodMetricsEndpointsAuthorizationCredentials {
 
 /// `basicAuth` configures the Basic Authentication credentials to use when
 /// scraping the target.
-/// 
 /// 
 /// Cannot be set at the same time as `authorization`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -344,9 +308,7 @@ pub struct PodMonitorPodMetricsEndpointsBasicAuthPassword {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -364,9 +326,7 @@ pub struct PodMonitorPodMetricsEndpointsBasicAuthUsername {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -378,7 +338,6 @@ pub struct PodMonitorPodMetricsEndpointsBasicAuthUsername {
 /// token for scraping targets. The secret needs to be in the same namespace
 /// as the PodMonitor object and readable by the Prometheus Operator.
 /// 
-/// 
 /// Deprecated: use `authorization` instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMonitorPodMetricsEndpointsBearerTokenSecret {
@@ -388,9 +347,7 @@ pub struct PodMonitorPodMetricsEndpointsBearerTokenSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -401,22 +358,18 @@ pub struct PodMonitorPodMetricsEndpointsBearerTokenSecret {
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
-/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMonitorPodMetricsEndpointsMetricRelabelings {
     /// Action to perform based on the regex matching.
     /// 
-    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    /// 
     /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PodMonitorPodMetricsEndpointsMetricRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    /// 
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -426,7 +379,6 @@ pub struct PodMonitorPodMetricsEndpointsMetricRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -441,10 +393,8 @@ pub struct PodMonitorPodMetricsEndpointsMetricRelabelings {
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// 
-    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
@@ -453,7 +403,6 @@ pub struct PodMonitorPodMetricsEndpointsMetricRelabelings {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-/// 
 /// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -500,9 +449,7 @@ pub enum PodMonitorPodMetricsEndpointsMetricRelabelingsAction {
 
 /// `oauth2` configures the OAuth2 settings to use when scraping the target.
 /// 
-/// 
 /// It requires Prometheus >= 2.27.0.
-/// 
 /// 
 /// Cannot be set at the same time as `authorization`, or `basicAuth`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -523,20 +470,17 @@ pub struct PodMonitorPodMetricsEndpointsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PodMonitorPodMetricsEndpointsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// If unset, Prometheus uses its default value.
-    /// 
     /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
@@ -577,9 +521,7 @@ pub struct PodMonitorPodMetricsEndpointsOauth2ClientIdConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -596,9 +538,7 @@ pub struct PodMonitorPodMetricsEndpointsOauth2ClientIdSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -616,9 +556,7 @@ pub struct PodMonitorPodMetricsEndpointsOauth2ClientSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -635,9 +573,7 @@ pub struct PodMonitorPodMetricsEndpointsOauth2ProxyConnectHeader {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -663,12 +599,10 @@ pub struct PodMonitorPodMetricsEndpointsOauth2TlsConfig {
     pub key_secret: Option<PodMonitorPodMetricsEndpointsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PodMonitorPodMetricsEndpointsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -698,9 +632,7 @@ pub struct PodMonitorPodMetricsEndpointsOauth2TlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -717,9 +649,7 @@ pub struct PodMonitorPodMetricsEndpointsOauth2TlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -747,9 +677,7 @@ pub struct PodMonitorPodMetricsEndpointsOauth2TlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -766,9 +694,7 @@ pub struct PodMonitorPodMetricsEndpointsOauth2TlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -785,9 +711,7 @@ pub struct PodMonitorPodMetricsEndpointsOauth2TlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -826,22 +750,18 @@ pub enum PodMonitorPodMetricsEndpointsOauth2TlsConfigMinVersion {
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
-/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMonitorPodMetricsEndpointsRelabelings {
     /// Action to perform based on the regex matching.
     /// 
-    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    /// 
     /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PodMonitorPodMetricsEndpointsRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    /// 
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -851,7 +771,6 @@ pub struct PodMonitorPodMetricsEndpointsRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -866,10 +785,8 @@ pub struct PodMonitorPodMetricsEndpointsRelabelings {
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// 
-    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
@@ -878,7 +795,6 @@ pub struct PodMonitorPodMetricsEndpointsRelabelings {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-/// 
 /// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -950,12 +866,10 @@ pub struct PodMonitorPodMetricsEndpointsTlsConfig {
     pub key_secret: Option<PodMonitorPodMetricsEndpointsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PodMonitorPodMetricsEndpointsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -985,9 +899,7 @@ pub struct PodMonitorPodMetricsEndpointsTlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1004,9 +916,7 @@ pub struct PodMonitorPodMetricsEndpointsTlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1034,9 +944,7 @@ pub struct PodMonitorPodMetricsEndpointsTlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1053,9 +961,7 @@ pub struct PodMonitorPodMetricsEndpointsTlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1072,9 +978,7 @@ pub struct PodMonitorPodMetricsEndpointsTlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined

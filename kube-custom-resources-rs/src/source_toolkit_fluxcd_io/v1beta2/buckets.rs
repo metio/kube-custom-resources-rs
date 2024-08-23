@@ -86,7 +86,7 @@ pub struct BucketSpec {
     /// Bucket provider.
     /// 
     /// 
-    /// This field is only supported for the `aws` provider.
+    /// This field is only supported for the `aws` and `generic` providers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sts: Option<BucketSts>,
     /// Suspend tells the controller to suspend the reconciliation of this
@@ -178,14 +178,61 @@ pub struct BucketSecretRef {
 /// Bucket provider.
 /// 
 /// 
-/// This field is only supported for the `aws` provider.
+/// This field is only supported for the `aws` and `generic` providers.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BucketSts {
+    /// CertSecretRef can be given the name of a Secret containing
+    /// either or both of
+    /// 
+    /// 
+    /// - a PEM-encoded client certificate (`tls.crt`) and private
+    /// key (`tls.key`);
+    /// - a PEM-encoded CA certificate (`ca.crt`)
+    /// 
+    /// 
+    /// and whichever are supplied, will be used for connecting to the
+    /// STS endpoint. The client cert and key are useful if you are
+    /// authenticating with a certificate; the CA cert is useful if
+    /// you are using a self-signed server certificate. The Secret must
+    /// be of type `Opaque` or `kubernetes.io/tls`.
+    /// 
+    /// 
+    /// This field is only supported for the `ldap` provider.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
+    pub cert_secret_ref: Option<BucketStsCertSecretRef>,
     /// Endpoint is the HTTP/S endpoint of the Security Token Service from
     /// where temporary credentials will be fetched.
     pub endpoint: String,
     /// Provider of the Security Token Service.
     pub provider: BucketStsProvider,
+    /// SecretRef specifies the Secret containing authentication credentials
+    /// for the STS endpoint. This Secret must contain the fields `username`
+    /// and `password` and is supported only for the `ldap` provider.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<BucketStsSecretRef>,
+}
+
+/// CertSecretRef can be given the name of a Secret containing
+/// either or both of
+/// 
+/// 
+/// - a PEM-encoded client certificate (`tls.crt`) and private
+/// key (`tls.key`);
+/// - a PEM-encoded CA certificate (`ca.crt`)
+/// 
+/// 
+/// and whichever are supplied, will be used for connecting to the
+/// STS endpoint. The client cert and key are useful if you are
+/// authenticating with a certificate; the CA cert is useful if
+/// you are using a self-signed server certificate. The Secret must
+/// be of type `Opaque` or `kubernetes.io/tls`.
+/// 
+/// 
+/// This field is only supported for the `ldap` provider.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BucketStsCertSecretRef {
+    /// Name of the referent.
+    pub name: String,
 }
 
 /// STS specifies the required configuration to use a Security Token
@@ -193,11 +240,22 @@ pub struct BucketSts {
 /// Bucket provider.
 /// 
 /// 
-/// This field is only supported for the `aws` provider.
+/// This field is only supported for the `aws` and `generic` providers.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BucketStsProvider {
     #[serde(rename = "aws")]
     Aws,
+    #[serde(rename = "ldap")]
+    Ldap,
+}
+
+/// SecretRef specifies the Secret containing authentication credentials
+/// for the STS endpoint. This Secret must contain the fields `username`
+/// and `password` and is supported only for the `ldap` provider.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BucketStsSecretRef {
+    /// Name of the referent.
+    pub name: String,
 }
 
 /// BucketStatus records the observed state of a Bucket.

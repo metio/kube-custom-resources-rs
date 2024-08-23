@@ -47,6 +47,9 @@ pub struct FilterFilters {
     /// Kubernetes defines Kubernetes Filter configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<FilterFiltersKubernetes>,
+    /// LogToMetrics defines a Log to Metrics Filter configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logToMetrics")]
+    pub log_to_metrics: Option<FilterFiltersLogToMetrics>,
     /// Lua defines Lua Filter configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lua: Option<FilterFiltersLua>,
@@ -282,6 +285,69 @@ pub struct FilterFiltersKubernetes {
     /// This could mitigate the Kube API heavy traffic issue for large cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useKubelet")]
     pub use_kubelet: Option<bool>,
+}
+
+/// LogToMetrics defines a Log to Metrics Filter configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FilterFiltersLogToMetrics {
+    /// Add a custom label NAME and set the value to the value of KEY
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addLabel")]
+    pub add_label: Option<Vec<String>>,
+    /// Alias for the plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub alias: Option<String>,
+    /// Defines a bucket for histogram
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bucket: Option<Vec<String>>,
+    /// Flag that defines if logs should be discarded after processing. This applies
+    /// for all logs, no matter if they have emitted metrics or not.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discardLogs")]
+    pub discard_logs: Option<bool>,
+    /// set a buffer limit to restrict memory usage of metrics emitter
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterMemBufLimit")]
+    pub emitter_mem_buf_limit: Option<String>,
+    /// Name of the emitter (advanced users)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterName")]
+    pub emitter_name: Option<String>,
+    /// Optional filter for records in which the content of KEY does not matches the regular expression.
+    /// Value Format: FIELD REGEX
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exclude: Option<Vec<String>>,
+    /// If enabled, it will automatically put pod_id, pod_name, namespace_name, docker_id and container_name
+    /// into the metric as labels. This option is intended to be used in combination with the kubernetes filter plugin.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesMode")]
+    pub kubernetes_mode: Option<bool>,
+    /// Includes a record field as label dimension in the metric.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelField")]
+    pub label_field: Option<Vec<String>>,
+    /// Sets a help text for the metric.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricDescription")]
+    pub metric_description: Option<String>,
+    /// Defines the mode for the metric. Valid values are [counter, gauge or histogram]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricMode")]
+    pub metric_mode: Option<String>,
+    /// Sets the name of the metric.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
+    pub metric_name: Option<String>,
+    /// Namespace of the metric
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricNamespace")]
+    pub metric_namespace: Option<String>,
+    /// Sets a sub-system for the metric.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricSubsystem")]
+    pub metric_subsystem: Option<String>,
+    /// Optional filter for records in which the content of KEY matches the regular expression.
+    /// Value Format: FIELD REGEX
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<Vec<String>>,
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
+    pub retry_limit: Option<String>,
+    /// Defines the tag for the generated metrics record
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+    /// Specify the record field that holds a numerical value
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueField")]
+    pub value_field: Option<String>,
 }
 
 /// Lua defines Lua Filter configuration.

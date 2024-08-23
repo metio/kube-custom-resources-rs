@@ -40,8 +40,18 @@ pub struct BGPFilterExportV4 {
     pub interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixLength")]
+    pub prefix_length: Option<BGPFilterExportV4PrefixLength>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BGPFilterExportV4PrefixLength {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<i32>,
 }
 
 /// BGPFilterRuleV6 defines a BGP filter rule consisting a single IPv6 CIDR block and a filter action for this CIDR.
@@ -54,8 +64,18 @@ pub struct BGPFilterExportV6 {
     pub interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixLength")]
+    pub prefix_length: Option<BGPFilterExportV6PrefixLength>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BGPFilterExportV6PrefixLength {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<i32>,
 }
 
 /// BGPFilterRuleV4 defines a BGP filter rule consisting a single IPv4 CIDR block and a filter action for this CIDR.
@@ -68,8 +88,18 @@ pub struct BGPFilterImportV4 {
     pub interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixLength")]
+    pub prefix_length: Option<BGPFilterImportV4PrefixLength>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BGPFilterImportV4PrefixLength {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<i32>,
 }
 
 /// BGPFilterRuleV6 defines a BGP filter rule consisting a single IPv6 CIDR block and a filter action for this CIDR.
@@ -82,7 +112,17 @@ pub struct BGPFilterImportV6 {
     pub interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixLength")]
+    pub prefix_length: Option<BGPFilterImportV6PrefixLength>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BGPFilterImportV6PrefixLength {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<i32>,
 }
 

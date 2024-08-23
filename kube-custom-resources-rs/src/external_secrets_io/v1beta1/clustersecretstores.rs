@@ -926,8 +926,11 @@ pub struct ClusterSecretStoreProviderBitwardensecretsmanager {
     pub bitwarden_server_sdkurl: Option<String>,
     /// Base64 encoded certificate for the bitwarden server sdk. The sdk MUST run with HTTPS to make sure no MITM attack
     /// can be performed.
-    #[serde(rename = "caBundle")]
-    pub ca_bundle: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// see: https://external-secrets.io/latest/spec/#external-secrets.io/v1alpha1.CAProvider
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
+    pub ca_provider: Option<ClusterSecretStoreProviderBitwardensecretsmanagerCaProvider>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityURL")]
     pub identity_url: Option<String>,
     /// OrganizationID determines which organization this secret store manages.
@@ -968,6 +971,30 @@ pub struct ClusterSecretStoreProviderBitwardensecretsmanagerAuthSecretRefCredent
     /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// see: https://external-secrets.io/latest/spec/#external-secrets.io/v1alpha1.CAProvider
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderBitwardensecretsmanagerCaProvider {
+    /// The key where the CA certificate can be found in the Secret or ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the object located at the provider type.
+    pub name: String,
+    /// The namespace the Provider type is in.
+    /// Can only be defined when used in a ClusterSecretStore.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// The type of provider to use such as "Secret", or "ConfigMap".
+    #[serde(rename = "type")]
+    pub r#type: ClusterSecretStoreProviderBitwardensecretsmanagerCaProviderType,
+}
+
+/// see: https://external-secrets.io/latest/spec/#external-secrets.io/v1alpha1.CAProvider
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterSecretStoreProviderBitwardensecretsmanagerCaProviderType {
+    Secret,
+    ConfigMap,
 }
 
 /// Chef configures this store to sync secrets with chef server

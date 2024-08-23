@@ -9,7 +9,8 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// CouchbaseRoleBindingSpec defines the group of subjects i.e. users, and the role i.e. group they are a member of.
+/// CouchbaseRoleBindingSpec defines the group of subjects i.e. users, and the
+/// role i.e. group they are a member of.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseRoleBinding", plural = "couchbaserolebindings")]
 #[kube(namespaced)]

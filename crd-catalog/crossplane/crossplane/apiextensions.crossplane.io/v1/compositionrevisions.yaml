@@ -410,13 +410,13 @@ spec:
                   type: "object"
                 mode:
                   default: "Resources"
-                  description: "Mode controls what type or \"mode\" of Composition will be used.\n\n\n\"Resources\" (the default) indicates that a Composition uses what is\ncommonly referred to as \"Patch & Transform\" or P&T composition. This mode\nof Composition uses an array of resources, each a template for a composed\nresource.\n\n\n\"Pipeline\" indicates that a Composition specifies a pipeline\nof Composition Functions, each of which is responsible for producing\ncomposed resources that Crossplane should create or update. THE PIPELINE\nMODE IS A BETA FEATURE. It is not honored if the relevant Crossplane\nfeature flag is disabled."
+                  description: "Mode controls what type or \"mode\" of Composition will be used.\n\n\n\"Pipeline\" indicates that a Composition specifies a pipeline of\nComposition Functions, each of which is responsible for producing\ncomposed resources that Crossplane should create or update.\n\n\n\"Resources\" indicates that a Composition uses what is commonly referred\nto as \"Patch & Transform\" or P&T composition. This mode of Composition\nuses an array of resources, each a template for a composed resource.\n\n\nAll Compositions should use Pipeline mode. Resources mode is deprecated.\nResources mode won't be removed in Crossplane 1.x, and will remain the\ndefault to avoid breaking legacy Compositions. However, it's no longer\naccepting new features, and only accepting security related bug fixes."
                   enum:
                     - "Resources"
                     - "Pipeline"
                   type: "string"
                 patchSets:
-                  description: "PatchSets define a named set of patches that may be included by any\nresource in this Composition. PatchSets cannot themselves refer to other\nPatchSets.\n\n\nPatchSets are only used by the \"Resources\" mode of Composition. They\nare ignored by other modes."
+                  description: "PatchSets define a named set of patches that may be included by any\nresource in this Composition. PatchSets cannot themselves refer to other\nPatchSets.\n\n\nPatchSets are only used by the \"Resources\" mode of Composition. They\nare ignored by other modes.\n\n\nDeprecated: Use Composition Functions instead."
                   items:
                     description: "A PatchSet is a set of patches that can be reused from all resources within\na Composition."
                     properties:
@@ -679,7 +679,7 @@ spec:
                     type: "object"
                   type: "array"
                 pipeline:
-                  description: "Pipeline is a list of composition function steps that will be used when a\ncomposite resource referring to this composition is created. One of\nresources and pipeline must be specified - you cannot specify both.\n\n\nThe Pipeline is only used by the \"Pipeline\" mode of Composition. It is\nignored by other modes.\n\n\nTHIS IS A BETA FIELD. It is not honored if the relevant Crossplane\nfeature flag is disabled."
+                  description: "Pipeline is a list of composition function steps that will be used when a\ncomposite resource referring to this composition is created. One of\nresources and pipeline must be specified - you cannot specify both.\n\n\nThe Pipeline is only used by the \"Pipeline\" mode of Composition. It is\nignored by other modes."
                   items:
                     description: "A PipelineStep in a Composition Function pipeline."
                     properties:
@@ -740,6 +740,9 @@ spec:
                       - "step"
                     type: "object"
                   type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "step"
+                  x-kubernetes-list-type: "map"
                 publishConnectionDetailsWithStoreConfigRef:
                   default:
                     name: "default"
@@ -752,7 +755,7 @@ spec:
                     - "name"
                   type: "object"
                 resources:
-                  description: "Resources is a list of resource templates that will be used when a\ncomposite resource referring to this composition is created.\n\n\nResources are only used by the \"Resources\" mode of Composition. They are\nignored by other modes."
+                  description: "Resources is a list of resource templates that will be used when a\ncomposite resource referring to this composition is created.\n\n\nResources are only used by the \"Resources\" mode of Composition. They are\nignored by other modes.\n\n\nDeprecated: Use Composition Functions instead."
                   items:
                     description: "ComposedTemplate is used to provide information about how the composed resource\nshould be processed."
                     properties:

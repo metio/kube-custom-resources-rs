@@ -64,6 +64,8 @@ pub enum FlinkDeploymentFlinkVersion {
     V118,
     #[serde(rename = "v1_19")]
     V119,
+    #[serde(rename = "v1_20")]
+    V120,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1082,6 +1084,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecContainersResourcesClaims {
 pub struct FlinkDeploymentJobManagerPodTemplateSpecContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentJobManagerPodTemplateSpecContainersSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<FlinkDeploymentJobManagerPodTemplateSpecContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1102,6 +1106,14 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecContainersSecurityContext {
     pub seccomp_profile: Option<FlinkDeploymentJobManagerPodTemplateSpecContainersSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentJobManagerPodTemplateSpecContainersSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateSpecContainersSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1230,6 +1242,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecContainersVolumeMounts {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -1688,6 +1702,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersResourcesC
 pub struct FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1708,6 +1724,14 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersSecurityCo
     pub seccomp_profile: Option<FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1836,6 +1860,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersVolumeMoun
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -2288,6 +2314,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecInitContainersResourcesClaims
 pub struct FlinkDeploymentJobManagerPodTemplateSpecInitContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentJobManagerPodTemplateSpecInitContainersSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<FlinkDeploymentJobManagerPodTemplateSpecInitContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2308,6 +2336,14 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecInitContainersSecurityContext
     pub seccomp_profile: Option<FlinkDeploymentJobManagerPodTemplateSpecInitContainersSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentJobManagerPodTemplateSpecInitContainersSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateSpecInitContainersSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2436,6 +2472,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecInitContainersVolumeMounts {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -2478,6 +2516,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecSchedulingGates {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentJobManagerPodTemplateSpecSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentJobManagerPodTemplateSpecSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
@@ -2498,6 +2538,14 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecSecurityContext {
     pub sysctls: Option<Vec<FlinkDeploymentJobManagerPodTemplateSpecSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentJobManagerPodTemplateSpecSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateSpecSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3454,6 +3502,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3557,6 +3607,18 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesStateWaiti
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
@@ -3580,6 +3642,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatuses 
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3683,6 +3747,18 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesS
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentJobManagerPodTemplateStatusHostIPs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
@@ -3712,6 +3788,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3812,6 +3890,18 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesStateW
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4774,6 +4864,8 @@ pub struct FlinkDeploymentPodTemplateSpecContainersResourcesClaims {
 pub struct FlinkDeploymentPodTemplateSpecContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentPodTemplateSpecContainersSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<FlinkDeploymentPodTemplateSpecContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4794,6 +4886,14 @@ pub struct FlinkDeploymentPodTemplateSpecContainersSecurityContext {
     pub seccomp_profile: Option<FlinkDeploymentPodTemplateSpecContainersSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentPodTemplateSpecContainersSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateSpecContainersSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4922,6 +5022,8 @@ pub struct FlinkDeploymentPodTemplateSpecContainersVolumeMounts {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -5380,6 +5482,8 @@ pub struct FlinkDeploymentPodTemplateSpecEphemeralContainersResourcesClaims {
 pub struct FlinkDeploymentPodTemplateSpecEphemeralContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentPodTemplateSpecEphemeralContainersSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<FlinkDeploymentPodTemplateSpecEphemeralContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5400,6 +5504,14 @@ pub struct FlinkDeploymentPodTemplateSpecEphemeralContainersSecurityContext {
     pub seccomp_profile: Option<FlinkDeploymentPodTemplateSpecEphemeralContainersSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentPodTemplateSpecEphemeralContainersSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateSpecEphemeralContainersSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5528,6 +5640,8 @@ pub struct FlinkDeploymentPodTemplateSpecEphemeralContainersVolumeMounts {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -5980,6 +6094,8 @@ pub struct FlinkDeploymentPodTemplateSpecInitContainersResourcesClaims {
 pub struct FlinkDeploymentPodTemplateSpecInitContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentPodTemplateSpecInitContainersSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<FlinkDeploymentPodTemplateSpecInitContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6000,6 +6116,14 @@ pub struct FlinkDeploymentPodTemplateSpecInitContainersSecurityContext {
     pub seccomp_profile: Option<FlinkDeploymentPodTemplateSpecInitContainersSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentPodTemplateSpecInitContainersSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateSpecInitContainersSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6128,6 +6252,8 @@ pub struct FlinkDeploymentPodTemplateSpecInitContainersVolumeMounts {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -6170,6 +6296,8 @@ pub struct FlinkDeploymentPodTemplateSpecSchedulingGates {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentPodTemplateSpecSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentPodTemplateSpecSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
@@ -6190,6 +6318,14 @@ pub struct FlinkDeploymentPodTemplateSpecSecurityContext {
     pub sysctls: Option<Vec<FlinkDeploymentPodTemplateSpecSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentPodTemplateSpecSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateSpecSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7146,6 +7282,8 @@ pub struct FlinkDeploymentPodTemplateStatusContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentPodTemplateStatusContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<FlinkDeploymentPodTemplateStatusContainerStatusesVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7249,6 +7387,18 @@ pub struct FlinkDeploymentPodTemplateStatusContainerStatusesStateWaiting {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusContainerStatusesVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
@@ -7272,6 +7422,8 @@ pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7375,6 +7527,18 @@ pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesStateWaitin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentPodTemplateStatusHostIPs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
@@ -7404,6 +7568,8 @@ pub struct FlinkDeploymentPodTemplateStatusInitContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentPodTemplateStatusInitContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<FlinkDeploymentPodTemplateStatusInitContainerStatusesVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7504,6 +7670,18 @@ pub struct FlinkDeploymentPodTemplateStatusInitContainerStatusesStateWaiting {
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusInitContainerStatusesVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8458,6 +8636,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecContainersResourcesClaims {
 pub struct FlinkDeploymentTaskManagerPodTemplateSpecContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentTaskManagerPodTemplateSpecContainersSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<FlinkDeploymentTaskManagerPodTemplateSpecContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8478,6 +8658,14 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecContainersSecurityContext {
     pub seccomp_profile: Option<FlinkDeploymentTaskManagerPodTemplateSpecContainersSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentTaskManagerPodTemplateSpecContainersSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateSpecContainersSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8606,6 +8794,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecContainersVolumeMounts {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -9064,6 +9254,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersResources
 pub struct FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9084,6 +9276,14 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersSecurityC
     pub seccomp_profile: Option<FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9212,6 +9412,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersVolumeMou
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -9664,6 +9866,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecInitContainersResourcesClaim
 pub struct FlinkDeploymentTaskManagerPodTemplateSpecInitContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentTaskManagerPodTemplateSpecInitContainersSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<FlinkDeploymentTaskManagerPodTemplateSpecInitContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9684,6 +9888,14 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecInitContainersSecurityContex
     pub seccomp_profile: Option<FlinkDeploymentTaskManagerPodTemplateSpecInitContainersSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentTaskManagerPodTemplateSpecInitContainersSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateSpecInitContainersSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9812,6 +10024,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecInitContainersVolumeMounts {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -9854,6 +10068,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecSchedulingGates {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentTaskManagerPodTemplateSpecSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<FlinkDeploymentTaskManagerPodTemplateSpecSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
@@ -9874,6 +10090,14 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecSecurityContext {
     pub sysctls: Option<Vec<FlinkDeploymentTaskManagerPodTemplateSpecSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<FlinkDeploymentTaskManagerPodTemplateSpecSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateSpecSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10830,6 +11054,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10933,6 +11159,18 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesStateWait
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
@@ -10956,6 +11194,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatuses
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11059,6 +11299,18 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatuses
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentTaskManagerPodTemplateStatusHostIPs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
@@ -11088,6 +11340,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11188,6 +11442,18 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesState
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

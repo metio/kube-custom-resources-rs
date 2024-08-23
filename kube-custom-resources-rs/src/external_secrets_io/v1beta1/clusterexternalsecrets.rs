@@ -148,7 +148,6 @@ pub enum ClusterExternalSecretExternalSecretSpecDataRemoteRefMetadataPolicy {
 pub struct ClusterExternalSecretExternalSecretSpecDataSourceRef {
     /// GeneratorRef points to a generator custom resource.
     /// 
-    /// 
     /// Deprecated: The generatorRef is not implemented in .data[].
     /// this will be removed with v1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatorRef")]
@@ -159,7 +158,6 @@ pub struct ClusterExternalSecretExternalSecretSpecDataSourceRef {
 }
 
 /// GeneratorRef points to a generator custom resource.
-/// 
 /// 
 /// Deprecated: The generatorRef is not implemented in .data[].
 /// this will be removed with v1.

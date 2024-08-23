@@ -707,6 +707,14 @@ pub struct ComponentDefinitionLifecycleActions {
     /// and other administrative tasks.
     /// 
     /// 
+    /// The container executing this action has access to following variables:
+    /// 
+    /// 
+    /// - KB_ACCOUNT_NAME: The name of the system account to be created.
+    /// - KB_ACCOUNT_PASSWORD: The password for the system account.  // TODO: how to pass the password securely?
+    /// - KB_ACCOUNT_STATEMENT: The statement used to create the system account.
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountProvision")]
     pub account_provision: Option<ComponentDefinitionLifecycleActionsAccountProvision>,
@@ -840,34 +848,6 @@ pub struct ComponentDefinitionLifecycleActions {
     /// The PostProvision Action is intended to run only once.
     /// 
     /// 
-    /// The container executing this action has access to following environment variables:
-    /// 
-    /// 
-    /// - KB_CLUSTER_POD_IP_LIST: Comma-separated list of the cluster's pod IP addresses (e.g., "podIp1,podIp2").
-    /// - KB_CLUSTER_POD_NAME_LIST: Comma-separated list of the cluster's pod names (e.g., "pod1,pod2").
-    /// - KB_CLUSTER_POD_HOST_NAME_LIST: Comma-separated list of host names, each corresponding to a pod in
-    ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostName1,hostName2").
-    /// - KB_CLUSTER_POD_HOST_IP_LIST: Comma-separated list of host IP addresses, each corresponding to a pod in
-    ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-    /// 
-    /// 
-    /// - KB_CLUSTER_COMPONENT_POD_NAME_LIST: Comma-separated list of all pod names within the component
-    ///   (e.g., "pod1,pod2").
-    /// - KB_CLUSTER_COMPONENT_POD_IP_LIST: Comma-separated list of pod IP addresses,
-    ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "podIp1,podIp2").
-    /// - KB_CLUSTER_COMPONENT_POD_HOST_NAME_LIST: Comma-separated list of host names for each pod,
-    ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostName1,hostName2").
-    /// - KB_CLUSTER_COMPONENT_POD_HOST_IP_LIST: Comma-separated list of host IP addresses for each pod,
-    ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-    /// 
-    /// 
-    /// - KB_CLUSTER_COMPONENT_LIST: Comma-separated list of all cluster components (e.g., "comp1,comp2").
-    /// - KB_CLUSTER_COMPONENT_DELETING_LIST: Comma-separated list of components that are currently being deleted
-    ///   (e.g., "comp1,comp2").
-    /// - KB_CLUSTER_COMPONENT_UNDELETED_LIST: Comma-separated list of components that are not being deleted
-    ///   (e.g., "comp1,comp2").
-    /// 
-    /// 
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postProvision")]
     pub post_provision: Option<ComponentDefinitionLifecycleActionsPostProvision>,
@@ -880,41 +860,6 @@ pub struct ComponentDefinitionLifecycleActions {
     /// This action is executed immediately when a scale-down operation for the Component is initiated.
     /// The actual termination and cleanup of the Component and its associated resources will not proceed
     /// until the PreTerminate action has completed successfully.
-    /// 
-    /// 
-    /// The container executing this action has access to following environment variables:
-    /// 
-    /// 
-    /// - KB_CLUSTER_POD_IP_LIST: Comma-separated list of the cluster's pod IP addresses (e.g., "podIp1,podIp2").
-    /// - KB_CLUSTER_POD_NAME_LIST: Comma-separated list of the cluster's pod names (e.g., "pod1,pod2").
-    /// - KB_CLUSTER_POD_HOST_NAME_LIST: Comma-separated list of host names, each corresponding to a pod in
-    ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostName1,hostName2").
-    /// - KB_CLUSTER_POD_HOST_IP_LIST: Comma-separated list of host IP addresses, each corresponding to a pod in
-    ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-    /// 
-    /// 
-    /// - KB_CLUSTER_COMPONENT_POD_NAME_LIST: Comma-separated list of all pod names within the component
-    ///   (e.g., "pod1,pod2").
-    /// - KB_CLUSTER_COMPONENT_POD_IP_LIST: Comma-separated list of pod IP addresses,
-    ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "podIp1,podIp2").
-    /// - KB_CLUSTER_COMPONENT_POD_HOST_NAME_LIST: Comma-separated list of host names for each pod,
-    ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostName1,hostName2").
-    /// - KB_CLUSTER_COMPONENT_POD_HOST_IP_LIST: Comma-separated list of host IP addresses for each pod,
-    ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-    /// 
-    /// 
-    /// - KB_CLUSTER_COMPONENT_LIST: Comma-separated list of all cluster components (e.g., "comp1,comp2").
-    /// - KB_CLUSTER_COMPONENT_DELETING_LIST: Comma-separated list of components that are currently being deleted
-    ///   (e.g., "comp1,comp2").
-    /// - KB_CLUSTER_COMPONENT_UNDELETED_LIST: Comma-separated list of components that are not being deleted
-    ///   (e.g., "comp1,comp2").
-    /// 
-    /// 
-    /// - KB_CLUSTER_COMPONENT_IS_SCALING_IN: Indicates whether the component is currently scaling in.
-    ///   If this variable is present and set to "true", it denotes that the component is undergoing a scale-in operation.
-    ///   During scale-in, data rebalancing is necessary to maintain cluster integrity.
-    ///   Contrast this with a cluster deletion scenario where data rebalancing is not required as the entire cluster
-    ///   is being cleaned up.
     /// 
     /// 
     /// Note: This field is immutable once it has been set.
@@ -1008,12 +953,9 @@ pub struct ComponentDefinitionLifecycleActions {
     /// involving the current leader node.
     /// 
     /// 
-    /// The container executing this action has access to following environment variables:
+    /// The container executing this action has access to following variables:
     /// 
     /// 
-    /// - KB_LEADER_POD_IP: The IP address of the current leader's pod prior to the switchover.
-    /// - KB_LEADER_POD_NAME: The name of the current leader's pod prior to the switchover.
-    /// - KB_LEADER_POD_FQDN: The FQDN of the current leader's pod prior to the switchover.
     /// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).
     /// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).
     /// 
@@ -1029,6 +971,14 @@ pub struct ComponentDefinitionLifecycleActions {
 /// Use Case:
 /// This action is designed to create system accounts that are utilized for replication, monitoring, backup,
 /// and other administrative tasks.
+/// 
+/// 
+/// The container executing this action has access to following variables:
+/// 
+/// 
+/// - KB_ACCOUNT_NAME: The name of the system account to be created.
+/// - KB_ACCOUNT_PASSWORD: The password for the system account.  // TODO: how to pass the password securely?
+/// - KB_ACCOUNT_STATEMENT: The statement used to create the system account.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -1099,18 +1049,20 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -1124,7 +1076,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -1140,9 +1092,6 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -1150,10 +1099,12 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsAccountProvisionExecTargetPodSelector>,
 }
@@ -1372,18 +1323,20 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -1397,7 +1350,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -1413,9 +1366,6 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -1423,10 +1373,12 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsDataDumpExecTargetPodSelector>,
 }
@@ -1644,18 +1596,20 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -1669,7 +1623,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -1685,9 +1639,6 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -1695,10 +1646,12 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsDataLoadExecTargetPodSelector>,
 }
@@ -1935,18 +1888,20 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -1960,7 +1915,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -1976,9 +1931,6 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -1986,10 +1938,12 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsMemberJoinExecTargetPodSelector>,
 }
@@ -2226,18 +2180,20 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -2251,7 +2207,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -2267,9 +2223,6 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -2277,10 +2230,12 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsMemberLeaveExecTargetPodSelector>,
 }
@@ -2424,34 +2379,6 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveRetryPolicy {
 /// The PostProvision Action is intended to run only once.
 /// 
 /// 
-/// The container executing this action has access to following environment variables:
-/// 
-/// 
-/// - KB_CLUSTER_POD_IP_LIST: Comma-separated list of the cluster's pod IP addresses (e.g., "podIp1,podIp2").
-/// - KB_CLUSTER_POD_NAME_LIST: Comma-separated list of the cluster's pod names (e.g., "pod1,pod2").
-/// - KB_CLUSTER_POD_HOST_NAME_LIST: Comma-separated list of host names, each corresponding to a pod in
-///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostName1,hostName2").
-/// - KB_CLUSTER_POD_HOST_IP_LIST: Comma-separated list of host IP addresses, each corresponding to a pod in
-///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-/// 
-/// 
-/// - KB_CLUSTER_COMPONENT_POD_NAME_LIST: Comma-separated list of all pod names within the component
-///   (e.g., "pod1,pod2").
-/// - KB_CLUSTER_COMPONENT_POD_IP_LIST: Comma-separated list of pod IP addresses,
-///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "podIp1,podIp2").
-/// - KB_CLUSTER_COMPONENT_POD_HOST_NAME_LIST: Comma-separated list of host names for each pod,
-///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostName1,hostName2").
-/// - KB_CLUSTER_COMPONENT_POD_HOST_IP_LIST: Comma-separated list of host IP addresses for each pod,
-///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-/// 
-/// 
-/// - KB_CLUSTER_COMPONENT_LIST: Comma-separated list of all cluster components (e.g., "comp1,comp2").
-/// - KB_CLUSTER_COMPONENT_DELETING_LIST: Comma-separated list of components that are currently being deleted
-///   (e.g., "comp1,comp2").
-/// - KB_CLUSTER_COMPONENT_UNDELETED_LIST: Comma-separated list of components that are not being deleted
-///   (e.g., "comp1,comp2").
-/// 
-/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPostProvision {
@@ -2520,18 +2447,20 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -2545,7 +2474,7 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -2561,9 +2490,6 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -2571,10 +2497,12 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsPostProvisionExecTargetPodSelector>,
 }
@@ -2718,41 +2646,6 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionRetryPolicy {
 /// until the PreTerminate action has completed successfully.
 /// 
 /// 
-/// The container executing this action has access to following environment variables:
-/// 
-/// 
-/// - KB_CLUSTER_POD_IP_LIST: Comma-separated list of the cluster's pod IP addresses (e.g., "podIp1,podIp2").
-/// - KB_CLUSTER_POD_NAME_LIST: Comma-separated list of the cluster's pod names (e.g., "pod1,pod2").
-/// - KB_CLUSTER_POD_HOST_NAME_LIST: Comma-separated list of host names, each corresponding to a pod in
-///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostName1,hostName2").
-/// - KB_CLUSTER_POD_HOST_IP_LIST: Comma-separated list of host IP addresses, each corresponding to a pod in
-///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-/// 
-/// 
-/// - KB_CLUSTER_COMPONENT_POD_NAME_LIST: Comma-separated list of all pod names within the component
-///   (e.g., "pod1,pod2").
-/// - KB_CLUSTER_COMPONENT_POD_IP_LIST: Comma-separated list of pod IP addresses,
-///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "podIp1,podIp2").
-/// - KB_CLUSTER_COMPONENT_POD_HOST_NAME_LIST: Comma-separated list of host names for each pod,
-///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostName1,hostName2").
-/// - KB_CLUSTER_COMPONENT_POD_HOST_IP_LIST: Comma-separated list of host IP addresses for each pod,
-///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-/// 
-/// 
-/// - KB_CLUSTER_COMPONENT_LIST: Comma-separated list of all cluster components (e.g., "comp1,comp2").
-/// - KB_CLUSTER_COMPONENT_DELETING_LIST: Comma-separated list of components that are currently being deleted
-///   (e.g., "comp1,comp2").
-/// - KB_CLUSTER_COMPONENT_UNDELETED_LIST: Comma-separated list of components that are not being deleted
-///   (e.g., "comp1,comp2").
-/// 
-/// 
-/// - KB_CLUSTER_COMPONENT_IS_SCALING_IN: Indicates whether the component is currently scaling in.
-///   If this variable is present and set to "true", it denotes that the component is undergoing a scale-in operation.
-///   During scale-in, data rebalancing is necessary to maintain cluster integrity.
-///   Contrast this with a cluster deletion scenario where data rebalancing is not required as the entire cluster
-///   is being cleaned up.
-/// 
-/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPreTerminate {
@@ -2821,18 +2714,20 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -2846,7 +2741,7 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -2862,9 +2757,6 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -2872,10 +2764,12 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsPreTerminateExecTargetPodSelector>,
 }
@@ -3093,18 +2987,20 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -3118,7 +3014,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -3134,9 +3030,6 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -3144,10 +3037,12 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReadonlyExecTargetPodSelector>,
 }
@@ -3367,18 +3262,20 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -3392,7 +3289,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -3408,9 +3305,6 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -3418,10 +3312,12 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReadwriteExecTargetPodSelector>,
 }
@@ -3628,18 +3524,20 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -3653,7 +3551,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -3669,9 +3567,6 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -3679,10 +3574,12 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReconfigureExecTargetPodSelector>,
 }
@@ -3927,18 +3824,20 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -3952,7 +3851,7 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -3968,9 +3867,6 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -3978,10 +3874,12 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsRoleProbeExecTargetPodSelector>,
 }
@@ -4120,12 +4018,9 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeRetryPolicy {
 /// involving the current leader node.
 /// 
 /// 
-/// The container executing this action has access to following environment variables:
+/// The container executing this action has access to following variables:
 /// 
 /// 
-/// - KB_LEADER_POD_IP: The IP address of the current leader's pod prior to the switchover.
-/// - KB_LEADER_POD_NAME: The name of the current leader's pod prior to the switchover.
-/// - KB_LEADER_POD_FQDN: The FQDN of the current leader's pod prior to the switchover.
 /// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).
 /// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).
 /// 
@@ -4198,18 +4093,20 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverExec {
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Defines the name of the container within the target Pod where the action will be executed.
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
     /// 
     /// 
-    /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
-    /// If this field is not specified, the default behavior is to use the first container listed in
-    /// `componentDefinition.spec.runtime`.
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
@@ -4223,7 +4120,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverExec {
     /// 
     /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
-    /// This field is mutually exclusive with the `container` field; only one of them should be provided.
+    /// All actions with same image will share the same container.
     /// 
     /// 
     /// This field cannot be updated.
@@ -4239,9 +4136,6 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverExec {
     /// 
     /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
@@ -4249,10 +4143,12 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverExec {
     /// It allows for precise control over which Pod(s) the Action should run in.
     /// 
     /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
     /// This field cannot be updated.
-    /// 
-    /// 
-    /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsSwitchoverExecTargetPodSelector>,
 }
@@ -11640,6 +11536,9 @@ pub struct ComponentDefinitionVars {
 /// Source for the variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionVarsValueFrom {
+    /// Selects a defined var of a Cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVarRef")]
+    pub cluster_var_ref: Option<ComponentDefinitionVarsValueFromClusterVarRef>,
     /// Selects a defined var of a Component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentVarRef")]
     pub component_var_ref: Option<ComponentDefinitionVarsValueFromComponentVarRef>,
@@ -11663,6 +11562,41 @@ pub struct ComponentDefinitionVarsValueFrom {
     pub service_var_ref: Option<ComponentDefinitionVarsValueFromServiceVarRef>,
 }
 
+/// Selects a defined var of a Cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromClusterVarRef {
+    /// Reference to the name of the Cluster object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
+    pub cluster_name: Option<ComponentDefinitionVarsValueFromClusterVarRefClusterName>,
+    /// Reference to the UID of the Cluster object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterUID")]
+    pub cluster_uid: Option<ComponentDefinitionVarsValueFromClusterVarRefClusterUid>,
+    /// Reference to the namespace of the Cluster object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<ComponentDefinitionVarsValueFromClusterVarRefNamespace>,
+}
+
+/// Selects a defined var of a Cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromClusterVarRefClusterName {
+    Required,
+    Optional,
+}
+
+/// Selects a defined var of a Cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromClusterVarRefClusterUid {
+    Required,
+    Optional,
+}
+
+/// Selects a defined var of a Cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromClusterVarRefNamespace {
+    Required,
+    Optional,
+}
+
 /// Selects a defined var of a Component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionVarsValueFromComponentVarRef {
@@ -11673,10 +11607,6 @@ pub struct ComponentDefinitionVarsValueFromComponentVarRef {
     /// Reference to the name of the Component object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentName")]
     pub component_name: Option<ComponentDefinitionVarsValueFromComponentVarRefComponentName>,
-    /// Reference to the instanceName list of the component.
-    /// and the value will be presented in the following format: instanceName1,instanceName2,...
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceNames")]
-    pub instance_names: Option<ComponentDefinitionVarsValueFromComponentVarRefInstanceNames>,
     /// This option defines the behavior when multiple component objects match the specified @CompDef.
     /// If not provided, an error will be raised when handling multiple matches.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
@@ -11691,6 +11621,18 @@ pub struct ComponentDefinitionVarsValueFromComponentVarRef {
     /// The value will be presented in the following format: FQDN1,FQDN2,...
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podFQDNs")]
     pub pod_fqd_ns: Option<ComponentDefinitionVarsValueFromComponentVarRefPodFqdNs>,
+    /// Reference to the pod FQDN list of the component that have a specific role.
+    /// The value will be presented in the following format: FQDN1,FQDN2,...
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podFQDNsForRole")]
+    pub pod_fqd_ns_for_role: Option<ComponentDefinitionVarsValueFromComponentVarRefPodFqdNsForRole>,
+    /// Reference to the pod name list of the component.
+    /// and the value will be presented in the following format: name1,name2,...
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podNames")]
+    pub pod_names: Option<ComponentDefinitionVarsValueFromComponentVarRefPodNames>,
+    /// Reference to the pod name list of the component that have a specific role.
+    /// The value will be presented in the following format: name1,name2,...
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podNamesForRole")]
+    pub pod_names_for_role: Option<ComponentDefinitionVarsValueFromComponentVarRefPodNamesForRole>,
     /// Reference to the replicas of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<ComponentDefinitionVarsValueFromComponentVarRefReplicas>,
@@ -11699,13 +11641,6 @@ pub struct ComponentDefinitionVarsValueFromComponentVarRef {
 /// Selects a defined var of a Component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ComponentDefinitionVarsValueFromComponentVarRefComponentName {
-    Required,
-    Optional,
-}
-
-/// Selects a defined var of a Component.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionVarsValueFromComponentVarRefInstanceNames {
     Required,
     Optional,
 }
@@ -11763,6 +11698,51 @@ pub enum ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOpt
 /// Selects a defined var of a Component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ComponentDefinitionVarsValueFromComponentVarRefPodFqdNs {
+    Required,
+    Optional,
+}
+
+/// Reference to the pod FQDN list of the component that have a specific role.
+/// The value will be presented in the following format: FQDN1,FQDN2,...
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromComponentVarRefPodFqdNsForRole {
+    /// VarOption defines whether a variable is required or optional.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub option: Option<ComponentDefinitionVarsValueFromComponentVarRefPodFqdNsForRoleOption>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+}
+
+/// Reference to the pod FQDN list of the component that have a specific role.
+/// The value will be presented in the following format: FQDN1,FQDN2,...
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromComponentVarRefPodFqdNsForRoleOption {
+    Required,
+    Optional,
+}
+
+/// Selects a defined var of a Component.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromComponentVarRefPodNames {
+    Required,
+    Optional,
+}
+
+/// Reference to the pod name list of the component that have a specific role.
+/// The value will be presented in the following format: name1,name2,...
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromComponentVarRefPodNamesForRole {
+    /// VarOption defines whether a variable is required or optional.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub option: Option<ComponentDefinitionVarsValueFromComponentVarRefPodNamesForRoleOption>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+}
+
+/// Reference to the pod name list of the component that have a specific role.
+/// The value will be presented in the following format: name1,name2,...
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromComponentVarRefPodNamesForRoleOption {
     Required,
     Optional,
 }
@@ -12144,6 +12124,9 @@ pub struct ComponentDefinitionVarsValueFromServiceVarRef {
     /// and the value will be presented in the following format: service1.name:port1,service2.name:port2...
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<ComponentDefinitionVarsValueFromServiceVarRefPort>,
+    /// ServiceType references the type of the service.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
+    pub service_type: Option<ComponentDefinitionVarsValueFromServiceVarRefServiceType>,
 }
 
 /// Selects a defined var of a Service.
@@ -12231,6 +12214,13 @@ pub struct ComponentDefinitionVarsValueFromServiceVarRefPort {
 /// and the value will be presented in the following format: service1.name:port1,service2.name:port2...
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ComponentDefinitionVarsValueFromServiceVarRefPortOption {
+    Required,
+    Optional,
+}
+
+/// Selects a defined var of a Service.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromServiceVarRefServiceType {
     Required,
     Optional,
 }

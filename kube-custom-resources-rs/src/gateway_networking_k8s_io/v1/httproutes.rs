@@ -167,6 +167,9 @@ pub struct HTTPRouteSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentRefs")]
     pub parent_refs: Option<Vec<HTTPRouteParentRefs>>,
     /// Rules are a list of HTTP matchers, filters and actions.
+    /// 
+    /// 
+    /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<HTTPRouteRules>>,
 }
@@ -481,6 +484,13 @@ pub struct HTTPRouteRules {
     /// parent a request is coming from, a HTTP 404 status code MUST be returned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matches: Option<Vec<HTTPRouteRulesMatches>>,
+    /// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+    /// 
+    /// 
+    /// Support: Extended
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// SessionPersistence defines and configures session persistence
     /// for the route rule.
     /// 

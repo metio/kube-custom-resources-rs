@@ -2205,6 +2205,9 @@ spec:
                     logResponsePayload:
                       description: "Log the response payload within the Fluent Bit log."
                       type: "boolean"
+                    logsBodyKeyAttributes:
+                      description: "If true, remaining unmatched keys are added as attributes."
+                      type: "boolean"
                     logsUri:
                       description: "Specify an optional HTTP URI for the target web server listening for logs, e.g: /v1/logs"
                       type: "string"
@@ -3222,6 +3225,9 @@ spec:
                           description: "Hostname to be used for TLS SNI extension"
                           type: "string"
                       type: "object"
+                    totalLimitSize:
+                      description: "Limit the maximum number of Chunks in the filesystem for the current output logical destination."
+                      type: "string"
                   type: "object"
                 tcp:
                   description: "TCP defines TCP Output configuration."

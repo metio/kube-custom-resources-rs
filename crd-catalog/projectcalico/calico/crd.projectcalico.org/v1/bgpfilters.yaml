@@ -41,6 +41,19 @@ spec:
                         type: "string"
                       matchOperator:
                         type: "string"
+                      prefixLength:
+                        properties:
+                          max:
+                            format: "int32"
+                            maximum: 32.0
+                            minimum: 0.0
+                            type: "integer"
+                          min:
+                            format: "int32"
+                            maximum: 32.0
+                            minimum: 0.0
+                            type: "integer"
+                        type: "object"
                       source:
                         type: "string"
                     required:
@@ -60,6 +73,19 @@ spec:
                         type: "string"
                       matchOperator:
                         type: "string"
+                      prefixLength:
+                        properties:
+                          max:
+                            format: "int32"
+                            maximum: 128.0
+                            minimum: 0.0
+                            type: "integer"
+                          min:
+                            format: "int32"
+                            maximum: 128.0
+                            minimum: 0.0
+                            type: "integer"
+                        type: "object"
                       source:
                         type: "string"
                     required:
@@ -79,6 +105,19 @@ spec:
                         type: "string"
                       matchOperator:
                         type: "string"
+                      prefixLength:
+                        properties:
+                          max:
+                            format: "int32"
+                            maximum: 32.0
+                            minimum: 0.0
+                            type: "integer"
+                          min:
+                            format: "int32"
+                            maximum: 32.0
+                            minimum: 0.0
+                            type: "integer"
+                        type: "object"
                       source:
                         type: "string"
                     required:
@@ -98,6 +137,19 @@ spec:
                         type: "string"
                       matchOperator:
                         type: "string"
+                      prefixLength:
+                        properties:
+                          max:
+                            format: "int32"
+                            maximum: 128.0
+                            minimum: 0.0
+                            type: "integer"
+                          min:
+                            format: "int32"
+                            maximum: 128.0
+                            minimum: 0.0
+                            type: "integer"
+                        type: "object"
                       source:
                         type: "string"
                     required:

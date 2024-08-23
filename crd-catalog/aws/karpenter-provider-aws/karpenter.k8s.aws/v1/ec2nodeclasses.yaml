@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "ec2nodeclasses.karpenter.k8s.aws"
 spec:
   conversion:
@@ -134,7 +134,7 @@ spec:
                             description: "Encrypted indicates whether the EBS volume is encrypted. Encrypted volumes can only\nbe attached to instances that support Amazon EBS encryption. If you are creating\na volume from a snapshot, you can't specify an encryption value."
                             type: "boolean"
                           iops:
-                            description: "IOPS is the number of I/O operations per second (IOPS). For gp3, io1, and io2 volumes,\nthis represents the number of IOPS that are provisioned for the volume. For\ngp2 volumes, this represents the baseline performance of the volume and the\nrate at which the volume accumulates I/O credits for bursting.\n\n\nThe following are the supported values for each volume type:\n\n\n   * gp3: 3,000-16,000 IOPS\n\n\n   * io1: 100-64,000 IOPS\n\n\n   * io2: 100-64,000 IOPS\n\n\nFor io1 and io2 volumes, we guarantee 64,000 IOPS only for Instances built\non the Nitro System (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#ec2-nitro-instances).\nOther instance families guarantee performance up to 32,000 IOPS.\n\n\nThis parameter is supported for io1, io2, and gp3 volumes only. This parameter\nis not supported for gp2, st1, sc1, or standard volumes."
+                            description: "IOPS is the number of I/O operations per second (IOPS). For gp3, io1, and io2 volumes,\nthis represents the number of IOPS that are provisioned for the volume. For\ngp2 volumes, this represents the baseline performance of the volume and the\nrate at which the volume accumulates I/O credits for bursting.\n\nThe following are the supported values for each volume type:\n\n   * gp3: 3,000-16,000 IOPS\n\n   * io1: 100-64,000 IOPS\n\n   * io2: 100-64,000 IOPS\n\nFor io1 and io2 volumes, we guarantee 64,000 IOPS only for Instances built\non the Nitro System (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#ec2-nitro-instances).\nOther instance families guarantee performance up to 32,000 IOPS.\n\nThis parameter is supported for io1, io2, and gp3 volumes only. This parameter\nis not supported for gp2, st1, sc1, or standard volumes."
                             format: "int64"
                             type: "integer"
                           kmsKeyID:
@@ -148,7 +148,7 @@ spec:
                             format: "int64"
                             type: "integer"
                           volumeSize:
-                            description: "VolumeSize in `Gi`, `G`, `Ti`, or `T`. You must specify either a snapshot ID or\na volume size. The following are the supported volumes sizes for each volume\ntype:\n\n\n   * gp2 and gp3: 1-16,384\n\n\n   * io1 and io2: 4-16,384\n\n\n   * st1 and sc1: 125-16,384\n\n\n   * standard: 1-1,024"
+                            description: "VolumeSize in `Gi`, `G`, `Ti`, or `T`. You must specify either a snapshot ID or\na volume size. The following are the supported volumes sizes for each volume\ntype:\n\n   * gp2 and gp3: 1-16,384\n\n   * io1 and io2: 4-16,384\n\n   * st1 and sc1: 125-16,384\n\n   * standard: 1-1,024"
                             pattern: "^((?:[1-9][0-9]{0,3}|[1-4][0-9]{4}|[5][0-8][0-9]{3}|59000)Gi|(?:[1-9][0-9]{0,3}|[1-5][0-9]{4}|[6][0-3][0-9]{3}|64000)G|([1-9]||[1-5][0-7]|58)Ti|([1-9]||[1-5][0-9]|6[0-3]|64)T)$"
                             type: "string"
                           volumeType:
@@ -291,11 +291,11 @@ spec:
                     httpProtocolIPv6: "disabled"
                     httpPutResponseHopLimit: 1
                     httpTokens: "required"
-                  description: "MetadataOptions for the generated launch template of provisioned nodes.\n\n\nThis specifies the exposure of the Instance Metadata Service to\nprovisioned EC2 nodes. For more information,\nsee Instance Metadata and User Data\n(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)\nin the Amazon Elastic Compute Cloud User Guide.\n\n\nRefer to recommended, security best practices\n(https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)\nfor limiting exposure of Instance Metadata and User Data to pods.\nIf omitted, defaults to httpEndpoint enabled, with httpProtocolIPv6\ndisabled, with httpPutResponseLimit of 1, and with httpTokens\nrequired."
+                  description: "MetadataOptions for the generated launch template of provisioned nodes.\n\nThis specifies the exposure of the Instance Metadata Service to\nprovisioned EC2 nodes. For more information,\nsee Instance Metadata and User Data\n(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)\nin the Amazon Elastic Compute Cloud User Guide.\n\nRefer to recommended, security best practices\n(https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)\nfor limiting exposure of Instance Metadata and User Data to pods.\nIf omitted, defaults to httpEndpoint enabled, with httpProtocolIPv6\ndisabled, with httpPutResponseLimit of 1, and with httpTokens\nrequired."
                   properties:
                     httpEndpoint:
                       default: "enabled"
-                      description: "HTTPEndpoint enables or disables the HTTP metadata endpoint on provisioned\nnodes. If metadata options is non-nil, but this parameter is not specified,\nthe default state is \"enabled\".\n\n\nIf you specify a value of \"disabled\", instance metadata will not be accessible\non the node."
+                      description: "HTTPEndpoint enables or disables the HTTP metadata endpoint on provisioned\nnodes. If metadata options is non-nil, but this parameter is not specified,\nthe default state is \"enabled\".\n\nIf you specify a value of \"disabled\", instance metadata will not be accessible\non the node."
                       enum:
                         - "enabled"
                         - "disabled"
@@ -316,7 +316,7 @@ spec:
                       type: "integer"
                     httpTokens:
                       default: "required"
-                      description: "HTTPTokens determines the state of token usage for instance metadata\nrequests. If metadata options is non-nil, but this parameter is not\nspecified, the default state is \"required\".\n\n\nIf the state is optional, one can choose to retrieve instance metadata with\nor without a signed token header on the request. If one retrieves the IAM\nrole credentials without a token, the version 1.0 role credentials are\nreturned. If one retrieves the IAM role credentials using a valid signed\ntoken, the version 2.0 role credentials are returned.\n\n\nIf the state is \"required\", one must send a signed token header with any\ninstance metadata retrieval requests. In this state, retrieving the IAM\nrole credentials always returns the version 2.0 credentials; the version\n1.0 credentials are not available."
+                      description: "HTTPTokens determines the state of token usage for instance metadata\nrequests. If metadata options is non-nil, but this parameter is not\nspecified, the default state is \"required\".\n\nIf the state is optional, one can choose to retrieve instance metadata with\nor without a signed token header on the request. If one retrieves the IAM\nrole credentials without a token, the version 1.0 role credentials are\nreturned. If one retrieves the IAM role credentials using a valid signed\ntoken, the version 2.0 role credentials are returned.\n\nIf the state is \"required\", one must send a signed token header with any\ninstance metadata retrieval requests. In this state, retrieving the IAM\nrole credentials always returns the version 2.0 credentials; the version\n1.0 credentials are not available."
                       enum:
                         - "required"
                         - "optional"
@@ -507,7 +507,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

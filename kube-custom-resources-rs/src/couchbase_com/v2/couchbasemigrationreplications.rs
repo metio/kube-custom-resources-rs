@@ -16,10 +16,12 @@ pub struct CouchbaseMigrationReplicationMigrationMapping {
     pub mappings: Vec<CouchbaseMigrationReplicationMigrationMappingMappings>,
 }
 
-/// Indicates whether this is using migration mapping or not. This is only valid when using the default scope/collection.
+/// Indicates whether this is using migration mapping or not.
+/// This is only valid when using the default scope/collection.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseMigrationReplicationMigrationMappingMappings {
-    /// A filter to select from the source default scope and collection. Defaults to select everything in the default scope and collection.
+    /// A filter to select from the source default scope and collection.
+    /// Defaults to select everything in the default scope and collection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<String>,
     /// The destination of our migration, must be a scope and collection.
@@ -45,18 +47,29 @@ pub struct CouchbaseMigrationReplicationMigrationMappingMappingsTargetKeyspace {
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CouchbaseMigrationReplicationSpec {
-    /// Bucket is the source bucket to replicate from.  This refers to the Couchbase bucket name, not the resource name of the bucket.  A bucket with this name must be defined on this cluster.  Legal bucket names have a maximum length of 100 characters and may be composed of any character from "a-z", "A-Z", "0-9" and "-_%\.".
+    /// Bucket is the source bucket to replicate from.  This refers to the Couchbase
+    /// bucket name, not the resource name of the bucket.  A bucket with this name must
+    /// be defined on this cluster.  Legal bucket names have a maximum length of 100
+    /// characters and may be composed of any character from "a-z", "A-Z", "0-9" and "-_%\.".
     pub bucket: String,
-    /// CompressionType is the type of compression to apply to the replication. When None, no compression will be applied to documents as they are transferred between clusters.  When Auto, Couchbase server will automatically compress documents as they are transferred to reduce bandwidth requirements. This field must be one of "None" or "Auto", defaulting to "Auto".
+    /// CompressionType is the type of compression to apply to the replication.
+    /// When None, no compression will be applied to documents as they are
+    /// transferred between clusters.  When Auto, Couchbase server will automatically
+    /// compress documents as they are transferred to reduce bandwidth requirements.
+    /// This field must be one of "None" or "Auto", defaulting to "Auto".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<CouchbaseMigrationReplicationCompressionType>,
     /// FilterExpression allows certain documents to be filtered out of the replication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterExpression")]
     pub filter_expression: Option<String>,
-    /// Paused allows a replication to be stopped and restarted without having to restart the replication from the beginning.
+    /// Paused allows a replication to be stopped and restarted without having to
+    /// restart the replication from the beginning.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
-    /// RemoteBucket is the remote bucket name to synchronize to.  This refers to the Couchbase bucket name, not the resource name of the bucket.  Legal bucket names have a maximum length of 100 characters and may be composed of any character from "a-z", "A-Z", "0-9" and "-_%\.".
+    /// RemoteBucket is the remote bucket name to synchronize to.  This refers to the
+    /// Couchbase bucket name, not the resource name of the bucket.  Legal bucket names
+    /// have a maximum length of 100 characters and may be composed of any character from
+    /// "a-z", "A-Z", "0-9" and "-_%\.".
     #[serde(rename = "remoteBucket")]
     pub remote_bucket: String,
 }

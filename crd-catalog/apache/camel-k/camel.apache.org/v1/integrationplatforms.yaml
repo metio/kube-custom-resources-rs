@@ -61,7 +61,7 @@ spec:
                     PublishStrategyOptions:
                       additionalProperties:
                         type: "string"
-                      description: "Generic options that can used by any publish strategy"
+                      description: "Deprecated: no longer in use"
                       type: "object"
                     baseImage:
                       description: "a base image that can be used as base layer for all images.\nIt can be useful if you want to provide some custom base image with further utility software"
@@ -1575,7 +1575,7 @@ spec:
                     PublishStrategyOptions:
                       additionalProperties:
                         type: "string"
-                      description: "Generic options that can used by any publish strategy"
+                      description: "Deprecated: no longer in use"
                       type: "object"
                     baseImage:
                       description: "a base image that can be used as base layer for all images.\nIt can be useful if you want to provide some custom base image with further utility software"

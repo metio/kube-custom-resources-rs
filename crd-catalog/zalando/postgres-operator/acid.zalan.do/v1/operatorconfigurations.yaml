@@ -52,7 +52,6 @@ spec:
                     additional_secret_mount:
                       type: "string"
                     additional_secret_mount_path:
-                      default: "/meta/credentials"
                       type: "string"
                     aws_region:
                       default: "eu-central-1"
@@ -429,7 +428,7 @@ spec:
                     logical_backup_cronjob_environment_secret:
                       type: "string"
                     logical_backup_docker_image:
-                      default: "ghcr.io/zalando/postgres-operator/logical-backup:v1.12.2"
+                      default: "ghcr.io/zalando/postgres-operator/logical-backup:v1.13.0"
                       type: "string"
                     logical_backup_google_application_credentials:
                       type: "string"
@@ -473,7 +472,7 @@ spec:
                 major_version_upgrade:
                   properties:
                     major_version_upgrade_mode:
-                      default: "off"
+                      default: "manual"
                       type: "string"
                     major_version_upgrade_team_allow_list:
                       items:

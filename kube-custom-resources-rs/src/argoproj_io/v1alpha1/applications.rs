@@ -85,16 +85,20 @@ pub struct ApplicationOperationSync {
     /// Resources describes which resources shall be part of the sync
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<ApplicationOperationSyncResources>>,
-    /// Revision is the revision (Git) or chart version (Helm) which to sync the application to If omitted, will use the revision specified in app spec.
+    /// Revision is the revision (Git) or chart version (Helm) which to sync the application to
+    /// If omitted, will use the revision specified in app spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,
-    /// Revisions is the list of revision (Git) or chart version (Helm) which to sync each source in sources field for the application to If omitted, will use the revision specified in app spec.
+    /// Revisions is the list of revision (Git) or chart version (Helm) which to sync each source in sources field for the application to
+    /// If omitted, will use the revision specified in app spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revisions: Option<Vec<String>>,
-    /// Source overrides the source definition set in the application. This is typically set in a Rollback operation and is nil during a Sync operation
+    /// Source overrides the source definition set in the application.
+    /// This is typically set in a Rollback operation and is nil during a Sync operation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<ApplicationOperationSyncSource>,
-    /// Sources overrides the source definition set in the application. This is typically set in a Rollback operation and is nil during a Sync operation
+    /// Sources overrides the source definition set in the application.
+    /// This is typically set in a Rollback operation and is nil during a Sync operation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<ApplicationOperationSyncSources>>,
     /// SyncOptions provide per-sync sync-options, e.g. Validate=false
@@ -116,7 +120,8 @@ pub struct ApplicationOperationSyncResources {
     pub namespace: Option<String>,
 }
 
-/// Source overrides the source definition set in the application. This is typically set in a Rollback operation and is nil during a Sync operation
+/// Source overrides the source definition set in the application.
+/// This is typically set in a Rollback operation and is nil during a Sync operation
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationOperationSyncSource {
     /// Chart is a Helm chart name, and must be specified for applications sourced from a Helm repo.
@@ -143,7 +148,9 @@ pub struct ApplicationOperationSyncSource {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -406,7 +413,9 @@ pub struct ApplicationOperationSyncSources {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -656,7 +665,9 @@ pub struct ApplicationOperationSyncSyncStrategy {
 /// Apply will perform a `kubectl apply` to perform the sync.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationOperationSyncSyncStrategyApply {
-    /// Force indicates whether or not to supply the --force flag to `kubectl apply`. The --force flag deletes and re-create the resource, when PATCH encounters conflict and has retried for 5 times.
+    /// Force indicates whether or not to supply the --force flag to `kubectl apply`.
+    /// The --force flag deletes and re-create the resource, when PATCH encounters conflict and has
+    /// retried for 5 times.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
 }
@@ -664,7 +675,9 @@ pub struct ApplicationOperationSyncSyncStrategyApply {
 /// Hook will submit any referenced resources to perform the sync. This is the default strategy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationOperationSyncSyncStrategyHook {
-    /// Force indicates whether or not to supply the --force flag to `kubectl apply`. The --force flag deletes and re-create the resource, when PATCH encounters conflict and has retried for 5 times.
+    /// Force indicates whether or not to supply the --force flag to `kubectl apply`.
+    /// The --force flag deletes and re-create the resource, when PATCH encounters conflict and has
+    /// retried for 5 times.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
 }
@@ -685,9 +698,14 @@ pub struct ApplicationSpec {
     /// Info contains a list of information (URLs, email addresses, and plain text) that relates to the application
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub info: Option<Vec<ApplicationInfo>>,
-    /// Project is a reference to the project this application belongs to. The empty string means that application belongs to the 'default' project.
+    /// Project is a reference to the project this application belongs to.
+    /// The empty string means that application belongs to the 'default' project.
     pub project: String,
-    /// RevisionHistoryLimit limits the number of items kept in the application's revision history, which is used for informational purposes as well as for rollbacks to previous versions. This should only be changed in exceptional circumstances. Setting to zero will store no history. This will reduce storage used. Increasing will increase the space used to store the history, so we do not recommend increasing it. Default is 10.
+    /// RevisionHistoryLimit limits the number of items kept in the application's revision history, which is used for informational purposes as well as for rollbacks to previous versions.
+    /// This should only be changed in exceptional circumstances.
+    /// Setting to zero will store no history. This will reduce storage used.
+    /// Increasing will increase the space used to store the history, so we do not recommend increasing it.
+    /// Default is 10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionHistoryLimit")]
     pub revision_history_limit: Option<i64>,
     /// Source is a reference to the location of the application's manifests or chart
@@ -707,7 +725,8 @@ pub struct ApplicationDestination {
     /// Name is an alternate way of specifying the target cluster by its symbolic name. This must be set if Server is not set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace specifies the target namespace for the application's resources. The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
+    /// Namespace specifies the target namespace for the application's resources.
+    /// The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Server specifies the URL of the target cluster's Kubernetes control plane API. This must be set if Name is not set.
@@ -725,7 +744,8 @@ pub struct ApplicationIgnoreDifferences {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPointers")]
     pub json_pointers: Option<Vec<String>>,
     pub kind: String,
-    /// ManagedFieldsManagers is a list of trusted managers. Fields mutated by those managers will take precedence over the desired state defined in the SCM and won't be displayed in diffs
+    /// ManagedFieldsManagers is a list of trusted managers. Fields mutated by those managers will take precedence over the
+    /// desired state defined in the SCM and won't be displayed in diffs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedFieldsManagers")]
     pub managed_fields_managers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -767,7 +787,9 @@ pub struct ApplicationSource {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -1030,7 +1052,9 @@ pub struct ApplicationSources {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -1346,7 +1370,8 @@ pub struct ApplicationStatus {
     /// History contains information about the application's sync history
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub history: Option<Vec<ApplicationStatusHistory>>,
-    /// ObservedAt indicates when the application state was updated without querying latest git state Deprecated: controller no longer updates ObservedAt field
+    /// ObservedAt indicates when the application state was updated without querying latest git state
+    /// Deprecated: controller no longer updates ObservedAt field
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedAt")]
     pub observed_at: Option<String>,
     /// OperationState contains information about any ongoing operations, such as a sync
@@ -1465,7 +1490,9 @@ pub struct ApplicationStatusHistorySource {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -1728,7 +1755,9 @@ pub struct ApplicationStatusHistorySources {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -2062,16 +2091,20 @@ pub struct ApplicationStatusOperationStateOperationSync {
     /// Resources describes which resources shall be part of the sync
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<ApplicationStatusOperationStateOperationSyncResources>>,
-    /// Revision is the revision (Git) or chart version (Helm) which to sync the application to If omitted, will use the revision specified in app spec.
+    /// Revision is the revision (Git) or chart version (Helm) which to sync the application to
+    /// If omitted, will use the revision specified in app spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,
-    /// Revisions is the list of revision (Git) or chart version (Helm) which to sync each source in sources field for the application to If omitted, will use the revision specified in app spec.
+    /// Revisions is the list of revision (Git) or chart version (Helm) which to sync each source in sources field for the application to
+    /// If omitted, will use the revision specified in app spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revisions: Option<Vec<String>>,
-    /// Source overrides the source definition set in the application. This is typically set in a Rollback operation and is nil during a Sync operation
+    /// Source overrides the source definition set in the application.
+    /// This is typically set in a Rollback operation and is nil during a Sync operation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<ApplicationStatusOperationStateOperationSyncSource>,
-    /// Sources overrides the source definition set in the application. This is typically set in a Rollback operation and is nil during a Sync operation
+    /// Sources overrides the source definition set in the application.
+    /// This is typically set in a Rollback operation and is nil during a Sync operation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<ApplicationStatusOperationStateOperationSyncSources>>,
     /// SyncOptions provide per-sync sync-options, e.g. Validate=false
@@ -2093,7 +2126,8 @@ pub struct ApplicationStatusOperationStateOperationSyncResources {
     pub namespace: Option<String>,
 }
 
-/// Source overrides the source definition set in the application. This is typically set in a Rollback operation and is nil during a Sync operation
+/// Source overrides the source definition set in the application.
+/// This is typically set in a Rollback operation and is nil during a Sync operation
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateOperationSyncSource {
     /// Chart is a Helm chart name, and must be specified for applications sourced from a Helm repo.
@@ -2120,7 +2154,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSource {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -2383,7 +2419,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSources {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -2633,7 +2671,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSyncStrategy {
 /// Apply will perform a `kubectl apply` to perform the sync.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateOperationSyncSyncStrategyApply {
-    /// Force indicates whether or not to supply the --force flag to `kubectl apply`. The --force flag deletes and re-create the resource, when PATCH encounters conflict and has retried for 5 times.
+    /// Force indicates whether or not to supply the --force flag to `kubectl apply`.
+    /// The --force flag deletes and re-create the resource, when PATCH encounters conflict and has
+    /// retried for 5 times.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
 }
@@ -2641,7 +2681,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSyncStrategyApply {
 /// Hook will submit any referenced resources to perform the sync. This is the default strategy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateOperationSyncSyncStrategyHook {
-    /// Force indicates whether or not to supply the --force flag to `kubectl apply`. The --force flag deletes and re-create the resource, when PATCH encounters conflict and has retried for 5 times.
+    /// Force indicates whether or not to supply the --force flag to `kubectl apply`.
+    /// The --force flag deletes and re-create the resource, when PATCH encounters conflict and has
+    /// retried for 5 times.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
 }
@@ -2682,7 +2724,8 @@ pub struct ApplicationStatusOperationStateSyncResultManagedNamespaceMetadata {
 pub struct ApplicationStatusOperationStateSyncResultResources {
     /// Group specifies the API group of the resource
     pub group: String,
-    /// HookPhase contains the state of any operation associated with this resource OR hook This can also contain values for non-hook resources.
+    /// HookPhase contains the state of any operation associated with this resource OR hook
+    /// This can also contain values for non-hook resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookPhase")]
     pub hook_phase: Option<String>,
     /// HookType specifies the type of the hook. Empty for non-hook resources
@@ -2734,7 +2777,9 @@ pub struct ApplicationStatusOperationStateSyncResultSource {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -2997,7 +3042,9 @@ pub struct ApplicationStatusOperationStateSyncResultSources {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -3233,7 +3280,8 @@ pub struct ApplicationStatusOperationStateSyncResultSourcesPluginParameters {
     pub string: Option<String>,
 }
 
-/// ResourceStatus holds the current sync and health status of a resource TODO: describe members of this type
+/// ResourceStatus holds the current sync and health status of a resource
+/// TODO: describe members of this type
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3320,7 +3368,8 @@ pub struct ApplicationStatusSyncComparedToDestination {
     /// Name is an alternate way of specifying the target cluster by its symbolic name. This must be set if Server is not set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace specifies the target namespace for the application's resources. The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
+    /// Namespace specifies the target namespace for the application's resources.
+    /// The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Server specifies the URL of the target cluster's Kubernetes control plane API. This must be set if Name is not set.
@@ -3338,7 +3387,8 @@ pub struct ApplicationStatusSyncComparedToIgnoreDifferences {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPointers")]
     pub json_pointers: Option<Vec<String>>,
     pub kind: String,
-    /// ManagedFieldsManagers is a list of trusted managers. Fields mutated by those managers will take precedence over the desired state defined in the SCM and won't be displayed in diffs
+    /// ManagedFieldsManagers is a list of trusted managers. Fields mutated by those managers will take precedence over the
+    /// desired state defined in the SCM and won't be displayed in diffs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedFieldsManagers")]
     pub managed_fields_managers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3374,7 +3424,9 @@ pub struct ApplicationStatusSyncComparedToSource {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }
@@ -3637,7 +3689,9 @@ pub struct ApplicationStatusSyncComparedToSources {
     /// RepoURL is the URL to the repository (Git or Helm) that contains the application manifests
     #[serde(rename = "repoURL")]
     pub repo_url: String,
-    /// TargetRevision defines the revision of the source to sync the application to. In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD. In case of Helm, this is a semver tag for the Chart's version.
+    /// TargetRevision defines the revision of the source to sync the application to.
+    /// In case of Git, this can be commit, tag, or branch. If omitted, will equal to HEAD.
+    /// In case of Helm, this is a semver tag for the Chart's version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
 }

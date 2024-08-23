@@ -162,6 +162,9 @@ pub struct GRPCRouteSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentRefs")]
     pub parent_refs: Option<Vec<GRPCRouteParentRefs>>,
     /// Rules are a list of GRPC matchers, filters and actions.
+    /// 
+    /// 
+    /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<GRPCRouteRules>>,
 }
@@ -444,6 +447,13 @@ pub struct GRPCRouteRules {
     /// the above criteria.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matches: Option<Vec<GRPCRouteRulesMatches>>,
+    /// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+    /// 
+    /// 
+    /// Support: Extended
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// SessionPersistence defines and configures session persistence
     /// for the route rule.
     /// 

@@ -52,6 +52,9 @@ pub struct GlobalContextEntryApiCall {
     /// such as "300ms", "1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
+    /// RetryLimit defines the number of times the APICall should be retried in case of failure.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
+    pub retry_limit: Option<i64>,
     /// Service is an API call to a JSON web service.
     /// This is used for non-Kubernetes API server calls.
     /// It's mutually exclusive with the URLPath field.

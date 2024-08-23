@@ -113,7 +113,6 @@ pub struct MeshProxyPatchDefaultAppendModificationsClusterMatch {
     pub name: Option<String>,
     /// Origin is the name of the component or plugin that generated the resource.
     /// 
-    /// 
     /// Here is the list of well-known origins:
     /// inbound - resources generated for handling incoming traffic.
     /// outbound - resources generated for handling outgoing traffic.
@@ -123,7 +122,6 @@ pub struct MeshProxyPatchDefaultAppendModificationsClusterMatch {
     /// ingress - resources generated for Zone Ingress.
     /// egress - resources generated for Zone Egress.
     /// gateway - resources generated for MeshGateway.
-    /// 
     /// 
     /// The list is not complete, because policy plugins can introduce new resources.
     /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
@@ -201,7 +199,6 @@ pub struct MeshProxyPatchDefaultAppendModificationsHttpFilterMatch {
     pub name: Option<String>,
     /// Origin is the name of the component or plugin that generated the resource.
     /// 
-    /// 
     /// Here is the list of well-known origins:
     /// inbound - resources generated for handling incoming traffic.
     /// outbound - resources generated for handling outgoing traffic.
@@ -211,7 +208,6 @@ pub struct MeshProxyPatchDefaultAppendModificationsHttpFilterMatch {
     /// ingress - resources generated for Zone Ingress.
     /// egress - resources generated for Zone Egress.
     /// gateway - resources generated for MeshGateway.
-    /// 
     /// 
     /// The list is not complete, because policy plugins can introduce new resources.
     /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
@@ -286,7 +282,6 @@ pub struct MeshProxyPatchDefaultAppendModificationsListenerMatch {
     pub name: Option<String>,
     /// Origin is the name of the component or plugin that generated the resource.
     /// 
-    /// 
     /// Here is the list of well-known origins:
     /// inbound - resources generated for handling incoming traffic.
     /// outbound - resources generated for handling outgoing traffic.
@@ -296,7 +291,6 @@ pub struct MeshProxyPatchDefaultAppendModificationsListenerMatch {
     /// ingress - resources generated for Zone Ingress.
     /// egress - resources generated for Zone Egress.
     /// gateway - resources generated for MeshGateway.
-    /// 
     /// 
     /// The list is not complete, because policy plugins can introduce new resources.
     /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
@@ -376,7 +370,6 @@ pub struct MeshProxyPatchDefaultAppendModificationsNetworkFilterMatch {
     pub name: Option<String>,
     /// Origin is the name of the component or plugin that generated the resource.
     /// 
-    /// 
     /// Here is the list of well-known origins:
     /// inbound - resources generated for handling incoming traffic.
     /// outbound - resources generated for handling outgoing traffic.
@@ -386,7 +379,6 @@ pub struct MeshProxyPatchDefaultAppendModificationsNetworkFilterMatch {
     /// ingress - resources generated for Zone Ingress.
     /// egress - resources generated for Zone Egress.
     /// gateway - resources generated for MeshGateway.
-    /// 
     /// 
     /// The list is not complete, because policy plugins can introduce new resources.
     /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
@@ -461,7 +453,6 @@ pub struct MeshProxyPatchDefaultAppendModificationsVirtualHostMatch {
     pub name: Option<String>,
     /// Origin is the name of the component or plugin that generated the resource.
     /// 
-    /// 
     /// Here is the list of well-known origins:
     /// inbound - resources generated for handling incoming traffic.
     /// outbound - resources generated for handling outgoing traffic.
@@ -471,7 +462,6 @@ pub struct MeshProxyPatchDefaultAppendModificationsVirtualHostMatch {
     /// ingress - resources generated for Zone Ingress.
     /// egress - resources generated for Zone Egress.
     /// gateway - resources generated for MeshGateway.
-    /// 
     /// 
     /// The list is not complete, because policy plugins can introduce new resources.
     /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.

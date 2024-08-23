@@ -811,6 +811,9 @@ pub struct PolicyRulesGenerate {
     /// resource will be created with default data only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<serde_json::Value>,
+    /// ForEach applies generate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub foreach: Option<Vec<PolicyRulesGenerateForeach>>,
     /// GenerateExisting controls whether to trigger the rule in existing resources
     /// If is set to "true" the rule will be triggered and applied to existing matched resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateExisting")]
@@ -898,6 +901,378 @@ pub struct PolicyRulesGenerateCloneListSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeach {
+    /// APIVersion specifies resource apiVersion.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Clone specifies the source resource used to populate each generated resource.
+    /// At most one of Data or Clone can be specified. If neither are provided, the generated
+    /// resource will be created with default data only.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clone: Option<PolicyRulesGenerateForeachClone>,
+    /// CloneList specifies the list of source resource used to populate each generated resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloneList")]
+    pub clone_list: Option<PolicyRulesGenerateForeachCloneList>,
+    /// Context defines variables and data sources that can be used during rule execution.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<Vec<PolicyRulesGenerateForeachContext>>,
+    /// Data provides the resource declaration used to populate each generated resource.
+    /// At most one of Data or Clone must be specified. If neither are provided, the generated
+    /// resource will be created with default data only.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// Kind specifies resource kind.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// List specifies a JMESPath expression that results in one or more elements
+    /// to which the validation logic is applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub list: Option<String>,
+    /// Name specifies the resource name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace specifies resource namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of conditions. The declaration can contain nested `any` or `all` statements.
+    /// See: https://kyverno.io/docs/writing-policies/preconditions/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub preconditions: Option<PolicyRulesGenerateForeachPreconditions>,
+    /// UID specifies the resource uid.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
+}
+
+/// Clone specifies the source resource used to populate each generated resource.
+/// At most one of Data or Clone can be specified. If neither are provided, the generated
+/// resource will be created with default data only.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachClone {
+    /// Name specifies name of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace specifies source resource namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// CloneList specifies the list of source resource used to populate each generated resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachCloneList {
+    /// Kinds is a list of resource kinds.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kinds: Option<Vec<String>>,
+    /// Namespace specifies source resource namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Selector is a label selector. Label keys and values in `matchLabels`.
+    /// wildcard characters are not supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<PolicyRulesGenerateForeachCloneListSelector>,
+}
+
+/// Selector is a label selector. Label keys and values in `matchLabels`.
+/// wildcard characters are not supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachCloneListSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PolicyRulesGenerateForeachCloneListSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachCloneListSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachContext {
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
+    pub api_call: Option<PolicyRulesGenerateForeachContextApiCall>,
+    /// ConfigMap is the ConfigMap reference.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<PolicyRulesGenerateForeachContextConfigMap>,
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<PolicyRulesGenerateForeachContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
+    pub image_registry: Option<PolicyRulesGenerateForeachContextImageRegistry>,
+    /// Name is the variable name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variable: Option<PolicyRulesGenerateForeachContextVariable>,
+}
+
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachContextApiCall {
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data: Option<Vec<PolicyRulesGenerateForeachContextApiCallData>>,
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub method: Option<PolicyRulesGenerateForeachContextApiCallMethod>,
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<PolicyRulesGenerateForeachContextApiCallService>,
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
+    pub url_path: Option<String>,
+}
+
+/// RequestData contains the HTTP POST data
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachContextApiCallData {
+    /// Key is a unique identifier for the data value
+    pub key: String,
+    /// Value is the data value
+    pub value: serde_json::Value,
+}
+
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyRulesGenerateForeachContextApiCallMethod {
+    #[serde(rename = "GET")]
+    Get,
+    #[serde(rename = "POST")]
+    Post,
+}
+
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachContextApiCallService {
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
+    pub url: String,
+}
+
+/// ConfigMap is the ConfigMap reference.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachContextConfigMap {
+    /// Name is the ConfigMap name.
+    pub name: String,
+    /// Namespace is the ConfigMap namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachContextImageRegistry {
+    /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
+    pub image_registry_credentials: Option<PolicyRulesGenerateForeachContextImageRegistryImageRegistryCredentials>,
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
+    pub reference: String,
+}
+
+/// ImageRegistryCredentials provides credentials that will be used for authentication with registry
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachContextImageRegistryImageRegistryCredentials {
+    /// AllowInsecureRegistry allows insecure access to a registry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
+    pub allow_insecure_registry: Option<bool>,
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub providers: Option<Vec<String>>,
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secrets: Option<Vec<String>>,
+}
+
+/// Variable defines an arbitrary JMESPath context variable that can be defined inline.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachContextVariable {
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Value is any arbitrary JSON object representable in YAML or JSON form.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+/// set of conditions. The declaration can contain nested `any` or `all` statements.
+/// See: https://kyverno.io/docs/writing-policies/preconditions/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachPreconditions {
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub all: Option<Vec<PolicyRulesGenerateForeachPreconditionsAll>>,
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub any: Option<Vec<PolicyRulesGenerateForeachPreconditionsAny>>,
+}
+
+/// Condition defines variable-based conditional criteria for rule execution.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachPreconditionsAll {
+    /// Key is the context entry (using JMESPath) for conditional rule evaluation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<serde_json::Value>,
+    /// Message is an optional display message
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<PolicyRulesGenerateForeachPreconditionsAllOperator>,
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// Condition defines variable-based conditional criteria for rule execution.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyRulesGenerateForeachPreconditionsAllOperator {
+    Equals,
+    NotEquals,
+    In,
+    AnyIn,
+    AllIn,
+    NotIn,
+    AnyNotIn,
+    AllNotIn,
+    GreaterThanOrEquals,
+    GreaterThan,
+    LessThanOrEquals,
+    LessThan,
+    DurationGreaterThanOrEquals,
+    DurationGreaterThan,
+    DurationLessThanOrEquals,
+    DurationLessThan,
+}
+
+/// Condition defines variable-based conditional criteria for rule execution.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesGenerateForeachPreconditionsAny {
+    /// Key is the context entry (using JMESPath) for conditional rule evaluation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<serde_json::Value>,
+    /// Message is an optional display message
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<PolicyRulesGenerateForeachPreconditionsAnyOperator>,
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// Condition defines variable-based conditional criteria for rule execution.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyRulesGenerateForeachPreconditionsAnyOperator {
+    Equals,
+    NotEquals,
+    In,
+    AnyIn,
+    AllIn,
+    NotIn,
+    AnyNotIn,
+    AllNotIn,
+    GreaterThanOrEquals,
+    GreaterThan,
+    LessThanOrEquals,
+    LessThan,
+    DurationGreaterThanOrEquals,
+    DurationGreaterThan,
+    DurationLessThanOrEquals,
+    DurationLessThan,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3071,7 +3446,7 @@ pub struct PolicyRulesVerifyImages {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
     /// Type specifies the method of signature validation. The allowed options
-    /// are Cosign and Notary. By default Cosign is used if a type is not specified.
+    /// are Cosign, Sigstore Bundle and Notary. By default Cosign is used if a type is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<PolicyRulesVerifyImagesType>,
     /// UseCache enables caching of image verify responses for this rule.
@@ -3700,6 +4075,7 @@ pub struct PolicyRulesVerifyImagesImageRegistryCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyRulesVerifyImagesType {
     Cosign,
+    SigstoreBundle,
     Notary,
 }
 
@@ -4593,6 +4969,9 @@ pub struct PolicyStatusAutogenRulesGenerate {
     /// resource will be created with default data only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<serde_json::Value>,
+    /// ForEach applies generate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub foreach: Option<Vec<PolicyStatusAutogenRulesGenerateForeach>>,
     /// GenerateExisting controls whether to trigger the rule in existing resources
     /// If is set to "true" the rule will be triggered and applied to existing matched resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateExisting")]
@@ -4680,6 +5059,378 @@ pub struct PolicyStatusAutogenRulesGenerateCloneListSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeach {
+    /// APIVersion specifies resource apiVersion.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Clone specifies the source resource used to populate each generated resource.
+    /// At most one of Data or Clone can be specified. If neither are provided, the generated
+    /// resource will be created with default data only.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clone: Option<PolicyStatusAutogenRulesGenerateForeachClone>,
+    /// CloneList specifies the list of source resource used to populate each generated resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloneList")]
+    pub clone_list: Option<PolicyStatusAutogenRulesGenerateForeachCloneList>,
+    /// Context defines variables and data sources that can be used during rule execution.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<Vec<PolicyStatusAutogenRulesGenerateForeachContext>>,
+    /// Data provides the resource declaration used to populate each generated resource.
+    /// At most one of Data or Clone must be specified. If neither are provided, the generated
+    /// resource will be created with default data only.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// Kind specifies resource kind.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// List specifies a JMESPath expression that results in one or more elements
+    /// to which the validation logic is applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub list: Option<String>,
+    /// Name specifies the resource name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace specifies resource namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+    /// set of conditions. The declaration can contain nested `any` or `all` statements.
+    /// See: https://kyverno.io/docs/writing-policies/preconditions/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub preconditions: Option<PolicyStatusAutogenRulesGenerateForeachPreconditions>,
+    /// UID specifies the resource uid.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
+}
+
+/// Clone specifies the source resource used to populate each generated resource.
+/// At most one of Data or Clone can be specified. If neither are provided, the generated
+/// resource will be created with default data only.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachClone {
+    /// Name specifies name of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace specifies source resource namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// CloneList specifies the list of source resource used to populate each generated resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachCloneList {
+    /// Kinds is a list of resource kinds.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kinds: Option<Vec<String>>,
+    /// Namespace specifies source resource namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Selector is a label selector. Label keys and values in `matchLabels`.
+    /// wildcard characters are not supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<PolicyStatusAutogenRulesGenerateForeachCloneListSelector>,
+}
+
+/// Selector is a label selector. Label keys and values in `matchLabels`.
+/// wildcard characters are not supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachCloneListSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PolicyStatusAutogenRulesGenerateForeachCloneListSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachCloneListSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachContext {
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
+    pub api_call: Option<PolicyStatusAutogenRulesGenerateForeachContextApiCall>,
+    /// ConfigMap is the ConfigMap reference.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<PolicyStatusAutogenRulesGenerateForeachContextConfigMap>,
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<PolicyStatusAutogenRulesGenerateForeachContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
+    pub image_registry: Option<PolicyStatusAutogenRulesGenerateForeachContextImageRegistry>,
+    /// Name is the variable name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variable: Option<PolicyStatusAutogenRulesGenerateForeachContextVariable>,
+}
+
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachContextApiCall {
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data: Option<Vec<PolicyStatusAutogenRulesGenerateForeachContextApiCallData>>,
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub method: Option<PolicyStatusAutogenRulesGenerateForeachContextApiCallMethod>,
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<PolicyStatusAutogenRulesGenerateForeachContextApiCallService>,
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
+    pub url_path: Option<String>,
+}
+
+/// RequestData contains the HTTP POST data
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachContextApiCallData {
+    /// Key is a unique identifier for the data value
+    pub key: String,
+    /// Value is the data value
+    pub value: serde_json::Value,
+}
+
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyStatusAutogenRulesGenerateForeachContextApiCallMethod {
+    #[serde(rename = "GET")]
+    Get,
+    #[serde(rename = "POST")]
+    Post,
+}
+
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachContextApiCallService {
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
+    pub url: String,
+}
+
+/// ConfigMap is the ConfigMap reference.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachContextConfigMap {
+    /// Name is the ConfigMap name.
+    pub name: String,
+    /// Namespace is the ConfigMap namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachContextImageRegistry {
+    /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
+    pub image_registry_credentials: Option<PolicyStatusAutogenRulesGenerateForeachContextImageRegistryImageRegistryCredentials>,
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
+    pub reference: String,
+}
+
+/// ImageRegistryCredentials provides credentials that will be used for authentication with registry
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachContextImageRegistryImageRegistryCredentials {
+    /// AllowInsecureRegistry allows insecure access to a registry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
+    pub allow_insecure_registry: Option<bool>,
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub providers: Option<Vec<String>>,
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secrets: Option<Vec<String>>,
+}
+
+/// Variable defines an arbitrary JMESPath context variable that can be defined inline.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachContextVariable {
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Value is any arbitrary JSON object representable in YAML or JSON form.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
+/// set of conditions. The declaration can contain nested `any` or `all` statements.
+/// See: https://kyverno.io/docs/writing-policies/preconditions/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachPreconditions {
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub all: Option<Vec<PolicyStatusAutogenRulesGenerateForeachPreconditionsAll>>,
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub any: Option<Vec<PolicyStatusAutogenRulesGenerateForeachPreconditionsAny>>,
+}
+
+/// Condition defines variable-based conditional criteria for rule execution.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachPreconditionsAll {
+    /// Key is the context entry (using JMESPath) for conditional rule evaluation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<serde_json::Value>,
+    /// Message is an optional display message
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<PolicyStatusAutogenRulesGenerateForeachPreconditionsAllOperator>,
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// Condition defines variable-based conditional criteria for rule execution.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyStatusAutogenRulesGenerateForeachPreconditionsAllOperator {
+    Equals,
+    NotEquals,
+    In,
+    AnyIn,
+    AllIn,
+    NotIn,
+    AnyNotIn,
+    AllNotIn,
+    GreaterThanOrEquals,
+    GreaterThan,
+    LessThanOrEquals,
+    LessThan,
+    DurationGreaterThanOrEquals,
+    DurationGreaterThan,
+    DurationLessThanOrEquals,
+    DurationLessThan,
+}
+
+/// Condition defines variable-based conditional criteria for rule execution.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesGenerateForeachPreconditionsAny {
+    /// Key is the context entry (using JMESPath) for conditional rule evaluation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<serde_json::Value>,
+    /// Message is an optional display message
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<PolicyStatusAutogenRulesGenerateForeachPreconditionsAnyOperator>,
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// Condition defines variable-based conditional criteria for rule execution.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PolicyStatusAutogenRulesGenerateForeachPreconditionsAnyOperator {
+    Equals,
+    NotEquals,
+    In,
+    AnyIn,
+    AllIn,
+    NotIn,
+    AnyNotIn,
+    AllNotIn,
+    GreaterThanOrEquals,
+    GreaterThan,
+    LessThanOrEquals,
+    LessThan,
+    DurationGreaterThanOrEquals,
+    DurationGreaterThan,
+    DurationLessThanOrEquals,
+    DurationLessThan,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6853,7 +7604,7 @@ pub struct PolicyStatusAutogenRulesVerifyImages {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
     /// Type specifies the method of signature validation. The allowed options
-    /// are Cosign and Notary. By default Cosign is used if a type is not specified.
+    /// are Cosign, Sigstore Bundle and Notary. By default Cosign is used if a type is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<PolicyStatusAutogenRulesVerifyImagesType>,
     /// UseCache enables caching of image verify responses for this rule.
@@ -7482,6 +8233,7 @@ pub struct PolicyStatusAutogenRulesVerifyImagesImageRegistryCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PolicyStatusAutogenRulesVerifyImagesType {
     Cosign,
+    SigstoreBundle,
     Notary,
 }
 

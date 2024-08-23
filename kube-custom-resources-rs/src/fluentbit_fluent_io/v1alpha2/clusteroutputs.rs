@@ -2952,6 +2952,9 @@ pub struct ClusterOutputOpentelemetry {
     /// Log the response payload within the Fluent Bit log.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logResponsePayload")]
     pub log_response_payload: Option<bool>,
+    /// If true, remaining unmatched keys are added as attributes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logsBodyKeyAttributes")]
+    pub logs_body_key_attributes: Option<bool>,
     /// Specify an optional HTTP URI for the target web server listening for logs, e.g: /v1/logs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logsUri")]
     pub logs_uri: Option<String>,
@@ -4172,6 +4175,9 @@ pub struct ClusterOutputSyslog {
     /// and general configuration, please refer to the TLS/SSL section.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ClusterOutputSyslogTls>,
+    /// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalLimitSize")]
+    pub total_limit_size: Option<String>,
 }
 
 /// Include fluentbit networking options for this output-plugin
