@@ -19,6 +19,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct UserSpec {
+    /// CleanupPolicy defines the behavior for cleaning up a SQL resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupPolicy")]
+    pub cleanup_policy: Option<UserCleanupPolicy>,
     /// Host related to the User.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -31,6 +34,13 @@ pub struct UserSpec {
     /// Name overrides the default name provided by metadata.name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// PasswordHashSecretKeyRef is a reference to the password hash to be used by the User.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password hash.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordHashSecretKeyRef")]
+    pub password_hash_secret_key_ref: Option<UserPasswordHashSecretKeyRef>,
+    /// PasswordPlugin is a reference to the password plugin and arguments to be used by the User.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordPlugin")]
+    pub password_plugin: Option<UserPasswordPlugin>,
     /// PasswordSecretKeyRef is a reference to the password to be used by the User.
     /// If not provided, the account will be locked and the password will expire.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
@@ -42,6 +52,13 @@ pub struct UserSpec {
     /// RetryInterval is the interval used to perform retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
+}
+
+/// UserSpec defines the desired state of User
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum UserCleanupPolicy {
+    Skip,
+    Delete,
 }
 
 /// MariaDBRef is a reference to a MariaDB object.
@@ -57,7 +74,6 @@ pub struct UserMariaDbRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -85,6 +101,73 @@ pub struct UserMariaDbRef {
     pub wait_for_it: Option<bool>,
 }
 
+/// PasswordHashSecretKeyRef is a reference to the password hash to be used by the User.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password hash.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserPasswordHashSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// PasswordPlugin is a reference to the password plugin and arguments to be used by the User.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserPasswordPlugin {
+    /// PluginArgSecretKeyRef is a reference to the arguments to be provided to the authentication plugin for the User.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the authentication plugin arguments.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginArgSecretKeyRef")]
+    pub plugin_arg_secret_key_ref: Option<UserPasswordPluginPluginArgSecretKeyRef>,
+    /// PluginNameSecretKeyRef is a reference to the authentication plugin to be used by the User.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the authentication plugin.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginNameSecretKeyRef")]
+    pub plugin_name_secret_key_ref: Option<UserPasswordPluginPluginNameSecretKeyRef>,
+}
+
+/// PluginArgSecretKeyRef is a reference to the arguments to be provided to the authentication plugin for the User.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the authentication plugin arguments.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserPasswordPluginPluginArgSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// PluginNameSecretKeyRef is a reference to the authentication plugin to be used by the User.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the authentication plugin.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserPasswordPluginPluginNameSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// PasswordSecretKeyRef is a reference to the password to be used by the User.
 /// If not provided, the account will be locked and the password will expire.
 /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
@@ -96,9 +179,7 @@ pub struct UserPasswordSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined

@@ -28,13 +28,13 @@ pub struct DNSRecordSpec {
     /// the listeners assigned to the target gateway
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<DNSRecordHealthCheck>,
-    /// managedZone is a reference to a ManagedZone instance to which this record will publish its endpoints.
-    #[serde(rename = "managedZone")]
-    pub managed_zone: DNSRecordManagedZone,
     /// ownerID is a unique string used to identify the owner of this record.
     /// If unset or set to an empty string the record UID will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
+    /// providerRef is a reference to a provider secret.
+    #[serde(rename = "providerRef")]
+    pub provider_ref: DNSRecordProviderRef,
     /// rootHost is the single root for all endpoints in a DNSRecord.
     /// it is expected all defined endpoints are children of or equal to this rootHost
     /// Must contain at least two groups of valid URL characters separated by a "."
@@ -97,18 +97,16 @@ pub struct DNSRecordHealthCheck {
     pub protocol: Option<String>,
 }
 
-/// managedZone is a reference to a ManagedZone instance to which this record will publish its endpoints.
+/// providerRef is a reference to a provider secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DNSRecordManagedZone {
-    /// `name` is the name of the managed zone.
-    /// Required
+pub struct DNSRecordProviderRef {
     pub name: String,
 }
 
 /// DNSRecordStatus defines the observed state of DNSRecord
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSRecordStatus {
-    /// conditions are any conditions associated with the record in the managed zone.
+    /// conditions are any conditions associated with the record in the dns provider.
     /// 
     /// 
     /// If publishing the record fails, the "Failed" condition will be set with a
@@ -118,25 +116,12 @@ pub struct DNSRecordStatus {
     /// DomainOwners is a list of all the owners working against the root domain of this record
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainOwners")]
     pub domain_owners: Option<Vec<String>>,
-    /// endpoints are the last endpoints that were successfully published by the provider
-    /// 
-    /// 
-    /// Provides a simple mechanism to store the current provider records in order to
-    /// delete any that are no longer present in DNSRecordSpec.Endpoints
-    /// 
-    /// 
-    /// Note: This will not be required if/when we switch to using external-dns since when
-    /// running with a "sync" policy it will clean up unused records automatically.
+    /// endpoints are the last endpoints that were successfully published to the provider zone
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<DNSRecordStatusEndpoints>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<DNSRecordStatusHealthCheck>,
-    /// observedGeneration is the most recently observed generation of the
-    /// DNSRecord.  When the DNSRecord is updated, the controller updates the
-    /// corresponding record in each managed zone.  If an update for a
-    /// particular zone fails, that failure is recorded in the status
-    /// condition for the zone so that the controller can determine that it
-    /// needs to retry the update for that specific zone.
+    /// observedGeneration is the most recently observed generation of the DNSRecord.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ownerID is a unique string used to identify the owner of this record.
@@ -155,6 +140,12 @@ pub struct DNSRecordStatus {
     /// It is being reset to 0 when the generation changes or there are no changes to write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeCounter")]
     pub write_counter: Option<i64>,
+    /// zoneDomainName is the domain name of the zone that the dns record is publishing endpoints
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zoneDomainName")]
+    pub zone_domain_name: Option<String>,
+    /// zoneID is the provider specific id to which this dns record is publishing endpoints
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zoneID")]
+    pub zone_id: Option<String>,
 }
 
 /// Endpoint is a high-level way of a connection between a service and an IP

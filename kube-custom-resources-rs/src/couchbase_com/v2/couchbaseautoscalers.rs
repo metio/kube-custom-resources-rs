@@ -24,10 +24,12 @@ pub struct CouchbaseAutoscalerSpec {
     pub size: i64,
 }
 
-/// CouchbaseAutoscalerStatus provides information to the HPA to assist with scaling server groups.
+/// CouchbaseAutoscalerStatus provides information to the HPA to assist with scaling
+/// server groups.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseAutoscalerStatus {
-    /// LabelSelector allows the HPA to select resources to monitor for resource utilization in order to trigger scaling.
+    /// LabelSelector allows the HPA to select resources to monitor for resource
+    /// utilization in order to trigger scaling.
     #[serde(rename = "labelSelector")]
     pub label_selector: String,
     /// Size is the current size of the server group.

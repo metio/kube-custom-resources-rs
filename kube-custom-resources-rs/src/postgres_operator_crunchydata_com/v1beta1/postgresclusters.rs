@@ -145,6 +145,9 @@ pub struct PostgresClusterSpec {
 pub struct PostgresClusterBackups {
     /// pgBackRest archive configuration
     pub pgbackrest: PostgresClusterBackupsPgbackrest,
+    /// VolumeSnapshot configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub snapshots: Option<PostgresClusterBackupsSnapshots>,
 }
 
 /// pgBackRest archive configuration
@@ -3481,6 +3484,14 @@ pub struct PostgresClusterBackupsPgbackrestSidecarsPgbackrestConfigResourcesClai
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+}
+
+/// VolumeSnapshot configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PostgresClusterBackupsSnapshots {
+    /// Name of the VolumeSnapshotClass that should be used by VolumeSnapshots
+    #[serde(rename = "volumeSnapshotClassName")]
+    pub volume_snapshot_class_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

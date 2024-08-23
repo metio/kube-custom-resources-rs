@@ -119,8 +119,17 @@ spec:
                     - "name"
                   type: "object"
                 sts:
-                  description: "STS specifies the required configuration to use a Security Token\nService for fetching temporary credentials to authenticate in a\nBucket provider.\n\n\nThis field is only supported for the `aws` provider."
+                  description: "STS specifies the required configuration to use a Security Token\nService for fetching temporary credentials to authenticate in a\nBucket provider.\n\n\nThis field is only supported for the `aws` and `generic` providers."
                   properties:
+                    certSecretRef:
+                      description: "CertSecretRef can be given the name of a Secret containing\neither or both of\n\n\n- a PEM-encoded client certificate (`tls.crt`) and private\nkey (`tls.key`);\n- a PEM-encoded CA certificate (`ca.crt`)\n\n\nand whichever are supplied, will be used for connecting to the\nSTS endpoint. The client cert and key are useful if you are\nauthenticating with a certificate; the CA cert is useful if\nyou are using a self-signed server certificate. The Secret must\nbe of type `Opaque` or `kubernetes.io/tls`.\n\n\nThis field is only supported for the `ldap` provider."
+                      properties:
+                        name:
+                          description: "Name of the referent."
+                          type: "string"
+                      required:
+                        - "name"
+                      type: "object"
                     endpoint:
                       description: "Endpoint is the HTTP/S endpoint of the Security Token Service from\nwhere temporary credentials will be fetched."
                       pattern: "^(http|https)://.*$"
@@ -129,7 +138,17 @@ spec:
                       description: "Provider of the Security Token Service."
                       enum:
                         - "aws"
+                        - "ldap"
                       type: "string"
+                    secretRef:
+                      description: "SecretRef specifies the Secret containing authentication credentials\nfor the STS endpoint. This Secret must contain the fields `username`\nand `password` and is supported only for the `ldap` provider."
+                      properties:
+                        name:
+                          description: "Name of the referent."
+                          type: "string"
+                      required:
+                        - "name"
+                      type: "object"
                   required:
                     - "endpoint"
                     - "provider"
@@ -148,10 +167,16 @@ spec:
                 - "interval"
               type: "object"
               x-kubernetes-validations:
-                - message: "STS configuration is only supported for the 'aws' Bucket provider"
-                  rule: "self.provider == 'aws' || !has(self.sts)"
+                - message: "STS configuration is only supported for the 'aws' and 'generic' Bucket providers"
+                  rule: "self.provider == 'aws' || self.provider == 'generic' || !has(self.sts)"
                 - message: "'aws' is the only supported STS provider for the 'aws' Bucket provider"
                   rule: "self.provider != 'aws' || !has(self.sts) || self.sts.provider == 'aws'"
+                - message: "'ldap' is the only supported STS provider for the 'generic' Bucket provider"
+                  rule: "self.provider != 'generic' || !has(self.sts) || self.sts.provider == 'ldap'"
+                - message: "spec.sts.secretRef is not required for the 'aws' STS provider"
+                  rule: "!has(self.sts) || self.sts.provider != 'aws' || !has(self.sts.secretRef)"
+                - message: "spec.sts.certSecretRef is not required for the 'aws' STS provider"
+                  rule: "!has(self.sts) || self.sts.provider != 'aws' || !has(self.sts.certSecretRef)"
             status:
               default:
                 observedGeneration: -1

@@ -24,7 +24,6 @@ pub struct CertificateSpec {
     /// Defines extra output formats of the private key and signed certificate chain
     /// to be written to this Certificate's target Secret.
     /// 
-    /// 
     /// This is a Beta Feature enabled by default. It can be disabled with the
     /// `--feature-gates=AdditionalCertificateOutputFormats=false` option set on both
     /// the controller and webhook components.
@@ -34,7 +33,6 @@ pub struct CertificateSpec {
     /// More info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.6
     /// NOTE: TLS clients will ignore this value when any subject alternative name is
     /// set (see https://tools.ietf.org/html/rfc6125#section-6.4.4).
-    /// 
     /// 
     /// Should have a length of 64 characters or fewer to avoid generating invalid CSRs.
     /// Cannot be set if the `literalSubject` field is set.
@@ -47,7 +45,6 @@ pub struct CertificateSpec {
     /// issuer may choose to ignore the requested duration, just like any other
     /// requested attribute.
     /// 
-    /// 
     /// If unset, this defaults to 90 days.
     /// Minimum accepted duration is 1 hour.
     /// Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration.
@@ -57,7 +54,6 @@ pub struct CertificateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailAddresses")]
     pub email_addresses: Option<Vec<String>>,
     /// Whether the KeyUsage and ExtKeyUsage extensions should be set in the encoded CSR.
-    /// 
     /// 
     /// This option defaults to true, and should only be disabled if the target
     /// issuer does not support CSRs with these X509 KeyUsage/ ExtKeyUsage extensions.
@@ -71,7 +67,6 @@ pub struct CertificateSpec {
     /// resources. Note that the issuer may choose to ignore the requested isCA value, just
     /// like any other requested attribute.
     /// 
-    /// 
     /// If true, this will automatically add the `cert sign` usage to the list
     /// of requested `usages`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isCA")]
@@ -80,7 +75,6 @@ pub struct CertificateSpec {
     /// If the issuer is namespace-scoped, it must be in the same namespace
     /// as the Certificate. If the issuer is cluster-scoped, it can be used
     /// from any namespace.
-    /// 
     /// 
     /// The `name` field of the reference must always be specified.
     #[serde(rename = "issuerRef")]
@@ -97,13 +91,11 @@ pub struct CertificateSpec {
     /// More info: https://github.com/cert-manager/cert-manager/issues/3203
     /// More info: https://github.com/cert-manager/cert-manager/issues/4424
     /// 
-    /// 
     /// Cannot be set if the `subject` or `commonName` field is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "literalSubject")]
     pub literal_subject: Option<String>,
     /// x.509 certificate NameConstraint extension which MUST NOT be used in a non-CA certificate.
     /// More Info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.10
-    /// 
     /// 
     /// This is an Alpha Feature and is only enabled with the
     /// `--feature-gates=NameConstraints=true` option set on both
@@ -126,11 +118,9 @@ pub struct CertificateSpec {
     /// 50 minutes after it was issued (i.e. when there are 10 minutes remaining until
     /// the certificate is no longer valid).
     /// 
-    /// 
     /// NOTE: The actual lifetime of the issued certificate is used to determine the
     /// renewal time. If an issuer returns a certificate with a different lifetime than
     /// the one requested, cert-manager will use the lifetime of the issued certificate.
-    /// 
     /// 
     /// If unset, this defaults to 1/3 of the issued certificate's lifetime.
     /// Minimum accepted value is 5 minutes.
@@ -144,11 +134,9 @@ pub struct CertificateSpec {
     /// renew the certificate 45 minutes after it was issued (i.e. when there are 15
     /// minutes (25%) remaining until the certificate is no longer valid).
     /// 
-    /// 
     /// NOTE: The actual lifetime of the issued certificate is used to determine the
     /// renewal time. If an issuer returns a certificate with a different lifetime than
     /// the one requested, cert-manager will use the lifetime of the issued certificate.
-    /// 
     /// 
     /// Value must be an integer in the range (0,100). The minimum effective
     /// `renewBefore` derived from the `renewBeforePercentage` and `duration` fields is 5
@@ -161,7 +149,6 @@ pub struct CertificateSpec {
     /// created by this Certificate, either when it was created, renewed, or Spec
     /// was changed. Revisions will be removed by oldest first if the number of
     /// revisions exceeds this number.
-    /// 
     /// 
     /// If set, revisionHistoryLimit must be a value of `1` or greater.
     /// If unset (`nil`), revisions will not be garbage collected.
@@ -184,7 +171,6 @@ pub struct CertificateSpec {
     /// Requested set of X509 certificate subject attributes.
     /// More info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.6
     /// 
-    /// 
     /// The common name attribute is specified separately in the `commonName` field.
     /// Cannot be set if the `literalSubject` field is set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -196,7 +182,6 @@ pub struct CertificateSpec {
     /// These usages are used to set the `usages` field on the created CertificateRequest
     /// resources. If `encodeUsagesInRequest` is unset or set to `true`, the usages
     /// will additionally be encoded in the `request` field which contains the CSR blob.
-    /// 
     /// 
     /// If unset, defaults to `digital signature` and `key encipherment`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -229,7 +214,6 @@ pub enum CertificateAdditionalOutputFormatsType {
 /// If the issuer is namespace-scoped, it must be in the same namespace
 /// as the Certificate. If the issuer is cluster-scoped, it can be used
 /// from any namespace.
-/// 
 /// 
 /// The `name` field of the reference must always be specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -316,7 +300,6 @@ pub struct CertificateKeystoresPkcs12 {
     /// Profile specifies the key and certificate encryption algorithms and the HMAC algorithm
     /// used to create the PKCS12 keystore. Default value is `LegacyRC2` for backward compatibility.
     /// 
-    /// 
     /// If provided, allowed values are:
     /// `LegacyRC2`: Deprecated. Not supported by default in OpenSSL 3 or Java 20.
     /// `LegacyDES`: Less secure algorithm. Use this option for maximal compatibility.
@@ -354,7 +337,6 @@ pub enum CertificateKeystoresPkcs12Profile {
 
 /// x.509 certificate NameConstraint extension which MUST NOT be used in a non-CA certificate.
 /// More Info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.10
-/// 
 /// 
 /// This is an Alpha Feature and is only enabled with the
 /// `--feature-gates=NameConstraints=true` option set on both
@@ -432,7 +414,6 @@ pub struct CertificatePrivateKey {
     /// Algorithm is the private key algorithm of the corresponding private key
     /// for this certificate.
     /// 
-    /// 
     /// If provided, allowed values are either `RSA`, `ECDSA` or `Ed25519`.
     /// If `algorithm` is specified and `size` is not provided,
     /// key size of 2048 will be used for `RSA` key algorithm and
@@ -443,7 +424,6 @@ pub struct CertificatePrivateKey {
     /// The private key cryptography standards (PKCS) encoding for this
     /// certificate's private key to be encoded in.
     /// 
-    /// 
     /// If provided, allowed values are `PKCS1` and `PKCS8` standing for PKCS#1
     /// and PKCS#8, respectively.
     /// Defaults to `PKCS1` if not specified.
@@ -451,7 +431,6 @@ pub struct CertificatePrivateKey {
     pub encoding: Option<CertificatePrivateKeyEncoding>,
     /// RotationPolicy controls how private keys should be regenerated when a
     /// re-issuance is being processed.
-    /// 
     /// 
     /// If set to `Never`, a private key will only be generated if one does not
     /// already exist in the target `spec.secretName`. If one does exists but it
@@ -463,7 +442,6 @@ pub struct CertificatePrivateKey {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotationPolicy")]
     pub rotation_policy: Option<CertificatePrivateKeyRotationPolicy>,
     /// Size is the key bit size of the corresponding private key for this certificate.
-    /// 
     /// 
     /// If `algorithm` is set to `RSA`, valid values are `2048`, `4096` or `8192`,
     /// and will default to `2048` if not specified.
@@ -521,7 +499,6 @@ pub struct CertificateSecretTemplate {
 
 /// Requested set of X509 certificate subject attributes.
 /// More info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.6
-/// 
 /// 
 /// The common name attribute is specified separately in the `commonName` field.
 /// Cannot be set if the `literalSubject` field is set.
@@ -600,15 +577,12 @@ pub struct CertificateStatus {
     pub renewal_time: Option<String>,
     /// The current 'revision' of the certificate as issued.
     /// 
-    /// 
     /// When a CertificateRequest resource is created, it will have the
     /// `cert-manager.io/certificate-revision` set to one greater than the
     /// current value of this field.
     /// 
-    /// 
     /// Upon issuance, this field will be set to the value of the annotation
     /// on the CertificateRequest resource used to issue the certificate.
-    /// 
     /// 
     /// Persisting the value on the CertificateRequest resource allows the
     /// certificates controller to know whether a request is part of an old

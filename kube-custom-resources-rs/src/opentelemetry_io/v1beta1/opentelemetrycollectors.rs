@@ -12,12 +12,11 @@ mod prelude {
 }
 use self::prelude::*;
 
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "opentelemetry.io", version = "v1beta1", kind = "OpenTelemetryCollector", plural = "opentelemetrycollectors")]
 #[kube(namespaced)]
 #[kube(status = "OpenTelemetryCollectorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct OpenTelemetryCollectorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalContainers")]
@@ -59,8 +58,8 @@ pub struct OpenTelemetryCollectorSpec {
     pub lifecycle: Option<OpenTelemetryCollectorLifecycle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<OpenTelemetryCollectorLivenessProbe>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementState")]
-    pub management_state: Option<OpenTelemetryCollectorManagementState>,
+    #[serde(rename = "managementState")]
+    pub management_state: OpenTelemetryCollectorManagementState,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<OpenTelemetryCollectorMode>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -509,6 +508,8 @@ pub struct OpenTelemetryCollectorAdditionalContainersResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenTelemetryCollectorAdditionalContainersResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1697,6 +1698,8 @@ pub struct OpenTelemetryCollectorInitContainersResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenTelemetryCollectorInitContainersResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2064,6 +2067,8 @@ pub struct OpenTelemetryCollectorPodSecurityContext {
     pub seccomp_profile: Option<OpenTelemetryCollectorPodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<OpenTelemetryCollectorPodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -2162,6 +2167,8 @@ pub struct OpenTelemetryCollectorResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenTelemetryCollectorResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2694,6 +2701,8 @@ pub struct OpenTelemetryCollectorTargetAllocatorPodSecurityContext {
     pub seccomp_profile: Option<OpenTelemetryCollectorTargetAllocatorPodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<OpenTelemetryCollectorTargetAllocatorPodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -2803,6 +2812,8 @@ pub struct OpenTelemetryCollectorTargetAllocatorResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenTelemetryCollectorTargetAllocatorResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3162,6 +3173,8 @@ pub struct OpenTelemetryCollectorVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<OpenTelemetryCollectorVolumesHostPath>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<OpenTelemetryCollectorVolumesImage>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<OpenTelemetryCollectorVolumesIscsi>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3514,6 +3527,14 @@ pub struct OpenTelemetryCollectorVolumesHostPath {
     pub path: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

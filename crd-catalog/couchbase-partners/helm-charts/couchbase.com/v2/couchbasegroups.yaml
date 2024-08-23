@@ -2,8 +2,8 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    config.couchbase.com/version: "2.5.0"
-    controller-gen.kubebuilder.io/version: "v0.8.0"
+    config.couchbase.com/version: "2.7.0"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "couchbasegroups.couchbase.com"
 spec:
   group: "couchbase.com"
@@ -20,10 +20,10 @@ spec:
           description: "CouchbaseGroup allows the automation of Couchbase group management."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -38,19 +38,19 @@ spec:
                   items:
                     properties:
                       bucket:
-                        description: "Bucket name for bucket admin roles.  When not specified for a role that can be scoped to a specific bucket, the role will apply to all buckets in the cluster. Deprecated:  Couchbase Autonomous Operator 2.3"
+                        description: "Bucket name for bucket admin roles.  When not specified for a role that can be scoped\nto a specific bucket, the role will apply to all buckets in the cluster.\nDeprecated:  Couchbase Autonomous Operator 2.3"
                         pattern: "^\\*$|^[a-zA-Z0-9-_%\\.]+$"
                         type: "string"
                       buckets:
-                        description: "Bucket level access to apply to specified role. The bucket must exist.  When not specified, the bucket field will be checked. If both are empty and the role can be scoped to a specific bucket, the role will apply to all buckets in the cluster"
+                        description: "Bucket level access to apply to specified role. The bucket must exist.  When not specified,\nthe bucket field will be checked. If both are empty and the role can be scoped to a specific bucket, the role\nwill apply to all buckets in the cluster"
                         properties:
                           resources:
-                            description: "Resources is an explicit list of named bucket resources that will be considered for inclusion in this role.  If a resource reference doesn't match a resource, then no error conditions are raised due to undefined resource creation ordering and eventual consistency."
+                            description: "Resources is an explicit list of named bucket resources that will be considered\nfor inclusion in this role.  If a resource reference doesn't\nmatch a resource, then no error conditions are raised due to undefined\nresource creation ordering and eventual consistency."
                             items:
                               properties:
                                 kind:
                                   default: "CouchbaseBucket"
-                                  description: "Kind indicates the kind of resource that is being referenced.  A Role can only reference `CouchbaseBucket` kind.  This field defaults to `CouchbaseBucket` if not specified."
+                                  description: "Kind indicates the kind of resource that is being referenced.  A Role\ncan only reference `CouchbaseBucket` kind.  This field defaults\nto `CouchbaseBucket` if not specified."
                                   enum:
                                     - "CouchbaseBucket"
                                   type: "string"
@@ -62,21 +62,21 @@ spec:
                               type: "object"
                             type: "array"
                           selector:
-                            description: "Selector allows resources to be implicitly considered for inclusion in this role.  More info: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#labelselector-v1-meta"
+                            description: "Selector allows resources to be implicitly considered for inclusion in this\nrole.  More info:\nhttps://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#labelselector-v1-meta"
                             properties:
                               matchExpressions:
                                 description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                 items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                   properties:
                                     key:
                                       description: "key is the label key that the selector applies to."
                                       type: "string"
                                     operator:
-                                      description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                       type: "string"
                                     values:
-                                      description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -88,26 +88,27 @@ spec:
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                 type: "object"
                             type: "object"
+                            x-kubernetes-map-type: "atomic"
                         type: "object"
                       collections:
-                        description: "Collection level access to apply to the specified role.  The collection must exist. When not specified, the role is subject to scope or bucket level access."
+                        description: "Collection level access to apply to the specified role.  The collection must exist.\nWhen not specified, the role is subject to scope or bucket level access."
                         properties:
                           resources:
-                            description: "Resources is an explicit list of named resources that will be considered for inclusion in this collection or collections.  If a resource reference doesn't match a resource, then no error conditions are raised due to undefined resource creation ordering and eventual consistency."
+                            description: "Resources is an explicit list of named resources that will be considered\nfor inclusion in this collection or collections.  If a resource reference doesn't\nmatch a resource, then no error conditions are raised due to undefined\nresource creation ordering and eventual consistency."
                             items:
                               properties:
                                 kind:
                                   default: "CouchbaseCollection"
-                                  description: "Kind indicates the kind of resource that is being referenced.  A scope can only reference `CouchbaseCollection` and `CouchbaseCollectionGroup` resource kinds.  This field defaults to `CouchbaseCollection` if not specified."
+                                  description: "Kind indicates the kind of resource that is being referenced.  A scope\ncan only reference `CouchbaseCollection` and `CouchbaseCollectionGroup`\nresource kinds.  This field defaults to `CouchbaseCollection` if not\nspecified."
                                   enum:
                                     - "CouchbaseCollection"
                                     - "CouchbaseCollectionGroup"
                                   type: "string"
                                 name:
-                                  description: "Name is the name of the Kubernetes resource name that is being referenced. Legal collection names have a maximum length of 251 characters and may be composed of any character from \"a-z\", \"A-Z\", \"0-9\" and \"_-%\"."
+                                  description: "Name is the name of the Kubernetes resource name that is being referenced.\nLegal collection names have a maximum length of 251\ncharacters and may be composed of any character from \"a-z\", \"A-Z\", \"0-9\" and \"_-%\"."
                                   maxLength: 251
                                   minLength: 1
                                   pattern: "^[a-zA-Z0-9\\-][a-zA-Z0-9\\-%_]{0,250}$"
@@ -117,21 +118,21 @@ spec:
                               type: "object"
                             type: "array"
                           selector:
-                            description: "Selector allows resources to be implicitly considered for inclusion in this collection or collections.  More info: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#labelselector-v1-meta"
+                            description: "Selector allows resources to be implicitly considered for inclusion in this\ncollection or collections.  More info:\nhttps://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#labelselector-v1-meta"
                             properties:
                               matchExpressions:
                                 description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                 items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                   properties:
                                     key:
                                       description: "key is the label key that the selector applies to."
                                       type: "string"
                                     operator:
-                                      description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                       type: "string"
                                     values:
-                                      description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -143,9 +144,10 @@ spec:
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                 type: "object"
                             type: "object"
+                            x-kubernetes-map-type: "atomic"
                         type: "object"
                       name:
                         description: "Name of role."
@@ -198,23 +200,24 @@ spec:
                           - "security_admin_local"
                           - "views_admin"
                           - "views_reader"
+                          - "eventing_manage_functions"
                         type: "string"
                       scopes:
-                        description: "Scope level access to apply to specified role.  The scope must exist.  When not specified, the role will apply to selected bucket or all buckets in the cluster."
+                        description: "Scope level access to apply to specified role.  The scope must exist.  When not specified,\nthe role will apply to selected bucket or all buckets in the cluster."
                         properties:
                           resources:
-                            description: "Resources is an explicit list of named resources that will be considered for inclusion in this scope or scopes.  If a resource reference doesn't match a resource, then no error conditions are raised due to undefined resource creation ordering and eventual consistency."
+                            description: "Resources is an explicit list of named resources that will be considered\nfor inclusion in this scope or scopes.  If a resource reference doesn't\nmatch a resource, then no error conditions are raised due to undefined\nresource creation ordering and eventual consistency."
                             items:
                               properties:
                                 kind:
                                   default: "CouchbaseScope"
-                                  description: "Kind indicates the kind of resource that is being referenced.  A scope can only reference `CouchbaseScope` and `CouchbaseScopeGroup` resource kinds.  This field defaults to `CouchbaseScope` if not specified."
+                                  description: "Kind indicates the kind of resource that is being referenced.  A scope\ncan only reference `CouchbaseScope` and `CouchbaseScopeGroup`\nresource kinds.  This field defaults to `CouchbaseScope` if not\nspecified."
                                   enum:
                                     - "CouchbaseScope"
                                     - "CouchbaseScopeGroup"
                                   type: "string"
                                 name:
-                                  description: "Name is the name of the Kubernetes resource name that is being referenced. Legal scope names have a maximum length of 251 characters and may be composed of any character from \"a-z\", \"A-Z\", \"0-9\" and \"_-%\"."
+                                  description: "Name is the name of the Kubernetes resource name that is being referenced.\nLegal scope names have a maximum length of 251\ncharacters and may be composed of any character from \"a-z\", \"A-Z\", \"0-9\" and \"_-%\"."
                                   maxLength: 251
                                   minLength: 1
                                   pattern: "^[a-zA-Z0-9\\-][a-zA-Z0-9\\-%_]{0,250}$"
@@ -224,21 +227,21 @@ spec:
                               type: "object"
                             type: "array"
                           selector:
-                            description: "Selector allows resources to be implicitly considered for inclusion in this scope or scopes.  More info: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#labelselector-v1-meta"
+                            description: "Selector allows resources to be implicitly considered for inclusion in this\nscope or scopes.  More info:\nhttps://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#labelselector-v1-meta"
                             properties:
                               matchExpressions:
                                 description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                 items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                   properties:
                                     key:
                                       description: "key is the label key that the selector applies to."
                                       type: "string"
                                     operator:
-                                      description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                       type: "string"
                                     values:
-                                      description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -250,9 +253,10 @@ spec:
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                 type: "object"
                             type: "object"
+                            x-kubernetes-map-type: "atomic"
                         type: "object"
                     required:
                       - "name"

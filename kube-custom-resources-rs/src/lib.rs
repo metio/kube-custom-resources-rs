@@ -902,6 +902,7 @@ apiVersion `crd.projectcalico.org/v1`:
 - `IPReservation`
 - `KubeControllersConfiguration`
 - `NetworkSet`
+- `Tier`
 
 ## data_fluid_io
 

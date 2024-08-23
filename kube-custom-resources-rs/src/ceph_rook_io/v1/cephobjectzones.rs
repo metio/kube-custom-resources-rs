@@ -27,7 +27,6 @@ pub struct CephObjectZoneSpec {
     /// CephObjectStore associated with this CephObjectStoreZone reachable to peer clusters.
     /// The list can have one or more endpoints pointing to different RGW servers in the zone.
     /// 
-    /// 
     /// If a CephObjectStore endpoint is omitted from this list, that object store's gateways will
     /// not receive multisite replication data
     /// (see CephObjectStore.spec.gateway.disableMultisiteSyncTraffic).

@@ -247,7 +247,7 @@ pub struct WildFlyServerLivenessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WildFlyServerLivenessProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -309,7 +309,7 @@ pub struct WildFlyServerReadinessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WildFlyServerReadinessProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -486,7 +486,7 @@ pub struct WildFlyServerStartupProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WildFlyServerStartupProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,

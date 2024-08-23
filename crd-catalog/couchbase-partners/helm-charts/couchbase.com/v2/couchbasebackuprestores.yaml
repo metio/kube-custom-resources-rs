@@ -2,8 +2,8 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    config.couchbase.com/version: "2.5.0"
-    controller-gen.kubebuilder.io/version: "v0.8.0"
+    config.couchbase.com/version: "2.7.0"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "couchbasebackuprestores.couchbase.com"
 spec:
   group: "couchbase.com"
@@ -38,18 +38,18 @@ spec:
       name: "v2"
       schema:
         openAPIV3Schema:
-          description: "CouchbaseBackupRestore allows the restoration of all Couchbase cluster data from a CouchbaseBackup resource."
+          description: "CouchbaseBackupRestore allows the restoration of all Couchbase cluster data from\na CouchbaseBackup resource."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
             spec:
-              description: "CouchbaseBackupRestoreSpec allows the specification of data restoration to be configured.  This includes the backup and repository to restore data from, and the time range of data to be restored."
+              description: "CouchbaseBackupRestoreSpec allows the specification of data restoration to be\nconfigured.  This includes the backup and repository to restore data from, and\nthe time range of data to be restored."
               properties:
                 backoffLimit:
                   default: 2
@@ -57,19 +57,19 @@ spec:
                   format: "int32"
                   type: "integer"
                 backup:
-                  description: "The backup resource name associated with this restore, or the backup PVC name to restore from."
+                  description: "The backup resource name associated with this restore, or the backup PVC\nname to restore from."
                   type: "string"
                 buckets:
-                  description: "DEPRECATED - by spec.data. Specific buckets can be explicitly included or excluded in the restore, as well as bucket mappings.  This field is now ignored."
+                  description: "DEPRECATED - by spec.data.\nSpecific buckets can be explicitly included or excluded in the restore,\nas well as bucket mappings.  This field is now ignored."
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 data:
-                  description: "Data allows control over what key-value/document data is included in the restore.  By default, all data is included."
+                  description: "Data allows control over what key-value/document data is included in the\nrestore.  By default, all data is included."
                   properties:
                     exclude:
-                      description: "Exclude defines the buckets, scopes or collections that are excluded from the backup. When this field is set, it implies that by default everything will be backed up, and data items can be explicitly excluded.  You may define an exclusion as a bucket -- `my-bucket`, a scope -- `my-bucket.my-scope`, or a collection -- `my-bucket.my-scope.my-collection`. Buckets may contain periods, and therefore must be escaped -- `my\\.bucket.my-scope`, as period is the separator used to delimit scopes and collections.  Excluded data cannot overlap e.g. specifying `my-bucket` and `my-bucket.my-scope` is illegal.  This field cannot be used at the same time as included items."
+                      description: "Exclude defines the buckets, scopes or collections that are excluded from the backup.\nWhen this field is set, it implies that by default everything will be backed up,\nand data items can be explicitly excluded.  You may define an exclusion as a bucket\n-- `my-bucket`, a scope -- `my-bucket.my-scope`, or a collection -- `my-bucket.my-scope.my-collection`.\nBuckets may contain periods, and therefore must be escaped -- `my\\.bucket.my-scope`, as\nperiod is the separator used to delimit scopes and collections.  Excluded data cannot overlap\ne.g. specifying `my-bucket` and `my-bucket.my-scope` is illegal.  This field cannot\nbe used at the same time as included items."
                       items:
-                        description: "BucketScopeOrCollectionNameWithDefaults is the name of a fully qualifed bucket, scope or collection. The _default scope and collection are valid for this type. As these names are period separated, and buckets can contain periods, the latter need to be escaped.  This specification is based on cbbackupmgr."
+                        description: "BucketScopeOrCollectionNameWithDefaults is the name of a fully qualifed bucket, scope or collection.\nThe _default scope and collection are valid for this type.\nAs these names are period separated, and buckets can contain periods, the latter need\nto be escaped.  This specification is based on cbbackupmgr."
                         pattern: "^(?:[a-zA-Z0-9\\-_%]|\\\\.){1,100}(\\._default(\\._default)?|\\.[a-zA-Z0-9\\-][a-zA-Z0-9\\-%_]{0,29}(\\.[a-zA-Z0-9\\-][a-zA-Z0-9\\-%_]{0,29})?)?$"
                         type: "string"
                       minItems: 1
@@ -82,25 +82,25 @@ spec:
                       description: "FilterValues only restores documents whose values match the provided regular expression."
                       type: "string"
                     include:
-                      description: "Include defines the buckets, scopes or collections that are included in the restore. When this field is set, it implies that by default nothing will be restored, and data items must be explicitly included.  You may define an inclusion as a bucket -- `my-bucket`, a scope -- `my-bucket.my-scope`, or a collection -- `my-bucket.my-scope.my-collection`. Buckets may contain periods, and therefore must be escaped -- `my\\.bucket.my-scope`, as period is the separator used to delimit scopes and collections.  Included data cannot overlap e.g. specifying `my-bucket` and `my-bucket.my-scope` is illegal.  This field cannot be used at the same time as excluded items."
+                      description: "Include defines the buckets, scopes or collections that are included in the restore.\nWhen this field is set, it implies that by default nothing will be restored,\nand data items must be explicitly included.  You may define an inclusion as a bucket\n-- `my-bucket`, a scope -- `my-bucket.my-scope`, or a collection -- `my-bucket.my-scope.my-collection`.\nBuckets may contain periods, and therefore must be escaped -- `my\\.bucket.my-scope`, as\nperiod is the separator used to delimit scopes and collections.  Included data cannot overlap\ne.g. specifying `my-bucket` and `my-bucket.my-scope` is illegal.  This field cannot\nbe used at the same time as excluded items."
                       items:
-                        description: "BucketScopeOrCollectionNameWithDefaults is the name of a fully qualifed bucket, scope or collection. The _default scope and collection are valid for this type. As these names are period separated, and buckets can contain periods, the latter need to be escaped.  This specification is based on cbbackupmgr."
+                        description: "BucketScopeOrCollectionNameWithDefaults is the name of a fully qualifed bucket, scope or collection.\nThe _default scope and collection are valid for this type.\nAs these names are period separated, and buckets can contain periods, the latter need\nto be escaped.  This specification is based on cbbackupmgr."
                         pattern: "^(?:[a-zA-Z0-9\\-_%]|\\\\.){1,100}(\\._default(\\._default)?|\\.[a-zA-Z0-9\\-][a-zA-Z0-9\\-%_]{0,29}(\\.[a-zA-Z0-9\\-][a-zA-Z0-9\\-%_]{0,29})?)?$"
                         type: "string"
                       minItems: 1
                       type: "array"
                       x-kubernetes-list-type: "set"
                     map:
-                      description: "Map allows data items in the restore to be remapped to a different named container. Buckets can be remapped to other buckets e.g. \"source=target\", scopes and collections can be remapped to other scopes and collections within the same bucket only e.g. \"bucket.scope=bucket.other\" or \"bucket.scope.collection=bucket.scope.other\".  Map sources may only be specified once, and may not overlap."
+                      description: "Map allows data items in the restore to be remapped to a different named container.\nBuckets can be remapped to other buckets e.g. \"source=target\", scopes and collections\ncan be remapped to other scopes and collections within the same bucket only e.g.\n\"bucket.scope=bucket.other\" or \"bucket.scope.collection=bucket.scope.other\".  Map\nsources may only be specified once, and may not overlap."
                       items:
                         description: "RestoreMapping allows data to be migrated on restore."
                         properties:
                           source:
-                            description: "Source defines the data source of the mapping, this may be either a bucket, scope or collection."
+                            description: "Source defines the data source of the mapping, this may be either\na bucket, scope or collection."
                             pattern: "^(?:[a-zA-Z0-9\\-_%]|\\\\.){1,100}(\\._default(\\._default)?|\\.[a-zA-Z0-9\\-][a-zA-Z0-9\\-%_]{0,29}(\\.[a-zA-Z0-9\\-][a-zA-Z0-9\\-%_]{0,29})?)?$"
                             type: "string"
                           target:
-                            description: "Target defines the data target of the mapping, this may be either a bucket, scope or collection, and must refer to the same type as the restore source."
+                            description: "Target defines the data target of the mapping, this may be either\na bucket, scope or collection, and must refer to the same type\nas the restore source."
                             pattern: "^(?:[a-zA-Z0-9\\-_%]|\\\\.){1,100}(\\._default(\\._default)?|\\.[a-zA-Z0-9\\-][a-zA-Z0-9\\-%_]{0,29}(\\.[a-zA-Z0-9\\-][a-zA-Z0-9\\-%_]{0,29})?)?$"
                             type: "string"
                         required:
@@ -113,7 +113,7 @@ spec:
                       x-kubernetes-list-type: "map"
                   type: "object"
                 end:
-                  description: "End denotes the last backup to restore from.  Omitting this field will only restore the backup referenced by start.  This may be specified as an integer index (starting from 1), a string specifying a short date DD-MM-YYYY, the backup name, or one of either `start` or `oldest` keywords."
+                  description: "End denotes the last backup to restore from.  Omitting this field will only\nrestore the backup referenced by start.  This may be specified as\nan integer index (starting from 1), a string specifying a short date\nDD-MM-YYYY, the backup name, or one of either `start` or `oldest` keywords."
                   properties:
                     int:
                       description: "Int references a relative backup by index."
@@ -124,44 +124,48 @@ spec:
                       type: "string"
                   type: "object"
                 forceUpdates:
-                  description: "Forces data in the Couchbase cluster to be overwritten even if the data in the cluster is newer than the restore"
+                  description: "Forces data in the Couchbase cluster to be overwritten even if the data in the cluster is newer.\nBy default, the system does not force updates,\nand all updates use Couchbase's conflict resolution mechanism to ensure\nthat if newer data exists on the cluster,\nolder restored data does not overwrite it.\nHowever, if `couchbasebackuprestores.spec.forceUpdates` is true,\nthen the backup record will _always_ overwrite the cluster record,\nregardless of Couchbase's conflict resolution."
                   type: "boolean"
                 logRetention:
                   default: "168h"
-                  description: "Number of hours to hold restore script logs for, everything older will be deleted. More info: https://golang.org/pkg/time/#ParseDuration"
+                  description: "Number of hours to hold restore script logs for, everything older will be deleted.\nMore info:\nhttps://golang.org/pkg/time/#ParseDuration"
                   type: "string"
                 objectStore:
                   description: "The remote destination for backup."
                   properties:
                     endpoint:
-                      description: "Endpoint contains the configuration for connecting to a custom Azure/S3/GCP compliant object store. If set will override `CouchbaseCluster.spec.backup.objectEndpoint` See https://docs.couchbase.com/server/current/backup-restore/cbbackupmgr-cloud.html#compatible-object-stores"
+                      description: "Endpoint contains the configuration for connecting to a custom Azure/S3/GCP compliant object store.\nIf set will override `CouchbaseCluster.spec.backup.objectEndpoint`\nSee https://docs.couchbase.com/server/current/backup-restore/cbbackupmgr-cloud.html#compatible-object-stores"
                       properties:
                         secret:
-                          description: "The name of the secret, in this namespace, that contains the CA certificate for verification of a TLS endpoint The secret must have the key with the name \"tls.crt\""
+                          description: "The name of the secret, in this namespace, that contains the CA certificate for verification of a TLS endpoint\nThe secret must have the key with the name \"tls.crt\""
                           type: "string"
                         url:
                           description: "The host/address of the custom object endpoint."
                           type: "string"
                         useVirtualPath:
-                          description: "UseVirtualPath will force the AWS SDK to use the new virtual style paths which are often required by S3 compatible object stores."
+                          description: "UseVirtualPath will force the AWS SDK to use the new virtual style paths\nwhich are often required by S3 compatible object stores."
                           type: "boolean"
                       type: "object"
                     secret:
-                      description: "ObjStoreSecret must contain two fields, access-key-id, secret-access-key and optionally either region or refresh-token. These correspond to the fields used by cbbackupmgr https://docs.couchbase.com/server/current/backup-restore/cbbackupmgr-backup.html#optional-2"
+                      description: "ObjStoreSecret must contain two fields, access-key-id, secret-access-key and optionally either region or refresh-token.\nThese correspond to the fields used by cbbackupmgr\nhttps://docs.couchbase.com/server/current/backup-restore/cbbackupmgr-backup.html#optional-2"
                       type: "string"
                     uri:
-                      description: "URI is a reference to a remote object store. This is the prefix of the object store and the bucket name. i.e s3://bucket, az://bucket or gs://bucket."
+                      description: "URI is a reference to a remote object store.\nThis is the prefix of the object store and the bucket name.\ni.e s3://bucket, az://bucket or gs://bucket."
                       pattern: "^(az|s3|gs)://.{3,}$"
                       type: "string"
                     useIAM:
-                      description: "Whether to allow the backup SDK to attempt to authenticate using the instance metadata api. If set, will override `CouchbaseCluster.spec.backup.useIAM`."
+                      description: "Whether to allow the backup SDK to attempt to authenticate\nusing the instance metadata api.\nIf set, will override `CouchbaseCluster.spec.backup.useIAM`."
                       type: "boolean"
                   type: "object"
+                overwriteUsers:
+                  default: false
+                  description: "Overwrites the already existing users in the cluster when  user restoration is enabled (spec.services.users).\nThe default behavior of backup/restore of users is to skip already existing users.\nThis is only available for Couchbase Server 7.6 and later.\nThis field defaults to `false`."
+                  type: "boolean"
                 repo:
-                  description: "Repo is the backup folder to restore from.  If no repository is specified, the backup container will choose the latest."
+                  description: "Repo is the backup folder to restore from.  If no repository is specified,\nthe backup container will choose the latest."
                   type: "string"
                 s3bucket:
-                  description: "DEPRECATED - by spec.objectStore.uri Name of S3 bucket to restore from. If non-empty this overrides local backup."
+                  description: "DEPRECATED - by spec.objectStore.uri\nName of S3 bucket to restore from. If non-empty this overrides local backup."
                   pattern: "^s3://[a-z0-9-\\.\\/]{3,63}$"
                   type: "string"
                 services:
@@ -170,42 +174,46 @@ spec:
                   properties:
                     analytics:
                       default: true
-                      description: "Analytics restores analytics datasets from the backup.  This field defaults to true."
+                      description: "Analytics restores analytics datasets from the backup.  This field\ndefaults to true."
                       type: "boolean"
                     bucketConfig:
-                      description: "BucketConfig restores all bucket configuration settings. If you are restoring to cluster with managed buckets, then this option may conflict with existing bucket settings, and the results are undefined, so avoid use.  This option is intended for use with unmanaged buckets.  Note that bucket durability settings are not restored in versions less than and equal to 1.1.0, and will need to be manually applied.  This field defaults to false."
+                      description: "BucketConfig restores all bucket configuration settings.\nIf you are restoring to cluster with managed buckets, then this\noption may conflict with existing bucket settings, and the results\nare undefined, so avoid use.  This option is intended for use\nwith unmanaged buckets.  Note that bucket durability settings are\nnot restored in versions less than and equal to 1.1.0, and will\nneed to be manually applied.  This field defaults to false."
                       type: "boolean"
                     bucketQuery:
                       default: true
-                      description: "BucketQuery enables the backup of query metadata for all buckets. This field defaults to `true`."
+                      description: "BucketQuery enables the backup of query metadata for all buckets.\nThis field defaults to `true`."
                       type: "boolean"
                     clusterAnalytics:
                       default: true
-                      description: "ClusterAnalytics enables the backup of cluster-wide analytics data, for example synonyms. This field defaults to `true`."
+                      description: "ClusterAnalytics enables the backup of cluster-wide analytics data, for example synonyms.\nThis field defaults to `true`."
                       type: "boolean"
                     clusterQuery:
                       default: true
-                      description: "ClusterQuery enables the backup of cluster level query metadata. This field defaults to `true`."
+                      description: "ClusterQuery enables the backup of cluster level query metadata.\nThis field defaults to `true`."
                       type: "boolean"
                     data:
                       default: true
-                      description: "Data restores document data from the backup.  This field defaults to true."
+                      description: "Data restores document data from the backup.  This field defaults\nto true."
                       type: "boolean"
                     eventing:
                       default: true
-                      description: "Eventing restores eventing functions from the backup.  This field defaults to true."
+                      description: "Eventing restores eventing functions from the backup.  This field\ndefaults to true."
                       type: "boolean"
                     ftAlias:
                       default: true
-                      description: "FTAlias restores full-text search aliases from the backup.  This field defaults to true."
+                      description: "FTAlias restores full-text search aliases from the backup.  This\nfield defaults to true."
                       type: "boolean"
                     ftIndex:
                       default: true
-                      description: "FTIndex restores full-text search indexes from the backup.  This field defaults to true."
+                      description: "FTIndex restores full-text search indexes from the backup.  This\nfield defaults to true."
                       type: "boolean"
                     gsiIndex:
                       default: true
-                      description: "GSIIndex restores document indexes from the backup.  This field defaults to true."
+                      description: "GSIIndex restores document indexes from the backup.  This field\ndefaults to true."
+                      type: "boolean"
+                    users:
+                      default: false
+                      description: "Users restores cluster level users, including their roles and permissions. This is\nonly available for Couchbase Server 7.6 and later. This field defaults to `false`."
                       type: "boolean"
                     views:
                       default: true
@@ -215,14 +223,14 @@ spec:
                 stagingVolume:
                   default:
                     size: "20Gi"
-                  description: "StagingVolume contains configuration related to the ephemeral volume used as staging when restoring from a cloud backup."
+                  description: "StagingVolume contains configuration related to the\nephemeral volume used as staging when restoring from a cloud backup."
                   properties:
                     size:
                       anyOf:
                         - type: "integer"
                         - type: "string"
                       default: "20Gi"
-                      description: "Size allows the specification of a staging volume. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes The ephemeral volume will only be used when restoring from a cloud provider, if the backup job was created using ephemeral storage. Otherwise the restore job will share a staging volume with the backup job."
+                      description: "Size allows the specification of a staging volume. More info:\nhttps://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes\nThe ephemeral volume will only be used when restoring from a cloud provider,\nif the backup job was created using ephemeral storage.\nOtherwise the restore job will share a staging volume with the backup job."
                       pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                       type: "string"
                       x-kubernetes-int-or-string: true
@@ -231,7 +239,7 @@ spec:
                       type: "string"
                   type: "object"
                 start:
-                  description: "Start denotes the first backup to restore from.  This may be specified as an integer index (starting from 1), a string specifying a short date DD-MM-YYYY, the backup name, or one of either `start` or `oldest` keywords."
+                  description: "Start denotes the first backup to restore from.  This may be specified as\nan integer index (starting from 1), a string specifying a short date\nDD-MM-YYYY, the backup name, or one of either `start` or `oldest` keywords."
                   properties:
                     int:
                       description: "Int references a relative backup by index."
@@ -251,17 +259,15 @@ spec:
                   format: "int32"
                   minimum: 0.0
                   type: "integer"
-              required:
-                - "backup"
               type: "object"
             status:
-              description: "CouchbaseBackupRestoreStatus provides status indications of a restore from backup.  This includes whether or not the restore is running, whether the restore succeed or not, and the duration the restore took."
+              description: "CouchbaseBackupRestoreStatus provides status indications of a restore from\nbackup.  This includes whether or not the restore is running, whether the\nrestore succeed or not, and the duration the restore took."
               properties:
                 archive:
                   description: "Location of Backup Archive."
                   type: "string"
                 backups:
-                  description: "Backups gives us a full list of all backups and their respective repository locations."
+                  description: "Backups gives us a full list of all backups\nand their respective repository locations."
                   items:
                     properties:
                       full:
@@ -280,13 +286,13 @@ spec:
                     type: "object"
                   type: "array"
                 duration:
-                  description: "Duration tells us how long the last restore took.  More info: https://golang.org/pkg/time/#ParseDuration"
+                  description: "Duration tells us how long the last restore took.  More info:\nhttps://golang.org/pkg/time/#ParseDuration"
                   type: "string"
                 failed:
                   description: "Failed indicates whether the most recent restore has failed."
                   type: "boolean"
                 job:
-                  description: "DEPRECATED - field may no longer be populated. Job tells us which job is running/ran last."
+                  description: "DEPRECATED - field may no longer be populated.\nJob tells us which job is running/ran last."
                   type: "string"
                 lastFailure:
                   description: "LastFailure tells us the time the last failed restore failed."
@@ -301,10 +307,10 @@ spec:
                   format: "date-time"
                   type: "string"
                 output:
-                  description: "DEPRECATED - field may no longer be populated. Output reports useful information from the backup process."
+                  description: "DEPRECATED - field may no longer be populated.\nOutput reports useful information from the backup process."
                   type: "string"
                 pod:
-                  description: "DEPRECATED - field may no longer be populated. Pod tells us which pod is running/ran last."
+                  description: "DEPRECATED - field may no longer be populated.\nPod tells us which pod is running/ran last."
                   type: "string"
                 repo:
                   description: "Repo is where we are currently performing operations."

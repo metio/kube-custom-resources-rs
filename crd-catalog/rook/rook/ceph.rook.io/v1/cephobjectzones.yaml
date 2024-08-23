@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "cephobjectzones.ceph.rook.io"
 spec:
   group: "ceph.rook.io"
@@ -37,7 +37,7 @@ spec:
               description: "ObjectZoneSpec represent the spec of an ObjectZone"
               properties:
                 customEndpoints:
-                  description: "If this zone cannot be accessed from other peer Ceph clusters via the ClusterIP Service\nendpoint created by Rook, you must set this to the externally reachable endpoint(s). You may\ninclude the port in the definition. For example: \"https://my-object-store.my-domain.net:443\".\nIn many cases, you should set this to the endpoint of the ingress resource that makes the\nCephObjectStore associated with this CephObjectStoreZone reachable to peer clusters.\nThe list can have one or more endpoints pointing to different RGW servers in the zone.\n\n\nIf a CephObjectStore endpoint is omitted from this list, that object store's gateways will\nnot receive multisite replication data\n(see CephObjectStore.spec.gateway.disableMultisiteSyncTraffic)."
+                  description: "If this zone cannot be accessed from other peer Ceph clusters via the ClusterIP Service\nendpoint created by Rook, you must set this to the externally reachable endpoint(s). You may\ninclude the port in the definition. For example: \"https://my-object-store.my-domain.net:443\".\nIn many cases, you should set this to the endpoint of the ingress resource that makes the\nCephObjectStore associated with this CephObjectStoreZone reachable to peer clusters.\nThe list can have one or more endpoints pointing to different RGW servers in the zone.\n\nIf a CephObjectStore endpoint is omitted from this list, that object store's gateways will\nnot receive multisite replication data\n(see CephObjectStore.spec.gateway.disableMultisiteSyncTraffic)."
                   items:
                     type: "string"
                   nullable: true

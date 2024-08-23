@@ -27,36 +27,51 @@ pub struct CouchbaseGroupSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CouchbaseGroupRoles {
-    /// Bucket name for bucket admin roles.  When not specified for a role that can be scoped to a specific bucket, the role will apply to all buckets in the cluster. Deprecated:  Couchbase Autonomous Operator 2.3
+    /// Bucket name for bucket admin roles.  When not specified for a role that can be scoped
+    /// to a specific bucket, the role will apply to all buckets in the cluster.
+    /// Deprecated:  Couchbase Autonomous Operator 2.3
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
-    /// Bucket level access to apply to specified role. The bucket must exist.  When not specified, the bucket field will be checked. If both are empty and the role can be scoped to a specific bucket, the role will apply to all buckets in the cluster
+    /// Bucket level access to apply to specified role. The bucket must exist.  When not specified,
+    /// the bucket field will be checked. If both are empty and the role can be scoped to a specific bucket, the role
+    /// will apply to all buckets in the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buckets: Option<CouchbaseGroupRolesBuckets>,
-    /// Collection level access to apply to the specified role.  The collection must exist. When not specified, the role is subject to scope or bucket level access.
+    /// Collection level access to apply to the specified role.  The collection must exist.
+    /// When not specified, the role is subject to scope or bucket level access.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub collections: Option<CouchbaseGroupRolesCollections>,
     /// Name of role.
     pub name: CouchbaseGroupRolesName,
-    /// Scope level access to apply to specified role.  The scope must exist.  When not specified, the role will apply to selected bucket or all buckets in the cluster.
+    /// Scope level access to apply to specified role.  The scope must exist.  When not specified,
+    /// the role will apply to selected bucket or all buckets in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<CouchbaseGroupRolesScopes>,
 }
 
-/// Bucket level access to apply to specified role. The bucket must exist.  When not specified, the bucket field will be checked. If both are empty and the role can be scoped to a specific bucket, the role will apply to all buckets in the cluster
+/// Bucket level access to apply to specified role. The bucket must exist.  When not specified,
+/// the bucket field will be checked. If both are empty and the role can be scoped to a specific bucket, the role
+/// will apply to all buckets in the cluster
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesBuckets {
-    /// Resources is an explicit list of named bucket resources that will be considered for inclusion in this role.  If a resource reference doesn't match a resource, then no error conditions are raised due to undefined resource creation ordering and eventual consistency.
+    /// Resources is an explicit list of named bucket resources that will be considered
+    /// for inclusion in this role.  If a resource reference doesn't
+    /// match a resource, then no error conditions are raised due to undefined
+    /// resource creation ordering and eventual consistency.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<CouchbaseGroupRolesBucketsResources>>,
-    /// Selector allows resources to be implicitly considered for inclusion in this role.  More info: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#labelselector-v1-meta
+    /// Selector allows resources to be implicitly considered for inclusion in this
+    /// role.  More info:
+    /// https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#labelselector-v1-meta
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<CouchbaseGroupRolesBucketsSelector>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesBucketsResources {
-    /// Kind indicates the kind of resource that is being referenced.  A Role can only reference `CouchbaseBucket` kind.  This field defaults to `CouchbaseBucket` if not specified.
+    /// Kind indicates the kind of resource that is being referenced.  A Role
+    /// can only reference `CouchbaseBucket` kind.  This field defaults
+    /// to `CouchbaseBucket` if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<CouchbaseGroupRolesBucketsResourcesKind>,
     /// Name is the name of the Kubernetes resource name that is being referenced.
@@ -68,46 +83,66 @@ pub enum CouchbaseGroupRolesBucketsResourcesKind {
     CouchbaseBucket,
 }
 
-/// Selector allows resources to be implicitly considered for inclusion in this role.  More info: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#labelselector-v1-meta
+/// Selector allows resources to be implicitly considered for inclusion in this
+/// role.  More info:
+/// https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#labelselector-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesBucketsSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CouchbaseGroupRolesBucketsSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesBucketsSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Collection level access to apply to the specified role.  The collection must exist. When not specified, the role is subject to scope or bucket level access.
+/// Collection level access to apply to the specified role.  The collection must exist.
+/// When not specified, the role is subject to scope or bucket level access.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesCollections {
-    /// Resources is an explicit list of named resources that will be considered for inclusion in this collection or collections.  If a resource reference doesn't match a resource, then no error conditions are raised due to undefined resource creation ordering and eventual consistency.
+    /// Resources is an explicit list of named resources that will be considered
+    /// for inclusion in this collection or collections.  If a resource reference doesn't
+    /// match a resource, then no error conditions are raised due to undefined
+    /// resource creation ordering and eventual consistency.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<CouchbaseGroupRolesCollectionsResources>>,
-    /// Selector allows resources to be implicitly considered for inclusion in this collection or collections.  More info: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#labelselector-v1-meta
+    /// Selector allows resources to be implicitly considered for inclusion in this
+    /// collection or collections.  More info:
+    /// https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#labelselector-v1-meta
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<CouchbaseGroupRolesCollectionsSelector>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesCollectionsResources {
-    /// Kind indicates the kind of resource that is being referenced.  A scope can only reference `CouchbaseCollection` and `CouchbaseCollectionGroup` resource kinds.  This field defaults to `CouchbaseCollection` if not specified.
+    /// Kind indicates the kind of resource that is being referenced.  A scope
+    /// can only reference `CouchbaseCollection` and `CouchbaseCollectionGroup`
+    /// resource kinds.  This field defaults to `CouchbaseCollection` if not
+    /// specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<CouchbaseGroupRolesCollectionsResourcesKind>,
-    /// Name is the name of the Kubernetes resource name that is being referenced. Legal collection names have a maximum length of 251 characters and may be composed of any character from "a-z", "A-Z", "0-9" and "_-%".
+    /// Name is the name of the Kubernetes resource name that is being referenced.
+    /// Legal collection names have a maximum length of 251
+    /// characters and may be composed of any character from "a-z", "A-Z", "0-9" and "_-%".
     pub name: String,
 }
 
@@ -117,25 +152,34 @@ pub enum CouchbaseGroupRolesCollectionsResourcesKind {
     CouchbaseCollectionGroup,
 }
 
-/// Selector allows resources to be implicitly considered for inclusion in this collection or collections.  More info: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#labelselector-v1-meta
+/// Selector allows resources to be implicitly considered for inclusion in this
+/// collection or collections.  More info:
+/// https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#labelselector-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesCollectionsSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CouchbaseGroupRolesCollectionsSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesCollectionsSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -238,25 +282,38 @@ pub enum CouchbaseGroupRolesName {
     ViewsAdmin,
     #[serde(rename = "views_reader")]
     ViewsReader,
+    #[serde(rename = "eventing_manage_functions")]
+    EventingManageFunctions,
 }
 
-/// Scope level access to apply to specified role.  The scope must exist.  When not specified, the role will apply to selected bucket or all buckets in the cluster.
+/// Scope level access to apply to specified role.  The scope must exist.  When not specified,
+/// the role will apply to selected bucket or all buckets in the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesScopes {
-    /// Resources is an explicit list of named resources that will be considered for inclusion in this scope or scopes.  If a resource reference doesn't match a resource, then no error conditions are raised due to undefined resource creation ordering and eventual consistency.
+    /// Resources is an explicit list of named resources that will be considered
+    /// for inclusion in this scope or scopes.  If a resource reference doesn't
+    /// match a resource, then no error conditions are raised due to undefined
+    /// resource creation ordering and eventual consistency.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<CouchbaseGroupRolesScopesResources>>,
-    /// Selector allows resources to be implicitly considered for inclusion in this scope or scopes.  More info: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#labelselector-v1-meta
+    /// Selector allows resources to be implicitly considered for inclusion in this
+    /// scope or scopes.  More info:
+    /// https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#labelselector-v1-meta
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<CouchbaseGroupRolesScopesSelector>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesScopesResources {
-    /// Kind indicates the kind of resource that is being referenced.  A scope can only reference `CouchbaseScope` and `CouchbaseScopeGroup` resource kinds.  This field defaults to `CouchbaseScope` if not specified.
+    /// Kind indicates the kind of resource that is being referenced.  A scope
+    /// can only reference `CouchbaseScope` and `CouchbaseScopeGroup`
+    /// resource kinds.  This field defaults to `CouchbaseScope` if not
+    /// specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<CouchbaseGroupRolesScopesResourcesKind>,
-    /// Name is the name of the Kubernetes resource name that is being referenced. Legal scope names have a maximum length of 251 characters and may be composed of any character from "a-z", "A-Z", "0-9" and "_-%".
+    /// Name is the name of the Kubernetes resource name that is being referenced.
+    /// Legal scope names have a maximum length of 251
+    /// characters and may be composed of any character from "a-z", "A-Z", "0-9" and "_-%".
     pub name: String,
 }
 
@@ -266,25 +323,34 @@ pub enum CouchbaseGroupRolesScopesResourcesKind {
     CouchbaseScopeGroup,
 }
 
-/// Selector allows resources to be implicitly considered for inclusion in this scope or scopes.  More info: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#labelselector-v1-meta
+/// Selector allows resources to be implicitly considered for inclusion in this
+/// scope or scopes.  More info:
+/// https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#labelselector-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesScopesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CouchbaseGroupRolesScopesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseGroupRolesScopesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }

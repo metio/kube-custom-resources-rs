@@ -60,13 +60,11 @@ pub struct EC2NodeClassSpec {
     pub kubelet: Option<EC2NodeClassKubelet>,
     /// MetadataOptions for the generated launch template of provisioned nodes.
     /// 
-    /// 
     /// This specifies the exposure of the Instance Metadata Service to
     /// provisioned EC2 nodes. For more information,
     /// see Instance Metadata and User Data
     /// (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)
     /// in the Amazon Elastic Compute Cloud User Guide.
-    /// 
     /// 
     /// Refer to recommended, security best practices
     /// (https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)
@@ -172,23 +170,17 @@ pub struct EC2NodeClassBlockDeviceMappingsEbs {
     /// gp2 volumes, this represents the baseline performance of the volume and the
     /// rate at which the volume accumulates I/O credits for bursting.
     /// 
-    /// 
     /// The following are the supported values for each volume type:
-    /// 
     /// 
     ///    * gp3: 3,000-16,000 IOPS
     /// 
-    /// 
     ///    * io1: 100-64,000 IOPS
     /// 
-    /// 
     ///    * io2: 100-64,000 IOPS
-    /// 
     /// 
     /// For io1 and io2 volumes, we guarantee 64,000 IOPS only for Instances built
     /// on the Nitro System (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#ec2-nitro-instances).
     /// Other instance families guarantee performance up to 32,000 IOPS.
-    /// 
     /// 
     /// This parameter is supported for io1, io2, and gp3 volumes only. This parameter
     /// is not supported for gp2, st1, sc1, or standard volumes.
@@ -208,15 +200,11 @@ pub struct EC2NodeClassBlockDeviceMappingsEbs {
     /// a volume size. The following are the supported volumes sizes for each volume
     /// type:
     /// 
-    /// 
     ///    * gp2 and gp3: 1-16,384
-    /// 
     /// 
     ///    * io1 and io2: 4-16,384
     /// 
-    /// 
     ///    * st1 and sc1: 125-16,384
-    /// 
     /// 
     ///    * standard: 1-1,024
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSize")]
@@ -312,13 +300,11 @@ pub struct EC2NodeClassKubelet {
 
 /// MetadataOptions for the generated launch template of provisioned nodes.
 /// 
-/// 
 /// This specifies the exposure of the Instance Metadata Service to
 /// provisioned EC2 nodes. For more information,
 /// see Instance Metadata and User Data
 /// (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)
 /// in the Amazon Elastic Compute Cloud User Guide.
-/// 
 /// 
 /// Refer to recommended, security best practices
 /// (https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)
@@ -331,7 +317,6 @@ pub struct EC2NodeClassMetadataOptions {
     /// HTTPEndpoint enables or disables the HTTP metadata endpoint on provisioned
     /// nodes. If metadata options is non-nil, but this parameter is not specified,
     /// the default state is "enabled".
-    /// 
     /// 
     /// If you specify a value of "disabled", instance metadata will not be accessible
     /// on the node.
@@ -353,13 +338,11 @@ pub struct EC2NodeClassMetadataOptions {
     /// requests. If metadata options is non-nil, but this parameter is not
     /// specified, the default state is "required".
     /// 
-    /// 
     /// If the state is optional, one can choose to retrieve instance metadata with
     /// or without a signed token header on the request. If one retrieves the IAM
     /// role credentials without a token, the version 1.0 role credentials are
     /// returned. If one retrieves the IAM role credentials using a valid signed
     /// token, the version 2.0 role credentials are returned.
-    /// 
     /// 
     /// If the state is "required", one must send a signed token header with any
     /// instance metadata retrieval requests. In this state, retrieving the IAM
@@ -371,13 +354,11 @@ pub struct EC2NodeClassMetadataOptions {
 
 /// MetadataOptions for the generated launch template of provisioned nodes.
 /// 
-/// 
 /// This specifies the exposure of the Instance Metadata Service to
 /// provisioned EC2 nodes. For more information,
 /// see Instance Metadata and User Data
 /// (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)
 /// in the Amazon Elastic Compute Cloud User Guide.
-/// 
 /// 
 /// Refer to recommended, security best practices
 /// (https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)
@@ -395,13 +376,11 @@ pub enum EC2NodeClassMetadataOptionsHttpEndpoint {
 
 /// MetadataOptions for the generated launch template of provisioned nodes.
 /// 
-/// 
 /// This specifies the exposure of the Instance Metadata Service to
 /// provisioned EC2 nodes. For more information,
 /// see Instance Metadata and User Data
 /// (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)
 /// in the Amazon Elastic Compute Cloud User Guide.
-/// 
 /// 
 /// Refer to recommended, security best practices
 /// (https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)
@@ -419,13 +398,11 @@ pub enum EC2NodeClassMetadataOptionsHttpProtocolIPv6 {
 
 /// MetadataOptions for the generated launch template of provisioned nodes.
 /// 
-/// 
 /// This specifies the exposure of the Instance Metadata Service to
 /// provisioned EC2 nodes. For more information,
 /// see Instance Metadata and User Data
 /// (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)
 /// in the Amazon Elastic Compute Cloud User Guide.
-/// 
 /// 
 /// Refer to recommended, security best practices
 /// (https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node)

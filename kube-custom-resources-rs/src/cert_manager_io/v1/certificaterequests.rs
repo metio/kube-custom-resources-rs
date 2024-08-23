@@ -37,10 +37,8 @@ pub struct CertificateRequestSpec {
     /// Requested basic constraints isCA value. Note that the issuer may choose
     /// to ignore the requested isCA value, just like any other requested attribute.
     /// 
-    /// 
     /// NOTE: If the CSR in the `Request` field has a BasicConstraints extension,
     /// it must have the same isCA value as specified here.
-    /// 
     /// 
     /// If true, this will automatically add the `cert sign` usage to the list
     /// of requested `usages`.
@@ -51,13 +49,11 @@ pub struct CertificateRequestSpec {
     /// as the Certificate. If the issuer is cluster-scoped, it can be used
     /// from any namespace.
     /// 
-    /// 
     /// The `name` field of the reference must always be specified.
     #[serde(rename = "issuerRef")]
     pub issuer_ref: CertificateRequestIssuerRef,
     /// The PEM-encoded X.509 certificate signing request to be submitted to the
     /// issuer for signing.
-    /// 
     /// 
     /// If the CSR has a BasicConstraints extension, its isCA attribute must
     /// match the `isCA` value of this CertificateRequest.
@@ -73,11 +69,9 @@ pub struct CertificateRequestSpec {
     pub uid: Option<String>,
     /// Requested key usages and extended key usages.
     /// 
-    /// 
     /// NOTE: If the CSR in the `Request` field has uses the KeyUsage or
     /// ExtKeyUsage extension, these extensions must have the same values
     /// as specified here without any additional values.
-    /// 
     /// 
     /// If unset, defaults to `digital signature` and `key encipherment`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -92,7 +86,6 @@ pub struct CertificateRequestSpec {
 /// If the issuer is namespace-scoped, it must be in the same namespace
 /// as the Certificate. If the issuer is cluster-scoped, it can be used
 /// from any namespace.
-/// 
 /// 
 /// The `name` field of the reference must always be specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

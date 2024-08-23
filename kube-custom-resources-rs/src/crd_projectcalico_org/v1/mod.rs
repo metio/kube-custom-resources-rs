@@ -13,3 +13,4 @@ pub mod ippools;
 pub mod ipreservations;
 pub mod kubecontrollersconfigurations;
 pub mod networksets;
+pub mod tiers;

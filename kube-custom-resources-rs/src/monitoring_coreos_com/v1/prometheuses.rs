@@ -28,12 +28,9 @@ pub struct PrometheusSpec {
     /// Prometheus Operator. They must be formatted according to the official
     /// Prometheus documentation:
     /// 
-    /// 
     /// https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alertmanager_config
     /// 
-    /// 
     /// The user is responsible for making sure that the configurations are valid
-    /// 
     /// 
     /// Note that using this feature may expose the possibility to break
     /// upgrades of Prometheus. It is advised to review Prometheus release notes
@@ -47,12 +44,9 @@ pub struct PrometheusSpec {
     /// Prometheus Operator. They must be formatted according to the official
     /// Prometheus documentation:
     /// 
-    /// 
     /// https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs
     /// 
-    /// 
     /// The user is responsible for making sure that the configurations are valid
-    /// 
     /// 
     /// Note that using this feature may expose the possibility to break
     /// upgrades of Prometheus. It is advised to review Prometheus release notes
@@ -62,12 +56,10 @@ pub struct PrometheusSpec {
     pub additional_alert_relabel_configs: Option<PrometheusAdditionalAlertRelabelConfigs>,
     /// AdditionalArgs allows setting additional arguments for the 'prometheus' container.
     /// 
-    /// 
     /// It is intended for e.g. activating hidden flags which are not supported by
     /// the dedicated configuration options yet. The arguments are passed as-is to the
     /// Prometheus container which may cause issues if they are invalid or not supported
     /// by the given Prometheus version.
-    /// 
     /// 
     /// In case of an argument conflict (e.g. an argument which is already set by the
     /// operator itself) or when providing an invalid argument, the reconciliation will
@@ -96,7 +88,6 @@ pub struct PrometheusSpec {
     /// AllowOverlappingBlocks enables vertical compaction and vertical query
     /// merge in Prometheus.
     /// 
-    /// 
     /// Deprecated: this flag has no effect for Prometheus >= 2.39.0 where overlapping blocks are enabled by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowOverlappingBlocks")]
     pub allow_overlapping_blocks: Option<bool>,
@@ -122,7 +113,6 @@ pub struct PrometheusSpec {
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted in the pod.
     /// If the field isn't set, the operator mounts the service account token by default.
     /// 
-    /// 
     /// **Warning:** be aware that by default, Prometheus requires the service account token for Kubernetes service discovery.
     /// It is possible to use strategic merge patch to project the service account token into the 'prometheus' container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
@@ -132,7 +122,6 @@ pub struct PrometheusSpec {
     pub base_image: Option<String>,
     /// BodySizeLimit defines per-scrape on response body size.
     /// Only valid in Prometheus versions 2.45.0 and newer.
-    /// 
     /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedBodySizeLimit.
@@ -151,12 +140,10 @@ pub struct PrometheusSpec {
     /// container if they share the same name and modifications are done via a
     /// strategic merge patch.
     /// 
-    /// 
     /// The names of containers managed by the operator are:
     /// * `prometheus`
     /// * `config-reloader`
     /// * `thanos-sidecar`
-    /// 
     /// 
     /// Overriding containers is entirely outside the scope of what the
     /// maintainers will support and by doing so, you accept that this behaviour
@@ -168,12 +155,10 @@ pub struct PrometheusSpec {
     pub disable_compaction: Option<bool>,
     /// Enables access to the Prometheus web admin API.
     /// 
-    /// 
     /// WARNING: Enabling the admin APIs enables mutating endpoints, to delete data,
     /// shutdown Prometheus, and more. Enabling this should be done with care and the
     /// user is advised to add additional authentication authorization via a proxy to
     /// ensure only clients authorized to perform these actions can do so.
-    /// 
     /// 
     /// For more information:
     /// https://prometheus.io/docs/prometheus/latest/querying/api/#tsdb-admin-apis
@@ -181,11 +166,9 @@ pub struct PrometheusSpec {
     pub enable_admin_api: Option<bool>,
     /// Enable access to Prometheus feature flags. By default, no features are enabled.
     /// 
-    /// 
     /// Enabling features which are disabled by default is entirely outside the
     /// scope of what the maintainers will support and by doing so, you accept
     /// that this behaviour may break at any time without notice.
-    /// 
     /// 
     /// For more information see https://prometheus.io/docs/prometheus/latest/feature_flags/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFeatures")]
@@ -193,13 +176,11 @@ pub struct PrometheusSpec {
     /// Enable Prometheus to be used as a receiver for the Prometheus remote
     /// write protocol.
     /// 
-    /// 
     /// WARNING: This is not considered an efficient way of ingesting samples.
     /// Use it with caution for specific low-volume use cases.
     /// It is not suitable for replacing the ingestion via scraping and turning
     /// Prometheus into a push-based metrics collection system.
     /// For more information see https://prometheus.io/docs/prometheus/latest/querying/api/#remote-write-receiver
-    /// 
     /// 
     /// It requires Prometheus >= v2.33.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRemoteWriteReceiver")]
@@ -209,9 +190,7 @@ pub struct PrometheusSpec {
     /// Targets responding with a body larger than this many bytes will cause
     /// the scrape to fail.
     /// 
-    /// 
     /// It requires Prometheus >= v2.28.0.
-    /// 
     /// 
     /// When both `enforcedBodySizeLimit` and `bodySizeLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined bodySizeLimit value will inherit the global bodySizeLimit value (Prometheus >= 2.45.0) or the enforcedBodySizeLimit value (Prometheus < v2.45.0).
@@ -226,9 +205,7 @@ pub struct PrometheusSpec {
     /// ServiceMonitor, PodMonitor, Probe objects unless `spec.keepDroppedTargets` is
     /// greater than zero and less than `spec.enforcedKeepDroppedTargets`.
     /// 
-    /// 
     /// It requires Prometheus >= v2.47.0.
-    /// 
     /// 
     /// When both `enforcedKeepDroppedTargets` and `keepDroppedTargets` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined keepDroppedTargets value will inherit the global keepDroppedTargets value (Prometheus >= 2.45.0) or the enforcedKeepDroppedTargets value (Prometheus < v2.45.0).
@@ -242,9 +219,7 @@ pub struct PrometheusSpec {
     /// ServiceMonitor, PodMonitor, Probe objects unless `spec.labelLimit` is
     /// greater than zero and less than `spec.enforcedLabelLimit`.
     /// 
-    /// 
     /// It requires Prometheus >= v2.27.0.
-    /// 
     /// 
     /// When both `enforcedLabelLimit` and `labelLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined labelLimit value will inherit the global labelLimit value (Prometheus >= 2.45.0) or the enforcedLabelLimit value (Prometheus < v2.45.0).
@@ -258,9 +233,7 @@ pub struct PrometheusSpec {
     /// ServiceMonitor, PodMonitor, Probe objects unless `spec.labelNameLengthLimit` is
     /// greater than zero and less than `spec.enforcedLabelNameLengthLimit`.
     /// 
-    /// 
     /// It requires Prometheus >= v2.27.0.
-    /// 
     /// 
     /// When both `enforcedLabelNameLengthLimit` and `labelNameLengthLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined labelNameLengthLimit value will inherit the global labelNameLengthLimit value (Prometheus >= 2.45.0) or the enforcedLabelNameLengthLimit value (Prometheus < v2.45.0).
@@ -274,9 +247,7 @@ pub struct PrometheusSpec {
     /// ServiceMonitor, PodMonitor, Probe objects unless `spec.labelValueLengthLimit` is
     /// greater than zero and less than `spec.enforcedLabelValueLengthLimit`.
     /// 
-    /// 
     /// It requires Prometheus >= v2.27.0.
-    /// 
     /// 
     /// When both `enforcedLabelValueLengthLimit` and `labelValueLengthLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined labelValueLengthLimit value will inherit the global labelValueLengthLimit value (Prometheus >= 2.45.0) or the enforcedLabelValueLengthLimit value (Prometheus < v2.45.0).
@@ -287,15 +258,12 @@ pub struct PrometheusSpec {
     pub enforced_label_value_length_limit: Option<i64>,
     /// When not empty, a label will be added to:
     /// 
-    /// 
     /// 1. All metrics scraped from `ServiceMonitor`, `PodMonitor`, `Probe` and `ScrapeConfig` objects.
     /// 2. All metrics generated from recording rules defined in `PrometheusRule` objects.
     /// 3. All alerts generated from alerting rules defined in `PrometheusRule` objects.
     /// 4. All vector selectors of PromQL expressions defined in `PrometheusRule` objects.
     /// 
-    /// 
     /// The label will not added for objects referenced in `spec.excludedFromEnforcement`.
-    /// 
     /// 
     /// The label's name is this field's value.
     /// The label's value is the namespace of the `ServiceMonitor`,
@@ -308,10 +276,8 @@ pub struct PrometheusSpec {
     /// unless `spec.sampleLimit` is greater than zero and less than
     /// `spec.enforcedSampleLimit`.
     /// 
-    /// 
     /// It is meant to be used by admins to keep the overall number of
     /// samples/series under a desired limit.
-    /// 
     /// 
     /// When both `enforcedSampleLimit` and `sampleLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined sampleLimit value will inherit the global sampleLimit value (Prometheus >= 2.45.0) or the enforcedSampleLimit value (Prometheus < v2.45.0).
@@ -325,10 +291,8 @@ pub struct PrometheusSpec {
     /// ServiceMonitor, PodMonitor, Probe objects unless `spec.targetLimit` is
     /// greater than zero and less than `spec.enforcedTargetLimit`.
     /// 
-    /// 
     /// It is meant to be used by admins to to keep the overall number of
     /// targets under a desired limit.
-    /// 
     /// 
     /// When both `enforcedTargetLimit` and `targetLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined targetLimit value will inherit the global targetLimit value (Prometheus >= 2.45.0) or the enforcedTargetLimit value (Prometheus < v2.45.0).
@@ -343,7 +307,6 @@ pub struct PrometheusSpec {
     pub evaluation_interval: Option<String>,
     /// List of references to PodMonitor, ServiceMonitor, Probe and PrometheusRule objects
     /// to be excluded from enforcing a namespace label of origin.
-    /// 
     /// 
     /// It is only applicable if `spec.enforcedNamespaceLabel` set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedFromEnforcement")]
@@ -369,10 +332,8 @@ pub struct PrometheusSpec {
     pub host_aliases: Option<Vec<PrometheusHostAliases>>,
     /// Use the host's network namespace if true.
     /// 
-    /// 
     /// Make sure to understand the security implications if you want to enable
     /// it (https://kubernetes.io/docs/concepts/configuration/overview/).
-    /// 
     /// 
     /// When hostNetwork is enabled, this will set the DNS policy to
     /// `ClusterFirstWithHostNet` automatically.
@@ -387,10 +348,8 @@ pub struct PrometheusSpec {
     /// Container image name for Prometheus. If specified, it takes precedence
     /// over the `spec.baseImage`, `spec.tag` and `spec.sha` fields.
     /// 
-    /// 
     /// Specifying `spec.version` is still necessary to ensure the Prometheus
     /// Operator knows which version of Prometheus is being configured.
-    /// 
     /// 
     /// If neither `spec.image` nor `spec.baseImage` are defined, the operator
     /// will use the latest upstream version of Prometheus available at the time
@@ -415,10 +374,8 @@ pub struct PrometheusSpec {
     /// containers if they share the same name and modifications are done via a
     /// strategic merge patch.
     /// 
-    /// 
     /// The names of init container name managed by the operator are:
     /// * `init-config-reloader`.
-    /// 
     /// 
     /// Overriding init containers is entirely outside the scope of what the
     /// maintainers will support and by doing so, you accept that this behaviour
@@ -428,9 +385,7 @@ pub struct PrometheusSpec {
     /// Per-scrape limit on the number of targets dropped by relabeling
     /// that will be kept in memory. 0 means no limit.
     /// 
-    /// 
     /// It requires Prometheus >= v2.47.0.
-    /// 
     /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedKeepDroppedTargets.
@@ -439,7 +394,6 @@ pub struct PrometheusSpec {
     /// Per-scrape limit on number of labels that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.45.0 and newer.
     /// 
-    /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedLabelLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelLimit")]
@@ -447,14 +401,12 @@ pub struct PrometheusSpec {
     /// Per-scrape limit on length of labels name that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.45.0 and newer.
     /// 
-    /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedLabelNameLengthLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelNameLengthLimit")]
     pub label_name_length_limit: Option<i64>,
     /// Per-scrape limit on length of labels value that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.45.0 and newer.
-    /// 
     /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedLabelValueLengthLimit.
@@ -477,7 +429,6 @@ pub struct PrometheusSpec {
     /// Minimum number of seconds for which a newly created Pod should be ready
     /// without any of its container crashing for it to be considered available.
     /// Defaults to 0 (pod will be considered available as soon as it is ready)
-    /// 
     /// 
     /// This is an alpha field from kubernetes 1.22 until 1.24 which requires
     /// enabling the StatefulSetMinReadySeconds feature gate.
@@ -514,7 +465,6 @@ pub struct PrometheusSpec {
     pub persistent_volume_claim_retention_policy: Option<PrometheusPersistentVolumeClaimRetentionPolicy>,
     /// PodMetadata configures labels and annotations which are propagated to the Prometheus pods.
     /// 
-    /// 
     /// The following items are reserved and cannot be overridden:
     /// * "prometheus" label, set to the name of the Prometheus object.
     /// * "app.kubernetes.io/instance" label, set to the name of the Prometheus object.
@@ -533,7 +483,6 @@ pub struct PrometheusSpec {
     pub pod_monitor_namespace_selector: Option<PrometheusPodMonitorNamespaceSelector>,
     /// PodMonitors to be selected for target discovery. An empty label selector
     /// matches all objects. A null label selector matches no objects.
-    /// 
     /// 
     /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
     /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
@@ -564,7 +513,6 @@ pub struct PrometheusSpec {
     /// Probes to be selected for target discovery. An empty label selector
     /// matches all objects. A null label selector matches no objects.
     /// 
-    /// 
     /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
     /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
     /// The Prometheus operator will ensure that the Prometheus configuration's
@@ -579,7 +527,6 @@ pub struct PrometheusSpec {
     /// name. The external label will _not_ be added when the field is set to
     /// the empty string (`""`).
     /// 
-    /// 
     /// Default: "prometheus"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusExternalLabelName")]
     pub prometheus_external_label_name: Option<String>,
@@ -593,7 +540,6 @@ pub struct PrometheusSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub query: Option<PrometheusQuery>,
     /// queryLogFile specifies where the file to which PromQL queries are logged.
-    /// 
     /// 
     /// If the filename has an empty path, e.g. 'query.log', The Prometheus Pods
     /// will mount the file into an emptyDir volume at `/var/log/prometheus`.
@@ -620,14 +566,12 @@ pub struct PrometheusSpec {
     /// The external label will _not_ be added when the field is set to the
     /// empty string (`""`).
     /// 
-    /// 
     /// Default: "prometheus_replica"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaExternalLabelName")]
     pub replica_external_label_name: Option<String>,
     /// Number of replicas of each shard to deploy for a Prometheus deployment.
     /// `spec.replicas` multiplied by `spec.shards` is the total number of Pods
     /// created.
-    /// 
     /// 
     /// Default: 1
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -637,7 +581,6 @@ pub struct PrometheusSpec {
     pub resources: Option<PrometheusResources>,
     /// How long to retain the Prometheus data.
     /// 
-    /// 
     /// Default: "24h" if `spec.retention` and `spec.retentionSize` are empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<String>,
@@ -645,7 +588,6 @@ pub struct PrometheusSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionSize")]
     pub retention_size: Option<String>,
     /// The route prefix Prometheus registers HTTP handlers for.
-    /// 
     /// 
     /// This is useful when using `spec.externalURL`, and a proxy is rewriting
     /// HTTP routes of a request, and the actual ExternalURL is still true, but
@@ -669,14 +611,12 @@ pub struct PrometheusSpec {
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
     /// Only valid in Prometheus versions 2.45.0 and newer.
     /// 
-    /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedSampleLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// List of scrape classes to expose to scraping objects such as
     /// PodMonitors, ServiceMonitors, Probes and ScrapeConfigs.
-    /// 
     /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
@@ -686,13 +626,11 @@ pub struct PrometheusSpec {
     /// matches all namespaces. A null label selector matches the current
     /// namespace only.
     /// 
-    /// 
     /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigNamespaceSelector")]
     pub scrape_config_namespace_selector: Option<PrometheusScrapeConfigNamespaceSelector>,
     /// ScrapeConfigs to be selected for target discovery. An empty label
     /// selector matches all objects. A null label selector matches no objects.
-    /// 
     /// 
     /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
     /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
@@ -703,12 +641,10 @@ pub struct PrometheusSpec {
     /// of the custom resource definition. It is recommended to use
     /// `spec.additionalScrapeConfigs` instead.
     /// 
-    /// 
     /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigSelector")]
     pub scrape_config_selector: Option<PrometheusScrapeConfigSelector>,
     /// Interval between consecutive scrapes.
-    /// 
     /// 
     /// Default: "30s"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
@@ -716,9 +652,7 @@ pub struct PrometheusSpec {
     /// The protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
     /// 
-    /// 
     /// If unset, Prometheus uses its default value.
-    /// 
     /// 
     /// It requires Prometheus >= v2.49.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
@@ -743,7 +677,6 @@ pub struct PrometheusSpec {
     /// Defines the service discovery role used to discover targets from
     /// `ServiceMonitor` objects and Alertmanager endpoints.
     /// 
-    /// 
     /// If set, the value should be either "Endpoints" or "EndpointSlice".
     /// If unset, the operator assumes the "Endpoints" role.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDiscoveryRole")]
@@ -755,7 +688,6 @@ pub struct PrometheusSpec {
     pub service_monitor_namespace_selector: Option<PrometheusServiceMonitorNamespaceSelector>,
     /// ServiceMonitors to be selected for target discovery. An empty label
     /// selector matches all objects. A null label selector matches no objects.
-    /// 
     /// 
     /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
     /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
@@ -773,17 +705,14 @@ pub struct PrometheusSpec {
     /// Number of shards to distribute targets onto. `spec.replicas`
     /// multiplied by `spec.shards` is the total number of Pods created.
     /// 
-    /// 
     /// Note that scaling down shards will not reshard data onto remaining
     /// instances, it must be manually moved. Increasing shards will not reshard
     /// data either but it will continue to be available from the same
     /// instances. To query globally, use Thanos sidecar and Thanos querier or
     /// remote write data to a central location.
     /// 
-    /// 
     /// Sharding is performed on the content of the `__address__` target meta-label
     /// for PodMonitors and ServiceMonitors and `__param_target__` for Probes.
-    /// 
     /// 
     /// Default: 1
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -796,7 +725,6 @@ pub struct PrometheusSpec {
     pub tag: Option<String>,
     /// TargetLimit defines a limit on the number of scraped targets that will be accepted.
     /// Only valid in Prometheus versions 2.45.0 and newer.
-    /// 
     /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedTargetLimit.
@@ -813,18 +741,16 @@ pub struct PrometheusSpec {
     pub topology_spread_constraints: Option<Vec<PrometheusTopologySpreadConstraints>>,
     /// TracingConfig configures tracing in Prometheus.
     /// 
-    /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfig")]
     pub tracing_config: Option<PrometheusTracingConfig>,
-    /// Defines the runtime reloadable configuration of the timeseries database
-    /// (TSDB).
+    /// Defines the runtime reloadable configuration of the timeseries database(TSDB).
+    /// It requires Prometheus >= v2.39.0 or PrometheusAgent >= v2.54.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tsdb: Option<PrometheusTsdb>,
     /// Version of Prometheus being deployed. The operator uses this information
     /// to generate the Prometheus StatefulSet + configuration files.
-    /// 
     /// 
     /// If not specified, the operator assumes the latest upstream version of
     /// Prometheus available at the time when the version of the operator was
@@ -832,7 +758,6 @@ pub struct PrometheusSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
     /// VolumeMounts allows the configuration of additional VolumeMounts.
-    /// 
     /// 
     /// VolumeMounts will be appended to other VolumeMounts in the 'prometheus'
     /// container, that are generated as a result of StorageSpec objects.
@@ -845,9 +770,7 @@ pub struct PrometheusSpec {
     pub volumes: Option<Vec<PrometheusVolumes>>,
     /// Configures compression of the write-ahead log (WAL) using Snappy.
     /// 
-    /// 
     /// WAL compression is enabled by default for Prometheus >= 2.20.0
-    /// 
     /// 
     /// Requires Prometheus v2.11.0 and above.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "walCompression")]
@@ -863,12 +786,9 @@ pub struct PrometheusSpec {
 /// Prometheus Operator. They must be formatted according to the official
 /// Prometheus documentation:
 /// 
-/// 
 /// https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alertmanager_config
 /// 
-/// 
 /// The user is responsible for making sure that the configurations are valid
-/// 
 /// 
 /// Note that using this feature may expose the possibility to break
 /// upgrades of Prometheus. It is advised to review Prometheus release notes
@@ -882,9 +802,7 @@ pub struct PrometheusAdditionalAlertManagerConfigs {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -898,12 +816,9 @@ pub struct PrometheusAdditionalAlertManagerConfigs {
 /// Prometheus Operator. They must be formatted according to the official
 /// Prometheus documentation:
 /// 
-/// 
 /// https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs
 /// 
-/// 
 /// The user is responsible for making sure that the configurations are valid
-/// 
 /// 
 /// Note that using this feature may expose the possibility to break
 /// upgrades of Prometheus. It is advised to review Prometheus release notes
@@ -917,9 +832,7 @@ pub struct PrometheusAdditionalAlertRelabelConfigs {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -956,9 +869,7 @@ pub struct PrometheusAdditionalScrapeConfigs {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1172,7 +1083,7 @@ pub struct PrometheusAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1183,7 +1094,7 @@ pub struct PrometheusAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1293,7 +1204,7 @@ pub struct PrometheusAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1304,7 +1215,7 @@ pub struct PrometheusAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1445,7 +1356,7 @@ pub struct PrometheusAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1456,7 +1367,7 @@ pub struct PrometheusAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1566,7 +1477,7 @@ pub struct PrometheusAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1577,7 +1488,7 @@ pub struct PrometheusAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1688,21 +1599,17 @@ pub struct PrometheusAlertingAlertmanagers {
     pub api_version: Option<String>,
     /// Authorization section for Alertmanager.
     /// 
-    /// 
     /// Cannot be set at the same time as `basicAuth`, `bearerTokenFile` or `sigv4`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<PrometheusAlertingAlertmanagersAuthorization>,
     /// BasicAuth configuration for Alertmanager.
-    /// 
     /// 
     /// Cannot be set at the same time as `bearerTokenFile`, `authorization` or `sigv4`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PrometheusAlertingAlertmanagersBasicAuth>,
     /// File to read bearer token for Alertmanager.
     /// 
-    /// 
     /// Cannot be set at the same time as `basicAuth`, `authorization`, or `sigv4`.
-    /// 
     /// 
     /// Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
@@ -1713,7 +1620,6 @@ pub struct PrometheusAlertingAlertmanagers {
     /// Name of the Endpoints object in the namespace.
     pub name: String,
     /// Namespace of the Endpoints object.
-    /// 
     /// 
     /// If not set, the object will be discovered in the namespace of the
     /// Prometheus object.
@@ -1732,9 +1638,7 @@ pub struct PrometheusAlertingAlertmanagers {
     pub scheme: Option<String>,
     /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
     /// 
-    /// 
     /// It requires Prometheus >= v2.48.0.
-    /// 
     /// 
     /// Cannot be set at the same time as `basicAuth`, `bearerTokenFile` or `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1750,22 +1654,18 @@ pub struct PrometheusAlertingAlertmanagers {
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
-/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAlertingAlertmanagersAlertRelabelings {
     /// Action to perform based on the regex matching.
     /// 
-    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    /// 
     /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PrometheusAlertingAlertmanagersAlertRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    /// 
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1775,7 +1675,6 @@ pub struct PrometheusAlertingAlertmanagersAlertRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1790,10 +1689,8 @@ pub struct PrometheusAlertingAlertmanagersAlertRelabelings {
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// 
-    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
@@ -1802,7 +1699,6 @@ pub struct PrometheusAlertingAlertmanagersAlertRelabelings {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-/// 
 /// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1849,7 +1745,6 @@ pub enum PrometheusAlertingAlertmanagersAlertRelabelingsAction {
 
 /// Authorization section for Alertmanager.
 /// 
-/// 
 /// Cannot be set at the same time as `basicAuth`, `bearerTokenFile` or `sigv4`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAlertingAlertmanagersAuthorization {
@@ -1858,9 +1753,7 @@ pub struct PrometheusAlertingAlertmanagersAuthorization {
     pub credentials: Option<PrometheusAlertingAlertmanagersAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
     /// 
-    /// 
     /// "Basic" is not a supported value.
-    /// 
     /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1876,9 +1769,7 @@ pub struct PrometheusAlertingAlertmanagersAuthorizationCredentials {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1887,7 +1778,6 @@ pub struct PrometheusAlertingAlertmanagersAuthorizationCredentials {
 }
 
 /// BasicAuth configuration for Alertmanager.
-/// 
 /// 
 /// Cannot be set at the same time as `bearerTokenFile`, `authorization` or `sigv4`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1912,9 +1802,7 @@ pub struct PrometheusAlertingAlertmanagersBasicAuthPassword {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1932,9 +1820,7 @@ pub struct PrometheusAlertingAlertmanagersBasicAuthUsername {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1945,22 +1831,18 @@ pub struct PrometheusAlertingAlertmanagersBasicAuthUsername {
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
-/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAlertingAlertmanagersRelabelings {
     /// Action to perform based on the regex matching.
     /// 
-    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    /// 
     /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PrometheusAlertingAlertmanagersRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    /// 
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1970,7 +1852,6 @@ pub struct PrometheusAlertingAlertmanagersRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1985,10 +1866,8 @@ pub struct PrometheusAlertingAlertmanagersRelabelings {
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// 
-    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
@@ -1997,7 +1876,6 @@ pub struct PrometheusAlertingAlertmanagersRelabelings {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-/// 
 /// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2044,9 +1922,7 @@ pub enum PrometheusAlertingAlertmanagersRelabelingsAction {
 
 /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
 /// 
-/// 
 /// It requires Prometheus >= v2.48.0.
-/// 
 /// 
 /// Cannot be set at the same time as `basicAuth`, `bearerTokenFile` or `authorization`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2080,9 +1956,7 @@ pub struct PrometheusAlertingAlertmanagersSigv4AccessKey {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2100,9 +1974,7 @@ pub struct PrometheusAlertingAlertmanagersSigv4SecretKey {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2136,12 +2008,10 @@ pub struct PrometheusAlertingAlertmanagersTlsConfig {
     pub key_secret: Option<PrometheusAlertingAlertmanagersTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusAlertingAlertmanagersTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -2171,9 +2041,7 @@ pub struct PrometheusAlertingAlertmanagersTlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2190,9 +2058,7 @@ pub struct PrometheusAlertingAlertmanagersTlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2220,9 +2086,7 @@ pub struct PrometheusAlertingAlertmanagersTlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2239,9 +2103,7 @@ pub struct PrometheusAlertingAlertmanagersTlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2258,9 +2120,7 @@ pub struct PrometheusAlertingAlertmanagersTlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2303,13 +2163,11 @@ pub enum PrometheusAlertingAlertmanagersTlsConfigMinVersion {
 pub struct PrometheusApiserverConfig {
     /// Authorization section for the API server.
     /// 
-    /// 
     /// Cannot be set at the same time as `basicAuth`, `bearerToken`, or
     /// `bearerTokenFile`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<PrometheusApiserverConfigAuthorization>,
     /// BasicAuth configuration for the API server.
-    /// 
     /// 
     /// Cannot be set at the same time as `authorization`, `bearerToken`, or
     /// `bearerTokenFile`.
@@ -2318,15 +2176,12 @@ pub struct PrometheusApiserverConfig {
     /// *Warning: this field shouldn't be used because the token value appears
     /// in clear-text. Prefer using `authorization`.*
     /// 
-    /// 
     /// Deprecated: this will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// File to read bearer token for accessing apiserver.
     /// 
-    /// 
     /// Cannot be set at the same time as `basicAuth`, `authorization`, or `bearerToken`.
-    /// 
     /// 
     /// Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
@@ -2341,7 +2196,6 @@ pub struct PrometheusApiserverConfig {
 
 /// Authorization section for the API server.
 /// 
-/// 
 /// Cannot be set at the same time as `basicAuth`, `bearerToken`, or
 /// `bearerTokenFile`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2354,9 +2208,7 @@ pub struct PrometheusApiserverConfigAuthorization {
     pub credentials_file: Option<String>,
     /// Defines the authentication type. The value is case-insensitive.
     /// 
-    /// 
     /// "Basic" is not a supported value.
-    /// 
     /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -2372,9 +2224,7 @@ pub struct PrometheusApiserverConfigAuthorizationCredentials {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2383,7 +2233,6 @@ pub struct PrometheusApiserverConfigAuthorizationCredentials {
 }
 
 /// BasicAuth configuration for the API server.
-/// 
 /// 
 /// Cannot be set at the same time as `authorization`, `bearerToken`, or
 /// `bearerTokenFile`.
@@ -2409,9 +2258,7 @@ pub struct PrometheusApiserverConfigBasicAuthPassword {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2429,9 +2276,7 @@ pub struct PrometheusApiserverConfigBasicAuthUsername {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2465,12 +2310,10 @@ pub struct PrometheusApiserverConfigTlsConfig {
     pub key_secret: Option<PrometheusApiserverConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusApiserverConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -2500,9 +2343,7 @@ pub struct PrometheusApiserverConfigTlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2519,9 +2360,7 @@ pub struct PrometheusApiserverConfigTlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2549,9 +2388,7 @@ pub struct PrometheusApiserverConfigTlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2568,9 +2405,7 @@ pub struct PrometheusApiserverConfigTlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2587,9 +2422,7 @@ pub struct PrometheusApiserverConfigTlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2855,9 +2688,7 @@ pub struct PrometheusContainersEnvValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2900,9 +2731,7 @@ pub struct PrometheusContainersEnvValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2931,9 +2760,7 @@ pub struct PrometheusContainersEnvFromConfigMapRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -2948,9 +2775,7 @@ pub struct PrometheusContainersEnvFromSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -3235,7 +3060,6 @@ pub struct PrometheusContainersLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3386,7 +3210,6 @@ pub struct PrometheusContainersReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3458,10 +3281,8 @@ pub struct PrometheusContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3485,6 +3306,11 @@ pub struct PrometheusContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -3518,7 +3344,7 @@ pub struct PrometheusContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -3641,7 +3467,6 @@ pub struct PrometheusContainersSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3753,7 +3578,6 @@ pub struct PrometheusContainersStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3838,9 +3662,7 @@ pub struct PrometheusContainersVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -3849,10 +3671,8 @@ pub struct PrometheusContainersVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -3913,10 +3733,8 @@ pub enum PrometheusExcludedFromEnforcementResource {
 pub struct PrometheusExemplars {
     /// Maximum number of exemplars stored in memory for all series.
     /// 
-    /// 
     /// exemplar-storage itself must be enabled using the `spec.enableFeature`
     /// option for exemplars to be scraped in the first place.
-    /// 
     /// 
     /// If not set, Prometheus uses its default value. A value of zero or less
     /// than zero disables the storage.
@@ -3953,9 +3771,7 @@ pub struct PrometheusImagePullSecrets {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -4176,9 +3992,7 @@ pub struct PrometheusInitContainersEnvValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4221,9 +4035,7 @@ pub struct PrometheusInitContainersEnvValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4252,9 +4064,7 @@ pub struct PrometheusInitContainersEnvFromConfigMapRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -4269,9 +4079,7 @@ pub struct PrometheusInitContainersEnvFromSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -4556,7 +4364,6 @@ pub struct PrometheusInitContainersLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4707,7 +4514,6 @@ pub struct PrometheusInitContainersReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4779,10 +4585,8 @@ pub struct PrometheusInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4806,6 +4610,11 @@ pub struct PrometheusInitContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -4839,7 +4648,7 @@ pub struct PrometheusInitContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -4962,7 +4771,6 @@ pub struct PrometheusInitContainersSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -5074,7 +4882,6 @@ pub struct PrometheusInitContainersStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -5159,9 +4966,7 @@ pub struct PrometheusInitContainersVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -5170,10 +4975,8 @@ pub struct PrometheusInitContainersVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -5250,7 +5053,6 @@ pub struct PrometheusPersistentVolumeClaimRetentionPolicy {
 
 /// PodMetadata configures labels and annotations which are propagated to the Prometheus pods.
 /// 
-/// 
 /// The following items are reserved and cannot be overridden:
 /// * "prometheus" label, set to the name of the Prometheus object.
 /// * "app.kubernetes.io/instance" label, set to the name of the Prometheus object.
@@ -5318,7 +5120,6 @@ pub struct PrometheusPodMonitorNamespaceSelectorMatchExpressions {
 
 /// PodMonitors to be selected for target discovery. An empty label selector
 /// matches all objects. A null label selector matches no objects.
-/// 
 /// 
 /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
 /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
@@ -5391,7 +5192,6 @@ pub struct PrometheusProbeNamespaceSelectorMatchExpressions {
 
 /// Probes to be selected for target discovery. An empty label selector
 /// matches all objects. A null label selector matches no objects.
-/// 
 /// 
 /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
 /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
@@ -5477,15 +5277,12 @@ pub enum PrometheusReloadStrategy {
 pub struct PrometheusRemoteRead {
     /// Authorization section for the URL.
     /// 
-    /// 
     /// It requires Prometheus >= v2.26.0.
-    /// 
     /// 
     /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<PrometheusRemoteReadAuthorization>,
     /// BasicAuth configuration for the URL.
-    /// 
     /// 
     /// Cannot be set at the same time as `authorization`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
@@ -5493,24 +5290,20 @@ pub struct PrometheusRemoteRead {
     /// *Warning: this field shouldn't be used because the token value appears
     /// in clear-text. Prefer using `authorization`.*
     /// 
-    /// 
     /// Deprecated: this will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// File from which to read the bearer token for the URL.
-    /// 
     /// 
     /// Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Whether to use the external labels as selectors for the remote read endpoint.
     /// 
-    /// 
     /// It requires Prometheus >= v2.34.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterExternalLabels")]
     pub filter_external_labels: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    /// 
     /// 
     /// It requires Prometheus >= v2.26.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -5524,7 +5317,6 @@ pub struct PrometheusRemoteRead {
     /// name is used in metrics and logging in order to differentiate read
     /// configurations.
     /// 
-    /// 
     /// It requires Prometheus >= v2.15.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5532,15 +5324,12 @@ pub struct PrometheusRemoteRead {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// OAuth2 configuration for the URL.
     /// 
-    /// 
     /// It requires Prometheus >= v2.27.0.
-    /// 
     /// 
     /// Cannot be set at the same time as `authorization`, or `basicAuth`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5548,13 +5337,11 @@ pub struct PrometheusRemoteRead {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PrometheusRemoteReadProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// If unset, Prometheus uses its default value.
-    /// 
     /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
@@ -5582,9 +5369,7 @@ pub struct PrometheusRemoteRead {
 
 /// Authorization section for the URL.
 /// 
-/// 
 /// It requires Prometheus >= v2.26.0.
-/// 
 /// 
 /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5597,9 +5382,7 @@ pub struct PrometheusRemoteReadAuthorization {
     pub credentials_file: Option<String>,
     /// Defines the authentication type. The value is case-insensitive.
     /// 
-    /// 
     /// "Basic" is not a supported value.
-    /// 
     /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -5615,9 +5398,7 @@ pub struct PrometheusRemoteReadAuthorizationCredentials {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -5626,7 +5407,6 @@ pub struct PrometheusRemoteReadAuthorizationCredentials {
 }
 
 /// BasicAuth configuration for the URL.
-/// 
 /// 
 /// Cannot be set at the same time as `authorization`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5651,9 +5431,7 @@ pub struct PrometheusRemoteReadBasicAuthPassword {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -5671,9 +5449,7 @@ pub struct PrometheusRemoteReadBasicAuthUsername {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -5683,9 +5459,7 @@ pub struct PrometheusRemoteReadBasicAuthUsername {
 
 /// OAuth2 configuration for the URL.
 /// 
-/// 
 /// It requires Prometheus >= v2.27.0.
-/// 
 /// 
 /// Cannot be set at the same time as `authorization`, or `basicAuth`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5706,20 +5480,17 @@ pub struct PrometheusRemoteReadOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PrometheusRemoteReadOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// If unset, Prometheus uses its default value.
-    /// 
     /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
@@ -5760,9 +5531,7 @@ pub struct PrometheusRemoteReadOauth2ClientIdConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -5779,9 +5548,7 @@ pub struct PrometheusRemoteReadOauth2ClientIdSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -5799,9 +5566,7 @@ pub struct PrometheusRemoteReadOauth2ClientSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -5818,9 +5583,7 @@ pub struct PrometheusRemoteReadOauth2ProxyConnectHeader {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -5846,12 +5609,10 @@ pub struct PrometheusRemoteReadOauth2TlsConfig {
     pub key_secret: Option<PrometheusRemoteReadOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusRemoteReadOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -5881,9 +5642,7 @@ pub struct PrometheusRemoteReadOauth2TlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -5900,9 +5659,7 @@ pub struct PrometheusRemoteReadOauth2TlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -5930,9 +5687,7 @@ pub struct PrometheusRemoteReadOauth2TlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -5949,9 +5704,7 @@ pub struct PrometheusRemoteReadOauth2TlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -5968,9 +5721,7 @@ pub struct PrometheusRemoteReadOauth2TlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6015,9 +5766,7 @@ pub struct PrometheusRemoteReadProxyConnectHeader {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6051,12 +5800,10 @@ pub struct PrometheusRemoteReadTlsConfig {
     pub key_secret: Option<PrometheusRemoteReadTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusRemoteReadTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -6086,9 +5833,7 @@ pub struct PrometheusRemoteReadTlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -6105,9 +5850,7 @@ pub struct PrometheusRemoteReadTlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6135,9 +5878,7 @@ pub struct PrometheusRemoteReadTlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -6154,9 +5895,7 @@ pub struct PrometheusRemoteReadTlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6173,9 +5912,7 @@ pub struct PrometheusRemoteReadTlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6215,24 +5952,19 @@ pub enum PrometheusRemoteReadTlsConfigMinVersion {
 pub struct PrometheusRemoteWrite {
     /// Authorization section for the URL.
     /// 
-    /// 
     /// It requires Prometheus >= v2.26.0.
-    /// 
     /// 
     /// Cannot be set at the same time as `sigv4`, `basicAuth`, `oauth2`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<PrometheusRemoteWriteAuthorization>,
     /// AzureAD for the URL.
     /// 
-    /// 
     /// It requires Prometheus >= v2.45.0.
-    /// 
     /// 
     /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureAd")]
     pub azure_ad: Option<PrometheusRemoteWriteAzureAd>,
     /// BasicAuth configuration for the URL.
-    /// 
     /// 
     /// Cannot be set at the same time as `sigv4`, `authorization`, `oauth2`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
@@ -6240,12 +5972,10 @@ pub struct PrometheusRemoteWrite {
     /// *Warning: this field shouldn't be used because the token value appears
     /// in clear-text. Prefer using `authorization`.*
     /// 
-    /// 
     /// Deprecated: this will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// File from which to read bearer token for the URL.
-    /// 
     /// 
     /// Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
@@ -6255,13 +5985,11 @@ pub struct PrometheusRemoteWrite {
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     /// 
-    /// 
     /// It requires Prometheus >= v2.26.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Custom HTTP headers to be sent along with each remote write request.
     /// Be aware that headers that are set by Prometheus itself can't be overwritten.
-    /// 
     /// 
     /// It requires Prometheus >= v2.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6272,7 +6000,6 @@ pub struct PrometheusRemoteWrite {
     /// The name of the remote write queue, it must be unique if specified. The
     /// name is used in metrics and logging in order to differentiate queues.
     /// 
-    /// 
     /// It requires Prometheus >= v2.15.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -6280,15 +6007,12 @@ pub struct PrometheusRemoteWrite {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// OAuth2 configuration for the URL.
     /// 
-    /// 
     /// It requires Prometheus >= v2.27.0.
-    /// 
     /// 
     /// Cannot be set at the same time as `sigv4`, `authorization`, `basicAuth`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6296,13 +6020,11 @@ pub struct PrometheusRemoteWrite {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PrometheusRemoteWriteProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// If unset, Prometheus uses its default value.
-    /// 
     /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
@@ -6320,22 +6042,18 @@ pub struct PrometheusRemoteWrite {
     /// exemplar-storage itself must be enabled using the `spec.enableFeature`
     /// option for exemplars to be scraped in the first place.
     /// 
-    /// 
     /// It requires Prometheus >= v2.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendExemplars")]
     pub send_exemplars: Option<bool>,
     /// Enables sending of native histograms, also known as sparse histograms
     /// over remote write.
     /// 
-    /// 
     /// It requires Prometheus >= v2.40.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendNativeHistograms")]
     pub send_native_histograms: Option<bool>,
     /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
     /// 
-    /// 
     /// It requires Prometheus >= v2.26.0.
-    /// 
     /// 
     /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6352,9 +6070,7 @@ pub struct PrometheusRemoteWrite {
 
 /// Authorization section for the URL.
 /// 
-/// 
 /// It requires Prometheus >= v2.26.0.
-/// 
 /// 
 /// Cannot be set at the same time as `sigv4`, `basicAuth`, `oauth2`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6367,9 +6083,7 @@ pub struct PrometheusRemoteWriteAuthorization {
     pub credentials_file: Option<String>,
     /// Defines the authentication type. The value is case-insensitive.
     /// 
-    /// 
     /// "Basic" is not a supported value.
-    /// 
     /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -6385,9 +6099,7 @@ pub struct PrometheusRemoteWriteAuthorizationCredentials {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6397,9 +6109,7 @@ pub struct PrometheusRemoteWriteAuthorizationCredentials {
 
 /// AzureAD for the URL.
 /// 
-/// 
 /// It requires Prometheus >= v2.45.0.
-/// 
 /// 
 /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6414,14 +6124,12 @@ pub struct PrometheusRemoteWriteAzureAd {
     /// OAuth defines the oauth config that is being used to authenticate.
     /// Cannot be set at the same time as `managedIdentity` or `sdk`.
     /// 
-    /// 
     /// It requires Prometheus >= v2.48.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth: Option<PrometheusRemoteWriteAzureAdOauth>,
     /// SDK defines the Azure SDK config that is being used to authenticate.
     /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
     /// Cannot be set at the same time as `oauth` or `managedIdentity`.
-    /// 
     /// 
     /// It requires Prometheus >= 2.52.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6430,9 +6138,7 @@ pub struct PrometheusRemoteWriteAzureAd {
 
 /// AzureAD for the URL.
 /// 
-/// 
 /// It requires Prometheus >= v2.45.0.
-/// 
 /// 
 /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -6453,7 +6159,6 @@ pub struct PrometheusRemoteWriteAzureAdManagedIdentity {
 
 /// OAuth defines the oauth config that is being used to authenticate.
 /// Cannot be set at the same time as `managedIdentity` or `sdk`.
-/// 
 /// 
 /// It requires Prometheus >= v2.48.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6478,9 +6183,7 @@ pub struct PrometheusRemoteWriteAzureAdOauthClientSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6492,7 +6195,6 @@ pub struct PrometheusRemoteWriteAzureAdOauthClientSecret {
 /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
 /// Cannot be set at the same time as `oauth` or `managedIdentity`.
 /// 
-/// 
 /// It requires Prometheus >= 2.52.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusRemoteWriteAzureAdSdk {
@@ -6502,7 +6204,6 @@ pub struct PrometheusRemoteWriteAzureAdSdk {
 }
 
 /// BasicAuth configuration for the URL.
-/// 
 /// 
 /// Cannot be set at the same time as `sigv4`, `authorization`, `oauth2`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6527,9 +6228,7 @@ pub struct PrometheusRemoteWriteBasicAuthPassword {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6547,9 +6246,7 @@ pub struct PrometheusRemoteWriteBasicAuthUsername {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6570,9 +6267,7 @@ pub struct PrometheusRemoteWriteMetadataConfig {
 
 /// OAuth2 configuration for the URL.
 /// 
-/// 
 /// It requires Prometheus >= v2.27.0.
-/// 
 /// 
 /// Cannot be set at the same time as `sigv4`, `authorization`, `basicAuth`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6593,20 +6288,17 @@ pub struct PrometheusRemoteWriteOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PrometheusRemoteWriteOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// If unset, Prometheus uses its default value.
-    /// 
     /// 
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
@@ -6647,9 +6339,7 @@ pub struct PrometheusRemoteWriteOauth2ClientIdConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -6666,9 +6356,7 @@ pub struct PrometheusRemoteWriteOauth2ClientIdSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6686,9 +6374,7 @@ pub struct PrometheusRemoteWriteOauth2ClientSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6705,9 +6391,7 @@ pub struct PrometheusRemoteWriteOauth2ProxyConnectHeader {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6733,12 +6417,10 @@ pub struct PrometheusRemoteWriteOauth2TlsConfig {
     pub key_secret: Option<PrometheusRemoteWriteOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusRemoteWriteOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -6768,9 +6450,7 @@ pub struct PrometheusRemoteWriteOauth2TlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -6787,9 +6467,7 @@ pub struct PrometheusRemoteWriteOauth2TlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6817,9 +6495,7 @@ pub struct PrometheusRemoteWriteOauth2TlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -6836,9 +6512,7 @@ pub struct PrometheusRemoteWriteOauth2TlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6855,9 +6529,7 @@ pub struct PrometheusRemoteWriteOauth2TlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6902,9 +6574,7 @@ pub struct PrometheusRemoteWriteProxyConnectHeader {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6942,7 +6612,6 @@ pub struct PrometheusRemoteWriteQueueConfig {
     pub min_shards: Option<i64>,
     /// Retry upon receiving a 429 status code from the remote-write storage.
     /// 
-    /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOnRateLimit")]
@@ -6955,9 +6624,7 @@ pub struct PrometheusRemoteWriteQueueConfig {
 
 /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
 /// 
-/// 
 /// It requires Prometheus >= v2.26.0.
-/// 
 /// 
 /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6991,9 +6658,7 @@ pub struct PrometheusRemoteWriteSigv4AccessKey {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7011,9 +6676,7 @@ pub struct PrometheusRemoteWriteSigv4SecretKey {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7047,12 +6710,10 @@ pub struct PrometheusRemoteWriteTlsConfig {
     pub key_secret: Option<PrometheusRemoteWriteTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusRemoteWriteTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -7082,9 +6743,7 @@ pub struct PrometheusRemoteWriteTlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -7101,9 +6760,7 @@ pub struct PrometheusRemoteWriteTlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7131,9 +6788,7 @@ pub struct PrometheusRemoteWriteTlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -7150,9 +6805,7 @@ pub struct PrometheusRemoteWriteTlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7169,9 +6822,7 @@ pub struct PrometheusRemoteWriteTlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7208,22 +6859,18 @@ pub enum PrometheusRemoteWriteTlsConfigMinVersion {
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
-/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusRemoteWriteWriteRelabelConfigs {
     /// Action to perform based on the regex matching.
     /// 
-    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    /// 
     /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PrometheusRemoteWriteWriteRelabelConfigsAction>,
     /// Modulus to take of the hash of the source label values.
-    /// 
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7233,7 +6880,6 @@ pub struct PrometheusRemoteWriteWriteRelabelConfigs {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7248,10 +6894,8 @@ pub struct PrometheusRemoteWriteWriteRelabelConfigs {
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// 
-    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
@@ -7260,7 +6904,6 @@ pub struct PrometheusRemoteWriteWriteRelabelConfigs {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-/// 
 /// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -7311,10 +6954,8 @@ pub struct PrometheusResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7338,6 +6979,11 @@ pub struct PrometheusResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Namespaces to match for PrometheusRule discovery. An empty label selector
@@ -7409,7 +7055,6 @@ pub struct PrometheusRuleSelectorMatchExpressions {
 pub struct PrometheusRules {
     /// Defines the parameters of the Prometheus rules' engine.
     /// 
-    /// 
     /// Any update to these parameters trigger a restart of the pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alert: Option<PrometheusRulesAlert>,
@@ -7417,12 +7062,10 @@ pub struct PrometheusRules {
 
 /// Defines the parameters of the Prometheus rules' engine.
 /// 
-/// 
 /// Any update to these parameters trigger a restart of the pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusRulesAlert {
     /// Minimum duration between alert and restored 'for' state.
-    /// 
     /// 
     /// This is maintained only for alerts with a configured 'for' time greater
     /// than the grace period.
@@ -7448,17 +7091,14 @@ pub struct PrometheusScrapeClasses {
     /// Default indicates that the scrape applies to all scrape objects that
     /// don't configure an explicit scrape class name.
     /// 
-    /// 
     /// Only one scrape class can be set as the default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<bool>,
     /// MetricRelabelings configures the relabeling rules to apply to all samples before ingestion.
     /// 
-    /// 
     /// The Operator adds the scrape class metric relabelings defined here.
     /// Then the Operator adds the target-specific metric relabelings defined in ServiceMonitors, PodMonitors, Probes and ScrapeConfigs.
     /// Then the Operator adds namespace enforcement relabeling rule, specified in '.spec.enforcedNamespaceLabel'.
-    /// 
     /// 
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
@@ -7467,12 +7107,10 @@ pub struct PrometheusScrapeClasses {
     pub name: String,
     /// Relabelings configures the relabeling rules to apply to all scrape targets.
     /// 
-    /// 
     /// The Operator automatically adds relabelings for a few standard Kubernetes fields
     /// like `__meta_kubernetes_namespace` and `__meta_kubernetes_service_name`.
     /// Then the Operator adds the scrape class relabelings defined here.
     /// Then the Operator adds the target-specific relabelings defined in the scrape object.
-    /// 
     /// 
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7480,7 +7118,6 @@ pub struct PrometheusScrapeClasses {
     /// TLSConfig defines the TLS settings to use for the scrape. When the
     /// scrape objects define their own CA, certificate and/or key, they take
     /// precedence over the corresponding scrape class fields.
-    /// 
     /// 
     /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -7495,7 +7132,6 @@ pub struct PrometheusScrapeClassesAttachMetadata {
     /// When set to true, Prometheus attaches node metadata to the discovered
     /// targets.
     /// 
-    /// 
     /// The Prometheus service account must have the `list` and `watch`
     /// permissions on the `Nodes` objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7505,22 +7141,18 @@ pub struct PrometheusScrapeClassesAttachMetadata {
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
-/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusScrapeClassesMetricRelabelings {
     /// Action to perform based on the regex matching.
     /// 
-    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    /// 
     /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PrometheusScrapeClassesMetricRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    /// 
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7530,7 +7162,6 @@ pub struct PrometheusScrapeClassesMetricRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7545,10 +7176,8 @@ pub struct PrometheusScrapeClassesMetricRelabelings {
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// 
-    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
@@ -7557,7 +7186,6 @@ pub struct PrometheusScrapeClassesMetricRelabelings {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-/// 
 /// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -7605,22 +7233,18 @@ pub enum PrometheusScrapeClassesMetricRelabelingsAction {
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
-/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusScrapeClassesRelabelings {
     /// Action to perform based on the regex matching.
     /// 
-    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    /// 
     /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PrometheusScrapeClassesRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    /// 
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7630,7 +7254,6 @@ pub struct PrometheusScrapeClassesRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7645,10 +7268,8 @@ pub struct PrometheusScrapeClassesRelabelings {
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// 
-    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
@@ -7657,7 +7278,6 @@ pub struct PrometheusScrapeClassesRelabelings {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-/// 
 /// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -7706,7 +7326,6 @@ pub enum PrometheusScrapeClassesRelabelingsAction {
 /// scrape objects define their own CA, certificate and/or key, they take
 /// precedence over the corresponding scrape class fields.
 /// 
-/// 
 /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusScrapeClassesTlsConfig {
@@ -7733,12 +7352,10 @@ pub struct PrometheusScrapeClassesTlsConfig {
     pub key_secret: Option<PrometheusScrapeClassesTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusScrapeClassesTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -7768,9 +7385,7 @@ pub struct PrometheusScrapeClassesTlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -7787,9 +7402,7 @@ pub struct PrometheusScrapeClassesTlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7817,9 +7430,7 @@ pub struct PrometheusScrapeClassesTlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -7836,9 +7447,7 @@ pub struct PrometheusScrapeClassesTlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7855,9 +7464,7 @@ pub struct PrometheusScrapeClassesTlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7868,7 +7475,6 @@ pub struct PrometheusScrapeClassesTlsConfigKeySecret {
 /// TLSConfig defines the TLS settings to use for the scrape. When the
 /// scrape objects define their own CA, certificate and/or key, they take
 /// precedence over the corresponding scrape class fields.
-/// 
 /// 
 /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -7887,7 +7493,6 @@ pub enum PrometheusScrapeClassesTlsConfigMaxVersion {
 /// scrape objects define their own CA, certificate and/or key, they take
 /// precedence over the corresponding scrape class fields.
 /// 
-/// 
 /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusScrapeClassesTlsConfigMinVersion {
@@ -7904,7 +7509,6 @@ pub enum PrometheusScrapeClassesTlsConfigMinVersion {
 /// Namespaces to match for ScrapeConfig discovery. An empty label selector
 /// matches all namespaces. A null label selector matches the current
 /// namespace only.
-/// 
 /// 
 /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7939,7 +7543,6 @@ pub struct PrometheusScrapeConfigNamespaceSelectorMatchExpressions {
 /// ScrapeConfigs to be selected for target discovery. An empty label
 /// selector matches all objects. A null label selector matches no objects.
 /// 
-/// 
 /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
 /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
 /// The Prometheus operator will ensure that the Prometheus configuration's
@@ -7948,7 +7551,6 @@ pub struct PrometheusScrapeConfigNamespaceSelectorMatchExpressions {
 /// This behavior is *deprecated* and will be removed in the next major version
 /// of the custom resource definition. It is recommended to use
 /// `spec.additionalScrapeConfigs` instead.
-/// 
 /// 
 /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7992,11 +7594,9 @@ pub struct PrometheusSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8047,15 +7647,24 @@ pub struct PrometheusSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PrometheusSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8122,7 +7731,6 @@ pub struct PrometheusSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -8210,7 +7818,6 @@ pub struct PrometheusServiceMonitorNamespaceSelectorMatchExpressions {
 
 /// ServiceMonitors to be selected for target discovery. An empty label
 /// selector matches all objects. A null label selector matches no objects.
-/// 
 /// 
 /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
 /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
@@ -8308,7 +7915,6 @@ pub struct PrometheusStorageEphemeral {
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
     /// 
-    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -8318,10 +7924,8 @@ pub struct PrometheusStorageEphemeral {
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
     /// 
-    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    /// 
     /// 
     /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
@@ -8336,7 +7940,6 @@ pub struct PrometheusStorageEphemeral {
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
 /// 
-/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -8346,10 +7949,8 @@ pub struct PrometheusStorageEphemeral {
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
 /// 
-/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-/// 
 /// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8443,7 +8044,7 @@ pub struct PrometheusStorageEphemeralVolumeClaimTemplateSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -8689,7 +8290,7 @@ pub struct PrometheusStorageVolumeClaimTemplateSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -8827,7 +8428,6 @@ pub struct PrometheusStorageVolumeClaimTemplateStatus {
     /// Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered
     /// reserved and hence may not be used.
     /// 
-    /// 
     /// ClaimResourceStatus can be in any of following states:
     /// 	- ControllerResizeInProgress:
     /// 		State set when resize controller starts resizing the volume in control-plane.
@@ -8849,12 +8449,10 @@ pub struct PrometheusStorageVolumeClaimTemplateStatus {
     ///      - pvc.status.allocatedResourceStatus['storage'] = "NodeResizeFailed"
     /// When this field is not set, it means that no resize operation is in progress for the given PVC.
     /// 
-    /// 
     /// A controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    /// 
     /// 
     /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourceStatuses")]
@@ -8867,7 +8465,6 @@ pub struct PrometheusStorageVolumeClaimTemplateStatus {
     /// Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered
     /// reserved and hence may not be used.
     /// 
-    /// 
     /// Capacity reported here may be larger than the actual capacity when a volume expansion operation
     /// is requested.
     /// For storage quota, the larger value from allocatedResources and PVC.spec.resources is used.
@@ -8876,12 +8473,10 @@ pub struct PrometheusStorageVolumeClaimTemplateStatus {
     /// lowered if there are no expansion operations in progress and if the actual volume capacity
     /// is equal or lower than the requested capacity.
     /// 
-    /// 
     /// A controller that receives PVC update with previously unknown resourceName
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    /// 
     /// 
     /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
@@ -8895,12 +8490,12 @@ pub struct PrometheusStorageVolumeClaimTemplateStatus {
     pub conditions: Option<Vec<Condition>>,
     /// currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.
     /// When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim
-    /// This is an alpha field and requires enabling VolumeAttributesClass feature.
+    /// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVolumeAttributesClassName")]
     pub current_volume_attributes_class_name: Option<String>,
     /// ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
     /// When this is unset, there is no ModifyVolume operation being attempted.
-    /// This is an alpha field and requires enabling VolumeAttributesClass feature.
+    /// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modifyVolumeStatus")]
     pub modify_volume_status: Option<PrometheusStorageVolumeClaimTemplateStatusModifyVolumeStatus>,
     /// phase represents the current phase of PersistentVolumeClaim.
@@ -8910,7 +8505,7 @@ pub struct PrometheusStorageVolumeClaimTemplateStatus {
 
 /// ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
 /// When this is unset, there is no ModifyVolume operation being attempted.
-/// This is an alpha field and requires enabling VolumeAttributesClass feature.
+/// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusStorageVolumeClaimTemplateStatusModifyVolumeStatus {
     /// status is the status of the ControllerModifyVolume operation. It can be in any of following states:
@@ -8946,7 +8541,6 @@ pub struct PrometheusThanos {
     /// BlockDuration controls the size of TSDB blocks produced by Prometheus.
     /// The default value is 2h to match the upstream Prometheus defaults.
     /// 
-    /// 
     /// WARNING: Changing the block duration can impact the performance and
     /// efficiency of the entire Prometheus/Thanos stack due to how it interacts
     /// with memory and Thanos compactors. It is recommended to keep this value
@@ -8963,19 +8557,16 @@ pub struct PrometheusThanos {
     /// When true, the Thanos sidecar listens on the loopback interface instead
     /// of the Pod IP's address for the gRPC endpoints.
     /// 
-    /// 
     /// It has no effect if `listenLocal` is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcListenLocal")]
     pub grpc_listen_local: Option<bool>,
     /// Configures the TLS parameters for the gRPC server providing the StoreAPI.
-    /// 
     /// 
     /// Note: Currently only the `caFile`, `certFile`, and `keyFile` fields are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcServerTlsConfig")]
     pub grpc_server_tls_config: Option<PrometheusThanosGrpcServerTlsConfig>,
     /// When true, the Thanos sidecar listens on the loopback interface instead
     /// of the Pod IP's address for the HTTP endpoints.
-    /// 
     /// 
     /// It has no effect if `listenLocal` is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpListenLocal")]
@@ -8984,10 +8575,8 @@ pub struct PrometheusThanos {
     /// the `spec.thanos.baseImage`, `spec.thanos.tag` and `spec.thanos.sha`
     /// fields.
     /// 
-    /// 
     /// Specifying `spec.thanos.version` is still necessary to ensure the
     /// Prometheus Operator knows which version of Thanos is being configured.
-    /// 
     /// 
     /// If neither `spec.thanos.image` nor `spec.thanos.baseImage` are defined,
     /// the operator will use the latest upstream version of Thanos available at
@@ -9011,18 +8600,14 @@ pub struct PrometheusThanos {
     pub min_time: Option<String>,
     /// Defines the Thanos sidecar's configuration to upload TSDB blocks to object storage.
     /// 
-    /// 
     /// More info: https://thanos.io/tip/thanos/storage.md/
-    /// 
     /// 
     /// objectStorageConfigFile takes precedence over this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectStorageConfig")]
     pub object_storage_config: Option<PrometheusThanosObjectStorageConfig>,
     /// Defines the Thanos sidecar's configuration file to upload TSDB blocks to object storage.
     /// 
-    /// 
     /// More info: https://thanos.io/tip/thanos/storage.md/
-    /// 
     /// 
     /// This field takes precedence over objectStorageConfig.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectStorageConfigFile")]
@@ -9042,12 +8627,9 @@ pub struct PrometheusThanos {
     pub tag: Option<String>,
     /// Defines the tracing configuration for the Thanos sidecar.
     /// 
-    /// 
     /// `tracingConfigFile` takes precedence over this field.
     /// 
-    /// 
     /// More info: https://thanos.io/tip/thanos/tracing.md/
-    /// 
     /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
@@ -9055,12 +8637,9 @@ pub struct PrometheusThanos {
     pub tracing_config: Option<PrometheusThanosTracingConfig>,
     /// Defines the tracing configuration file for the Thanos sidecar.
     /// 
-    /// 
     /// This field takes precedence over `tracingConfig`.
     /// 
-    /// 
     /// More info: https://thanos.io/tip/thanos/tracing.md/
-    /// 
     /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
@@ -9068,7 +8647,6 @@ pub struct PrometheusThanos {
     pub tracing_config_file: Option<String>,
     /// Version of Thanos being deployed. The operator uses this information
     /// to generate the Prometheus StatefulSet + configuration files.
-    /// 
     /// 
     /// If not specified, the operator assumes the latest upstream release of
     /// Thanos available at the time when the version of the operator was
@@ -9093,7 +8671,6 @@ pub struct PrometheusThanosAdditionalArgs {
 }
 
 /// Configures the TLS parameters for the gRPC server providing the StoreAPI.
-/// 
 /// 
 /// Note: Currently only the `caFile`, `certFile`, and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9121,12 +8698,10 @@ pub struct PrometheusThanosGrpcServerTlsConfig {
     pub key_secret: Option<PrometheusThanosGrpcServerTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusThanosGrpcServerTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -9156,9 +8731,7 @@ pub struct PrometheusThanosGrpcServerTlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -9175,9 +8748,7 @@ pub struct PrometheusThanosGrpcServerTlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -9205,9 +8776,7 @@ pub struct PrometheusThanosGrpcServerTlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -9224,9 +8793,7 @@ pub struct PrometheusThanosGrpcServerTlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -9243,9 +8810,7 @@ pub struct PrometheusThanosGrpcServerTlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -9254,7 +8819,6 @@ pub struct PrometheusThanosGrpcServerTlsConfigKeySecret {
 }
 
 /// Configures the TLS parameters for the gRPC server providing the StoreAPI.
-/// 
 /// 
 /// Note: Currently only the `caFile`, `certFile`, and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -9270,7 +8834,6 @@ pub enum PrometheusThanosGrpcServerTlsConfigMaxVersion {
 }
 
 /// Configures the TLS parameters for the gRPC server providing the StoreAPI.
-/// 
 /// 
 /// Note: Currently only the `caFile`, `certFile`, and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -9313,9 +8876,7 @@ pub enum PrometheusThanosLogLevel {
 
 /// Defines the Thanos sidecar's configuration to upload TSDB blocks to object storage.
 /// 
-/// 
 /// More info: https://thanos.io/tip/thanos/storage.md/
-/// 
 /// 
 /// objectStorageConfigFile takes precedence over this field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9326,9 +8887,7 @@ pub struct PrometheusThanosObjectStorageConfig {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -9342,10 +8901,8 @@ pub struct PrometheusThanosResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9369,16 +8926,18 @@ pub struct PrometheusThanosResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Defines the tracing configuration for the Thanos sidecar.
 /// 
-/// 
 /// `tracingConfigFile` takes precedence over this field.
 /// 
-/// 
 /// More info: https://thanos.io/tip/thanos/tracing.md/
-/// 
 /// 
 /// This is an *experimental feature*, it may change in any upcoming release
 /// in a breaking way.
@@ -9390,9 +8949,7 @@ pub struct PrometheusThanosTracingConfig {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -9424,9 +8981,7 @@ pub struct PrometheusThanosVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -9435,10 +8990,8 @@ pub struct PrometheusThanosVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -9504,7 +9057,6 @@ pub struct PrometheusTopologySpreadConstraints {
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// 
-    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
@@ -9538,7 +9090,6 @@ pub struct PrometheusTopologySpreadConstraints {
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
     /// 
-    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -9554,7 +9105,6 @@ pub struct PrometheusTopologySpreadConstraints {
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
-    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
@@ -9564,7 +9114,6 @@ pub struct PrometheusTopologySpreadConstraints {
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    /// 
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
@@ -9644,7 +9193,6 @@ pub struct PrometheusTopologySpreadConstraintsLabelSelectorMatchExpressions {
 
 /// TracingConfig configures tracing in Prometheus.
 /// 
-/// 
 /// This is an *experimental feature*, it may change in any upcoming release
 /// in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9676,7 +9224,6 @@ pub struct PrometheusTracingConfig {
 
 /// TracingConfig configures tracing in Prometheus.
 /// 
-/// 
 /// This is an *experimental feature*, it may change in any upcoming release
 /// in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -9688,7 +9235,6 @@ pub enum PrometheusTracingConfigClientType {
 }
 
 /// TracingConfig configures tracing in Prometheus.
-/// 
 /// 
 /// This is an *experimental feature*, it may change in any upcoming release
 /// in a breaking way.
@@ -9724,12 +9270,10 @@ pub struct PrometheusTracingConfigTlsConfig {
     pub key_secret: Option<PrometheusTracingConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusTracingConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -9759,9 +9303,7 @@ pub struct PrometheusTracingConfigTlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -9778,9 +9320,7 @@ pub struct PrometheusTracingConfigTlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -9808,9 +9348,7 @@ pub struct PrometheusTracingConfigTlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -9827,9 +9365,7 @@ pub struct PrometheusTracingConfigTlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -9846,9 +9382,7 @@ pub struct PrometheusTracingConfigTlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -9882,23 +9416,20 @@ pub enum PrometheusTracingConfigTlsConfigMinVersion {
     Tls13,
 }
 
-/// Defines the runtime reloadable configuration of the timeseries database
-/// (TSDB).
+/// Defines the runtime reloadable configuration of the timeseries database(TSDB).
+/// It requires Prometheus >= v2.39.0 or PrometheusAgent >= v2.54.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusTsdb {
     /// Configures how old an out-of-order/out-of-bounds sample can be with
     /// respect to the TSDB max time.
     /// 
-    /// 
     /// An out-of-order/out-of-bounds sample is ingested into the TSDB as long as
     /// the timestamp of the sample is >= (TSDB.MaxTime - outOfOrderTimeWindow).
-    /// 
     /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
     /// 
-    /// 
-    /// It requires Prometheus >= v2.39.0.
+    /// It requires Prometheus >= v2.39.0 or PrometheusAgent >= v2.54.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outOfOrderTimeWindow")]
     pub out_of_order_time_window: Option<String>,
 }
@@ -9927,9 +9458,7 @@ pub struct PrometheusVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -9938,10 +9467,8 @@ pub struct PrometheusVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -9996,7 +9523,6 @@ pub struct PrometheusVolumes {
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
     /// 
-    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -10007,16 +9533,13 @@ pub struct PrometheusVolumes {
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
     /// 
-    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
     /// 
-    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    /// 
     /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
@@ -10052,11 +9575,24 @@ pub struct PrometheusVolumes {
     /// used for system agents or other privileged things that are allowed
     /// to see the host machine. Most containers will NOT need this.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-    /// ---
-    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-    /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<PrometheusVolumesHostPath>,
+    /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+    /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+    /// 
+    /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// 
+    /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+    /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+    /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+    /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+    /// The volume will be mounted read-only (ro) and non-executable files (noexec).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<PrometheusVolumesImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://examples.k8s.io/volumes/iscsi/README.md
@@ -10115,7 +9651,6 @@ pub struct PrometheusVolumesAwsElasticBlockStore {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// partition is the partition in the volume that you want to mount.
@@ -10211,9 +9746,7 @@ pub struct PrometheusVolumesCephfsSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -10251,9 +9784,7 @@ pub struct PrometheusVolumesCinderSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -10283,9 +9814,7 @@ pub struct PrometheusVolumesConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -10352,9 +9881,7 @@ pub struct PrometheusVolumesCsiNodePublishSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -10448,7 +9975,6 @@ pub struct PrometheusVolumesEmptyDir {
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
 /// 
-/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -10459,16 +9985,13 @@ pub struct PrometheusVolumesEmptyDir {
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
 /// 
-/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
 /// 
-/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-/// 
 /// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
@@ -10482,7 +10005,6 @@ pub struct PrometheusVolumesEphemeral {
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
     /// 
-    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -10492,10 +10014,8 @@ pub struct PrometheusVolumesEphemeral {
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
     /// 
-    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    /// 
     /// 
     /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
@@ -10510,7 +10030,6 @@ pub struct PrometheusVolumesEphemeral {
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
 /// 
-/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -10520,10 +10039,8 @@ pub struct PrometheusVolumesEphemeral {
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
 /// 
-/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-/// 
 /// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10617,7 +10134,7 @@ pub struct PrometheusVolumesEphemeralVolumeClaimTemplateSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -10746,7 +10263,6 @@ pub struct PrometheusVolumesFc {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// lun is Optional: FC target lun number
@@ -10803,9 +10319,7 @@ pub struct PrometheusVolumesFlexVolumeSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -10831,7 +10345,6 @@ pub struct PrometheusVolumesGcePersistentDisk {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// partition is the partition in the volume that you want to mount.
@@ -10893,9 +10406,6 @@ pub struct PrometheusVolumesGlusterfs {
 /// used for system agents or other privileged things that are allowed
 /// to see the host machine. Most containers will NOT need this.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-/// ---
-/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-/// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesHostPath {
     /// path of the directory on the host.
@@ -10907,6 +10417,39 @@ pub struct PrometheusVolumesHostPath {
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+/// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+/// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+/// 
+/// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+/// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+/// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+/// 
+/// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+/// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+/// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+/// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+/// The volume will be mounted read-only (ro) and non-executable files (noexec).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusVolumesImage {
+    /// Policy for pulling OCI objects. Possible values are:
+    /// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    /// Required: Image or artifact reference to be used.
+    /// Behaves in the same way as pod.spec.containers[*].image.
+    /// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
@@ -10924,7 +10467,6 @@ pub struct PrometheusVolumesIscsi {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// initiatorName is the custom iSCSI Initiator Name.
@@ -10964,9 +10506,7 @@ pub struct PrometheusVolumesIscsiSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -11044,24 +10584,23 @@ pub struct PrometheusVolumesProjected {
     /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
+    /// sources is the list of volume projections. Each entry in this list
+    /// handles one source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<PrometheusVolumesProjectedSources>>,
 }
 
-/// Projection that may be projected along with other supported volume types
+/// Projection that may be projected along with other supported volume types.
+/// Exactly one of these fields must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
     /// 
-    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    /// 
     /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    /// 
     /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -11087,13 +10626,10 @@ pub struct PrometheusVolumesProjectedSources {
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
 /// 
-/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-/// 
 /// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-/// 
 /// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -11177,9 +10713,7 @@ pub struct PrometheusVolumesProjectedSourcesConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -11278,9 +10812,7 @@ pub struct PrometheusVolumesProjectedSourcesSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -11365,7 +10897,6 @@ pub struct PrometheusVolumesRbd {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// image is the rados image name.
@@ -11412,9 +10943,7 @@ pub struct PrometheusVolumesRbdSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -11467,9 +10996,7 @@ pub struct PrometheusVolumesScaleIoSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -11563,9 +11090,7 @@ pub struct PrometheusVolumesStorageosSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -11729,9 +11254,7 @@ pub struct PrometheusWebTlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -11748,9 +11271,7 @@ pub struct PrometheusWebTlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -11778,9 +11299,7 @@ pub struct PrometheusWebTlsConfigClientCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -11797,9 +11316,7 @@ pub struct PrometheusWebTlsConfigClientCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -11816,9 +11333,7 @@ pub struct PrometheusWebTlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined

@@ -89,7 +89,7 @@ spec:
                     - message: "sectionName or port must be unique when parentRefs includes 2 or more references to the same parent"
                       rule: "self.all(p1, self.exists_one(p2, p1.group == p2.group && p1.kind == p2.kind && p1.name == p2.name && (((!has(p1.__namespace__) || p1.__namespace__ == '') && (!has(p2.__namespace__) || p2.__namespace__ == '')) || (has(p1.__namespace__) && has(p2.__namespace__) && p1.__namespace__ == p2.__namespace__ )) && (((!has(p1.sectionName) || p1.sectionName == '') && (!has(p2.sectionName) || p2.sectionName == '')) || ( has(p1.sectionName) && has(p2.sectionName) && p1.sectionName == p2.sectionName)) && (((!has(p1.port) || p1.port == 0) && (!has(p2.port) || p2.port == 0)) || (has(p1.port) && has(p2.port) && p1.port == p2.port))))"
                 rules:
-                  description: "Rules are a list of UDP matchers and actions."
+                  description: "Rules are a list of UDP matchers and actions.\n\n\n"
                   items:
                     description: "UDPRouteRule is the configuration for a given rule."
                     properties:
@@ -144,10 +144,19 @@ spec:
                         maxItems: 16
                         minItems: 1
                         type: "array"
+                      name:
+                        description: "Name is the name of the route rule. This name MUST be unique within a Route if it is set.\n\n\nSupport: Extended"
+                        maxLength: 253
+                        minLength: 1
+                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                        type: "string"
                     type: "object"
                   maxItems: 16
                   minItems: 1
                   type: "array"
+                  x-kubernetes-validations:
+                    - message: "Rule name must be unique within the route"
+                      rule: "self.all(l1, !has(l1.name) || self.exists_one(l2, has(l2.name) && l1.name == l2.name))"
               required:
                 - "rules"
               type: "object"

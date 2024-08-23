@@ -1119,6 +1119,11 @@ pub struct CheClusterDevEnvironments {
     /// ImagePullPolicy defines the imagePullPolicy used for containers in a DevWorkspace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<CheClusterDevEnvironmentsImagePullPolicy>,
+    /// The maximum number of concurrently running workspaces across the entire Kubernetes cluster.
+    /// This applies to all users in the system. If the value is set to -1, it means there is
+    /// no limit on the number of running workspaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfRunningWorkspacesPerCluster")]
+    pub max_number_of_running_workspaces_per_cluster: Option<i64>,
     /// The maximum number of running workspaces per user.
     /// The value, -1, allows users to run an unlimited number of workspaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfRunningWorkspacesPerUser")]

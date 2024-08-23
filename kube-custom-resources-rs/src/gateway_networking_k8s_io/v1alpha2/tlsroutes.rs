@@ -142,6 +142,9 @@ pub struct TLSRouteSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentRefs")]
     pub parent_refs: Option<Vec<TLSRouteParentRefs>>,
     /// Rules are a list of TLS matchers and actions.
+    /// 
+    /// 
+    /// 
     pub rules: Vec<TLSRouteRules>,
 }
 
@@ -312,6 +315,12 @@ pub struct TLSRouteRules {
     /// Support for weight: Extended
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendRefs")]
     pub backend_refs: Option<Vec<TLSRouteRulesBackendRefs>>,
+    /// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+    /// 
+    /// 
+    /// Support: Extended
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// BackendRef defines how a Route should forward a request to a Kubernetes

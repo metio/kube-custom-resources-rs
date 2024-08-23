@@ -118,10 +118,8 @@ pub struct MeshGatewayInstanceResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -145,6 +143,11 @@ pub struct MeshGatewayInstanceResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ServiceTemplate configures the Service owned by this config.
@@ -243,10 +246,7 @@ pub struct MeshGatewayInstanceStatusLoadBalancerIngressPorts {
     ///   CamelCase names
     /// - cloud provider specific error values must have names that comply with the
     ///   format foo.example.com/CamelCase.
-    /// ---
-    /// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error: Option<String>,
+    pub error: String,
     /// Port is the port number of the service port of which status is recorded here
     pub port: i32,
     /// Protocol is the protocol of the service port of which status is recorded here

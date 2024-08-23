@@ -751,14 +751,11 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoute {
 /// a parent of this resource (usually a route). There are two kinds of parent resources
 /// with "Core" support:
 /// 
-/// 
 /// * Gateway (Gateway conformance profile)
 /// * Service (Mesh conformance profile, ClusterIP Services only)
 /// 
-/// 
 /// This API may be extended in the future to support additional kinds of parent
 /// resources.
-/// 
 /// 
 /// The API object must be valid in the cluster; the Group and Kind must
 /// be registered in the cluster for this reference to be valid.
@@ -769,31 +766,25 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRouteParentRefs {
     /// To set the core API group (such as for a "Service" kind referent),
     /// Group must be explicitly set to "" (empty string).
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     /// Kind is kind of the referent.
     /// 
-    /// 
     /// There are two kinds of parent resources with "Core" support:
-    /// 
     /// 
     /// * Gateway (Gateway conformance profile)
     /// * Service (Mesh conformance profile, ClusterIP Services only)
-    /// 
     /// 
     /// Support for other resources is Implementation-Specific.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     /// Name is the name of the referent.
     /// 
-    /// 
     /// Support: Core
     pub name: String,
     /// Namespace is the namespace of the referent. When unspecified, this refers
     /// to the local namespace of the Route.
-    /// 
     /// 
     /// Note that there are specific rules for ParentRefs which cross namespace
     /// boundaries. Cross-namespace references are only valid if they are explicitly
@@ -801,12 +792,10 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRouteParentRefs {
     /// Gateway has the AllowedRoutes field, and ReferenceGrant provides a
     /// generic way to enable any other kind of cross-namespace reference.
     /// 
-    /// 
     /// <gateway:experimental:description>
     /// ParentRefs from a Route to a Service in the same namespace are "producer"
     /// routes, which apply default routing rules to inbound connections from
     /// any namespace to the Service.
-    /// 
     /// 
     /// ParentRefs from a Route to a Service in a different namespace are
     /// "consumer" routes, and these routing rules are only applied to outbound
@@ -815,13 +804,11 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRouteParentRefs {
     /// ParentRef of the Route.
     /// </gateway:experimental:description>
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Port is the network port this Route targets. It can be interpreted
     /// differently based on the type of parent resource.
-    /// 
     /// 
     /// When the parent resource is a Gateway, this targets all listeners
     /// listening on the specified port that also support this kind of Route(and
@@ -831,18 +818,15 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRouteParentRefs {
     /// and SectionName are specified, the name and port of the selected listener
     /// must match both specified values.
     /// 
-    /// 
     /// <gateway:experimental:description>
     /// When the parent resource is a Service, this targets a specific port in the
     /// Service spec. When both Port (experimental) and SectionName are specified,
     /// the name and port of the selected port must match both specified values.
     /// </gateway:experimental:description>
     /// 
-    /// 
     /// Implementations MAY choose to support other parent resources.
     /// Implementations supporting other types of parent resources MUST clearly
     /// document how/if Port is interpreted.
-    /// 
     /// 
     /// For the purpose of status, an attachment is considered successful as
     /// long as the parent resource accepts it partially. For example, Gateway
@@ -852,13 +836,11 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRouteParentRefs {
     /// attached. If no Gateway listeners accept attachment from this Route,
     /// the Route MUST be considered detached from the Gateway.
     /// 
-    /// 
     /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SectionName is the name of a section within the target resource. In the
     /// following resources, SectionName is interpreted as the following:
-    /// 
     /// 
     /// * Gateway: Listener name. When both Port (experimental) and SectionName
     /// are specified, the name and port of the selected listener must match
@@ -867,11 +849,9 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRouteParentRefs {
     /// are specified, the name and port of the selected listener must match
     /// both specified values.
     /// 
-    /// 
     /// Implementations MAY choose to support attaching Routes to other resources.
     /// If that is the case, they MUST clearly document how SectionName is
     /// interpreted.
-    /// 
     /// 
     /// When unspecified (empty string), this will reference the entire resource.
     /// For the purpose of status, an attachment is considered successful if at
@@ -881,7 +861,6 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRouteParentRefs {
     /// the referencing Route, the Route MUST be considered successfully
     /// attached. If no Gateway listeners accept attachment from this Route, the
     /// Route MUST be considered detached from the Gateway.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
@@ -1155,7 +1134,7 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecAffinity
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1166,7 +1145,7 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecAffinity
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1276,7 +1255,7 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecAffinity
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1287,7 +1266,7 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecAffinity
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1428,7 +1407,7 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecAffinity
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1439,7 +1418,7 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecAffinity
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1549,7 +1528,7 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecAffinity
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1560,7 +1539,7 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecAffinity
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1658,9 +1637,7 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecImagePul
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1672,11 +1649,9 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecSecurity
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -1777,7 +1752,6 @@ pub struct ClusterIssuerAcmeSolversHttp01GatewayHttpRoutePodTemplateSpecSecurity
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -2158,7 +2132,7 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffini
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2169,7 +2143,7 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffini
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2279,7 +2253,7 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffini
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2290,7 +2264,7 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffini
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2431,7 +2405,7 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAf
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2442,7 +2416,7 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAf
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2552,7 +2526,7 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAf
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2563,7 +2537,7 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAf
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2661,9 +2635,7 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecImagePullSecrets 
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2675,11 +2647,9 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2780,7 +2750,6 @@ pub struct ClusterIssuerAcmeSolversHttp01IngressPodTemplateSpecSecurityContextSe
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.

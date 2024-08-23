@@ -221,7 +221,7 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestHeaderModifierSet {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirror {
-    /// TODO forbid weight
+    /// BackendRef defines where to forward traffic.
     #[serde(rename = "backendRef")]
     pub backend_ref: MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef,
     /// Percentage of requests to mirror. If not specified, all requests
@@ -230,7 +230,7 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirror {
     pub percentage: Option<IntOrString>,
 }
 
-/// TODO forbid weight
+/// BackendRef defines where to forward traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     /// Kind of the referenced resource
@@ -270,7 +270,7 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     pub weight: Option<i64>,
 }
 
-/// TODO forbid weight
+/// BackendRef defines where to forward traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRefKind {
     Mesh,
@@ -288,7 +288,6 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestRedirect {
     /// PreciseHostname is the fully qualified domain name of a network host. This
     /// matches the RFC 1123 definition of a hostname with 1 notable exception that
     /// numeric IP addresses are not allowed.
-    /// 
     /// 
     /// Note that as per RFC1035 and RFC1123, a *label* must consist of lower case
     /// alphanumeric characters or '-', and must start and end with an alphanumeric

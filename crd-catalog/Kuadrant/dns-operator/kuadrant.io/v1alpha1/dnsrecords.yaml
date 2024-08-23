@@ -102,15 +102,6 @@ spec:
                         - message: "Only HTTP or HTTPS protocols are allowed"
                           rule: "self in ['HTTP','HTTPS']"
                   type: "object"
-                managedZone:
-                  description: "managedZone is a reference to a ManagedZone instance to which this record will publish its endpoints."
-                  properties:
-                    name:
-                      description: "`name` is the name of the managed zone.\nRequired"
-                      type: "string"
-                  required:
-                    - "name"
-                  type: "object"
                 ownerID:
                   description: "ownerID is a unique string used to identify the owner of this record.\nIf unset or set to an empty string the record UID will be used."
                   maxLength: 36
@@ -119,6 +110,15 @@ spec:
                   x-kubernetes-validations:
                     - message: "OwnerID is immutable"
                       rule: "self == oldSelf"
+                providerRef:
+                  description: "providerRef is a reference to a provider secret."
+                  properties:
+                    name:
+                      minLength: 1
+                      type: "string"
+                  required:
+                    - "name"
+                  type: "object"
                 rootHost:
                   description: "rootHost is the single root for all endpoints in a DNSRecord.\nit is expected all defined endpoints are children of or equal to this rootHost\nMust contain at least two groups of valid URL characters separated by a \".\""
                   maxLength: 255
@@ -126,7 +126,7 @@ spec:
                   pattern: "^(?:[\\w\\-.~:\\/?#[\\]@!$&'()*+,;=]+)\\.(?:[\\w\\-.~:\\/?#[\\]@!$&'()*+,;=]+)$"
                   type: "string"
               required:
-                - "managedZone"
+                - "providerRef"
                 - "rootHost"
               type: "object"
               x-kubernetes-validations:
@@ -138,7 +138,7 @@ spec:
               description: "DNSRecordStatus defines the observed state of DNSRecord"
               properties:
                 conditions:
-                  description: "conditions are any conditions associated with the record in the managed zone.\n\n\nIf publishing the record fails, the \"Failed\" condition will be set with a\nreason and message describing the cause of the failure."
+                  description: "conditions are any conditions associated with the record in the dns provider.\n\n\nIf publishing the record fails, the \"Failed\" condition will be set with a\nreason and message describing the cause of the failure."
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
                     properties:
@@ -187,7 +187,7 @@ spec:
                     type: "string"
                   type: "array"
                 endpoints:
-                  description: "endpoints are the last endpoints that were successfully published by the provider\n\n\nProvides a simple mechanism to store the current provider records in order to\ndelete any that are no longer present in DNSRecordSpec.Endpoints\n\n\nNote: This will not be required if/when we switch to using external-dns since when\nrunning with a \"sync\" policy it will clean up unused records automatically."
+                  description: "endpoints are the last endpoints that were successfully published to the provider zone"
                   items:
                     description: "Endpoint is a high-level way of a connection between a service and an IP"
                     properties:
@@ -334,7 +334,7 @@ spec:
                       type: "array"
                   type: "object"
                 observedGeneration:
-                  description: "observedGeneration is the most recently observed generation of the\nDNSRecord.  When the DNSRecord is updated, the controller updates the\ncorresponding record in each managed zone.  If an update for a\nparticular zone fails, that failure is recorded in the status\ncondition for the zone so that the controller can determine that it\nneeds to retry the update for that specific zone."
+                  description: "observedGeneration is the most recently observed generation of the DNSRecord."
                   format: "int64"
                   type: "integer"
                 ownerID:
@@ -355,6 +355,12 @@ spec:
                   description: "WriteCounter represent a number of consecutive write attempts on the same generation of the record.\nIt is being reset to 0 when the generation changes or there are no changes to write."
                   format: "int64"
                   type: "integer"
+                zoneDomainName:
+                  description: "zoneDomainName is the domain name of the zone that the dns record is publishing endpoints"
+                  type: "string"
+                zoneID:
+                  description: "zoneID is the provider specific id to which this dns record is publishing endpoints"
+                  type: "string"
               type: "object"
           type: "object"
       served: true
