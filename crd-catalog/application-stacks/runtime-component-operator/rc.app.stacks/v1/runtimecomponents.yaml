@@ -648,6 +648,39 @@ spec:
                 disableServiceLinks:
                   description: "Disable information about services being injected into the application pod's environment variables. Default to false."
                   type: "boolean"
+                dns:
+                  description: "DNS settings for the pod."
+                  properties:
+                    config:
+                      description: "The DNS Config for the application pod."
+                      properties:
+                        nameservers:
+                          description: "A list of DNS name server IP addresses.\nThis will be appended to the base nameservers generated from DNSPolicy.\nDuplicated nameservers will be removed."
+                          items:
+                            type: "string"
+                          type: "array"
+                        options:
+                          description: "A list of DNS resolver options.\nThis will be merged with the base options generated from DNSPolicy.\nDuplicated entries will be removed. Resolution options given in Options\nwill override those that appear in the base DNSPolicy."
+                          items:
+                            description: "PodDNSConfigOption defines DNS resolver options of a pod."
+                            properties:
+                              name:
+                                description: "Required."
+                                type: "string"
+                              value:
+                                type: "string"
+                            type: "object"
+                          type: "array"
+                        searches:
+                          description: "A list of DNS search domains for host-name lookup.\nThis will be appended to the base search paths generated from DNSPolicy.\nDuplicated search paths will be removed."
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
+                    policy:
+                      description: "The DNS Policy for the application pod."
+                      type: "string"
+                  type: "object"
                 env:
                   description: "An array of environment variables for the application container."
                   items:
@@ -1059,7 +1092,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port.\nThis is a beta field and requires enabling GRPCContainerProbe feature gate."
+                            description: "GRPC specifies an action involving a GRPC port."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -1195,7 +1228,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port.\nThis is a beta field and requires enabling GRPCContainerProbe feature gate."
+                            description: "GRPC specifies an action involving a GRPC port."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -1280,6 +1313,23 @@ spec:
                             format: "int32"
                             type: "integer"
                         type: "object"
+                      resizePolicy:
+                        description: "Resources resize policy for the container."
+                        items:
+                          description: "ContainerResizePolicy represents resource resize policy for the container."
+                          properties:
+                            resourceName:
+                              description: "Name of the resource to which this resource resize policy applies.\nSupported values: cpu, memory."
+                              type: "string"
+                            restartPolicy:
+                              description: "Restart policy to apply when specified resource is resized.\nIf not specified, it defaults to NotRequired."
+                              type: "string"
+                          required:
+                            - "resourceName"
+                            - "restartPolicy"
+                          type: "object"
+                        type: "array"
+                        x-kubernetes-list-type: "atomic"
                       resources:
                         description: "Compute Resources required by this container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                         properties:
@@ -1314,9 +1364,12 @@ spec:
                                 - type: "string"
                               pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                               x-kubernetes-int-or-string: true
-                            description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                            description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                             type: "object"
                         type: "object"
+                      restartPolicy:
+                        description: "RestartPolicy defines the restart behavior of individual containers in a pod.\nThis field may only be set for init containers, and the only allowed value is \"Always\".\nFor non-init containers or when this field is not specified,\nthe restart behavior is defined by the Pod's restart policy and the container type.\nSetting the RestartPolicy as \"Always\" for the init container will have the following effect:\nthis init container will be continually restarted on\nexit until all regular containers have terminated. Once all regular\ncontainers have completed, all init containers with restartPolicy \"Always\"\nwill be shut down. This lifecycle differs from normal init containers and\nis often referred to as a \"sidecar\" container. Although this init\ncontainer still starts in the init container sequence, it does not wait\nfor the container to complete before proceeding to the next init\ncontainer. Instead, the next init container starts immediately after this\ninit container is started, or after any startupProbe has successfully\ncompleted."
+                        type: "string"
                       securityContext:
                         description: "SecurityContext defines the security options the container should be run with.\nIf set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.\nMore info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
                         properties:
@@ -1379,7 +1432,7 @@ spec:
                             description: "The seccomp options to use by this container. If seccomp options are\nprovided at both the pod & container level, the container options\noverride the pod options.\nNote that this field cannot be set when spec.os.name is windows."
                             properties:
                               localhostProfile:
-                                description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
+                                description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                                 type: "string"
                               type:
                                 description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
@@ -1397,7 +1450,7 @@ spec:
                                 description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                                 type: "string"
                               hostProcess:
-                                description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
+                                description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
                                 type: "boolean"
                               runAsUserName:
                                 description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
@@ -1421,7 +1474,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port.\nThis is a beta field and requires enabling GRPCContainerProbe feature gate."
+                            description: "GRPC specifies an action involving a GRPC port."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -1584,13 +1637,13 @@ spec:
                     endpoints:
                       description: "A YAML snippet representing an array of Endpoint component from ServiceMonitor."
                       items:
-                        description: "Endpoint defines a scrapeable endpoint serving Prometheus metrics."
+                        description: "Endpoint defines an endpoint serving Prometheus metrics to be scraped by\nPrometheus."
                         properties:
                           authorization:
-                            description: "Authorization section for this endpoint"
+                            description: "`authorization` configures the Authorization header credentials to use when\nscraping the target.\n\n\nCannot be set at the same time as `basicAuth`, or `oauth2`."
                             properties:
                               credentials:
-                                description: "The secret's key that contains the credentials of the request"
+                                description: "Selects a key of a Secret in the namespace that contains the credentials for authentication."
                                 properties:
                                   key:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
@@ -1606,14 +1659,14 @@ spec:
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               type:
-                                description: "Set the authentication type. Defaults to Bearer, Basic will cause an\nerror"
+                                description: "Defines the authentication type. The value is case-insensitive.\n\n\n\"Basic\" is not a supported value.\n\n\nDefault: \"Bearer\""
                                 type: "string"
                             type: "object"
                           basicAuth:
-                            description: "BasicAuth allow an endpoint to authenticate over basic authentication\nMore info: https://prometheus.io/docs/operating/configuration/#endpoints"
+                            description: "`basicAuth` configures the Basic Authentication credentials to use when\nscraping the target.\n\n\nCannot be set at the same time as `authorization`, or `oauth2`."
                             properties:
                               password:
-                                description: "The secret in the service monitor namespace that contains the password\nfor authentication."
+                                description: "`password` specifies a key of a Secret containing the password for\nauthentication."
                                 properties:
                                   key:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
@@ -1629,7 +1682,7 @@ spec:
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               username:
-                                description: "The secret in the service monitor namespace that contains the username\nfor authentication."
+                                description: "`username` specifies a key of a Secret containing the username for\nauthentication."
                                 properties:
                                   key:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
@@ -1646,10 +1699,10 @@ spec:
                                 x-kubernetes-map-type: "atomic"
                             type: "object"
                           bearerTokenFile:
-                            description: "File to read bearer token for scraping targets."
+                            description: "File to read bearer token for scraping the target.\n\n\nDeprecated: use `authorization` instead."
                             type: "string"
                           bearerTokenSecret:
-                            description: "Secret to mount to read bearer token for scraping targets. The secret\nneeds to be in the same namespace as the service monitor and accessible by\nthe Prometheus Operator."
+                            description: "`bearerTokenSecret` specifies a key of a Secret containing the bearer\ntoken for scraping targets. The secret needs to be in the same namespace\nas the ServiceMonitor object and readable by the Prometheus Operator.\n\n\nDeprecated: use `authorization` instead."
                             properties:
                               key:
                                 description: "The key of the secret to select from.  Must be a valid secret key."
@@ -1665,32 +1718,32 @@ spec:
                             type: "object"
                             x-kubernetes-map-type: "atomic"
                           enableHttp2:
-                            description: "Whether to enable HTTP2."
+                            description: "`enableHttp2` can be used to disable HTTP2 when scraping the target."
                             type: "boolean"
                           filterRunning:
-                            description: "Drop pods that are not running. (Failed, Succeeded). Enabled by default.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase"
+                            description: "When true, the pods which are not running (e.g. either in Failed or\nSucceeded state) are dropped during the target discovery.\n\n\nIf unset, the filtering is enabled.\n\n\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase"
                             type: "boolean"
                           followRedirects:
-                            description: "FollowRedirects configures whether scrape requests follow HTTP 3xx redirects."
+                            description: "`followRedirects` defines whether the scrape requests should follow HTTP\n3xx redirects."
                             type: "boolean"
                           honorLabels:
-                            description: "HonorLabels chooses the metric's labels on collisions with target labels."
+                            description: "When true, `honorLabels` preserves the metric's labels when they collide\nwith the target's labels."
                             type: "boolean"
                           honorTimestamps:
-                            description: "HonorTimestamps controls whether Prometheus respects the timestamps present in scraped data."
+                            description: "`honorTimestamps` controls whether Prometheus preserves the timestamps\nwhen exposed by the target."
                             type: "boolean"
                           interval:
-                            description: "Interval at which metrics should be scraped\nIf not specified Prometheus' global scrape interval is used."
+                            description: "Interval at which Prometheus scrapes the metrics from the target.\n\n\nIf empty, Prometheus uses the global scrape interval."
                             pattern: "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"
                             type: "string"
                           metricRelabelings:
-                            description: "MetricRelabelConfigs to apply to samples before ingestion."
+                            description: "`metricRelabelings` configures the relabeling rules to apply to the\nsamples before ingestion."
                             items:
-                              description: "RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.\nIt defines `<metric_relabel_configs>`-section of Prometheus configuration.\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs"
+                              description: "RelabelConfig allows dynamic rewriting of the label set for targets, alerts,\nscraped samples and remote write samples.\n\n\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config"
                               properties:
                                 action:
                                   default: "replace"
-                                  description: "Action to perform based on regex matching. Default is 'replace'.\nuppercase and lowercase actions require Prometheus >= 2.36."
+                                  description: "Action to perform based on the regex matching.\n\n\n`Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.\n`DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.\n\n\nDefault: \"Replace\""
                                   enum:
                                     - "replace"
                                     - "Replace"
@@ -1716,35 +1769,35 @@ spec:
                                     - "DropEqual"
                                   type: "string"
                                 modulus:
-                                  description: "Modulus to take of the hash of the source label values."
+                                  description: "Modulus to take of the hash of the source label values.\n\n\nOnly applicable when the action is `HashMod`."
                                   format: "int64"
                                   type: "integer"
                                 regex:
-                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'"
+                                  description: "Regular expression against which the extracted value is matched."
                                   type: "string"
                                 replacement:
-                                  description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
+                                  description: "Replacement value against which a Replace action is performed if the\nregular expression matches.\n\n\nRegex capture groups are available."
                                   type: "string"
                                 separator:
-                                  description: "Separator placed between concatenated source label values. default is ';'."
+                                  description: "Separator is the string between concatenated SourceLabels."
                                   type: "string"
                                 sourceLabels:
-                                  description: "The source labels select values from existing labels. Their content is concatenated\nusing the configured separator and matched against the configured regular expression\nfor the replace, keep, and drop actions."
+                                  description: "The source labels select values from existing labels. Their content is\nconcatenated using the configured Separator and matched against the\nconfigured regular expression."
                                   items:
-                                    description: "LabelName is a valid Prometheus label name which may only contain ASCII letters, numbers, as well as underscores."
+                                    description: "LabelName is a valid Prometheus label name which may only contain ASCII\nletters, numbers, as well as underscores."
                                     pattern: "^[a-zA-Z_][a-zA-Z0-9_]*$"
                                     type: "string"
                                   type: "array"
                                 targetLabel:
-                                  description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
+                                  description: "Label to which the resulting string is written in a replacement.\n\n\nIt is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,\n`KeepEqual` and `DropEqual` actions.\n\n\nRegex capture groups are available."
                                   type: "string"
                               type: "object"
                             type: "array"
                           oauth2:
-                            description: "OAuth2 for the URL. Only valid in Prometheus versions 2.27.0 and newer."
+                            description: "`oauth2` configures the OAuth2 settings to use when scraping the target.\n\n\nIt requires Prometheus >= 2.27.0.\n\n\nCannot be set at the same time as `authorization`, or `basicAuth`."
                             properties:
                               clientId:
-                                description: "The secret or configmap containing the OAuth2 client id"
+                                description: "`clientId` specifies a key of a Secret or ConfigMap containing the\nOAuth2 client's ID."
                                 properties:
                                   configMap:
                                     description: "ConfigMap containing data to use for the targets."
@@ -1780,7 +1833,7 @@ spec:
                                     x-kubernetes-map-type: "atomic"
                                 type: "object"
                               clientSecret:
-                                description: "The secret containing the OAuth2 client secret"
+                                description: "`clientSecret` specifies a key of a Secret containing the OAuth2\nclient's secret."
                                 properties:
                                   key:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
@@ -1798,15 +1851,15 @@ spec:
                               endpointParams:
                                 additionalProperties:
                                   type: "string"
-                                description: "Parameters to append to the token URL"
+                                description: "`endpointParams` configures the HTTP parameters to append to the token\nURL."
                                 type: "object"
                               scopes:
-                                description: "OAuth2 scopes used for the token request"
+                                description: "`scopes` defines the OAuth2 scopes used for the token request."
                                 items:
                                   type: "string"
                                 type: "array"
                               tokenUrl:
-                                description: "The URL to fetch the token from"
+                                description: "`tokenURL` configures the URL to fetch the token from."
                                 minLength: 1
                                 type: "string"
                             required:
@@ -1819,25 +1872,25 @@ spec:
                               items:
                                 type: "string"
                               type: "array"
-                            description: "Optional HTTP URL parameters"
+                            description: "params define optional HTTP URL parameters."
                             type: "object"
                           path:
-                            description: "HTTP path to scrape for metrics.\nIf empty, Prometheus uses the default value (e.g. `/metrics`)."
+                            description: "HTTP path from which to scrape for metrics.\n\n\nIf empty, Prometheus uses the default value (e.g. `/metrics`)."
                             type: "string"
                           port:
-                            description: "Name of the service port this endpoint refers to. Mutually exclusive with targetPort."
+                            description: "Name of the Service port which this endpoint refers to.\n\n\nIt takes precedence over `targetPort`."
                             type: "string"
                           proxyUrl:
-                            description: "ProxyURL eg http://proxyserver:2195 Directs scrapes to proxy through this endpoint."
+                            description: "`proxyURL` configures the HTTP Proxy URL (e.g.\n\"http://proxyserver:2195\") to go through when scraping the target."
                             type: "string"
                           relabelings:
-                            description: "RelabelConfigs to apply to samples before scraping.\nPrometheus Operator automatically adds relabelings for a few standard Kubernetes fields.\nThe original scrape job's name is available via the `__tmp_prometheus_job_name` label.\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config"
+                            description: "`relabelings` configures the relabeling rules to apply the target's\nmetadata labels.\n\n\nThe Operator automatically adds relabelings for a few standard Kubernetes fields.\n\n\nThe original scrape job's name is available via the `__tmp_prometheus_job_name` label.\n\n\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config"
                             items:
-                              description: "RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.\nIt defines `<metric_relabel_configs>`-section of Prometheus configuration.\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs"
+                              description: "RelabelConfig allows dynamic rewriting of the label set for targets, alerts,\nscraped samples and remote write samples.\n\n\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config"
                               properties:
                                 action:
                                   default: "replace"
-                                  description: "Action to perform based on regex matching. Default is 'replace'.\nuppercase and lowercase actions require Prometheus >= 2.36."
+                                  description: "Action to perform based on the regex matching.\n\n\n`Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.\n`DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.\n\n\nDefault: \"Replace\""
                                   enum:
                                     - "replace"
                                     - "Replace"
@@ -1863,45 +1916,48 @@ spec:
                                     - "DropEqual"
                                   type: "string"
                                 modulus:
-                                  description: "Modulus to take of the hash of the source label values."
+                                  description: "Modulus to take of the hash of the source label values.\n\n\nOnly applicable when the action is `HashMod`."
                                   format: "int64"
                                   type: "integer"
                                 regex:
-                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'"
+                                  description: "Regular expression against which the extracted value is matched."
                                   type: "string"
                                 replacement:
-                                  description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
+                                  description: "Replacement value against which a Replace action is performed if the\nregular expression matches.\n\n\nRegex capture groups are available."
                                   type: "string"
                                 separator:
-                                  description: "Separator placed between concatenated source label values. default is ';'."
+                                  description: "Separator is the string between concatenated SourceLabels."
                                   type: "string"
                                 sourceLabels:
-                                  description: "The source labels select values from existing labels. Their content is concatenated\nusing the configured separator and matched against the configured regular expression\nfor the replace, keep, and drop actions."
+                                  description: "The source labels select values from existing labels. Their content is\nconcatenated using the configured Separator and matched against the\nconfigured regular expression."
                                   items:
-                                    description: "LabelName is a valid Prometheus label name which may only contain ASCII letters, numbers, as well as underscores."
+                                    description: "LabelName is a valid Prometheus label name which may only contain ASCII\nletters, numbers, as well as underscores."
                                     pattern: "^[a-zA-Z_][a-zA-Z0-9_]*$"
                                     type: "string"
                                   type: "array"
                                 targetLabel:
-                                  description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
+                                  description: "Label to which the resulting string is written in a replacement.\n\n\nIt is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,\n`KeepEqual` and `DropEqual` actions.\n\n\nRegex capture groups are available."
                                   type: "string"
                               type: "object"
                             type: "array"
                           scheme:
-                            description: "HTTP scheme to use for scraping."
+                            description: "HTTP scheme to use for scraping.\n\n\n`http` and `https` are the expected values unless you rewrite the\n`__scheme__` label via relabeling.\n\n\nIf empty, Prometheus uses the default value `http`."
+                            enum:
+                              - "http"
+                              - "https"
                             type: "string"
                           scrapeTimeout:
-                            description: "Timeout after which the scrape is ended\nIf not specified, the Prometheus global scrape timeout is used unless it is less than `Interval` in which the latter is used."
+                            description: "Timeout after which Prometheus considers the scrape to be failed.\n\n\nIf empty, Prometheus uses the global scrape timeout unless it is less\nthan the target's scrape interval value in which the latter is used."
                             pattern: "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"
                             type: "string"
                           targetPort:
                             anyOf:
                               - type: "integer"
                               - type: "string"
-                            description: "Name or number of the target port of the Pod behind the Service, the port must be specified with container port property. Mutually exclusive with port."
+                            description: "Name or number of the target port of the `Pod` object behind the Service, the\nport must be specified with container port property.\n\n\nDeprecated: use `port` instead."
                             x-kubernetes-int-or-string: true
                           tlsConfig:
-                            description: "TLS configuration to use when scraping the endpoint"
+                            description: "TLS configuration to use when scraping the target."
                             properties:
                               ca:
                                 description: "Certificate authority used when verifying server certificates."
@@ -2007,6 +2063,9 @@ spec:
                                 description: "Used to verify the hostname for the targets."
                                 type: "string"
                             type: "object"
+                          trackTimestampsStaleness:
+                            description: "`trackTimestampsStaleness` defines whether Prometheus tracks staleness of\nthe metrics that have an explicit timestamp present in scraped data.\nHas no effect if `honorTimestamps` is false.\n\n\nIt requires Prometheus >= v2.48.0."
+                            type: "boolean"
                         type: "object"
                       type: "array"
                       x-kubernetes-list-type: "atomic"
@@ -2053,7 +2112,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         grpc:
-                          description: "GRPC specifies an action involving a GRPC port.\nThis is a beta field and requires enabling GRPCContainerProbe feature gate."
+                          description: "GRPC specifies an action involving a GRPC port."
                           properties:
                             port:
                               description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -2155,7 +2214,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         grpc:
-                          description: "GRPC specifies an action involving a GRPC port.\nThis is a beta field and requires enabling GRPCContainerProbe feature gate."
+                          description: "GRPC specifies an action involving a GRPC port."
                           properties:
                             port:
                               description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -2257,7 +2316,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         grpc:
-                          description: "GRPC specifies an action involving a GRPC port.\nThis is a beta field and requires enabling GRPCContainerProbe feature gate."
+                          description: "GRPC specifies an action involving a GRPC port."
                           properties:
                             port:
                               description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -2387,7 +2446,7 @@ spec:
                           - type: "string"
                         pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                         x-kubernetes-int-or-string: true
-                      description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                       type: "object"
                   type: "object"
                 route:
@@ -2479,7 +2538,7 @@ spec:
                       description: "The seccomp options to use by this container. If seccomp options are\nprovided at both the pod & container level, the container options\noverride the pod options.\nNote that this field cannot be set when spec.os.name is windows."
                       properties:
                         localhostProfile:
-                          description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
+                          description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                           type: "string"
                         type:
                           description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
@@ -2497,7 +2556,7 @@ spec:
                           description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                           type: "string"
                         hostProcess:
-                          description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
+                          description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
                           type: "boolean"
                         runAsUserName:
                           description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
@@ -2548,7 +2607,7 @@ spec:
                         description: "ServicePort contains information on service's port."
                         properties:
                           appProtocol:
-                            description: "The application protocol for this port.\nThis field follows standard Kubernetes label syntax.\nUn-prefixed names are reserved for IANA standard service names (as per\nRFC-6335 and https://www.iana.org/assignments/service-names).\nNon-standard protocols should use prefixed names such as\nmycompany.com/my-custom-protocol."
+                            description: "The application protocol for this port.\nThis is used as a hint for implementations to offer richer behavior for protocols that they understand.\nThis field follows standard Kubernetes label syntax.\nValid values are either:\n\n\n* Un-prefixed protocol names - reserved for IANA standard service names (as per\nRFC-6335 and https://www.iana.org/assignments/service-names).\n\n\n* Kubernetes-defined prefixed names:\n  * 'kubernetes.io/h2c' - HTTP/2 over cleartext as described in https://www.rfc-editor.org/rfc/rfc7540\n  * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455\n  * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455\n\n\n* Other protocols should use implementation-defined prefixed names such as\nmycompany.com/my-custom-protocol."
                             type: "string"
                           name:
                             description: "The name of this port within the service. This must be a DNS_LABEL.\nAll ports within a ServiceSpec must have unique names. When considering\nthe endpoints for a Service, this must match the 'name' field in the\nEndpointPort.\nOptional if only one ServicePort is defined on this service."
@@ -2886,7 +2945,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port.\nThis is a beta field and requires enabling GRPCContainerProbe feature gate."
+                            description: "GRPC specifies an action involving a GRPC port."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -3022,7 +3081,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port.\nThis is a beta field and requires enabling GRPCContainerProbe feature gate."
+                            description: "GRPC specifies an action involving a GRPC port."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -3107,6 +3166,23 @@ spec:
                             format: "int32"
                             type: "integer"
                         type: "object"
+                      resizePolicy:
+                        description: "Resources resize policy for the container."
+                        items:
+                          description: "ContainerResizePolicy represents resource resize policy for the container."
+                          properties:
+                            resourceName:
+                              description: "Name of the resource to which this resource resize policy applies.\nSupported values: cpu, memory."
+                              type: "string"
+                            restartPolicy:
+                              description: "Restart policy to apply when specified resource is resized.\nIf not specified, it defaults to NotRequired."
+                              type: "string"
+                          required:
+                            - "resourceName"
+                            - "restartPolicy"
+                          type: "object"
+                        type: "array"
+                        x-kubernetes-list-type: "atomic"
                       resources:
                         description: "Compute Resources required by this container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                         properties:
@@ -3141,9 +3217,12 @@ spec:
                                 - type: "string"
                               pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                               x-kubernetes-int-or-string: true
-                            description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                            description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                             type: "object"
                         type: "object"
+                      restartPolicy:
+                        description: "RestartPolicy defines the restart behavior of individual containers in a pod.\nThis field may only be set for init containers, and the only allowed value is \"Always\".\nFor non-init containers or when this field is not specified,\nthe restart behavior is defined by the Pod's restart policy and the container type.\nSetting the RestartPolicy as \"Always\" for the init container will have the following effect:\nthis init container will be continually restarted on\nexit until all regular containers have terminated. Once all regular\ncontainers have completed, all init containers with restartPolicy \"Always\"\nwill be shut down. This lifecycle differs from normal init containers and\nis often referred to as a \"sidecar\" container. Although this init\ncontainer still starts in the init container sequence, it does not wait\nfor the container to complete before proceeding to the next init\ncontainer. Instead, the next init container starts immediately after this\ninit container is started, or after any startupProbe has successfully\ncompleted."
+                        type: "string"
                       securityContext:
                         description: "SecurityContext defines the security options the container should be run with.\nIf set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.\nMore info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
                         properties:
@@ -3206,7 +3285,7 @@ spec:
                             description: "The seccomp options to use by this container. If seccomp options are\nprovided at both the pod & container level, the container options\noverride the pod options.\nNote that this field cannot be set when spec.os.name is windows."
                             properties:
                               localhostProfile:
-                                description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
+                                description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                                 type: "string"
                               type:
                                 description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
@@ -3224,7 +3303,7 @@ spec:
                                 description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                                 type: "string"
                               hostProcess:
-                                description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
+                                description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
                                 type: "boolean"
                               runAsUserName:
                                 description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
@@ -3248,7 +3327,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port.\nThis is a beta field and requires enabling GRPCContainerProbe feature gate."
+                            description: "GRPC specifies an action involving a GRPC port."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -3531,7 +3610,7 @@ spec:
                                           - type: "string"
                                         pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                         x-kubernetes-int-or-string: true
-                                      description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                                      description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                       type: "object"
                                   type: "object"
                                 selector:
@@ -3583,6 +3662,13 @@ spec:
                                   items:
                                     type: "string"
                                   type: "array"
+                                allocatedResourceStatuses:
+                                  additionalProperties:
+                                    description: "When a controller receives persistentvolume claim update with ClaimResourceStatus for a resource\nthat it does not recognizes, then it should ignore that update and let other controllers\nhandle it."
+                                    type: "string"
+                                  description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                                  type: "object"
+                                  x-kubernetes-map-type: "granular"
                                 allocatedResources:
                                   additionalProperties:
                                     anyOf:
@@ -3590,7 +3676,7 @@ spec:
                                       - type: "string"
                                     pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                     x-kubernetes-int-or-string: true
-                                  description: "allocatedResources is the storage resource within AllocatedResources tracks the capacity allocated to a PVC. It may\nbe larger than the actual capacity when a volume expansion operation is requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                                  description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
                                   type: "object"
                                 capacity:
                                   additionalProperties:
@@ -3604,7 +3690,7 @@ spec:
                                 conditions:
                                   description: "conditions is the current Condition of persistent volume claim. If underlying persistent volume is being\nresized then the Condition will be set to 'ResizeStarted'."
                                   items:
-                                    description: "PersistentVolumeClaimCondition contails details about state of pvc"
+                                    description: "PersistentVolumeClaimCondition contains details about state of pvc"
                                     properties:
                                       lastProbeTime:
                                         description: "lastProbeTime is the time we probed the condition."
@@ -3633,9 +3719,6 @@ spec:
                                 phase:
                                   description: "phase represents the current phase of PersistentVolumeClaim."
                                   type: "string"
-                                resizeStatus:
-                                  description: "resizeStatus stores status of resize operation.\nResizeStatus is not set by default but when expansion is complete resizeStatus is set to empty\nstring by resize controller or kubelet.\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
-                                  type: "string"
                               type: "object"
                           type: "object"
                       type: "object"
@@ -3661,6 +3744,29 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
+                tolerations:
+                  description: "Tolerations to be added to application pods. Tolerations allow the scheduler to schedule pods on nodes with matching taints."
+                  items:
+                    description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
+                    properties:
+                      effect:
+                        description: "Effect indicates the taint effect to match. Empty means match all taint effects.\nWhen specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
+                        type: "string"
+                      key:
+                        description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
+                        type: "string"
+                      operator:
+                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                        type: "string"
+                      tolerationSeconds:
+                        description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
+                        format: "int64"
+                        type: "integer"
+                      value:
+                        description: "Value is the taint value the toleration matches to.\nIf the operator is Exists, the value should be empty, otherwise just a regular string."
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 topologySpreadConstraints:
                   description: "Defines the topology spread constraints"
                   properties:
@@ -3701,7 +3807,7 @@ spec:
                             type: "object"
                             x-kubernetes-map-type: "atomic"
                           matchLabelKeys:
-                            description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. Keys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector."
+                            description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.\nMatchLabelKeys cannot be set when LabelSelector isn't set.\nKeys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector.\n\n\nThis is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
                             items:
                               type: "string"
                             type: "array"
@@ -4014,7 +4120,7 @@ spec:
                             anyOf:
                               - type: "integer"
                               - type: "string"
-                            description: "sizeLimit is the total amount of local storage required for this EmptyDir volume.\nThe size limit is also applicable for memory medium.\nThe maximum usage on memory medium EmptyDir would be the minimum value between\nthe SizeLimit specified here and the sum of memory limits of all containers in a pod.\nThe default is nil which means that the limit is undefined.\nMore info: http://kubernetes.io/docs/user-guide/volumes#emptydir"
+                            description: "sizeLimit is the total amount of local storage required for this EmptyDir volume.\nThe size limit is also applicable for memory medium.\nThe maximum usage on memory medium EmptyDir would be the minimum value between\nthe SizeLimit specified here and the sum of memory limits of all containers in a pod.\nThe default is nil which means that the limit is undefined.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
                         type: "object"
@@ -4122,7 +4228,7 @@ spec:
                                             - type: "string"
                                           pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                           x-kubernetes-int-or-string: true
-                                        description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                                        description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                         type: "object"
                                     type: "object"
                                   selector:

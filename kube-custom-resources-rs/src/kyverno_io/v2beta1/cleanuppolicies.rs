@@ -247,8 +247,7 @@ pub struct CleanupPolicyContextGlobalReference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image

@@ -528,6 +528,7 @@ pub enum MeshProxyPatchTargetRefKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,

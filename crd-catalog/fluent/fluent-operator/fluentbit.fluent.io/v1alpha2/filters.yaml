@@ -331,6 +331,11 @@ spec:
                           timeAsTable:
                             description: "By default when the Lua script is invoked, the record timestamp is passed as a\nFloating number which might lead to loss precision when the data is converted back.\nIf you desire timestamp precision enabling this option will pass the timestamp as\na Lua table with keys sec for seconds since epoch and nsec for nanoseconds."
                             type: "boolean"
+                          typeArrayKey:
+                            description: "If these keys are matched, the fields are handled as array. If more than\none key, delimit by space. It is useful the array can be empty."
+                            items:
+                              type: "string"
+                            type: "array"
                           typeIntKey:
                             description: "If these keys are matched, the fields are converted to integer.\nIf more than one key, delimit by space.\nNote that starting from Fluent Bit v1.6 integer data types are preserved\nand not converted to double as in previous versions."
                             items:
@@ -635,6 +640,39 @@ spec:
                             description: "Window is the amount of intervals to calculate average over."
                             format: "int64"
                             type: "integer"
+                        type: "object"
+                      wasm:
+                        description: "Wasm defines a Wasm configuration."
+                        properties:
+                          accessiblePaths:
+                            description: "Specify the whitelist of paths to be able to access paths from WASM programs."
+                            items:
+                              type: "string"
+                            type: "array"
+                          alias:
+                            description: "Alias for the plugin"
+                            type: "string"
+                          eventFormat:
+                            description: "Define event format to interact with Wasm programs: msgpack or json. Default: json"
+                            type: "string"
+                          functionName:
+                            description: "Wasm function name that will be triggered to do filtering. It's assumed that the function is built inside the Wasm program specified above."
+                            type: "string"
+                          retryLimit:
+                            description: "RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1."
+                            pattern: "^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$"
+                            type: "string"
+                          wasmHeapSize:
+                            description: "Size of the heap size of Wasm execution. Review unit sizes for allowed values."
+                            pattern: "^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
+                            type: "string"
+                          wasmPath:
+                            description: "Path to the built Wasm program that will be used. This can be a relative path against the main configuration file."
+                            type: "string"
+                          wasmStackSize:
+                            description: "Size of the stack size of Wasm execution. Review unit sizes for allowed values."
+                            pattern: "^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
+                            type: "string"
                         type: "object"
                     type: "object"
                   type: "array"

@@ -23,18 +23,15 @@ pub struct OCIRepositorySpec {
     /// CertSecretRef can be given the name of a Secret containing
     /// either or both of
     /// 
-    /// 
     /// - a PEM-encoded client certificate (`tls.crt`) and private
     /// key (`tls.key`);
     /// - a PEM-encoded CA certificate (`ca.crt`)
-    /// 
     /// 
     /// and whichever are supplied, will be used for connecting to the
     /// registry. The client cert and key are useful if you are
     /// authenticating with a certificate; the CA cert is useful if
     /// you are using a self-signed server certificate. The Secret must
     /// be of type `Opaque` or `kubernetes.io/tls`.
-    /// 
     /// 
     /// Note: Support for the `caFile`, `certFile` and `keyFile` keys have
     /// been deprecated.
@@ -97,18 +94,15 @@ pub struct OCIRepositorySpec {
 /// CertSecretRef can be given the name of a Secret containing
 /// either or both of
 /// 
-/// 
 /// - a PEM-encoded client certificate (`tls.crt`) and private
 /// key (`tls.key`);
 /// - a PEM-encoded CA certificate (`ca.crt`)
-/// 
 /// 
 /// and whichever are supplied, will be used for connecting to the
 /// registry. The client cert and key are useful if you are
 /// authenticating with a certificate; the CA cert is useful if
 /// you are using a self-signed server certificate. The Secret must
 /// be of type `Opaque` or `kubernetes.io/tls`.
-/// 
 /// 
 /// Note: Support for the `caFile`, `certFile` and `keyFile` keys have
 /// been deprecated.
@@ -264,7 +258,6 @@ pub struct OCIRepositoryStatus {
     /// be used to determine if the content configuration has changed and the
     /// artifact needs to be rebuilt.
     /// It has the format of `<algo>:<checksum>`, for example: `sha256:<checksum>`.
-    /// 
     /// 
     /// Deprecated: Replaced with explicit fields for observed artifact content
     /// config in the status.

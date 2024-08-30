@@ -75,6 +75,7 @@ pub enum MeshRetryTargetRefKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
@@ -395,6 +396,7 @@ pub enum MeshRetryToTargetRefKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,

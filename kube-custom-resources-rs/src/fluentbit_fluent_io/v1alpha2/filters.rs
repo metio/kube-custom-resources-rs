@@ -74,6 +74,9 @@ pub struct FilterFilters {
     /// Throttle defines a Throttle configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub throttle: Option<FilterFiltersThrottle>,
+    /// Wasm defines a Wasm configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wasm: Option<FilterFiltersWasm>,
 }
 
 /// Aws defines a Aws configuration.
@@ -378,6 +381,10 @@ pub struct FilterFiltersLua {
     /// a Lua table with keys sec for seconds since epoch and nsec for nanoseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAsTable")]
     pub time_as_table: Option<bool>,
+    /// If these keys are matched, the fields are handled as array. If more than
+    /// one key, delimit by space. It is useful the array can be empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typeArrayKey")]
+    pub type_array_key: Option<Vec<String>>,
     /// If these keys are matched, the fields are converted to integer.
     /// If more than one key, delimit by space.
     /// Note that starting from Fluent Bit v1.6 integer data types are preserved
@@ -681,6 +688,35 @@ pub struct FilterFiltersThrottle {
     /// Window is the amount of intervals to calculate average over.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub window: Option<i64>,
+}
+
+/// Wasm defines a Wasm configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FilterFiltersWasm {
+    /// Specify the whitelist of paths to be able to access paths from WASM programs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessiblePaths")]
+    pub accessible_paths: Option<Vec<String>>,
+    /// Alias for the plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub alias: Option<String>,
+    /// Define event format to interact with Wasm programs: msgpack or json. Default: json
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventFormat")]
+    pub event_format: Option<String>,
+    /// Wasm function name that will be triggered to do filtering. It's assumed that the function is built inside the Wasm program specified above.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
+    pub function_name: Option<String>,
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
+    pub retry_limit: Option<String>,
+    /// Size of the heap size of Wasm execution. Review unit sizes for allowed values.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wasmHeapSize")]
+    pub wasm_heap_size: Option<String>,
+    /// Path to the built Wasm program that will be used. This can be a relative path against the main configuration file.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wasmPath")]
+    pub wasm_path: Option<String>,
+    /// Size of the stack size of Wasm execution. Review unit sizes for allowed values.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wasmStackSize")]
+    pub wasm_stack_size: Option<String>,
 }
 
 /// FilterSpec defines the desired state of ClusterFilter

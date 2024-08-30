@@ -103,6 +103,7 @@ pub enum MeshTrafficPermissionFromTargetRefKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
@@ -155,6 +156,7 @@ pub enum MeshTrafficPermissionTargetRefKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,

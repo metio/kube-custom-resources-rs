@@ -438,6 +438,9 @@ pub struct SonataFlowPlatformServicesDataIndex {
 /// Persists service to a datasource of choice. Ephemeral by default.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPersistence {
+    /// Whether to migrate database on service startup?
+    #[serde(rename = "migrateDBOnStartUp")]
+    pub migrate_db_on_start_up: bool,
     /// Connect configured services to a postgresql database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgresql: Option<SonataFlowPlatformServicesDataIndexPersistencePostgresql>,
@@ -4599,6 +4602,9 @@ pub struct SonataFlowPlatformServicesJobService {
 /// Persists service to a datasource of choice. Ephemeral by default.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePersistence {
+    /// Whether to migrate database on service startup?
+    #[serde(rename = "migrateDBOnStartUp")]
+    pub migrate_db_on_start_up: bool,
     /// Connect configured services to a postgresql database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgresql: Option<SonataFlowPlatformServicesJobServicePersistencePostgresql>,

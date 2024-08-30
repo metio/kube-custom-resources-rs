@@ -134,8 +134,8 @@ pub struct HelmChartStatusArtifact {
     pub checksum: Option<String>,
     /// LastUpdateTime is the timestamp corresponding to the last update of this
     /// artifact.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
-    pub last_update_time: Option<String>,
+    #[serde(rename = "lastUpdateTime")]
+    pub last_update_time: String,
     /// Path is the relative file path of this artifact.
     pub path: String,
     /// Revision is a human readable identifier traceable in the origin source

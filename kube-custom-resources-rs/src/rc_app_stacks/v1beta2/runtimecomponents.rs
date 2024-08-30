@@ -993,11 +993,31 @@ pub struct RuntimeComponentInitContainers {
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<RuntimeComponentInitContainersReadinessProbe>,
+    /// Resources resize policy for the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<RuntimeComponentInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RuntimeComponentInitContainersResources>,
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -1397,7 +1417,6 @@ pub struct RuntimeComponentInitContainersLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentInitContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -1450,7 +1469,6 @@ pub struct RuntimeComponentInitContainersLivenessProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1550,7 +1568,6 @@ pub struct RuntimeComponentInitContainersReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentInitContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -1603,7 +1620,6 @@ pub struct RuntimeComponentInitContainersReadinessProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1662,6 +1678,19 @@ pub struct RuntimeComponentInitContainersReadinessProbeTcpSocket {
     pub port: IntOrString,
 }
 
+/// ContainerResizePolicy represents resource resize policy for the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentInitContainersResizePolicy {
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
 /// Compute Resources required by this container.
 /// Cannot be updated.
 /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -1684,7 +1713,7 @@ pub struct RuntimeComponentInitContainersResources {
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required.
     /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value.
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
@@ -1822,7 +1851,7 @@ pub struct RuntimeComponentInitContainersSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
-    /// Must only be set if type is "Localhost".
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
@@ -1851,12 +1880,9 @@ pub struct RuntimeComponentInitContainersSecurityContextWindowsOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// This field is alpha-level and will only be honored by components that enable the
-    /// WindowsHostProcessContainers feature flag. Setting this field without the feature
-    /// flag will result in errors when validating the Pod. All of a Pod's containers must
-    /// have the same effective HostProcess value (it is not allowed to have a mix of HostProcess
-    /// containers and non-HostProcess containers).  In addition, if HostProcess is true
-    /// then HostNetwork must also be set to true.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
@@ -1884,7 +1910,6 @@ pub struct RuntimeComponentInitContainersStartupProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentInitContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -1937,7 +1962,6 @@ pub struct RuntimeComponentInitContainersStartupProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2048,97 +2072,173 @@ pub struct RuntimeComponentMonitoring {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Endpoint defines a scrapeable endpoint serving Prometheus metrics.
+/// Endpoint defines an endpoint serving Prometheus metrics to be scraped by
+/// Prometheus.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpoints {
-    /// Authorization section for this endpoint
+    /// `authorization` configures the Authorization header credentials to use when
+    /// scraping the target.
+    /// 
+    /// 
+    /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<RuntimeComponentMonitoringEndpointsAuthorization>,
-    /// BasicAuth allow an endpoint to authenticate over basic authentication
-    /// More info: https://prometheus.io/docs/operating/configuration/#endpoints
+    /// `basicAuth` configures the Basic Authentication credentials to use when
+    /// scraping the target.
+    /// 
+    /// 
+    /// Cannot be set at the same time as `authorization`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<RuntimeComponentMonitoringEndpointsBasicAuth>,
-    /// File to read bearer token for scraping targets.
+    /// File to read bearer token for scraping the target.
+    /// 
+    /// 
+    /// Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
-    /// Secret to mount to read bearer token for scraping targets. The secret
-    /// needs to be in the same namespace as the service monitor and accessible by
-    /// the Prometheus Operator.
+    /// `bearerTokenSecret` specifies a key of a Secret containing the bearer
+    /// token for scraping targets. The secret needs to be in the same namespace
+    /// as the ServiceMonitor object and readable by the Prometheus Operator.
+    /// 
+    /// 
+    /// Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<RuntimeComponentMonitoringEndpointsBearerTokenSecret>,
-    /// Whether to enable HTTP2.
+    /// `enableHttp2` can be used to disable HTTP2 when scraping the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
     pub enable_http2: Option<bool>,
-    /// Drop pods that are not running. (Failed, Succeeded). Enabled by default.
+    /// When true, the pods which are not running (e.g. either in Failed or
+    /// Succeeded state) are dropped during the target discovery.
+    /// 
+    /// 
+    /// If unset, the filtering is enabled.
+    /// 
+    /// 
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRunning")]
     pub filter_running: Option<bool>,
-    /// FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.
+    /// `followRedirects` defines whether the scrape requests should follow HTTP
+    /// 3xx redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
-    /// HonorLabels chooses the metric's labels on collisions with target labels.
+    /// When true, `honorLabels` preserves the metric's labels when they collide
+    /// with the target's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
     pub honor_labels: Option<bool>,
-    /// HonorTimestamps controls whether Prometheus respects the timestamps present in scraped data.
+    /// `honorTimestamps` controls whether Prometheus preserves the timestamps
+    /// when exposed by the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorTimestamps")]
     pub honor_timestamps: Option<bool>,
-    /// Interval at which metrics should be scraped
-    /// If not specified Prometheus' global scrape interval is used.
+    /// Interval at which Prometheus scrapes the metrics from the target.
+    /// 
+    /// 
+    /// If empty, Prometheus uses the global scrape interval.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// MetricRelabelConfigs to apply to samples before ingestion.
+    /// `metricRelabelings` configures the relabeling rules to apply to the
+    /// samples before ingestion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
     pub metric_relabelings: Option<Vec<RuntimeComponentMonitoringEndpointsMetricRelabelings>>,
-    /// OAuth2 for the URL. Only valid in Prometheus versions 2.27.0 and newer.
+    /// `oauth2` configures the OAuth2 settings to use when scraping the target.
+    /// 
+    /// 
+    /// It requires Prometheus >= 2.27.0.
+    /// 
+    /// 
+    /// Cannot be set at the same time as `authorization`, or `basicAuth`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<RuntimeComponentMonitoringEndpointsOauth2>,
-    /// Optional HTTP URL parameters
+    /// params define optional HTTP URL parameters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
-    /// HTTP path to scrape for metrics.
+    /// HTTP path from which to scrape for metrics.
+    /// 
+    /// 
     /// If empty, Prometheus uses the default value (e.g. `/metrics`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name of the service port this endpoint refers to. Mutually exclusive with targetPort.
+    /// Name of the Service port which this endpoint refers to.
+    /// 
+    /// 
+    /// It takes precedence over `targetPort`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
-    /// ProxyURL eg http://proxyserver:2195 Directs scrapes to proxy through this endpoint.
+    /// `proxyURL` configures the HTTP Proxy URL (e.g.
+    /// "http://proxyserver:2195") to go through when scraping the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
-    /// RelabelConfigs to apply to samples before scraping.
-    /// Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields.
+    /// `relabelings` configures the relabeling rules to apply the target's
+    /// metadata labels.
+    /// 
+    /// 
+    /// The Operator automatically adds relabelings for a few standard Kubernetes fields.
+    /// 
+    /// 
     /// The original scrape job's name is available via the `__tmp_prometheus_job_name` label.
+    /// 
+    /// 
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<RuntimeComponentMonitoringEndpointsRelabelings>>,
     /// HTTP scheme to use for scraping.
+    /// 
+    /// 
+    /// `http` and `https` are the expected values unless you rewrite the
+    /// `__scheme__` label via relabeling.
+    /// 
+    /// 
+    /// If empty, Prometheus uses the default value `http`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-    /// Timeout after which the scrape is ended
-    /// If not specified, the Prometheus global scrape timeout is used unless it is less than `Interval` in which the latter is used.
+    pub scheme: Option<RuntimeComponentMonitoringEndpointsScheme>,
+    /// Timeout after which Prometheus considers the scrape to be failed.
+    /// 
+    /// 
+    /// If empty, Prometheus uses the global scrape timeout unless it is less
+    /// than the target's scrape interval value in which the latter is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
-    /// Name or number of the target port of the Pod behind the Service, the port must be specified with container port property. Mutually exclusive with port.
+    /// Name or number of the target port of the `Pod` object behind the Service, the
+    /// port must be specified with container port property.
+    /// 
+    /// 
+    /// Deprecated: use `port` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
-    /// TLS configuration to use when scraping the endpoint
+    /// TLS configuration to use when scraping the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<RuntimeComponentMonitoringEndpointsTlsConfig>,
+    /// `trackTimestampsStaleness` defines whether Prometheus tracks staleness of
+    /// the metrics that have an explicit timestamp present in scraped data.
+    /// Has no effect if `honorTimestamps` is false.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.48.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackTimestampsStaleness")]
+    pub track_timestamps_staleness: Option<bool>,
 }
 
-/// Authorization section for this endpoint
+/// `authorization` configures the Authorization header credentials to use when
+/// scraping the target.
+/// 
+/// 
+/// Cannot be set at the same time as `basicAuth`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsAuthorization {
-    /// The secret's key that contains the credentials of the request
+    /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<RuntimeComponentMonitoringEndpointsAuthorizationCredentials>,
-    /// Set the authentication type. Defaults to Bearer, Basic will cause an
-    /// error
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// The secret's key that contains the credentials of the request
+/// Selects a key of a Secret in the namespace that contains the credentials for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2153,22 +2253,25 @@ pub struct RuntimeComponentMonitoringEndpointsAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// BasicAuth allow an endpoint to authenticate over basic authentication
-/// More info: https://prometheus.io/docs/operating/configuration/#endpoints
+/// `basicAuth` configures the Basic Authentication credentials to use when
+/// scraping the target.
+/// 
+/// 
+/// Cannot be set at the same time as `authorization`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsBasicAuth {
-    /// The secret in the service monitor namespace that contains the password
-    /// for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<RuntimeComponentMonitoringEndpointsBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username
-    /// for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<RuntimeComponentMonitoringEndpointsBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password
-/// for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2183,8 +2286,8 @@ pub struct RuntimeComponentMonitoringEndpointsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username
-/// for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2199,9 +2302,12 @@ pub struct RuntimeComponentMonitoringEndpointsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// Secret to mount to read bearer token for scraping targets. The secret
-/// needs to be in the same namespace as the service monitor and accessible by
-/// the Prometheus Operator.
+/// `bearerTokenSecret` specifies a key of a Secret containing the bearer
+/// token for scraping targets. The secret needs to be in the same namespace
+/// as the ServiceMonitor object and readable by the Prometheus Operator.
+/// 
+/// 
+/// Deprecated: use `authorization` instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2216,42 +2322,64 @@ pub struct RuntimeComponentMonitoringEndpointsBearerTokenSecret {
     pub optional: Option<bool>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
-/// It defines `<metric_relabel_configs>`-section of Prometheus configuration.
-/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsMetricRelabelings {
-    /// Action to perform based on regex matching. Default is 'replace'.
-    /// uppercase and lowercase actions require Prometheus >= 2.36.
+    /// Action to perform based on the regex matching.
+    /// 
+    /// 
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// 
+    /// 
+    /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<RuntimeComponentMonitoringEndpointsMetricRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
+    /// 
+    /// 
+    /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
-    /// Regular expression against which the extracted value is matched. Default is '(.*)'
+    /// Regular expression against which the extracted value is matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a regex replace is performed if the
-    /// regular expression matches. Regex capture groups are available. Default is '$1'
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// 
+    /// 
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
-    /// Separator placed between concatenated source label values. default is ';'.
+    /// Separator is the string between concatenated SourceLabels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated
-    /// using the configured separator and matched against the configured regular expression
-    /// for the replace, keep, and drop actions.
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
-    /// Label to which the resulting value is written in a replace action.
-    /// It is mandatory for replace actions. Regex capture groups are available.
+    /// Label to which the resulting string is written in a replacement.
+    /// 
+    /// 
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// 
+    /// 
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
-/// It defines `<metric_relabel_configs>`-section of Prometheus configuration.
-/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RuntimeComponentMonitoringEndpointsMetricRelabelingsAction {
     #[serde(rename = "replace")]
@@ -2294,27 +2422,37 @@ pub enum RuntimeComponentMonitoringEndpointsMetricRelabelingsAction {
     DropEqual,
 }
 
-/// OAuth2 for the URL. Only valid in Prometheus versions 2.27.0 and newer.
+/// `oauth2` configures the OAuth2 settings to use when scraping the target.
+/// 
+/// 
+/// It requires Prometheus >= 2.27.0.
+/// 
+/// 
+/// Cannot be set at the same time as `authorization`, or `basicAuth`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: RuntimeComponentMonitoringEndpointsOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: RuntimeComponentMonitoringEndpointsOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -2355,7 +2493,8 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2370,42 +2509,64 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
-/// It defines `<metric_relabel_configs>`-section of Prometheus configuration.
-/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsRelabelings {
-    /// Action to perform based on regex matching. Default is 'replace'.
-    /// uppercase and lowercase actions require Prometheus >= 2.36.
+    /// Action to perform based on the regex matching.
+    /// 
+    /// 
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// 
+    /// 
+    /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<RuntimeComponentMonitoringEndpointsRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
+    /// 
+    /// 
+    /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
-    /// Regular expression against which the extracted value is matched. Default is '(.*)'
+    /// Regular expression against which the extracted value is matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a regex replace is performed if the
-    /// regular expression matches. Regex capture groups are available. Default is '$1'
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// 
+    /// 
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
-    /// Separator placed between concatenated source label values. default is ';'.
+    /// Separator is the string between concatenated SourceLabels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated
-    /// using the configured separator and matched against the configured regular expression
-    /// for the replace, keep, and drop actions.
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
-    /// Label to which the resulting value is written in a replace action.
-    /// It is mandatory for replace actions. Regex capture groups are available.
+    /// Label to which the resulting string is written in a replacement.
+    /// 
+    /// 
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// 
+    /// 
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
-/// It defines `<metric_relabel_configs>`-section of Prometheus configuration.
-/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RuntimeComponentMonitoringEndpointsRelabelingsAction {
     #[serde(rename = "replace")]
@@ -2448,7 +2609,17 @@ pub enum RuntimeComponentMonitoringEndpointsRelabelingsAction {
     DropEqual,
 }
 
-/// TLS configuration to use when scraping the endpoint
+/// Endpoint defines an endpoint serving Prometheus metrics to be scraped by
+/// Prometheus.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RuntimeComponentMonitoringEndpointsScheme {
+    #[serde(rename = "http")]
+    Http,
+    #[serde(rename = "https")]
+    Https,
+}
+
+/// TLS configuration to use when scraping the target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsTlsConfig {
     /// Certificate authority used when verifying server certificates.
@@ -2599,7 +2770,6 @@ pub struct RuntimeComponentProbesLiveness {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentProbesLivenessGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -2652,7 +2822,6 @@ pub struct RuntimeComponentProbesLivenessExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesLivenessGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2722,7 +2891,6 @@ pub struct RuntimeComponentProbesReadiness {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentProbesReadinessGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -2775,7 +2943,6 @@ pub struct RuntimeComponentProbesReadinessExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesReadinessGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2845,7 +3012,6 @@ pub struct RuntimeComponentProbesStartup {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentProbesStartupGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -2898,7 +3064,6 @@ pub struct RuntimeComponentProbesStartupExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesStartupGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2977,7 +3142,7 @@ pub struct RuntimeComponentResources {
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required.
     /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value.
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
@@ -3054,10 +3219,22 @@ pub struct RuntimeComponentService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentServicePorts {
     /// The application protocol for this port.
+    /// This is used as a hint for implementations to offer richer behavior for protocols that they understand.
     /// This field follows standard Kubernetes label syntax.
-    /// Un-prefixed names are reserved for IANA standard service names (as per
+    /// Valid values are either:
+    /// 
+    /// 
+    /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
     /// RFC-6335 and https://www.iana.org/assignments/service-names).
-    /// Non-standard protocols should use prefixed names such as
+    /// 
+    /// 
+    /// * Kubernetes-defined prefixed names:
+    ///   * 'kubernetes.io/h2c' - HTTP/2 over cleartext as described in https://www.rfc-editor.org/rfc/rfc7540
+    ///   * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
+    ///   * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
+    /// 
+    /// 
+    /// * Other protocols should use implementation-defined prefixed names such as
     /// mycompany.com/my-custom-protocol.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
@@ -3174,11 +3351,31 @@ pub struct RuntimeComponentSidecarContainers {
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<RuntimeComponentSidecarContainersReadinessProbe>,
+    /// Resources resize policy for the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<RuntimeComponentSidecarContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RuntimeComponentSidecarContainersResources>,
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -3578,7 +3775,6 @@ pub struct RuntimeComponentSidecarContainersLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentSidecarContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -3631,7 +3827,6 @@ pub struct RuntimeComponentSidecarContainersLivenessProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3731,7 +3926,6 @@ pub struct RuntimeComponentSidecarContainersReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentSidecarContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -3784,7 +3978,6 @@ pub struct RuntimeComponentSidecarContainersReadinessProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3843,6 +4036,19 @@ pub struct RuntimeComponentSidecarContainersReadinessProbeTcpSocket {
     pub port: IntOrString,
 }
 
+/// ContainerResizePolicy represents resource resize policy for the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentSidecarContainersResizePolicy {
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
 /// Compute Resources required by this container.
 /// Cannot be updated.
 /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -3865,7 +4071,7 @@ pub struct RuntimeComponentSidecarContainersResources {
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required.
     /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value.
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
@@ -4003,7 +4209,7 @@ pub struct RuntimeComponentSidecarContainersSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
-    /// Must only be set if type is "Localhost".
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
@@ -4032,12 +4238,9 @@ pub struct RuntimeComponentSidecarContainersSecurityContextWindowsOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// This field is alpha-level and will only be honored by components that enable the
-    /// WindowsHostProcessContainers feature flag. Setting this field without the feature
-    /// flag will result in errors when validating the Pod. All of a Pod's containers must
-    /// have the same effective HostProcess value (it is not allowed to have a mix of HostProcess
-    /// containers and non-HostProcess containers).  In addition, if HostProcess is true
-    /// then HostNetwork must also be set to true.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
@@ -4065,7 +4268,6 @@ pub struct RuntimeComponentSidecarContainersStartupProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
-    /// This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentSidecarContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -4118,7 +4320,6 @@ pub struct RuntimeComponentSidecarContainersStartupProbeExec {
 }
 
 /// GRPC specifies an action involving a GRPC port.
-/// This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4445,7 +4646,7 @@ pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateSpecResources {
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required.
     /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value.
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
@@ -4499,13 +4700,70 @@ pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateStatus {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// allocatedResources is the storage resource within AllocatedResources tracks the capacity allocated to a PVC. It may
-    /// be larger than the actual capacity when a volume expansion operation is requested.
+    /// allocatedResourceStatuses stores status of resource being resized for the given PVC.
+    /// Key names follow standard Kubernetes label syntax. Valid values are either:
+    /// 	* Un-prefixed keys:
+    /// 		- storage - the capacity of the volume.
+    /// 	* Custom resources must use implementation-defined prefixed names such as "example.com/my-custom-resource"
+    /// Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered
+    /// reserved and hence may not be used.
+    /// 
+    /// 
+    /// ClaimResourceStatus can be in any of following states:
+    /// 	- ControllerResizeInProgress:
+    /// 		State set when resize controller starts resizing the volume in control-plane.
+    /// 	- ControllerResizeFailed:
+    /// 		State set when resize has failed in resize controller with a terminal error.
+    /// 	- NodeResizePending:
+    /// 		State set when resize controller has finished resizing the volume but further resizing of
+    /// 		volume is needed on the node.
+    /// 	- NodeResizeInProgress:
+    /// 		State set when kubelet starts resizing the volume.
+    /// 	- NodeResizeFailed:
+    /// 		State set when resizing has failed in kubelet with a terminal error. Transient errors don't set
+    /// 		NodeResizeFailed.
+    /// For example: if expanding a PVC for more capacity - this field can be one of the following states:
+    /// 	- pvc.status.allocatedResourceStatus['storage'] = "ControllerResizeInProgress"
+    ///      - pvc.status.allocatedResourceStatus['storage'] = "ControllerResizeFailed"
+    ///      - pvc.status.allocatedResourceStatus['storage'] = "NodeResizePending"
+    ///      - pvc.status.allocatedResourceStatus['storage'] = "NodeResizeInProgress"
+    ///      - pvc.status.allocatedResourceStatus['storage'] = "NodeResizeFailed"
+    /// When this field is not set, it means that no resize operation is in progress for the given PVC.
+    /// 
+    /// 
+    /// A controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus
+    /// should ignore the update for the purpose it was designed. For example - a controller that
+    /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
+    /// resources associated with PVC.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourceStatuses")]
+    pub allocated_resource_statuses: Option<BTreeMap<String, String>>,
+    /// allocatedResources tracks the resources allocated to a PVC including its capacity.
+    /// Key names follow standard Kubernetes label syntax. Valid values are either:
+    /// 	* Un-prefixed keys:
+    /// 		- storage - the capacity of the volume.
+    /// 	* Custom resources must use implementation-defined prefixed names such as "example.com/my-custom-resource"
+    /// Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered
+    /// reserved and hence may not be used.
+    /// 
+    /// 
+    /// Capacity reported here may be larger than the actual capacity when a volume expansion operation
+    /// is requested.
     /// For storage quota, the larger value from allocatedResources and PVC.spec.resources is used.
     /// If allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.
     /// If a volume expansion capacity request is lowered, allocatedResources is only
     /// lowered if there are no expansion operations in progress and if the actual volume capacity
     /// is equal or lower than the requested capacity.
+    /// 
+    /// 
+    /// A controller that receives PVC update with previously unknown resourceName
+    /// should ignore the update for the purpose it was designed. For example - a controller that
+    /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
+    /// resources associated with PVC.
+    /// 
+    /// 
     /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
@@ -4519,12 +4777,6 @@ pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateStatus {
     /// phase represents the current phase of PersistentVolumeClaim.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
-    /// resizeStatus stores status of resize operation.
-    /// ResizeStatus is not set by default but when expansion is complete resizeStatus is set to empty
-    /// string by resize controller or kubelet.
-    /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizeStatus")]
-    pub resize_status: Option<String>,
 }
 
 /// Specifies the strategy to replace old statefulSet pods with new pods.
@@ -5055,7 +5307,7 @@ pub struct RuntimeComponentVolumesEmptyDir {
     /// The maximum usage on memory medium EmptyDir would be the minimum value between
     /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
     /// The default is nil which means that the limit is undefined.
-    /// More info: http://kubernetes.io/docs/user-guide/volumes#emptydir
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
@@ -5327,7 +5579,7 @@ pub struct RuntimeComponentVolumesEphemeralVolumeClaimTemplateSpecResources {
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required.
     /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value.
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,

@@ -798,6 +798,9 @@ spec:
                         host:
                           description: "To configure the host exposed by the ingress."
                           type: "string"
+                        ingressClassName:
+                          description: "The Ingress class name as defined by the Ingress spec\nSee https://kubernetes.io/docs/concepts/services-networking/ingress/"
+                          type: "string"
                         path:
                           description: "To configure the path exposed by the ingress (default `/`)."
                           type: "string"
@@ -2261,6 +2264,9 @@ spec:
                           type: "boolean"
                         host:
                           description: "To configure the host exposed by the ingress."
+                          type: "string"
+                        ingressClassName:
+                          description: "The Ingress class name as defined by the Ingress spec\nSee https://kubernetes.io/docs/concepts/services-networking/ingress/"
                           type: "string"
                         path:
                           description: "To configure the path exposed by the ingress (default `/`)."

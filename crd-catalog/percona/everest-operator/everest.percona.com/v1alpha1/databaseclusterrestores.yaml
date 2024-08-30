@@ -67,7 +67,7 @@ spec:
                       description: "BackupSource is the backup source to restore from"
                       properties:
                         backupStorageName:
-                          description: "BackupStorageName is the name of the BackupStorage used for backups."
+                          description: "BackupStorageName is the name of the BackupStorage used for backups.\nThe BackupStorage must be created in the same namespace as the DatabaseCluster."
                           type: "string"
                         path:
                           description: "Path is the path to the backup file/directory."

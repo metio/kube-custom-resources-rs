@@ -97,12 +97,24 @@ pub struct KafkaBridgeAuthentication {
     /// Configure whether access token should be treated as JWT. This should be set to `false` if the authorization server returns opaque tokens. Defaults to `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenIsJwt")]
     pub access_token_is_jwt: Option<bool>,
+    /// Path to the token file containing an access token to be used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenLocation")]
+    pub access_token_location: Option<String>,
     /// OAuth audience to use when authenticating against the authorization server. Some authorization servers require the audience to be explicitly set. The possible values depend on how the authorization server is configured. By default, `audience` is not specified when performing the token endpoint request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
     /// Reference to the `Secret` which holds the certificate and private key pair.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAndKey")]
     pub certificate_and_key: Option<KafkaBridgeAuthenticationCertificateAndKey>,
+    /// Link to Kubernetes secret containing the client assertion which was manually configured for the client.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertion")]
+    pub client_assertion: Option<KafkaBridgeAuthenticationClientAssertion>,
+    /// Path to the file containing the client assertion to be used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionLocation")]
+    pub client_assertion_location: Option<String>,
+    /// The client assertion type. If not set, and either `clientAssertion` or `clientAssertionLocation` is configured, this value defaults to `urn:ietf:params:oauth:client-assertion-type:jwt-bearer`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionType")]
+    pub client_assertion_type: Option<String>,
     /// OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
     pub client_id: Option<String>,
@@ -139,6 +151,9 @@ pub struct KafkaBridgeAuthentication {
     /// Link to Kubernetes Secret containing the refresh token which can be used to obtain access token from the authorization server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshToken")]
     pub refresh_token: Option<KafkaBridgeAuthenticationRefreshToken>,
+    /// SASL extensions parameters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslExtensions")]
+    pub sasl_extensions: Option<BTreeMap<String, String>>,
     /// OAuth scope to use when authenticating against the authorization server. Some authorization servers require this to be set. The possible values depend on how authorization server is configured. By default `scope` is not specified when doing the token endpoint request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
@@ -174,6 +189,16 @@ pub struct KafkaBridgeAuthenticationCertificateAndKey {
     /// The name of the private key in the Secret.
     pub key: String,
     /// The name of the Secret containing the certificate.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Link to Kubernetes secret containing the client assertion which was manually configured for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeAuthenticationClientAssertion {
+    /// The key under which the secret value is stored in the Kubernetes Secret.
+    pub key: String,
+    /// The name of the Kubernetes Secret containing the secret value.
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
@@ -242,7 +267,7 @@ pub struct KafkaBridgeConsumer {
     /// The Kafka consumer configuration used for consumer instances created by the bridge. Properties with the following prefixes cannot be set: ssl., bootstrap.servers, group.id, sasl., security. (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
-    /// Whether the HTTP consumer should be enabled or disabled, default is enabled.
+    /// Whether the HTTP consumer should be enabled or disabled. The default is enabled (`true`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// The timeout in seconds for deleting inactive consumers, default is -1 (disabled).
@@ -370,7 +395,7 @@ pub struct KafkaBridgeProducer {
     /// The Kafka producer configuration used for producer instances created by the bridge. Properties with the following prefixes cannot be set: ssl., bootstrap.servers, sasl., security. (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
-    /// Whether the HTTP producer should be enabled or disabled, default is enabled.
+    /// Whether the HTTP producer should be enabled or disabled. The default is enabled (`true`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
@@ -491,6 +516,9 @@ pub struct KafkaBridgeTemplateBridgeContainer {
     /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaBridgeTemplateBridgeContainerSecurityContext>,
+    /// Additional volume mounts which should be applied to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<KafkaBridgeTemplateBridgeContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -580,6 +608,24 @@ pub struct KafkaBridgeTemplateBridgeContainerSecurityContextWindowsOptions {
     pub run_as_user_name: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplateBridgeContainerVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
+}
+
 /// Template for the Kafka Bridge ClusterRoleBinding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplateClusterRoleBinding {
@@ -637,6 +683,9 @@ pub struct KafkaBridgeTemplateInitContainer {
     /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaBridgeTemplateInitContainerSecurityContext>,
+    /// Additional volume mounts which should be applied to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<KafkaBridgeTemplateInitContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -726,6 +775,24 @@ pub struct KafkaBridgeTemplateInitContainerSecurityContextWindowsOptions {
     pub run_as_user_name: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplateInitContainerVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
+}
+
 /// Template for Kafka Bridge `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePod {
@@ -756,7 +823,7 @@ pub struct KafkaBridgeTemplatePod {
     /// The grace period is the duration in seconds after the processes running in the pod are sent a termination signal, and the time when the processes are forcibly halted with a kill signal. Set this value to longer than the expected cleanup time for your process. Value must be a non-negative integer. A zero value indicates delete immediately. You might need to increase the grace period for very large Kafka clusters, so that the Kafka brokers have enough time to transfer their work to another broker before they are terminated. Defaults to 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`.
+    /// Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tmpDirSizeLimit")]
     pub tmp_dir_size_limit: Option<String>,
     /// The pod's tolerations.
@@ -765,6 +832,9 @@ pub struct KafkaBridgeTemplatePod {
     /// The pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<KafkaBridgeTemplatePodTopologySpreadConstraints>>,
+    /// Additional volumes that can be mounted to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volumes: Option<Vec<KafkaBridgeTemplatePodVolumes>>,
 }
 
 /// The pod's affinity rules.
@@ -1246,6 +1316,97 @@ pub struct KafkaBridgeTemplatePodTopologySpreadConstraintsLabelSelectorMatchExpr
     pub operator: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodVolumes {
+    /// ConfigMap to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<KafkaBridgeTemplatePodVolumesConfigMap>,
+    /// EmptyDir to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<KafkaBridgeTemplatePodVolumesEmptyDir>,
+    /// Name to use for the volume. Required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// PersistentVolumeClaim object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<KafkaBridgeTemplatePodVolumesPersistentVolumeClaim>,
+    /// Secret to use populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<KafkaBridgeTemplatePodVolumesSecret>,
+}
+
+/// ConfigMap to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodVolumesConfigMap {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<KafkaBridgeTemplatePodVolumesConfigMapItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodVolumesConfigMapItems {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+}
+
+/// EmptyDir to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodVolumesEmptyDir {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
+    pub size_limit: Option<KafkaBridgeTemplatePodVolumesEmptyDirSizeLimit>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodVolumesEmptyDirSizeLimit {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub amount: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<String>,
+}
+
+/// PersistentVolumeClaim object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodVolumesPersistentVolumeClaim {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
+    pub claim_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// Secret to use populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodVolumesSecret {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<KafkaBridgeTemplatePodVolumesSecretItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodVolumesSecretItems {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
 }
 
 /// Template for Kafka Bridge `PodDisruptionBudget`.

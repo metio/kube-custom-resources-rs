@@ -76,6 +76,7 @@ pub enum MeshHTTPRouteTargetRefKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
@@ -167,6 +168,7 @@ pub enum MeshHTTPRouteToRulesDefaultBackendRefsKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
@@ -278,6 +280,7 @@ pub enum MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRefKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
@@ -559,6 +562,7 @@ pub enum MeshHTTPRouteToTargetRefKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,

@@ -2962,6 +2962,7 @@ apiVersion `sonataflow.org/v1alpha08`:
 ## source_toolkit_fluxcd_io
 
 apiVersion `source.toolkit.fluxcd.io/v1`:
+- `Bucket`
 - `GitRepository`
 - `HelmChart`
 - `HelmRepository`

@@ -170,7 +170,7 @@ spec:
                         description: "A human readable message indicating details about the transition.\nThis field may be empty."
                         type: "string"
                       reason:
-                        description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may not be empty."
+                        description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
                         type: "string"
                       severity:
                         description: "Severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."

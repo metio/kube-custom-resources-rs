@@ -556,12 +556,12 @@ spec:
                           description: "Sidecar tells Rook to run SSSD in a sidecar alongside the NFS-Ganesha server in each NFS pod."
                           properties:
                             additionalFiles:
-                              description: "AdditionalFiles defines any number of additional files that should be mounted into the SSSD\nsidecar. These files may be referenced by the sssd.conf config file."
+                              description: "AdditionalFiles defines any number of additional files that should be mounted into the SSSD\nsidecar with a directory root of `/etc/sssd/rook-additional/`.\nThese files may be referenced by the sssd.conf config file."
                               items:
-                                description: "SSSDSidecarAdditionalFile represents the source from where additional files for the the SSSD\nconfiguration should come from and are made available."
+                                description: "AdditionalVolumeMount represents the source from where additional files in pod containers\nshould come from and what subdirectory they are made available in."
                                 properties:
                                   subPath:
-                                    description: "SubPath defines the sub-path in `/etc/sssd/rook-additional/` where the additional file(s)\nwill be placed. Each subPath definition must be unique and must not contain ':'."
+                                    description: "SubPath defines the sub-path (subdirectory) of the directory root where the volumeSource will\nbe mounted. All files/keys in the volume source's volume will be mounted to the subdirectory.\nThis is not the same as the Kubernetes `subPath` volume mount option.\nEach subPath definition must be unique and must not contain ':'."
                                     minLength: 1
                                     pattern: "^[^:]+$"
                                     type: "string"

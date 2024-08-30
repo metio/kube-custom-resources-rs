@@ -76,6 +76,7 @@ pub enum MeshHealthCheckTargetRefKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
@@ -293,6 +294,7 @@ pub enum MeshHealthCheckToTargetRefKind {
     MeshGateway,
     MeshService,
     MeshExternalService,
+    MeshMultiZoneService,
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,

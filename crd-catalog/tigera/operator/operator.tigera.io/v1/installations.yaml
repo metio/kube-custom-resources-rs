@@ -672,6 +672,9 @@ spec:
                             default: false
                             description: "DisableBGPExport specifies whether routes from this IP pool's CIDR are exported over BGP.\nDefault: false"
                             type: "boolean"
+                          disableNewAllocations:
+                            description: "DisableNewAllocations specifies whether or not new IP allocations are allowed from this pool.\nThis is useful when you want to prevent new pods from receiving IP addresses from this pool, without\nimpacting any existing pods that have already been assigned addresses from this pool."
+                            type: "boolean"
                           encapsulation:
                             description: "Encapsulation specifies the encapsulation type that will be used with\nthe IP Pool.\nDefault: IPIP"
                             enum:
@@ -5126,6 +5129,9 @@ spec:
                               disableBGPExport:
                                 default: false
                                 description: "DisableBGPExport specifies whether routes from this IP pool's CIDR are exported over BGP.\nDefault: false"
+                                type: "boolean"
+                              disableNewAllocations:
+                                description: "DisableNewAllocations specifies whether or not new IP allocations are allowed from this pool.\nThis is useful when you want to prevent new pods from receiving IP addresses from this pool, without\nimpacting any existing pods that have already been assigned addresses from this pool."
                                 type: "boolean"
                               encapsulation:
                                 description: "Encapsulation specifies the encapsulation type that will be used with\nthe IP Pool.\nDefault: IPIP"

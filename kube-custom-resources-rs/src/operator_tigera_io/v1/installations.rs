@@ -1052,6 +1052,11 @@ pub struct InstallationCalicoNetworkIpPools {
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableBGPExport")]
     pub disable_bgp_export: Option<bool>,
+    /// DisableNewAllocations specifies whether or not new IP allocations are allowed from this pool.
+    /// This is useful when you want to prevent new pods from receiving IP addresses from this pool, without
+    /// impacting any existing pods that have already been assigned addresses from this pool.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableNewAllocations")]
+    pub disable_new_allocations: Option<bool>,
     /// Encapsulation specifies the encapsulation type that will be used with
     /// the IP Pool.
     /// Default: IPIP
@@ -7156,6 +7161,11 @@ pub struct InstallationStatusComputedCalicoNetworkIpPools {
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableBGPExport")]
     pub disable_bgp_export: Option<bool>,
+    /// DisableNewAllocations specifies whether or not new IP allocations are allowed from this pool.
+    /// This is useful when you want to prevent new pods from receiving IP addresses from this pool, without
+    /// impacting any existing pods that have already been assigned addresses from this pool.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableNewAllocations")]
+    pub disable_new_allocations: Option<bool>,
     /// Encapsulation specifies the encapsulation type that will be used with
     /// the IP Pool.
     /// Default: IPIP

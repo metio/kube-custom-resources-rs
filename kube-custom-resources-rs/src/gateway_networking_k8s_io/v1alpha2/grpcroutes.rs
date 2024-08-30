@@ -610,6 +610,9 @@ pub struct GRPCRouteRulesBackendRefsFilters {
     /// 
     /// 
     /// Support: Extended
+    /// 
+    /// 
+    /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMirror")]
     pub request_mirror: Option<GRPCRouteRulesBackendRefsFiltersRequestMirror>,
     /// ResponseHeaderModifier defines a schema for a filter that modifies response
@@ -793,6 +796,9 @@ pub struct GRPCRouteRulesBackendRefsFiltersRequestHeaderModifierSet {
 /// 
 /// 
 /// Support: Extended
+/// 
+/// 
+/// 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesBackendRefsFiltersRequestMirror {
     /// BackendRef references a resource where mirrored requests are sent.
@@ -826,6 +832,29 @@ pub struct GRPCRouteRulesBackendRefsFiltersRequestMirror {
     /// Support: Implementation-specific for any other resource
     #[serde(rename = "backendRef")]
     pub backend_ref: GRPCRouteRulesBackendRefsFiltersRequestMirrorBackendRef,
+    /// Fraction represents the fraction of requests that should be
+    /// mirrored to BackendRef.
+    /// 
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    /// 
+    /// 
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fraction: Option<GRPCRouteRulesBackendRefsFiltersRequestMirrorFraction>,
+    /// Percent represents the percentage of requests that should be
+    /// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+    /// requests) and its maximum value is 100 (indicating 100% of requests).
+    /// 
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    /// 
+    /// 
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub percent: Option<i32>,
 }
 
 /// BackendRef references a resource where mirrored requests are sent.
@@ -905,6 +934,22 @@ pub struct GRPCRouteRulesBackendRefsFiltersRequestMirrorBackendRef {
     /// resource or this field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
+}
+
+/// Fraction represents the fraction of requests that should be
+/// mirrored to BackendRef.
+/// 
+/// 
+/// Only one of Fraction or Percent may be specified. If neither field
+/// is specified, 100% of requests will be mirrored.
+/// 
+/// 
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GRPCRouteRulesBackendRefsFiltersRequestMirrorFraction {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub denominator: Option<i32>,
+    pub numerator: i32,
 }
 
 /// ResponseHeaderModifier defines a schema for a filter that modifies response
@@ -1065,6 +1110,9 @@ pub struct GRPCRouteRulesFilters {
     /// 
     /// 
     /// Support: Extended
+    /// 
+    /// 
+    /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMirror")]
     pub request_mirror: Option<GRPCRouteRulesFiltersRequestMirror>,
     /// ResponseHeaderModifier defines a schema for a filter that modifies response
@@ -1248,6 +1296,9 @@ pub struct GRPCRouteRulesFiltersRequestHeaderModifierSet {
 /// 
 /// 
 /// Support: Extended
+/// 
+/// 
+/// 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesFiltersRequestMirror {
     /// BackendRef references a resource where mirrored requests are sent.
@@ -1281,6 +1332,29 @@ pub struct GRPCRouteRulesFiltersRequestMirror {
     /// Support: Implementation-specific for any other resource
     #[serde(rename = "backendRef")]
     pub backend_ref: GRPCRouteRulesFiltersRequestMirrorBackendRef,
+    /// Fraction represents the fraction of requests that should be
+    /// mirrored to BackendRef.
+    /// 
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    /// 
+    /// 
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fraction: Option<GRPCRouteRulesFiltersRequestMirrorFraction>,
+    /// Percent represents the percentage of requests that should be
+    /// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+    /// requests) and its maximum value is 100 (indicating 100% of requests).
+    /// 
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    /// 
+    /// 
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub percent: Option<i32>,
 }
 
 /// BackendRef references a resource where mirrored requests are sent.
@@ -1360,6 +1434,22 @@ pub struct GRPCRouteRulesFiltersRequestMirrorBackendRef {
     /// resource or this field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
+}
+
+/// Fraction represents the fraction of requests that should be
+/// mirrored to BackendRef.
+/// 
+/// 
+/// Only one of Fraction or Percent may be specified. If neither field
+/// is specified, 100% of requests will be mirrored.
+/// 
+/// 
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GRPCRouteRulesFiltersRequestMirrorFraction {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub denominator: Option<i32>,
+    pub numerator: i32,
 }
 
 /// ResponseHeaderModifier defines a schema for a filter that modifies response

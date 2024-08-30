@@ -11636,6 +11636,9 @@ pub struct ComponentDefinitionVarsValueFromComponentVarRef {
     /// Reference to the replicas of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<ComponentDefinitionVarsValueFromComponentVarRefReplicas>,
+    /// Reference to the short name of the Component object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shortName")]
+    pub short_name: Option<ComponentDefinitionVarsValueFromComponentVarRefShortName>,
 }
 
 /// Selects a defined var of a Component.
@@ -11750,6 +11753,13 @@ pub enum ComponentDefinitionVarsValueFromComponentVarRefPodNamesForRoleOption {
 /// Selects a defined var of a Component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ComponentDefinitionVarsValueFromComponentVarRefReplicas {
+    Required,
+    Optional,
+}
+
+/// Selects a defined var of a Component.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromComponentVarRefShortName {
     Required,
     Optional,
 }

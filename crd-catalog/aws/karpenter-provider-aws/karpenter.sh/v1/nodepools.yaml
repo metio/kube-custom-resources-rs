@@ -5,17 +5,6 @@ metadata:
     controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "nodepools.karpenter.sh"
 spec:
-  conversion:
-    strategy: "Webhook"
-    webhook:
-      clientConfig:
-        service:
-          name: "karpenter"
-          namespace: "kube-system"
-          port: 8443
-      conversionReviewVersions:
-        - "v1beta1"
-        - "v1"
   group: "karpenter.sh"
   names:
     categories:
@@ -87,9 +76,9 @@ spec:
                             pattern: "^((100|[0-9]{1,2})%|[0-9]+)$"
                             type: "string"
                           reasons:
-                            description: "Reasons is a list of disruption methods that this budget applies to. If Reasons is not set, this budget applies to all methods.\nOtherwise, this will apply to each reason defined.\nallowed reasons are Underutilized, Empty, and Drifted."
+                            description: "Reasons is a list of disruption methods that this budget applies to. If Reasons is not set, this budget applies to all methods.\nOtherwise, this will apply to each reason defined.\nallowed reasons are Underutilized, Empty, and Drifted and additional CloudProvider-specific reasons."
                             items:
-                              description: "DisruptionReason defines valid reasons for disruption budgets."
+                              description: "DisruptionReason defines valid reasons for disruption budgets.\nCloudProviders will need to append to the list of enums when implementing cloud provider disruption reasons"
                               enum:
                                 - "Underutilized"
                                 - "Empty"

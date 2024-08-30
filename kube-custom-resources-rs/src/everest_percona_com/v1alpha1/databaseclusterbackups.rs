@@ -19,6 +19,7 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct DatabaseClusterBackupSpec {
     /// BackupStorageName is the name of the BackupStorage used for backups.
+    /// The BackupStorage must be created in the same namespace as the DatabaseCluster.
     #[serde(rename = "backupStorageName")]
     pub backup_storage_name: String,
     /// DBClusterName is the original database cluster name.

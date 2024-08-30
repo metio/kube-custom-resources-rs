@@ -44,6 +44,7 @@ pub struct DatabaseClusterRestoreDataSource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterRestoreDataSourceBackupSource {
     /// BackupStorageName is the name of the BackupStorage used for backups.
+    /// The BackupStorage must be created in the same namespace as the DatabaseCluster.
     #[serde(rename = "backupStorageName")]
     pub backup_storage_name: String,
     /// Path is the path to the backup file/directory.

@@ -140,13 +140,11 @@ pub struct GitRepositoryRef {
     pub branch: Option<String>,
     /// Commit SHA to check out, takes precedence over all reference fields.
     /// 
-    /// 
     /// This can be combined with Branch to shallow clone the branch, in which
     /// the commit is expected to exist.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commit: Option<String>,
     /// Name of the reference to check out; takes precedence over Branch, Tag and SemVer.
-    /// 
     /// 
     /// It must be a valid Git reference: https://git-scm.com/docs/git-check-ref-format#_description
     /// Examples: "refs/heads/main", "refs/tags/v0.1.0", "refs/pull/420/head", "refs/merge-requests/1/head"
@@ -218,7 +216,6 @@ pub struct GitRepositoryStatus {
     /// be used to determine if the content of the included repository has
     /// changed.
     /// It has the format of `<algo>:<checksum>`, for example: `sha256:<checksum>`.
-    /// 
     /// 
     /// Deprecated: Replaced with explicit fields for observed artifact content
     /// config in the status.

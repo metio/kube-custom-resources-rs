@@ -69,7 +69,7 @@ pub struct KafkaConnectSpec {
     /// The maximum limits for CPU and memory resources and the requested initial resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaConnectResources>,
-    /// Template for Kafka Connect and Kafka Mirror Maker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated.
+    /// Template for Kafka Connect and Kafka MirrorMaker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaConnectTemplate>,
     /// TLS configuration.
@@ -92,12 +92,24 @@ pub struct KafkaConnectAuthentication {
     /// Configure whether access token should be treated as JWT. This should be set to `false` if the authorization server returns opaque tokens. Defaults to `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenIsJwt")]
     pub access_token_is_jwt: Option<bool>,
+    /// Path to the token file containing an access token to be used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenLocation")]
+    pub access_token_location: Option<String>,
     /// OAuth audience to use when authenticating against the authorization server. Some authorization servers require the audience to be explicitly set. The possible values depend on how the authorization server is configured. By default, `audience` is not specified when performing the token endpoint request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
     /// Reference to the `Secret` which holds the certificate and private key pair.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAndKey")]
     pub certificate_and_key: Option<KafkaConnectAuthenticationCertificateAndKey>,
+    /// Link to Kubernetes secret containing the client assertion which was manually configured for the client.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertion")]
+    pub client_assertion: Option<KafkaConnectAuthenticationClientAssertion>,
+    /// Path to the file containing the client assertion to be used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionLocation")]
+    pub client_assertion_location: Option<String>,
+    /// The client assertion type. If not set, and either `clientAssertion` or `clientAssertionLocation` is configured, this value defaults to `urn:ietf:params:oauth:client-assertion-type:jwt-bearer`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionType")]
+    pub client_assertion_type: Option<String>,
     /// OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
     pub client_id: Option<String>,
@@ -134,6 +146,9 @@ pub struct KafkaConnectAuthentication {
     /// Link to Kubernetes Secret containing the refresh token which can be used to obtain access token from the authorization server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshToken")]
     pub refresh_token: Option<KafkaConnectAuthenticationRefreshToken>,
+    /// SASL extensions parameters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslExtensions")]
+    pub sasl_extensions: Option<BTreeMap<String, String>>,
     /// OAuth scope to use when authenticating against the authorization server. Some authorization servers require this to be set. The possible values depend on how authorization server is configured. By default `scope` is not specified when doing the token endpoint request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
@@ -169,6 +184,16 @@ pub struct KafkaConnectAuthenticationCertificateAndKey {
     /// The name of the private key in the Secret.
     pub key: String,
     /// The name of the Secret containing the certificate.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Link to Kubernetes secret containing the client assertion which was manually configured for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectAuthenticationClientAssertion {
+    /// The key under which the secret value is stored in the Kubernetes Secret.
+    pub key: String,
+    /// The name of the Kubernetes Secret containing the secret value.
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
@@ -646,7 +671,7 @@ pub struct KafkaConnectResourcesClaims {
     pub name: Option<String>,
 }
 
-/// Template for Kafka Connect and Kafka Mirror Maker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated.
+/// Template for Kafka Connect and Kafka MirrorMaker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplate {
     /// Template for Kafka Connect API `Service`.
@@ -760,6 +785,9 @@ pub struct KafkaConnectTemplateBuildContainer {
     /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaConnectTemplateBuildContainerSecurityContext>,
+    /// Additional volume mounts which should be applied to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<KafkaConnectTemplateBuildContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -849,6 +877,24 @@ pub struct KafkaConnectTemplateBuildContainerSecurityContextWindowsOptions {
     pub run_as_user_name: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildContainerVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
+}
+
 /// Template for Kafka Connect Build `Pods`. The build pod is used only on Kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateBuildPod {
@@ -879,7 +925,7 @@ pub struct KafkaConnectTemplateBuildPod {
     /// The grace period is the duration in seconds after the processes running in the pod are sent a termination signal, and the time when the processes are forcibly halted with a kill signal. Set this value to longer than the expected cleanup time for your process. Value must be a non-negative integer. A zero value indicates delete immediately. You might need to increase the grace period for very large Kafka clusters, so that the Kafka brokers have enough time to transfer their work to another broker before they are terminated. Defaults to 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`.
+    /// Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tmpDirSizeLimit")]
     pub tmp_dir_size_limit: Option<String>,
     /// The pod's tolerations.
@@ -888,6 +934,9 @@ pub struct KafkaConnectTemplateBuildPod {
     /// The pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<KafkaConnectTemplateBuildPodTopologySpreadConstraints>>,
+    /// Additional volumes that can be mounted to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volumes: Option<Vec<KafkaConnectTemplateBuildPodVolumes>>,
 }
 
 /// The pod's affinity rules.
@@ -1371,6 +1420,97 @@ pub struct KafkaConnectTemplateBuildPodTopologySpreadConstraintsLabelSelectorMat
     pub values: Option<Vec<String>>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodVolumes {
+    /// ConfigMap to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<KafkaConnectTemplateBuildPodVolumesConfigMap>,
+    /// EmptyDir to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<KafkaConnectTemplateBuildPodVolumesEmptyDir>,
+    /// Name to use for the volume. Required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// PersistentVolumeClaim object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<KafkaConnectTemplateBuildPodVolumesPersistentVolumeClaim>,
+    /// Secret to use populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<KafkaConnectTemplateBuildPodVolumesSecret>,
+}
+
+/// ConfigMap to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodVolumesConfigMap {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<KafkaConnectTemplateBuildPodVolumesConfigMapItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodVolumesConfigMapItems {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+}
+
+/// EmptyDir to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodVolumesEmptyDir {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
+    pub size_limit: Option<KafkaConnectTemplateBuildPodVolumesEmptyDirSizeLimit>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodVolumesEmptyDirSizeLimit {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub amount: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<String>,
+}
+
+/// PersistentVolumeClaim object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodVolumesPersistentVolumeClaim {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
+    pub claim_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// Secret to use populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodVolumesSecret {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<KafkaConnectTemplateBuildPodVolumesSecretItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodVolumesSecretItems {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+}
+
 /// Template for the Kafka Connect Build service account.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateBuildServiceAccount {
@@ -1418,6 +1558,9 @@ pub struct KafkaConnectTemplateConnectContainer {
     /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaConnectTemplateConnectContainerSecurityContext>,
+    /// Additional volume mounts which should be applied to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<KafkaConnectTemplateConnectContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1507,6 +1650,24 @@ pub struct KafkaConnectTemplateConnectContainerSecurityContextWindowsOptions {
     pub run_as_user_name: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateConnectContainerVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
+}
+
 /// Template for Kafka Connect `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateDeployment {
@@ -1578,6 +1739,9 @@ pub struct KafkaConnectTemplateInitContainer {
     /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaConnectTemplateInitContainerSecurityContext>,
+    /// Additional volume mounts which should be applied to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<KafkaConnectTemplateInitContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1667,6 +1831,24 @@ pub struct KafkaConnectTemplateInitContainerSecurityContextWindowsOptions {
     pub run_as_user_name: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateInitContainerVolumeMounts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
+}
+
 /// Template for Secret of the Kafka Connect Cluster JMX authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateJmxSecret {
@@ -1716,7 +1898,7 @@ pub struct KafkaConnectTemplatePod {
     /// The grace period is the duration in seconds after the processes running in the pod are sent a termination signal, and the time when the processes are forcibly halted with a kill signal. Set this value to longer than the expected cleanup time for your process. Value must be a non-negative integer. A zero value indicates delete immediately. You might need to increase the grace period for very large Kafka clusters, so that the Kafka brokers have enough time to transfer their work to another broker before they are terminated. Defaults to 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`.
+    /// Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tmpDirSizeLimit")]
     pub tmp_dir_size_limit: Option<String>,
     /// The pod's tolerations.
@@ -1725,6 +1907,9 @@ pub struct KafkaConnectTemplatePod {
     /// The pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<KafkaConnectTemplatePodTopologySpreadConstraints>>,
+    /// Additional volumes that can be mounted to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volumes: Option<Vec<KafkaConnectTemplatePodVolumes>>,
 }
 
 /// The pod's affinity rules.
@@ -2206,6 +2391,97 @@ pub struct KafkaConnectTemplatePodTopologySpreadConstraintsLabelSelectorMatchExp
     pub operator: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodVolumes {
+    /// ConfigMap to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<KafkaConnectTemplatePodVolumesConfigMap>,
+    /// EmptyDir to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<KafkaConnectTemplatePodVolumesEmptyDir>,
+    /// Name to use for the volume. Required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// PersistentVolumeClaim object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<KafkaConnectTemplatePodVolumesPersistentVolumeClaim>,
+    /// Secret to use populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<KafkaConnectTemplatePodVolumesSecret>,
+}
+
+/// ConfigMap to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodVolumesConfigMap {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<KafkaConnectTemplatePodVolumesConfigMapItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodVolumesConfigMapItems {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+}
+
+/// EmptyDir to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodVolumesEmptyDir {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
+    pub size_limit: Option<KafkaConnectTemplatePodVolumesEmptyDirSizeLimit>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodVolumesEmptyDirSizeLimit {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub amount: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<String>,
+}
+
+/// PersistentVolumeClaim object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodVolumesPersistentVolumeClaim {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
+    pub claim_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// Secret to use populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodVolumesSecret {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<KafkaConnectTemplatePodVolumesSecretItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodVolumesSecretItems {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
 }
 
 /// Template for Kafka Connect `PodDisruptionBudget`.

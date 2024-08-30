@@ -627,7 +627,8 @@ pub struct TestCatchWaitForJsonPath {
     /// Path defines the json path to wait for, e.g. '{.status.phase}'.
     pub path: String,
     /// Value defines the expected value to wait for, e.g., "Running".
-    pub value: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -1267,7 +1268,8 @@ pub struct TestStepsCatchWaitForJsonPath {
     /// Path defines the json path to wait for, e.g. '{.status.phase}'.
     pub path: String,
     /// Value defines the expected value to wait for, e.g., "Running".
-    pub value: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// CatchFinally defines actions to be executed in catch, finally and cleanup blocks.
@@ -1813,7 +1815,8 @@ pub struct TestStepsCleanupWaitForJsonPath {
     /// Path defines the json path to wait for, e.g. '{.status.phase}'.
     pub path: String,
     /// Value defines the expected value to wait for, e.g., "Running".
-    pub value: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -2378,7 +2381,8 @@ pub struct TestStepsFinallyWaitForJsonPath {
     /// Path defines the json path to wait for, e.g. '{.status.phase}'.
     pub path: String,
     /// Value defines the expected value to wait for, e.g., "Running".
-    pub value: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// Timeouts for the test step. Overrides the global timeouts set in the Configuration and the timeouts eventually set in the Test.
@@ -3452,7 +3456,8 @@ pub struct TestStepsTryWaitForJsonPath {
     /// Path defines the json path to wait for, e.g. '{.status.phase}'.
     pub path: String,
     /// Value defines the expected value to wait for, e.g., "Running".
-    pub value: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// Use defines a reference to a step template.

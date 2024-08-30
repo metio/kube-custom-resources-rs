@@ -33,6 +33,7 @@ pub struct BackupSpec {
     /// Databases defines the logical databases to be backed up. If not provided, all databases are backed up.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub databases: Option<Vec<String>>,
+    /// FailedJobsHistoryLimit defines the maximum number of failed Jobs to be displayed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i32>,
     /// IgnoreGlobalPriv indicates to ignore the mysql.global_priv in backups.
@@ -85,8 +86,10 @@ pub struct BackupSpec {
     pub service_account_name: Option<String>,
     /// Storage to be used in the Backup.
     pub storage: BackupStorage,
+    /// SuccessfulJobsHistoryLimit defines the maximum number of successful Jobs to be displayed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i32>,
+    /// TimeZone defines the timezone associated with the cron expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
     pub time_zone: Option<String>,
     /// Tolerations to be used in the Pod.

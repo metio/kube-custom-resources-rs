@@ -64,6 +64,9 @@ spec:
                     accessTokenIsJwt:
                       description: "Configure whether access token should be treated as JWT. This should be set to `false` if the authorization server returns opaque tokens. Defaults to `true`."
                       type: "boolean"
+                    accessTokenLocation:
+                      description: "Path to the token file containing an access token to be used for authentication."
+                      type: "string"
                     audience:
                       description: "OAuth audience to use when authenticating against the authorization server. Some authorization servers require the audience to be explicitly set. The possible values depend on how the authorization server is configured. By default, `audience` is not specified when performing the token endpoint request."
                       type: "string"
@@ -84,6 +87,25 @@ spec:
                         - "certificate"
                         - "key"
                       type: "object"
+                    clientAssertion:
+                      description: "Link to Kubernetes secret containing the client assertion which was manually configured for the client."
+                      properties:
+                        key:
+                          description: "The key under which the secret value is stored in the Kubernetes Secret."
+                          type: "string"
+                        secretName:
+                          description: "The name of the Kubernetes Secret containing the secret value."
+                          type: "string"
+                      required:
+                        - "key"
+                        - "secretName"
+                      type: "object"
+                    clientAssertionLocation:
+                      description: "Path to the file containing the client assertion to be used for authentication."
+                      type: "string"
+                    clientAssertionType:
+                      description: "The client assertion type. If not set, and either `clientAssertion` or `clientAssertionLocation` is configured, this value defaults to `urn:ietf:params:oauth:client-assertion-type:jwt-bearer`."
+                      type: "string"
                     clientId:
                       description: "OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI."
                       type: "string"
@@ -149,6 +171,11 @@ spec:
                       required:
                         - "key"
                         - "secretName"
+                      type: "object"
+                    saslExtensions:
+                      additionalProperties:
+                        type: "string"
+                      description: "SASL extensions parameters."
                       type: "object"
                     scope:
                       description: "OAuth scope to use when authenticating against the authorization server. Some authorization servers require this to be set. The possible values depend on how authorization server is configured. By default `scope` is not specified when doing the token endpoint request."
@@ -609,7 +636,7 @@ spec:
                       type: "object"
                   type: "object"
                 template:
-                  description: "Template for Kafka Connect and Kafka Mirror Maker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated."
+                  description: "Template for Kafka Connect and Kafka MirrorMaker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated."
                   properties:
                     apiService:
                       description: "Template for Kafka Connect API `Service`."
@@ -745,6 +772,26 @@ spec:
                                   type: "string"
                               type: "object"
                           type: "object"
+                        volumeMounts:
+                          description: "Additional volume mounts which should be applied to the container."
+                          items:
+                            properties:
+                              mountPath:
+                                type: "string"
+                              mountPropagation:
+                                type: "string"
+                              name:
+                                type: "string"
+                              readOnly:
+                                type: "boolean"
+                              recursiveReadOnly:
+                                type: "string"
+                              subPath:
+                                type: "string"
+                              subPathExpr:
+                                type: "string"
+                            type: "object"
+                          type: "array"
                       type: "object"
                     buildPod:
                       description: "Template for Kafka Connect Build `Pods`. The build pod is used only on Kubernetes."
@@ -1189,7 +1236,7 @@ spec:
                           minimum: 0.0
                           type: "integer"
                         tmpDirSizeLimit:
-                          description: "Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`."
+                          description: "Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources."
                           pattern: "^([0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
                           type: "string"
                         tolerations:
@@ -1248,6 +1295,85 @@ spec:
                                 type: "string"
                               whenUnsatisfiable:
                                 type: "string"
+                            type: "object"
+                          type: "array"
+                        volumes:
+                          description: "Additional volumes that can be mounted to the pod."
+                          items:
+                            oneOf:
+                              - properties:
+                                  configMap: {}
+                                  emptyDir: {}
+                                  persistentVolumeClaim: {}
+                                  secret: {}
+                                required: []
+                            properties:
+                              configMap:
+                                description: "ConfigMap to use to populate the volume."
+                                properties:
+                                  defaultMode:
+                                    type: "integer"
+                                  items:
+                                    items:
+                                      properties:
+                                        key:
+                                          type: "string"
+                                        mode:
+                                          type: "integer"
+                                        path:
+                                          type: "string"
+                                      type: "object"
+                                    type: "array"
+                                  name:
+                                    type: "string"
+                                  optional:
+                                    type: "boolean"
+                                type: "object"
+                              emptyDir:
+                                description: "EmptyDir to use to populate the volume."
+                                properties:
+                                  medium:
+                                    type: "string"
+                                  sizeLimit:
+                                    properties:
+                                      amount:
+                                        type: "string"
+                                      format:
+                                        type: "string"
+                                    type: "object"
+                                type: "object"
+                              name:
+                                description: "Name to use for the volume. Required."
+                                type: "string"
+                              persistentVolumeClaim:
+                                description: "PersistentVolumeClaim object to use to populate the volume."
+                                properties:
+                                  claimName:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                type: "object"
+                              secret:
+                                description: "Secret to use populate the volume."
+                                properties:
+                                  defaultMode:
+                                    type: "integer"
+                                  items:
+                                    items:
+                                      properties:
+                                        key:
+                                          type: "string"
+                                        mode:
+                                          type: "integer"
+                                        path:
+                                          type: "string"
+                                      type: "object"
+                                    type: "array"
+                                  optional:
+                                    type: "boolean"
+                                  secretName:
+                                    type: "string"
+                                type: "object"
                             type: "object"
                           type: "array"
                       type: "object"
@@ -1367,6 +1493,26 @@ spec:
                                   type: "string"
                               type: "object"
                           type: "object"
+                        volumeMounts:
+                          description: "Additional volume mounts which should be applied to the container."
+                          items:
+                            properties:
+                              mountPath:
+                                type: "string"
+                              mountPropagation:
+                                type: "string"
+                              name:
+                                type: "string"
+                              readOnly:
+                                type: "boolean"
+                              recursiveReadOnly:
+                                type: "string"
+                              subPath:
+                                type: "string"
+                              subPathExpr:
+                                type: "string"
+                            type: "object"
+                          type: "array"
                       type: "object"
                     deployment:
                       description: "Template for Kafka Connect `Deployment`."
@@ -1505,6 +1651,26 @@ spec:
                                   type: "string"
                               type: "object"
                           type: "object"
+                        volumeMounts:
+                          description: "Additional volume mounts which should be applied to the container."
+                          items:
+                            properties:
+                              mountPath:
+                                type: "string"
+                              mountPropagation:
+                                type: "string"
+                              name:
+                                type: "string"
+                              readOnly:
+                                type: "boolean"
+                              recursiveReadOnly:
+                                type: "string"
+                              subPath:
+                                type: "string"
+                              subPathExpr:
+                                type: "string"
+                            type: "object"
+                          type: "array"
                       type: "object"
                     jmxSecret:
                       description: "Template for Secret of the Kafka Connect Cluster JMX authentication."
@@ -1967,7 +2133,7 @@ spec:
                           minimum: 0.0
                           type: "integer"
                         tmpDirSizeLimit:
-                          description: "Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`."
+                          description: "Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources."
                           pattern: "^([0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
                           type: "string"
                         tolerations:
@@ -2026,6 +2192,85 @@ spec:
                                 type: "string"
                               whenUnsatisfiable:
                                 type: "string"
+                            type: "object"
+                          type: "array"
+                        volumes:
+                          description: "Additional volumes that can be mounted to the pod."
+                          items:
+                            oneOf:
+                              - properties:
+                                  configMap: {}
+                                  emptyDir: {}
+                                  persistentVolumeClaim: {}
+                                  secret: {}
+                                required: []
+                            properties:
+                              configMap:
+                                description: "ConfigMap to use to populate the volume."
+                                properties:
+                                  defaultMode:
+                                    type: "integer"
+                                  items:
+                                    items:
+                                      properties:
+                                        key:
+                                          type: "string"
+                                        mode:
+                                          type: "integer"
+                                        path:
+                                          type: "string"
+                                      type: "object"
+                                    type: "array"
+                                  name:
+                                    type: "string"
+                                  optional:
+                                    type: "boolean"
+                                type: "object"
+                              emptyDir:
+                                description: "EmptyDir to use to populate the volume."
+                                properties:
+                                  medium:
+                                    type: "string"
+                                  sizeLimit:
+                                    properties:
+                                      amount:
+                                        type: "string"
+                                      format:
+                                        type: "string"
+                                    type: "object"
+                                type: "object"
+                              name:
+                                description: "Name to use for the volume. Required."
+                                type: "string"
+                              persistentVolumeClaim:
+                                description: "PersistentVolumeClaim object to use to populate the volume."
+                                properties:
+                                  claimName:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                type: "object"
+                              secret:
+                                description: "Secret to use populate the volume."
+                                properties:
+                                  defaultMode:
+                                    type: "integer"
+                                  items:
+                                    items:
+                                      properties:
+                                        key:
+                                          type: "string"
+                                        mode:
+                                          type: "integer"
+                                        path:
+                                          type: "string"
+                                      type: "object"
+                                    type: "array"
+                                  optional:
+                                    type: "boolean"
+                                  secretName:
+                                    type: "string"
+                                type: "object"
                             type: "object"
                           type: "array"
                       type: "object"

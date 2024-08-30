@@ -82,7 +82,7 @@ pub struct NodePoolDisruptionBudgets {
     pub nodes: String,
     /// Reasons is a list of disruption methods that this budget applies to. If Reasons is not set, this budget applies to all methods.
     /// Otherwise, this will apply to each reason defined.
-    /// allowed reasons are Underutilized, Empty, and Drifted.
+    /// allowed reasons are Underutilized, Empty, and Drifted and additional CloudProvider-specific reasons.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reasons: Option<Vec<String>>,
     /// Schedule specifies when a budget begins being active, following

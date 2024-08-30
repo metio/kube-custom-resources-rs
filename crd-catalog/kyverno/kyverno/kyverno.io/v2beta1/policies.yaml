@@ -109,10 +109,10 @@ spec:
                           description: "MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook."
                           properties:
                             expression:
-                              description: "Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.\nCEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:\n\n\n'object' - The object from the incoming request. The value is null for DELETE requests.\n'oldObject' - The existing object. The value is null for CREATE requests.\n'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).\n'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\nDocumentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/\n\n\nRequired."
+                              description: "Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.\nCEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:\n\n'object' - The object from the incoming request. The value is null for DELETE requests.\n'oldObject' - The existing object. The value is null for CREATE requests.\n'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).\n'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\nDocumentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/\n\nRequired."
                               type: "string"
                             name:
-                              description: "Name is an identifier for this match condition, used for strategic merging of MatchConditions,\nas well as providing an identifier for logging purposes. A good name should be descriptive of\nthe associated expression.\nName must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and\nmust start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or\n'123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an\noptional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')\n\n\nRequired."
+                              description: "Name is an identifier for this match condition, used for strategic merging of MatchConditions,\nas well as providing an identifier for logging purposes. A good name should be descriptive of\nthe associated expression.\nName must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and\nmust start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or\n'123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an\noptional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')\n\nRequired."
                               type: "string"
                           required:
                             - "expression"
@@ -190,6 +190,8 @@ spec:
                                 name:
                                   description: "Name of the global context entry"
                                   type: "string"
+                              required:
+                                - "name"
                               type: "object"
                             imageRegistry:
                               description: "ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image\ndetails."
@@ -734,6 +736,8 @@ spec:
                                           name:
                                             description: "Name of the global context entry"
                                             type: "string"
+                                        required:
+                                          - "name"
                                         type: "object"
                                       imageRegistry:
                                         description: "ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image\ndetails."
@@ -1304,6 +1308,8 @@ spec:
                                           name:
                                             description: "Name of the global context entry"
                                             type: "string"
+                                        required:
+                                          - "name"
                                         type: "object"
                                       imageRegistry:
                                         description: "ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image\ndetails."
@@ -1544,6 +1550,8 @@ spec:
                                           name:
                                             description: "Name of the global context entry"
                                             type: "string"
+                                        required:
+                                          - "name"
                                         type: "object"
                                       imageRegistry:
                                         description: "ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image\ndetails."
@@ -1714,10 +1722,10 @@ spec:
                                   description: "AuditAnnotation describes how to produce an audit annotation for an API request."
                                   properties:
                                     key:
-                                      description: "key specifies the audit annotation key. The audit annotation keys of\na ValidatingAdmissionPolicy must be unique. The key must be a qualified\nname ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.\n\n\nThe key is combined with the resource name of the\nValidatingAdmissionPolicy to construct an audit annotation key:\n\"{ValidatingAdmissionPolicy name}/{key}\".\n\n\nIf an admission webhook uses the same resource name as this ValidatingAdmissionPolicy\nand the same audit annotation key, the annotation key will be identical.\nIn this case, the first annotation written with the key will be included\nin the audit event and all subsequent annotations with the same key\nwill be discarded.\n\n\nRequired."
+                                      description: "key specifies the audit annotation key. The audit annotation keys of\na ValidatingAdmissionPolicy must be unique. The key must be a qualified\nname ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.\n\nThe key is combined with the resource name of the\nValidatingAdmissionPolicy to construct an audit annotation key:\n\"{ValidatingAdmissionPolicy name}/{key}\".\n\nIf an admission webhook uses the same resource name as this ValidatingAdmissionPolicy\nand the same audit annotation key, the annotation key will be identical.\nIn this case, the first annotation written with the key will be included\nin the audit event and all subsequent annotations with the same key\nwill be discarded.\n\nRequired."
                                       type: "string"
                                     valueExpression:
-                                      description: "valueExpression represents the expression which is evaluated by CEL to\nproduce an audit annotation value. The expression must evaluate to either\na string or null value. If the expression evaluates to a string, the\naudit annotation is included with the string value. If the expression\nevaluates to null or empty string the audit annotation will be omitted.\nThe valueExpression may be no longer than 5kb in length.\nIf the result of the valueExpression is more than 10kb in length, it\nwill be truncated to 10kb.\n\n\nIf multiple ValidatingAdmissionPolicyBinding resources match an\nAPI request, then the valueExpression will be evaluated for\neach binding. All unique values produced by the valueExpressions\nwill be joined together in a comma-separated list.\n\n\nRequired."
+                                      description: "valueExpression represents the expression which is evaluated by CEL to\nproduce an audit annotation value. The expression must evaluate to either\na string or null value. If the expression evaluates to a string, the\naudit annotation is included with the string value. If the expression\nevaluates to null or empty string the audit annotation will be omitted.\nThe valueExpression may be no longer than 5kb in length.\nIf the result of the valueExpression is more than 10kb in length, it\nwill be truncated to 10kb.\n\nIf multiple ValidatingAdmissionPolicyBinding resources match an\nAPI request, then the valueExpression will be evaluated for\neach binding. All unique values produced by the valueExpressions\nwill be joined together in a comma-separated list.\n\nRequired."
                                       type: "string"
                                   required:
                                     - "key"
@@ -1730,7 +1738,7 @@ spec:
                                   description: "Validation specifies the CEL expression which is used to apply the validation."
                                   properties:
                                     expression:
-                                      description: "Expression represents the expression which will be evaluated by CEL.\nref: https://github.com/google/cel-spec\nCEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables:\n\n\n- 'object' - The object from the incoming request. The value is null for DELETE requests.\n- 'oldObject' - The existing object. The value is null for CREATE requests.\n- 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)).\n- 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind.\n- 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources.\n- 'variables' - Map of composited variables, from its name to its lazily evaluated value.\n  For example, a variable named 'foo' can be accessed as 'variables.foo'.\n- 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n- 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\n\n\nThe `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the\nobject. No other metadata properties are accessible.\n\n\nOnly property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible.\nAccessible property names are escaped according to the following rules when accessed in the expression:\n- '__' escapes to '__underscores__'\n- '.' escapes to '__dot__'\n- '-' escapes to '__dash__'\n- '/' escapes to '__slash__'\n- Property names that exactly match a CEL RESERVED keyword escape to '__{keyword}__'. The keywords are:\n\t  \"true\", \"false\", \"null\", \"in\", \"as\", \"break\", \"const\", \"continue\", \"else\", \"for\", \"function\", \"if\",\n\t  \"import\", \"let\", \"loop\", \"package\", \"namespace\", \"return\".\nExamples:\n  - Expression accessing a property named \"namespace\": {\"Expression\": \"object.__namespace__ > 0\"}\n  - Expression accessing a property named \"x-prop\": {\"Expression\": \"object.x__dash__prop > 0\"}\n  - Expression accessing a property named \"redact__d\": {\"Expression\": \"object.redact__underscores__d > 0\"}\n\n\nEquality on arrays with list type of 'set' or 'map' ignores element order, i.e. [1, 2] == [2, 1].\nConcatenation on arrays with x-kubernetes-list-type use the semantics of the list type:\n  - 'set': `X + Y` performs a union where the array positions of all elements in `X` are preserved and\n    non-intersecting elements in `Y` are appended, retaining their partial order.\n  - 'map': `X + Y` performs a merge where the array positions of all keys in `X` are preserved but the values\n    are overwritten by values in `Y` when the key sets of `X` and `Y` intersect. Elements in `Y` with\n    non-intersecting keys are appended, retaining their partial order.\nRequired."
+                                      description: "Expression represents the expression which will be evaluated by CEL.\nref: https://github.com/google/cel-spec\nCEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables:\n\n- 'object' - The object from the incoming request. The value is null for DELETE requests.\n- 'oldObject' - The existing object. The value is null for CREATE requests.\n- 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)).\n- 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind.\n- 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources.\n- 'variables' - Map of composited variables, from its name to its lazily evaluated value.\n  For example, a variable named 'foo' can be accessed as 'variables.foo'.\n- 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n- 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\n\nThe `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the\nobject. No other metadata properties are accessible.\n\nOnly property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible.\nAccessible property names are escaped according to the following rules when accessed in the expression:\n- '__' escapes to '__underscores__'\n- '.' escapes to '__dot__'\n- '-' escapes to '__dash__'\n- '/' escapes to '__slash__'\n- Property names that exactly match a CEL RESERVED keyword escape to '__{keyword}__'. The keywords are:\n\t  \"true\", \"false\", \"null\", \"in\", \"as\", \"break\", \"const\", \"continue\", \"else\", \"for\", \"function\", \"if\",\n\t  \"import\", \"let\", \"loop\", \"package\", \"namespace\", \"return\".\nExamples:\n  - Expression accessing a property named \"namespace\": {\"Expression\": \"object.__namespace__ > 0\"}\n  - Expression accessing a property named \"x-prop\": {\"Expression\": \"object.x__dash__prop > 0\"}\n  - Expression accessing a property named \"redact__d\": {\"Expression\": \"object.redact__underscores__d > 0\"}\n\nEquality on arrays with list type of 'set' or 'map' ignores element order, i.e. [1, 2] == [2, 1].\nConcatenation on arrays with x-kubernetes-list-type use the semantics of the list type:\n  - 'set': `X + Y` performs a union where the array positions of all elements in `X` are preserved and\n    non-intersecting elements in `Y` are appended, retaining their partial order.\n  - 'map': `X + Y` performs a merge where the array positions of all keys in `X` are preserved but the values\n    are overwritten by values in `Y` when the key sets of `X` and `Y` intersect. Elements in `Y` with\n    non-intersecting keys are appended, retaining their partial order.\nRequired."
                                       type: "string"
                                     message:
                                       description: "Message represents the message displayed when validation fails. The message is required if the Expression contains\nline breaks. The message must not contain line breaks.\nIf unset, the message is \"failed rule: {Rule}\".\ne.g. \"must be a URL with the host matching spec.host\"\nIf the Expression contains line breaks. Message is required.\nThe message must not contain line breaks.\nIf unset, the message is \"failed Expression: {Expression}\"."
@@ -1760,16 +1768,16 @@ spec:
                                 description: "ParamRef references a parameter resource."
                                 properties:
                                   name:
-                                    description: "`name` is the name of the resource being referenced.\n\n\n`name` and `selector` are mutually exclusive properties. If one is set,\nthe other must be unset."
+                                    description: "name is the name of the resource being referenced.\n\nOne of `name` or `selector` must be set, but `name` and `selector` are\nmutually exclusive properties. If one is set, the other must be unset.\n\nA single parameter used for all admission requests can be configured\nby setting the `name` field, leaving `selector` blank, and setting namespace\nif `paramKind` is namespace-scoped."
                                     type: "string"
                                   namespace:
-                                    description: "namespace is the namespace of the referenced resource. Allows limiting\nthe search for params to a specific namespace. Applies to both `name` and\n`selector` fields.\n\n\nA per-namespace parameter may be used by specifying a namespace-scoped\n`paramKind` in the policy and leaving this field empty.\n\n\n- If `paramKind` is cluster-scoped, this field MUST be unset. Setting this\nfield results in a configuration error.\n\n\n- If `paramKind` is namespace-scoped, the namespace of the object being\nevaluated for admission will be used when this field is left unset. Take\ncare that if this is left empty the binding must not match any cluster-scoped\nresources, which will result in an error."
+                                    description: "namespace is the namespace of the referenced resource. Allows limiting\nthe search for params to a specific namespace. Applies to both `name` and\n`selector` fields.\n\nA per-namespace parameter may be used by specifying a namespace-scoped\n`paramKind` in the policy and leaving this field empty.\n\n- If `paramKind` is cluster-scoped, this field MUST be unset. Setting this\nfield results in a configuration error.\n\n- If `paramKind` is namespace-scoped, the namespace of the object being\nevaluated for admission will be used when this field is left unset. Take\ncare that if this is left empty the binding must not match any cluster-scoped\nresources, which will result in an error."
                                     type: "string"
                                   parameterNotFoundAction:
-                                    description: "`parameterNotFoundAction` controls the behavior of the binding when the resource\nexists, and name or selector is valid, but there are no parameters\nmatched by the binding. If the value is set to `Allow`, then no\nmatched parameters will be treated as successful validation by the binding.\nIf set to `Deny`, then no matched parameters will be subject to the\n`failurePolicy` of the policy.\n\n\nAllowed values are `Allow` or `Deny`\nDefault to `Deny`"
+                                    description: "`parameterNotFoundAction` controls the behavior of the binding when the resource\nexists, and name or selector is valid, but there are no parameters\nmatched by the binding. If the value is set to `Allow`, then no\nmatched parameters will be treated as successful validation by the binding.\nIf set to `Deny`, then no matched parameters will be subject to the\n`failurePolicy` of the policy.\n\nAllowed values are `Allow` or `Deny`\n\nRequired"
                                     type: "string"
                                   selector:
-                                    description: "selector can be used to match multiple param objects based on their labels.\nSupply selector: {} to match all resources of the ParamKind.\n\n\nIf multiple params are found, they are all evaluated with the policy expressions\nand the results are ANDed together.\n\n\nOne of `name` or `selector` must be set, but `name` and `selector` are\nmutually exclusive properties. If one is set, the other must be unset."
+                                    description: "selector can be used to match multiple param objects based on their labels.\nSupply selector: {} to match all resources of the ParamKind.\n\nIf multiple params are found, they are all evaluated with the policy expressions\nand the results are ANDed together.\n\nOne of `name` or `selector` must be set, but `name` and `selector` are\nmutually exclusive properties. If one is set, the other must be unset."
                                     properties:
                                       matchExpressions:
                                         description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -1806,7 +1814,7 @@ spec:
                               variables:
                                 description: "Variables contain definitions of variables that can be used in composition of other expressions.\nEach variable is defined as a named CEL expression.\nThe variables defined here will be available under `variables` in other expressions of the policy."
                                 items:
-                                  description: "Variable is the definition of a variable that is used for composition."
+                                  description: "Variable is the definition of a variable that is used for composition. A variable is defined as a named expression."
                                   properties:
                                     expression:
                                       description: "Expression is the expression that will be evaluated as the value of the variable.\nThe CEL expression has access to the same identifiers as the CEL expressions in Validation."
@@ -1818,6 +1826,7 @@ spec:
                                     - "expression"
                                     - "name"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 type: "array"
                             type: "object"
                           deny:
@@ -1894,6 +1903,63 @@ spec:
                                     type: "array"
                                 type: "object"
                             type: "object"
+                          failureAction:
+                            description: "FailureAction defines if a validation policy rule violation should block\nthe admission review request (Enforce), or allow (Audit) the admission review request\nand report an error in a policy report. Optional.\nAllowed values are Audit or Enforce."
+                            enum:
+                              - "Audit"
+                              - "Enforce"
+                            type: "string"
+                          failureActionOverrides:
+                            description: "FailureActionOverrides is a Cluster Policy attribute that specifies FailureAction\nnamespace-wise. It overrides FailureAction for the specified namespaces."
+                            items:
+                              properties:
+                                action:
+                                  description: "ValidationFailureAction defines the policy validation failure action"
+                                  enum:
+                                    - "audit"
+                                    - "enforce"
+                                    - "Audit"
+                                    - "Enforce"
+                                  type: "string"
+                                namespaceSelector:
+                                  description: "A label selector is a label query over a set of resources. The result of matchLabels and\nmatchExpressions are ANDed. An empty label selector matches all objects. A null\nlabel selector matches no objects."
+                                  properties:
+                                    matchExpressions:
+                                      description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                      items:
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                        properties:
+                                          key:
+                                            description: "key is the label key that the selector applies to."
+                                            type: "string"
+                                          operator:
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                            type: "string"
+                                          values:
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                            x-kubernetes-list-type: "atomic"
+                                        required:
+                                          - "key"
+                                          - "operator"
+                                        type: "object"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      type: "object"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                                namespaces:
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                              type: "object"
+                            type: "array"
                           foreach:
                             description: "ForEach applies validate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic."
                             items:
@@ -1973,6 +2039,8 @@ spec:
                                           name:
                                             description: "Name of the global context entry"
                                             type: "string"
+                                        required:
+                                          - "name"
                                         type: "object"
                                       imageRegistry:
                                         description: "ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image\ndetails."
@@ -2409,63 +2477,6 @@ spec:
                                   - "latest"
                                 type: "string"
                             type: "object"
-                          validationFailureAction:
-                            description: "ValidationFailureAction defines if a validation policy rule violation should block\nthe admission review request (Enforce), or allow (Audit) the admission review request\nand report an error in a policy report. Optional.\nAllowed values are Audit or Enforce."
-                            enum:
-                              - "Audit"
-                              - "Enforce"
-                            type: "string"
-                          validationFailureActionOverrides:
-                            description: "ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction\nnamespace-wise. It overrides ValidationFailureAction for the specified namespaces."
-                            items:
-                              properties:
-                                action:
-                                  description: "ValidationFailureAction defines the policy validation failure action"
-                                  enum:
-                                    - "audit"
-                                    - "enforce"
-                                    - "Audit"
-                                    - "Enforce"
-                                  type: "string"
-                                namespaceSelector:
-                                  description: "A label selector is a label query over a set of resources. The result of matchLabels and\nmatchExpressions are ANDed. An empty label selector matches all objects. A null\nlabel selector matches no objects."
-                                  properties:
-                                    matchExpressions:
-                                      description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                                      items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                        properties:
-                                          key:
-                                            description: "key is the label key that the selector applies to."
-                                            type: "string"
-                                          operator:
-                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                            type: "string"
-                                          values:
-                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                            items:
-                                              type: "string"
-                                            type: "array"
-                                            x-kubernetes-list-type: "atomic"
-                                        required:
-                                          - "key"
-                                          - "operator"
-                                        type: "object"
-                                      type: "array"
-                                      x-kubernetes-list-type: "atomic"
-                                    matchLabels:
-                                      additionalProperties:
-                                        type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                                      type: "object"
-                                  type: "object"
-                                  x-kubernetes-map-type: "atomic"
-                                namespaces:
-                                  items:
-                                    type: "string"
-                                  type: "array"
-                              type: "object"
-                            type: "array"
                         type: "object"
                       verifyImages:
                         description: "VerifyImages is used to verify image signatures and mutate them to add a digest"
@@ -2896,6 +2907,12 @@ spec:
                                     type: "array"
                                 type: "object"
                               type: "array"
+                            failureAction:
+                              description: "Allowed values are Audit or Enforce."
+                              enum:
+                                - "Audit"
+                                - "Enforce"
+                              type: "string"
                             imageReferences:
                               description: "ImageReferences is a list of matching image reference patterns. At least one pattern in the\nlist must match the image for the rule to apply. Each image reference consists of a registry\naddress (defaults to docker.io), repository, image, and tag (defaults to latest).\nWildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images."
                               items:
@@ -2952,12 +2969,6 @@ spec:
                               default: true
                               description: "UseCache enables caching of image verify responses for this rule"
                               type: "boolean"
-                            validationFailureAction:
-                              description: "Allowed values are Audit or Enforce."
-                              enum:
-                                - "Audit"
-                                - "Enforce"
-                              type: "string"
                             verifyDigest:
                               default: true
                               description: "VerifyDigest validates that images have a digest."
@@ -3049,10 +3060,10 @@ spec:
                         description: "MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook."
                         properties:
                           expression:
-                            description: "Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.\nCEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:\n\n\n'object' - The object from the incoming request. The value is null for DELETE requests.\n'oldObject' - The existing object. The value is null for CREATE requests.\n'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).\n'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\nDocumentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/\n\n\nRequired."
+                            description: "Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.\nCEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:\n\n'object' - The object from the incoming request. The value is null for DELETE requests.\n'oldObject' - The existing object. The value is null for CREATE requests.\n'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).\n'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\nDocumentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/\n\nRequired."
                             type: "string"
                           name:
-                            description: "Name is an identifier for this match condition, used for strategic merging of MatchConditions,\nas well as providing an identifier for logging purposes. A good name should be descriptive of\nthe associated expression.\nName must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and\nmust start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or\n'123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an\noptional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')\n\n\nRequired."
+                            description: "Name is an identifier for this match condition, used for strategic merging of MatchConditions,\nas well as providing an identifier for logging purposes. A good name should be descriptive of\nthe associated expression.\nName must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and\nmust start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or\n'123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an\noptional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')\n\nRequired."
                             type: "string"
                         required:
                           - "expression"
@@ -3083,13 +3094,13 @@ spec:
                           celPreconditions:
                             description: "CELPreconditions are used to determine if a policy rule should be applied by evaluating a\nset of CEL conditions. It can only be used with the validate.cel subrule"
                             items:
-                              description: "MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook."
+                              description: "MatchCondition represents a condition which must be fulfilled for a request to be sent to a webhook."
                               properties:
                                 expression:
-                                  description: "Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.\nCEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:\n\n\n'object' - The object from the incoming request. The value is null for DELETE requests.\n'oldObject' - The existing object. The value is null for CREATE requests.\n'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).\n'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\nDocumentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/\n\n\nRequired."
+                                  description: "Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.\nCEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:\n\n'object' - The object from the incoming request. The value is null for DELETE requests.\n'oldObject' - The existing object. The value is null for CREATE requests.\n'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).\n'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\nDocumentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/\n\nRequired."
                                   type: "string"
                                 name:
-                                  description: "Name is an identifier for this match condition, used for strategic merging of MatchConditions,\nas well as providing an identifier for logging purposes. A good name should be descriptive of\nthe associated expression.\nName must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and\nmust start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or\n'123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an\noptional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')\n\n\nRequired."
+                                  description: "Name is an identifier for this match condition, used for strategic merging of MatchConditions,\nas well as providing an identifier for logging purposes. A good name should be descriptive of\nthe associated expression.\nName must be a qualified name consisting of alphanumeric characters, '-', '_' or '.', and\nmust start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or\n'123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an\noptional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')\n\nRequired."
                                   type: "string"
                               required:
                                 - "expression"
@@ -3167,6 +3178,8 @@ spec:
                                     name:
                                       description: "Name of the global context entry"
                                       type: "string"
+                                  required:
+                                    - "name"
                                   type: "object"
                                 imageRegistry:
                                   description: "ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image\ndetails."
@@ -3848,6 +3861,8 @@ spec:
                                               name:
                                                 description: "Name of the global context entry"
                                                 type: "string"
+                                            required:
+                                              - "name"
                                             type: "object"
                                           imageRegistry:
                                             description: "ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image\ndetails."
@@ -4555,6 +4570,8 @@ spec:
                                               name:
                                                 description: "Name of the global context entry"
                                                 type: "string"
+                                            required:
+                                              - "name"
                                             type: "object"
                                           imageRegistry:
                                             description: "ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image\ndetails."
@@ -4795,6 +4812,8 @@ spec:
                                               name:
                                                 description: "Name of the global context entry"
                                                 type: "string"
+                                            required:
+                                              - "name"
                                             type: "object"
                                           imageRegistry:
                                             description: "ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image\ndetails."
@@ -4898,10 +4917,10 @@ spec:
                                       description: "AuditAnnotation describes how to produce an audit annotation for an API request."
                                       properties:
                                         key:
-                                          description: "key specifies the audit annotation key. The audit annotation keys of\na ValidatingAdmissionPolicy must be unique. The key must be a qualified\nname ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.\n\n\nThe key is combined with the resource name of the\nValidatingAdmissionPolicy to construct an audit annotation key:\n\"{ValidatingAdmissionPolicy name}/{key}\".\n\n\nIf an admission webhook uses the same resource name as this ValidatingAdmissionPolicy\nand the same audit annotation key, the annotation key will be identical.\nIn this case, the first annotation written with the key will be included\nin the audit event and all subsequent annotations with the same key\nwill be discarded.\n\n\nRequired."
+                                          description: "key specifies the audit annotation key. The audit annotation keys of\na ValidatingAdmissionPolicy must be unique. The key must be a qualified\nname ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.\n\nThe key is combined with the resource name of the\nValidatingAdmissionPolicy to construct an audit annotation key:\n\"{ValidatingAdmissionPolicy name}/{key}\".\n\nIf an admission webhook uses the same resource name as this ValidatingAdmissionPolicy\nand the same audit annotation key, the annotation key will be identical.\nIn this case, the first annotation written with the key will be included\nin the audit event and all subsequent annotations with the same key\nwill be discarded.\n\nRequired."
                                           type: "string"
                                         valueExpression:
-                                          description: "valueExpression represents the expression which is evaluated by CEL to\nproduce an audit annotation value. The expression must evaluate to either\na string or null value. If the expression evaluates to a string, the\naudit annotation is included with the string value. If the expression\nevaluates to null or empty string the audit annotation will be omitted.\nThe valueExpression may be no longer than 5kb in length.\nIf the result of the valueExpression is more than 10kb in length, it\nwill be truncated to 10kb.\n\n\nIf multiple ValidatingAdmissionPolicyBinding resources match an\nAPI request, then the valueExpression will be evaluated for\neach binding. All unique values produced by the valueExpressions\nwill be joined together in a comma-separated list.\n\n\nRequired."
+                                          description: "valueExpression represents the expression which is evaluated by CEL to\nproduce an audit annotation value. The expression must evaluate to either\na string or null value. If the expression evaluates to a string, the\naudit annotation is included with the string value. If the expression\nevaluates to null or empty string the audit annotation will be omitted.\nThe valueExpression may be no longer than 5kb in length.\nIf the result of the valueExpression is more than 10kb in length, it\nwill be truncated to 10kb.\n\nIf multiple ValidatingAdmissionPolicyBinding resources match an\nAPI request, then the valueExpression will be evaluated for\neach binding. All unique values produced by the valueExpressions\nwill be joined together in a comma-separated list.\n\nRequired."
                                           type: "string"
                                       required:
                                         - "key"
@@ -4914,7 +4933,7 @@ spec:
                                       description: "Validation specifies the CEL expression which is used to apply the validation."
                                       properties:
                                         expression:
-                                          description: "Expression represents the expression which will be evaluated by CEL.\nref: https://github.com/google/cel-spec\nCEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables:\n\n\n- 'object' - The object from the incoming request. The value is null for DELETE requests.\n- 'oldObject' - The existing object. The value is null for CREATE requests.\n- 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)).\n- 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind.\n- 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources.\n- 'variables' - Map of composited variables, from its name to its lazily evaluated value.\n  For example, a variable named 'foo' can be accessed as 'variables.foo'.\n- 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n- 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\n\n\nThe `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the\nobject. No other metadata properties are accessible.\n\n\nOnly property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible.\nAccessible property names are escaped according to the following rules when accessed in the expression:\n- '__' escapes to '__underscores__'\n- '.' escapes to '__dot__'\n- '-' escapes to '__dash__'\n- '/' escapes to '__slash__'\n- Property names that exactly match a CEL RESERVED keyword escape to '__{keyword}__'. The keywords are:\n\t  \"true\", \"false\", \"null\", \"in\", \"as\", \"break\", \"const\", \"continue\", \"else\", \"for\", \"function\", \"if\",\n\t  \"import\", \"let\", \"loop\", \"package\", \"namespace\", \"return\".\nExamples:\n  - Expression accessing a property named \"namespace\": {\"Expression\": \"object.__namespace__ > 0\"}\n  - Expression accessing a property named \"x-prop\": {\"Expression\": \"object.x__dash__prop > 0\"}\n  - Expression accessing a property named \"redact__d\": {\"Expression\": \"object.redact__underscores__d > 0\"}\n\n\nEquality on arrays with list type of 'set' or 'map' ignores element order, i.e. [1, 2] == [2, 1].\nConcatenation on arrays with x-kubernetes-list-type use the semantics of the list type:\n  - 'set': `X + Y` performs a union where the array positions of all elements in `X` are preserved and\n    non-intersecting elements in `Y` are appended, retaining their partial order.\n  - 'map': `X + Y` performs a merge where the array positions of all keys in `X` are preserved but the values\n    are overwritten by values in `Y` when the key sets of `X` and `Y` intersect. Elements in `Y` with\n    non-intersecting keys are appended, retaining their partial order.\nRequired."
+                                          description: "Expression represents the expression which will be evaluated by CEL.\nref: https://github.com/google/cel-spec\nCEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables:\n\n- 'object' - The object from the incoming request. The value is null for DELETE requests.\n- 'oldObject' - The existing object. The value is null for CREATE requests.\n- 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)).\n- 'params' - Parameter resource referred to by the policy binding being evaluated. Only populated if the policy has a ParamKind.\n- 'namespaceObject' - The namespace object that the incoming object belongs to. The value is null for cluster-scoped resources.\n- 'variables' - Map of composited variables, from its name to its lazily evaluated value.\n  For example, a variable named 'foo' can be accessed as 'variables.foo'.\n- 'authorizer' - A CEL Authorizer. May be used to perform authorization checks for the principal (user or service account) of the request.\n  See https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz\n- 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the\n  request resource.\n\nThe `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the\nobject. No other metadata properties are accessible.\n\nOnly property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible.\nAccessible property names are escaped according to the following rules when accessed in the expression:\n- '__' escapes to '__underscores__'\n- '.' escapes to '__dot__'\n- '-' escapes to '__dash__'\n- '/' escapes to '__slash__'\n- Property names that exactly match a CEL RESERVED keyword escape to '__{keyword}__'. The keywords are:\n\t  \"true\", \"false\", \"null\", \"in\", \"as\", \"break\", \"const\", \"continue\", \"else\", \"for\", \"function\", \"if\",\n\t  \"import\", \"let\", \"loop\", \"package\", \"namespace\", \"return\".\nExamples:\n  - Expression accessing a property named \"namespace\": {\"Expression\": \"object.__namespace__ > 0\"}\n  - Expression accessing a property named \"x-prop\": {\"Expression\": \"object.x__dash__prop > 0\"}\n  - Expression accessing a property named \"redact__d\": {\"Expression\": \"object.redact__underscores__d > 0\"}\n\nEquality on arrays with list type of 'set' or 'map' ignores element order, i.e. [1, 2] == [2, 1].\nConcatenation on arrays with x-kubernetes-list-type use the semantics of the list type:\n  - 'set': `X + Y` performs a union where the array positions of all elements in `X` are preserved and\n    non-intersecting elements in `Y` are appended, retaining their partial order.\n  - 'map': `X + Y` performs a merge where the array positions of all keys in `X` are preserved but the values\n    are overwritten by values in `Y` when the key sets of `X` and `Y` intersect. Elements in `Y` with\n    non-intersecting keys are appended, retaining their partial order.\nRequired."
                                           type: "string"
                                         message:
                                           description: "Message represents the message displayed when validation fails. The message is required if the Expression contains\nline breaks. The message must not contain line breaks.\nIf unset, the message is \"failed rule: {Rule}\".\ne.g. \"must be a URL with the host matching spec.host\"\nIf the Expression contains line breaks. Message is required.\nThe message must not contain line breaks.\nIf unset, the message is \"failed Expression: {Expression}\"."
@@ -4944,16 +4963,16 @@ spec:
                                     description: "ParamRef references a parameter resource."
                                     properties:
                                       name:
-                                        description: "`name` is the name of the resource being referenced.\n\n\n`name` and `selector` are mutually exclusive properties. If one is set,\nthe other must be unset."
+                                        description: "name is the name of the resource being referenced.\n\nOne of `name` or `selector` must be set, but `name` and `selector` are\nmutually exclusive properties. If one is set, the other must be unset.\n\nA single parameter used for all admission requests can be configured\nby setting the `name` field, leaving `selector` blank, and setting namespace\nif `paramKind` is namespace-scoped."
                                         type: "string"
                                       namespace:
-                                        description: "namespace is the namespace of the referenced resource. Allows limiting\nthe search for params to a specific namespace. Applies to both `name` and\n`selector` fields.\n\n\nA per-namespace parameter may be used by specifying a namespace-scoped\n`paramKind` in the policy and leaving this field empty.\n\n\n- If `paramKind` is cluster-scoped, this field MUST be unset. Setting this\nfield results in a configuration error.\n\n\n- If `paramKind` is namespace-scoped, the namespace of the object being\nevaluated for admission will be used when this field is left unset. Take\ncare that if this is left empty the binding must not match any cluster-scoped\nresources, which will result in an error."
+                                        description: "namespace is the namespace of the referenced resource. Allows limiting\nthe search for params to a specific namespace. Applies to both `name` and\n`selector` fields.\n\nA per-namespace parameter may be used by specifying a namespace-scoped\n`paramKind` in the policy and leaving this field empty.\n\n- If `paramKind` is cluster-scoped, this field MUST be unset. Setting this\nfield results in a configuration error.\n\n- If `paramKind` is namespace-scoped, the namespace of the object being\nevaluated for admission will be used when this field is left unset. Take\ncare that if this is left empty the binding must not match any cluster-scoped\nresources, which will result in an error."
                                         type: "string"
                                       parameterNotFoundAction:
-                                        description: "`parameterNotFoundAction` controls the behavior of the binding when the resource\nexists, and name or selector is valid, but there are no parameters\nmatched by the binding. If the value is set to `Allow`, then no\nmatched parameters will be treated as successful validation by the binding.\nIf set to `Deny`, then no matched parameters will be subject to the\n`failurePolicy` of the policy.\n\n\nAllowed values are `Allow` or `Deny`\nDefault to `Deny`"
+                                        description: "`parameterNotFoundAction` controls the behavior of the binding when the resource\nexists, and name or selector is valid, but there are no parameters\nmatched by the binding. If the value is set to `Allow`, then no\nmatched parameters will be treated as successful validation by the binding.\nIf set to `Deny`, then no matched parameters will be subject to the\n`failurePolicy` of the policy.\n\nAllowed values are `Allow` or `Deny`\n\nRequired"
                                         type: "string"
                                       selector:
-                                        description: "selector can be used to match multiple param objects based on their labels.\nSupply selector: {} to match all resources of the ParamKind.\n\n\nIf multiple params are found, they are all evaluated with the policy expressions\nand the results are ANDed together.\n\n\nOne of `name` or `selector` must be set, but `name` and `selector` are\nmutually exclusive properties. If one is set, the other must be unset."
+                                        description: "selector can be used to match multiple param objects based on their labels.\nSupply selector: {} to match all resources of the ParamKind.\n\nIf multiple params are found, they are all evaluated with the policy expressions\nand the results are ANDed together.\n\nOne of `name` or `selector` must be set, but `name` and `selector` are\nmutually exclusive properties. If one is set, the other must be unset."
                                         properties:
                                           matchExpressions:
                                             description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -4990,7 +5009,7 @@ spec:
                                   variables:
                                     description: "Variables contain definitions of variables that can be used in composition of other expressions.\nEach variable is defined as a named CEL expression.\nThe variables defined here will be available under `variables` in other expressions of the policy."
                                     items:
-                                      description: "Variable is the definition of a variable that is used for composition."
+                                      description: "Variable is the definition of a variable that is used for composition. A variable is defined as a named expression."
                                       properties:
                                         expression:
                                           description: "Expression is the expression that will be evaluated as the value of the variable.\nThe CEL expression has access to the same identifiers as the CEL expressions in Validation."
@@ -5002,6 +5021,7 @@ spec:
                                         - "expression"
                                         - "name"
                                       type: "object"
+                                      x-kubernetes-map-type: "atomic"
                                     type: "array"
                                 type: "object"
                               deny:
@@ -5011,6 +5031,63 @@ spec:
                                     description: "Multiple conditions can be declared under an `any` or `all` statement. A direct list\nof conditions (without `any` or `all` statements) is also supported for backwards compatibility\nbut will be deprecated in the next major release.\nSee: https://kyverno.io/docs/writing-policies/validate/#deny-rules"
                                     x-kubernetes-preserve-unknown-fields: true
                                 type: "object"
+                              failureAction:
+                                description: "FailureAction defines if a validation policy rule violation should block\nthe admission review request (Enforce), or allow (Audit) the admission review request\nand report an error in a policy report. Optional.\nAllowed values are Audit or Enforce."
+                                enum:
+                                  - "Audit"
+                                  - "Enforce"
+                                type: "string"
+                              failureActionOverrides:
+                                description: "FailureActionOverrides is a Cluster Policy attribute that specifies FailureAction\nnamespace-wise. It overrides FailureAction for the specified namespaces."
+                                items:
+                                  properties:
+                                    action:
+                                      description: "ValidationFailureAction defines the policy validation failure action"
+                                      enum:
+                                        - "audit"
+                                        - "enforce"
+                                        - "Audit"
+                                        - "Enforce"
+                                      type: "string"
+                                    namespaceSelector:
+                                      description: "A label selector is a label query over a set of resources. The result of matchLabels and\nmatchExpressions are ANDed. An empty label selector matches all objects. A null\nlabel selector matches no objects."
+                                      properties:
+                                        matchExpressions:
+                                          description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                          items:
+                                            description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                            properties:
+                                              key:
+                                                description: "key is the label key that the selector applies to."
+                                                type: "string"
+                                              operator:
+                                                description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                                type: "string"
+                                              values:
+                                                description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                                x-kubernetes-list-type: "atomic"
+                                            required:
+                                              - "key"
+                                              - "operator"
+                                            type: "object"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                          type: "object"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    namespaces:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
                               foreach:
                                 description: "ForEach applies validate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic."
                                 items:
@@ -5090,6 +5167,8 @@ spec:
                                               name:
                                                 description: "Name of the global context entry"
                                                 type: "string"
+                                            required:
+                                              - "name"
                                             type: "object"
                                           imageRegistry:
                                             description: "ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image\ndetails."
@@ -5526,63 +5605,6 @@ spec:
                                       - "latest"
                                     type: "string"
                                 type: "object"
-                              validationFailureAction:
-                                description: "ValidationFailureAction defines if a validation policy rule violation should block\nthe admission review request (Enforce), or allow (Audit) the admission review request\nand report an error in a policy report. Optional.\nAllowed values are Audit or Enforce."
-                                enum:
-                                  - "Audit"
-                                  - "Enforce"
-                                type: "string"
-                              validationFailureActionOverrides:
-                                description: "ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction\nnamespace-wise. It overrides ValidationFailureAction for the specified namespaces."
-                                items:
-                                  properties:
-                                    action:
-                                      description: "ValidationFailureAction defines the policy validation failure action"
-                                      enum:
-                                        - "audit"
-                                        - "enforce"
-                                        - "Audit"
-                                        - "Enforce"
-                                      type: "string"
-                                    namespaceSelector:
-                                      description: "A label selector is a label query over a set of resources. The result of matchLabels and\nmatchExpressions are ANDed. An empty label selector matches all objects. A null\nlabel selector matches no objects."
-                                      properties:
-                                        matchExpressions:
-                                          description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                                          items:
-                                            description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                            properties:
-                                              key:
-                                                description: "key is the label key that the selector applies to."
-                                                type: "string"
-                                              operator:
-                                                description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                                type: "string"
-                                              values:
-                                                description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                                items:
-                                                  type: "string"
-                                                type: "array"
-                                                x-kubernetes-list-type: "atomic"
-                                            required:
-                                              - "key"
-                                              - "operator"
-                                            type: "object"
-                                          type: "array"
-                                          x-kubernetes-list-type: "atomic"
-                                        matchLabels:
-                                          additionalProperties:
-                                            type: "string"
-                                          description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                                          type: "object"
-                                      type: "object"
-                                      x-kubernetes-map-type: "atomic"
-                                    namespaces:
-                                      items:
-                                        type: "string"
-                                      type: "array"
-                                  type: "object"
-                                type: "array"
                             type: "object"
                           verifyImages:
                             description: "VerifyImages is used to verify image signatures and mutate them to add a digest"
@@ -6026,6 +6048,12 @@ spec:
                                 cosignOCI11:
                                   description: "CosignOCI11 enables the experimental OCI 1.1 behaviour in cosign image verification.\nDefaults to false."
                                   type: "boolean"
+                                failureAction:
+                                  description: "Allowed values are Audit or Enforce."
+                                  enum:
+                                    - "Audit"
+                                    - "Enforce"
+                                  type: "string"
                                 image:
                                   description: "Deprecated. Use ImageReferences instead."
                                   type: "string"
@@ -6097,12 +6125,6 @@ spec:
                                   default: true
                                   description: "UseCache enables caching of image verify responses for this rule."
                                   type: "boolean"
-                                validationFailureAction:
-                                  description: "Allowed values are Audit or Enforce."
-                                  enum:
-                                    - "Audit"
-                                    - "Enforce"
-                                  type: "string"
                                 verifyDigest:
                                   default: true
                                   description: "VerifyDigest validates that images have a digest."
@@ -6116,7 +6138,7 @@ spec:
                   type: "object"
                 conditions:
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -6145,7 +6167,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

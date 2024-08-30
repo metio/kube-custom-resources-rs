@@ -6165,9 +6165,9 @@ pub struct MariaDBGaleraRecovery {
     /// Job defines a Job that co-operates with mariadb-operator by performing the Galera cluster recovery .
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub job: Option<MariaDBGaleraRecoveryJob>,
-    /// MinClusterSize is the minimum number of replicas to consider the cluster healthy. It can be either a number of replicas (3) or a percentage (50%).
+    /// MinClusterSize is the minimum number of replicas to consider the cluster healthy. It can be either a number of replicas (1) or a percentage (50%).
     /// If Galera consistently reports less replicas than this value for the given 'ClusterHealthyTimeout' interval, a cluster recovery is iniated.
-    /// It defaults to '50%' of the replicas specified by the MariaDB object.
+    /// It defaults to '1' replica.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minClusterSize")]
     pub min_cluster_size: Option<IntOrString>,
     /// PodRecoveryTimeout is the time limit for recevorying the sequence of a Pod during the cluster recovery.

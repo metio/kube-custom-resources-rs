@@ -133,6 +133,8 @@ spec:
                                   properties:
                                     connectionString:
                                       type: "string"
+                                    scoreThreshold:
+                                      type: "number"
                                   type: "object"
                               type: "object"
                             embedding:
@@ -153,6 +155,9 @@ spec:
                                       type: "object"
                                   type: "object"
                               type: "object"
+                            mode:
+                              type: "string"
+                              x-kubernetes-int-or-string: true
                             ttl:
                               maximum: 4294967295.0
                               minimum: 0.0

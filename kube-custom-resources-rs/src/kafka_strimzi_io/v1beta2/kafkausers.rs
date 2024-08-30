@@ -122,7 +122,7 @@ pub struct KafkaUserAuthorizationAcls {
     /// Operation which will be allowed or denied. Supported operations are: Read, Write, Create, Delete, Alter, Describe, ClusterAction, AlterConfigs, DescribeConfigs, IdempotentWrite and All.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operation: Option<KafkaUserAuthorizationAclsOperation>,
-    /// List of operations which will be allowed or denied. Supported operations are: Read, Write, Create, Delete, Alter, Describe, ClusterAction, AlterConfigs, DescribeConfigs, IdempotentWrite and All.
+    /// List of operations to allow or deny. Supported operations are: Read, Write, Create, Delete, Alter, Describe, ClusterAction, AlterConfigs, DescribeConfigs, IdempotentWrite and All. Only certain operations work with the specified resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
     /// Indicates the resource for which given ACL rule applies.

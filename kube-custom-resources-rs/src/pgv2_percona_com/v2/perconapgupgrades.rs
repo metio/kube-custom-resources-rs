@@ -56,10 +56,15 @@ pub struct PerconaPGUpgradeSpec {
     /// Resource requirements for the PGUpgrade container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaPGUpgradeResources>,
-    /// The image name to use for PostgreSQL containers after upgrade.
-    /// When omitted, the value comes from an operator environment variable.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPostgresImage")]
-    pub to_postgres_image: Option<String>,
+    /// The image to use for PgBackRest containers after upgrade.
+    #[serde(rename = "toPgBackRestImage")]
+    pub to_pg_back_rest_image: String,
+    /// The image to use for PgBouncer containers after upgrade.
+    #[serde(rename = "toPgBouncerImage")]
+    pub to_pg_bouncer_image: String,
+    /// The image to use for PostgreSQL containers after upgrade.
+    #[serde(rename = "toPostgresImage")]
+    pub to_postgres_image: String,
     /// The major version of PostgreSQL to be upgraded to.
     #[serde(rename = "toPostgresVersion")]
     pub to_postgres_version: i64,
