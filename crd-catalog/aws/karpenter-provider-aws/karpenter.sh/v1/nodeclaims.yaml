@@ -5,17 +5,6 @@ metadata:
     controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "nodeclaims.karpenter.sh"
 spec:
-  conversion:
-    strategy: "Webhook"
-    webhook:
-      clientConfig:
-        service:
-          name: "karpenter"
-          namespace: "kube-system"
-          port: 8443
-      conversionReviewVersions:
-        - "v1beta1"
-        - "v1"
   group: "karpenter.sh"
   names:
     categories:

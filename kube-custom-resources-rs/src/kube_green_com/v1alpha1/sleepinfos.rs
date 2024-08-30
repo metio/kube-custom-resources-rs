@@ -64,15 +64,13 @@ pub struct SleepInfoSpec {
     pub weekdays: String,
 }
 
-/// Common type to use for both IncludeRef and ExcludeRef to prevent duplication
+/// Define a resource to filter, used to include or exclude resources from the sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SleepInfoExcludeRef {
     /// ApiVersion of the kubernetes resources.
-    /// Supported api version is "apps/v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the kubernetes resources of the specific version.
-    /// Supported kind are "Deployment" and "CronJob".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     /// MatchLabels which identify the kubernetes resource by labels
@@ -83,15 +81,13 @@ pub struct SleepInfoExcludeRef {
     pub name: Option<String>,
 }
 
-/// Common type to use for both IncludeRef and ExcludeRef to prevent duplication
+/// Define a resource to filter, used to include or exclude resources from the sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SleepInfoIncludeRef {
     /// ApiVersion of the kubernetes resources.
-    /// Supported api version is "apps/v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the kubernetes resources of the specific version.
-    /// Supported kind are "Deployment" and "CronJob".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     /// MatchLabels which identify the kubernetes resource by labels

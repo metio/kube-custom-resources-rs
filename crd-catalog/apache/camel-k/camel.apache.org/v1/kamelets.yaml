@@ -19,9 +19,21 @@ spec:
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
-        - description: "The Kamelet phase"
-          jsonPath: ".status.phase"
+        - description: "The Kamelet type"
+          jsonPath: ".metadata.labels.camel\\.apache\\.org\\/kamelet\\.type"
           name: "Type"
+          type: "string"
+        - description: "The Kamelet provider"
+          jsonPath: ".metadata.annotations.camel\\.apache\\.org\\/provider"
+          name: "Provider"
+          type: "string"
+        - description: "The Kamelet bundled"
+          jsonPath: ".metadata.labels.camel\\.apache\\.org\\/kamelet\\.bundled"
+          name: "Bundled"
+          type: "string"
+        - description: "The Camel compatible version"
+          jsonPath: ".metadata.annotations.camel\\.apache\\.org\\/catalog\\.version"
+          name: "Camel Version"
           type: "string"
       name: "v1"
       schema:

@@ -22,7 +22,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct PostgresClusterSpec {
     /// PostgreSQL backup configuration
-    pub backups: PostgresClusterBackups,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub backups: Option<PostgresClusterBackups>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<PostgresClusterConfig>,
     /// The secret containing the replication client certificates and keys for
@@ -144,7 +145,8 @@ pub struct PostgresClusterSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PostgresClusterBackups {
     /// pgBackRest archive configuration
-    pub pgbackrest: PostgresClusterBackupsPgbackrest,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pgbackrest: Option<PostgresClusterBackupsPgbackrest>,
     /// VolumeSnapshot configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshots: Option<PostgresClusterBackupsSnapshots>,

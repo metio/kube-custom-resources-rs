@@ -10883,7 +10883,7 @@ pub struct PerconaPGClusterPatroni {
     /// Patroni dynamic configuration settings. Changes to this value will be
     /// automatically reloaded without validation. Changes to certain PostgreSQL
     /// parameters cause PostgreSQL to restart.
-    /// More info: https://patroni.readthedocs.io/en/latest/SETTINGS.html
+    /// More info: https://patroni.readthedocs.io/en/latest/dynamic_configuration.html
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicConfiguration")]
     pub dynamic_configuration: Option<BTreeMap<String, serde_json::Value>>,
     /// TTL of the cluster leader lock. "Think of it as the

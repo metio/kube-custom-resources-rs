@@ -102,7 +102,7 @@ pub struct IngressRouteTCPRoutesServices {
     /// hence fully terminating the connection.
     /// It is a duration in milliseconds, defaulting to 100.
     /// A negative value means an infinite deadline (i.e. the reading capability is never closed).
-    /// Deprecated: TerminationDelay is not supported APIVersion traefik.io/v1, please use ServersTransport to configure the TerminationDelay instead.
+    /// Deprecated: TerminationDelay will not be supported in future APIVersions, please use ServersTransport to configure the TerminationDelay instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationDelay")]
     pub termination_delay: Option<i64>,
     /// TLS determines whether to use TLS when dialing with the backend.

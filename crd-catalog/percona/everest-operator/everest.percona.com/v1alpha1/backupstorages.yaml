@@ -30,7 +30,7 @@ spec:
               description: "BackupStorageSpec defines the desired state of BackupStorage."
               properties:
                 allowedNamespaces:
-                  description: "AllowedNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName."
+                  description: "AllowedNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName.\n\n\nDeprecated: BackupStorages are now used only in the namespaces where they are created."
                   items:
                     type: "string"
                   type: "array"
@@ -74,6 +74,7 @@ spec:
                 usedNamespaces:
                   additionalProperties:
                     type: "boolean"
+                  description: "Deprecated: BackupStorages are now used only in the namespaces where they are created."
                   type: "object"
               required:
                 - "usedNamespaces"

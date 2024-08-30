@@ -62,7 +62,7 @@ spec:
                       description: "PITR is the configuration of the point in time recovery"
                       properties:
                         backupStorageName:
-                          description: "BackupStorageName is the name of the BackupStorage where the PITR is enabled"
+                          description: "BackupStorageName is the name of the BackupStorage where the PITR is enabled\nThe BackupStorage must be created in the same namespace as the DatabaseCluster."
                           type: "string"
                         enabled:
                           description: "Enabled is a flag to enable PITR"
@@ -79,7 +79,7 @@ spec:
                         description: "BackupSchedule is the backup schedule configuration."
                         properties:
                           backupStorageName:
-                            description: "BackupStorageName is the name of the BackupStorage CR that defines the\nstorage location"
+                            description: "BackupStorageName is the name of the BackupStorage CR that defines the\nstorage location.\nThe BackupStorage must be created in the same namespace as the DatabaseCluster."
                             type: "string"
                           enabled:
                             description: "Enabled is a flag to enable the schedule"
@@ -111,7 +111,7 @@ spec:
                       description: "BackupSource is the backup source to restore from"
                       properties:
                         backupStorageName:
-                          description: "BackupStorageName is the name of the BackupStorage used for backups."
+                          description: "BackupStorageName is the name of the BackupStorage used for backups.\nThe BackupStorage must be created in the same namespace as the DatabaseCluster."
                           type: "string"
                         path:
                           description: "Path is the path to the backup file/directory."
@@ -207,7 +207,7 @@ spec:
                   description: "Monitoring is the monitoring configuration"
                   properties:
                     monitoringConfigName:
-                      description: "MonitoringConfigName is the name of a monitoringConfig CR."
+                      description: "MonitoringConfigName is the name of a monitoringConfig CR.\nThe MonitoringConfig must be created in the same namespace as the DatabaseCluster."
                       type: "string"
                     resources:
                       description: "Resources defines resource limitations for the monitoring."
@@ -305,6 +305,33 @@ spec:
                         - "pgbouncer"
                       type: "string"
                   type: "object"
+                sharding:
+                  description: "Sharding is the sharding configuration. PSMDB-only"
+                  properties:
+                    configServer:
+                      description: "ConfigServer represents the sharding configuration server settings"
+                      properties:
+                        replicas:
+                          description: "Replicas is the amount of configServers"
+                          format: "int32"
+                          minimum: 1.0
+                          type: "integer"
+                      required:
+                        - "replicas"
+                      type: "object"
+                    enabled:
+                      description: "Enabled defines if the sharding is enabled"
+                      type: "boolean"
+                    shards:
+                      description: "Shards defines the number of shards"
+                      format: "int32"
+                      minimum: 1.0
+                      type: "integer"
+                  required:
+                    - "configServer"
+                    - "enabled"
+                    - "shards"
+                  type: "object"
               required:
                 - "engine"
               type: "object"
@@ -316,6 +343,9 @@ spec:
                   type: "string"
                 crVersion:
                   description: "CRVersion is the observed version of the CR used with the underlying operator."
+                  type: "string"
+                details:
+                  description: "Details provides full status of the upstream cluster as a plain text."
                   type: "string"
                 hostname:
                   description: "Hostname is the hostname where the cluster can be reached"

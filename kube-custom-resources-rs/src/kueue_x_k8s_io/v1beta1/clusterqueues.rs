@@ -420,8 +420,7 @@ pub struct ClusterQueueResourceGroupsFlavorsResources {
     /// all the nominalQuota can be borrowed by other clusterQueues in the cohort.
     /// If not null, it must be non-negative.
     /// lendingLimit must be null if spec.cohort is empty.
-    /// This field is in alpha stage. To be able to use this field,
-    /// enable the feature gate LendingLimit, which is disabled by default.
+    /// This field is in beta stage and is enabled by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lendingLimit")]
     pub lending_limit: Option<IntOrString>,
     /// name of this resource.

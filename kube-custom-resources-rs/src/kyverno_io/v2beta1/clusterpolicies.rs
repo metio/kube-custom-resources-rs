@@ -145,7 +145,6 @@ pub struct ClusterPolicyRulesCelPreconditions {
     /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
     /// CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:
     /// 
-    /// 
     /// 'object' - The object from the incoming request. The value is null for DELETE requests.
     /// 'oldObject' - The existing object. The value is null for CREATE requests.
     /// 'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).
@@ -154,7 +153,6 @@ pub struct ClusterPolicyRulesCelPreconditions {
     /// 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the
     ///   request resource.
     /// Documentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/
-    /// 
     /// 
     /// Required.
     pub expression: String,
@@ -165,7 +163,6 @@ pub struct ClusterPolicyRulesCelPreconditions {
     /// must start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or
     /// '123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an
     /// optional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')
-    /// 
     /// 
     /// Required.
     pub name: String,
@@ -284,8 +281,7 @@ pub struct ClusterPolicyRulesContextGlobalReference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
@@ -969,8 +965,7 @@ pub struct ClusterPolicyRulesGenerateForeachContextGlobalReference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
@@ -1626,8 +1621,7 @@ pub struct ClusterPolicyRulesMutateForeachContextGlobalReference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
@@ -1932,8 +1926,7 @@ pub struct ClusterPolicyRulesMutateTargetsContextGlobalReference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
@@ -2096,6 +2089,16 @@ pub struct ClusterPolicyRulesValidate {
     /// Deny defines conditions used to pass or fail a validation rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deny: Option<ClusterPolicyRulesValidateDeny>,
+    /// FailureAction defines if a validation policy rule violation should block
+    /// the admission review request (Enforce), or allow (Audit) the admission review request
+    /// and report an error in a policy report. Optional.
+    /// Allowed values are Audit or Enforce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureAction")]
+    pub failure_action: Option<ClusterPolicyRulesValidateFailureAction>,
+    /// FailureActionOverrides is a Cluster Policy attribute that specifies FailureAction
+    /// namespace-wise. It overrides FailureAction for the specified namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureActionOverrides")]
+    pub failure_action_overrides: Option<Vec<ClusterPolicyRulesValidateFailureActionOverrides>>,
     /// ForEach applies validate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub foreach: Option<Vec<ClusterPolicyRulesValidateForeach>>,
@@ -2112,16 +2115,6 @@ pub struct ClusterPolicyRulesValidate {
     /// by specifying exclusions for Pod Security Standards controls.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<ClusterPolicyRulesValidatePodSecurity>,
-    /// ValidationFailureAction defines if a validation policy rule violation should block
-    /// the admission review request (Enforce), or allow (Audit) the admission review request
-    /// and report an error in a policy report. Optional.
-    /// Allowed values are Audit or Enforce.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
-    pub validation_failure_action: Option<ClusterPolicyRulesValidateValidationFailureAction>,
-    /// ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction
-    /// namespace-wise. It overrides ValidationFailureAction for the specified namespaces.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureActionOverrides")]
-    pub validation_failure_action_overrides: Option<Vec<ClusterPolicyRulesValidateValidationFailureActionOverrides>>,
 }
 
 /// CEL allows validation checks using the Common Expression Language (https://kubernetes.io/docs/reference/using-api/cel/).
@@ -2153,18 +2146,15 @@ pub struct ClusterPolicyRulesValidateCelAuditAnnotations {
     /// a ValidatingAdmissionPolicy must be unique. The key must be a qualified
     /// name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.
     /// 
-    /// 
     /// The key is combined with the resource name of the
     /// ValidatingAdmissionPolicy to construct an audit annotation key:
     /// "{ValidatingAdmissionPolicy name}/{key}".
-    /// 
     /// 
     /// If an admission webhook uses the same resource name as this ValidatingAdmissionPolicy
     /// and the same audit annotation key, the annotation key will be identical.
     /// In this case, the first annotation written with the key will be included
     /// in the audit event and all subsequent annotations with the same key
     /// will be discarded.
-    /// 
     /// 
     /// Required.
     pub key: String,
@@ -2177,12 +2167,10 @@ pub struct ClusterPolicyRulesValidateCelAuditAnnotations {
     /// If the result of the valueExpression is more than 10kb in length, it
     /// will be truncated to 10kb.
     /// 
-    /// 
     /// If multiple ValidatingAdmissionPolicyBinding resources match an
     /// API request, then the valueExpression will be evaluated for
     /// each binding. All unique values produced by the valueExpressions
     /// will be joined together in a comma-separated list.
-    /// 
     /// 
     /// Required.
     #[serde(rename = "valueExpression")]
@@ -2196,7 +2184,6 @@ pub struct ClusterPolicyRulesValidateCelExpressions {
     /// ref: https://github.com/google/cel-spec
     /// CEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables:
     /// 
-    /// 
     /// - 'object' - The object from the incoming request. The value is null for DELETE requests.
     /// - 'oldObject' - The existing object. The value is null for CREATE requests.
     /// - 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)).
@@ -2209,10 +2196,8 @@ pub struct ClusterPolicyRulesValidateCelExpressions {
     /// - 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the
     ///   request resource.
     /// 
-    /// 
     /// The `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the
     /// object. No other metadata properties are accessible.
-    /// 
     /// 
     /// Only property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible.
     /// Accessible property names are escaped according to the following rules when accessed in the expression:
@@ -2227,7 +2212,6 @@ pub struct ClusterPolicyRulesValidateCelExpressions {
     ///   - Expression accessing a property named "namespace": {"Expression": "object.__namespace__ > 0"}
     ///   - Expression accessing a property named "x-prop": {"Expression": "object.x__dash__prop > 0"}
     ///   - Expression accessing a property named "redact__d": {"Expression": "object.redact__underscores__d > 0"}
-    /// 
     /// 
     /// Equality on arrays with list type of 'set' or 'map' ignores element order, i.e. [1, 2] == [2, 1].
     /// Concatenation on arrays with x-kubernetes-list-type use the semantics of the list type:
@@ -2286,25 +2270,25 @@ pub struct ClusterPolicyRulesValidateCelParamKind {
 /// ParamRef references a parameter resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyRulesValidateCelParamRef {
-    /// `name` is the name of the resource being referenced.
+    /// name is the name of the resource being referenced.
     /// 
+    /// One of `name` or `selector` must be set, but `name` and `selector` are
+    /// mutually exclusive properties. If one is set, the other must be unset.
     /// 
-    /// `name` and `selector` are mutually exclusive properties. If one is set,
-    /// the other must be unset.
+    /// A single parameter used for all admission requests can be configured
+    /// by setting the `name` field, leaving `selector` blank, and setting namespace
+    /// if `paramKind` is namespace-scoped.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// namespace is the namespace of the referenced resource. Allows limiting
     /// the search for params to a specific namespace. Applies to both `name` and
     /// `selector` fields.
     /// 
-    /// 
     /// A per-namespace parameter may be used by specifying a namespace-scoped
     /// `paramKind` in the policy and leaving this field empty.
     /// 
-    /// 
     /// - If `paramKind` is cluster-scoped, this field MUST be unset. Setting this
     /// field results in a configuration error.
-    /// 
     /// 
     /// - If `paramKind` is namespace-scoped, the namespace of the object being
     /// evaluated for admission will be used when this field is left unset. Take
@@ -2319,18 +2303,16 @@ pub struct ClusterPolicyRulesValidateCelParamRef {
     /// If set to `Deny`, then no matched parameters will be subject to the
     /// `failurePolicy` of the policy.
     /// 
-    /// 
     /// Allowed values are `Allow` or `Deny`
-    /// Default to `Deny`
+    /// 
+    /// Required
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterNotFoundAction")]
     pub parameter_not_found_action: Option<String>,
     /// selector can be used to match multiple param objects based on their labels.
     /// Supply selector: {} to match all resources of the ParamKind.
     /// 
-    /// 
     /// If multiple params are found, they are all evaluated with the policy expressions
     /// and the results are ANDed together.
-    /// 
     /// 
     /// One of `name` or `selector` must be set, but `name` and `selector` are
     /// mutually exclusive properties. If one is set, the other must be unset.
@@ -2341,10 +2323,8 @@ pub struct ClusterPolicyRulesValidateCelParamRef {
 /// selector can be used to match multiple param objects based on their labels.
 /// Supply selector: {} to match all resources of the ParamKind.
 /// 
-/// 
 /// If multiple params are found, they are all evaluated with the policy expressions
 /// and the results are ANDed together.
-/// 
 /// 
 /// One of `name` or `selector` must be set, but `name` and `selector` are
 /// mutually exclusive properties. If one is set, the other must be unset.
@@ -2377,7 +2357,7 @@ pub struct ClusterPolicyRulesValidateCelParamRefSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// Variable is the definition of a variable that is used for composition.
+/// Variable is the definition of a variable that is used for composition. A variable is defined as a named expression.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyRulesValidateCelVariables {
     /// Expression is the expression that will be evaluated as the value of the variable.
@@ -2490,6 +2470,71 @@ pub enum ClusterPolicyRulesValidateDenyConditionsAnyOperator {
     DurationGreaterThan,
     DurationLessThanOrEquals,
     DurationLessThan,
+}
+
+/// Validation is used to validate matching resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPolicyRulesValidateFailureAction {
+    Audit,
+    Enforce,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPolicyRulesValidateFailureActionOverrides {
+    /// ValidationFailureAction defines the policy validation failure action
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<ClusterPolicyRulesValidateFailureActionOverridesAction>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and
+    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
+    /// label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<ClusterPolicyRulesValidateFailureActionOverridesNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPolicyRulesValidateFailureActionOverridesAction {
+    #[serde(rename = "audit")]
+    Audit,
+    #[serde(rename = "enforce")]
+    Enforce,
+    #[serde(rename = "Audit")]
+    AuditX,
+    #[serde(rename = "Enforce")]
+    EnforceX,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPolicyRulesValidateFailureActionOverridesNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterPolicyRulesValidateFailureActionOverridesNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPolicyRulesValidateFailureActionOverridesNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// ForEachValidation applies validate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
@@ -2640,8 +2685,7 @@ pub struct ClusterPolicyRulesValidateForeachContextGlobalReference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
@@ -3205,71 +3249,6 @@ pub enum ClusterPolicyRulesValidatePodSecurityVersion {
     Latest,
 }
 
-/// Validation is used to validate matching resources.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterPolicyRulesValidateValidationFailureAction {
-    Audit,
-    Enforce,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterPolicyRulesValidateValidationFailureActionOverrides {
-    /// ValidationFailureAction defines the policy validation failure action
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub action: Option<ClusterPolicyRulesValidateValidationFailureActionOverridesAction>,
-    /// A label selector is a label query over a set of resources. The result of matchLabels and
-    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
-    /// label selector matches no objects.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ClusterPolicyRulesValidateValidationFailureActionOverridesNamespaceSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterPolicyRulesValidateValidationFailureActionOverridesAction {
-    #[serde(rename = "audit")]
-    Audit,
-    #[serde(rename = "enforce")]
-    Enforce,
-    #[serde(rename = "Audit")]
-    AuditX,
-    #[serde(rename = "Enforce")]
-    EnforceX,
-}
-
-/// A label selector is a label query over a set of resources. The result of matchLabels and
-/// matchExpressions are ANDed. An empty label selector matches all objects. A null
-/// label selector matches no objects.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterPolicyRulesValidateValidationFailureActionOverridesNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterPolicyRulesValidateValidationFailureActionOverridesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterPolicyRulesValidateValidationFailureActionOverridesNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
 /// ImageVerification validates that images that match the specified pattern
 /// are signed with the supplied public key. Once the image is verified it is
 /// mutated to include the SHA digest retrieved during the registration.
@@ -3283,6 +3262,9 @@ pub struct ClusterPolicyRulesVerifyImages {
     /// Attestors specified the required attestors (i.e. authorities)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attestors: Option<Vec<ClusterPolicyRulesVerifyImagesAttestors>>,
+    /// Allowed values are Audit or Enforce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureAction")]
+    pub failure_action: Option<ClusterPolicyRulesVerifyImagesFailureAction>,
     /// ImageReferences is a list of matching image reference patterns. At least one pattern in the
     /// list must match the image for the rule to apply. Each image reference consists of a registry
     /// address (defaults to docker.io), repository, image, and tag (defaults to latest).
@@ -3317,9 +3299,6 @@ pub struct ClusterPolicyRulesVerifyImages {
     /// UseCache enables caching of image verify responses for this rule
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useCache")]
     pub use_cache: Option<bool>,
-    /// Allowed values are Audit or Enforce.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
-    pub validation_failure_action: Option<ClusterPolicyRulesVerifyImagesValidationFailureAction>,
     /// VerifyDigest validates that images have a digest.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDigest")]
     pub verify_digest: Option<bool>,
@@ -3918,6 +3897,15 @@ pub struct ClusterPolicyRulesVerifyImagesAttestorsEntriesKeysSecret {
     pub namespace: String,
 }
 
+/// ImageVerification validates that images that match the specified pattern
+/// are signed with the supplied public key. Once the image is verified it is
+/// mutated to include the SHA digest retrieved during the registration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPolicyRulesVerifyImagesFailureAction {
+    Audit,
+    Enforce,
+}
+
 /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyRulesVerifyImagesImageRegistryCredentials {
@@ -3942,15 +3930,6 @@ pub enum ClusterPolicyRulesVerifyImagesType {
     Cosign,
     SigstoreBundle,
     Notary,
-}
-
-/// ImageVerification validates that images that match the specified pattern
-/// are signed with the supplied public key. Once the image is verified it is
-/// mutated to include the SHA digest retrieved during the registration.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterPolicyRulesVerifyImagesValidationFailureAction {
-    Audit,
-    Enforce,
 }
 
 /// Spec declares policy behaviors.
@@ -4057,7 +4036,6 @@ pub struct ClusterPolicyWebhookConfigurationMatchConditions {
     /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
     /// CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:
     /// 
-    /// 
     /// 'object' - The object from the incoming request. The value is null for DELETE requests.
     /// 'oldObject' - The existing object. The value is null for CREATE requests.
     /// 'request' - Attributes of the admission request(/pkg/apis/admission/types.go#AdmissionRequest).
@@ -4066,7 +4044,6 @@ pub struct ClusterPolicyWebhookConfigurationMatchConditions {
     /// 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the
     ///   request resource.
     /// Documentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/
-    /// 
     /// 
     /// Required.
     pub expression: String,
@@ -4077,7 +4054,6 @@ pub struct ClusterPolicyWebhookConfigurationMatchConditions {
     /// must start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or
     /// '123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an
     /// optional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')
-    /// 
     /// 
     /// Required.
     pub name: String,
@@ -4165,12 +4141,11 @@ pub struct ClusterPolicyStatusAutogenRules {
     pub verify_images: Option<Vec<ClusterPolicyStatusAutogenRulesVerifyImages>>,
 }
 
-/// MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook.
+/// MatchCondition represents a condition which must be fulfilled for a request to be sent to a webhook.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyStatusAutogenRulesCelPreconditions {
     /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
     /// CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:
-    /// 
     /// 
     /// 'object' - The object from the incoming request. The value is null for DELETE requests.
     /// 'oldObject' - The existing object. The value is null for CREATE requests.
@@ -4181,7 +4156,6 @@ pub struct ClusterPolicyStatusAutogenRulesCelPreconditions {
     ///   request resource.
     /// Documentation on CEL: https://kubernetes.io/docs/reference/using-api/cel/
     /// 
-    /// 
     /// Required.
     pub expression: String,
     /// Name is an identifier for this match condition, used for strategic merging of MatchConditions,
@@ -4191,7 +4165,6 @@ pub struct ClusterPolicyStatusAutogenRulesCelPreconditions {
     /// must start and end with an alphanumeric character (e.g. 'MyName',  or 'my.name',  or
     /// '123-abc', regex used for validation is '([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]') with an
     /// optional DNS subdomain prefix and '/' (e.g. 'example.com/MyName')
-    /// 
     /// 
     /// Required.
     pub name: String,
@@ -4310,8 +4283,7 @@ pub struct ClusterPolicyStatusAutogenRulesContextGlobalReference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
@@ -5142,8 +5114,7 @@ pub struct ClusterPolicyStatusAutogenRulesGenerateForeachContextGlobalReference 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
@@ -5946,8 +5917,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateForeachContextGlobalReference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
@@ -6252,8 +6222,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateTargetsContextGlobalReference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
@@ -6321,6 +6290,16 @@ pub struct ClusterPolicyStatusAutogenRulesValidate {
     /// Deny defines conditions used to pass or fail a validation rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deny: Option<ClusterPolicyStatusAutogenRulesValidateDeny>,
+    /// FailureAction defines if a validation policy rule violation should block
+    /// the admission review request (Enforce), or allow (Audit) the admission review request
+    /// and report an error in a policy report. Optional.
+    /// Allowed values are Audit or Enforce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureAction")]
+    pub failure_action: Option<ClusterPolicyStatusAutogenRulesValidateFailureAction>,
+    /// FailureActionOverrides is a Cluster Policy attribute that specifies FailureAction
+    /// namespace-wise. It overrides FailureAction for the specified namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureActionOverrides")]
+    pub failure_action_overrides: Option<Vec<ClusterPolicyStatusAutogenRulesValidateFailureActionOverrides>>,
     /// ForEach applies validate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub foreach: Option<Vec<ClusterPolicyStatusAutogenRulesValidateForeach>>,
@@ -6337,16 +6316,6 @@ pub struct ClusterPolicyStatusAutogenRulesValidate {
     /// by specifying exclusions for Pod Security Standards controls.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<ClusterPolicyStatusAutogenRulesValidatePodSecurity>,
-    /// ValidationFailureAction defines if a validation policy rule violation should block
-    /// the admission review request (Enforce), or allow (Audit) the admission review request
-    /// and report an error in a policy report. Optional.
-    /// Allowed values are Audit or Enforce.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
-    pub validation_failure_action: Option<ClusterPolicyStatusAutogenRulesValidateValidationFailureAction>,
-    /// ValidationFailureActionOverrides is a Cluster Policy attribute that specifies ValidationFailureAction
-    /// namespace-wise. It overrides ValidationFailureAction for the specified namespaces.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureActionOverrides")]
-    pub validation_failure_action_overrides: Option<Vec<ClusterPolicyStatusAutogenRulesValidateValidationFailureActionOverrides>>,
 }
 
 /// CEL allows validation checks using the Common Expression Language (https://kubernetes.io/docs/reference/using-api/cel/).
@@ -6378,18 +6347,15 @@ pub struct ClusterPolicyStatusAutogenRulesValidateCelAuditAnnotations {
     /// a ValidatingAdmissionPolicy must be unique. The key must be a qualified
     /// name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.
     /// 
-    /// 
     /// The key is combined with the resource name of the
     /// ValidatingAdmissionPolicy to construct an audit annotation key:
     /// "{ValidatingAdmissionPolicy name}/{key}".
-    /// 
     /// 
     /// If an admission webhook uses the same resource name as this ValidatingAdmissionPolicy
     /// and the same audit annotation key, the annotation key will be identical.
     /// In this case, the first annotation written with the key will be included
     /// in the audit event and all subsequent annotations with the same key
     /// will be discarded.
-    /// 
     /// 
     /// Required.
     pub key: String,
@@ -6402,12 +6368,10 @@ pub struct ClusterPolicyStatusAutogenRulesValidateCelAuditAnnotations {
     /// If the result of the valueExpression is more than 10kb in length, it
     /// will be truncated to 10kb.
     /// 
-    /// 
     /// If multiple ValidatingAdmissionPolicyBinding resources match an
     /// API request, then the valueExpression will be evaluated for
     /// each binding. All unique values produced by the valueExpressions
     /// will be joined together in a comma-separated list.
-    /// 
     /// 
     /// Required.
     #[serde(rename = "valueExpression")]
@@ -6421,7 +6385,6 @@ pub struct ClusterPolicyStatusAutogenRulesValidateCelExpressions {
     /// ref: https://github.com/google/cel-spec
     /// CEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables:
     /// 
-    /// 
     /// - 'object' - The object from the incoming request. The value is null for DELETE requests.
     /// - 'oldObject' - The existing object. The value is null for CREATE requests.
     /// - 'request' - Attributes of the API request([ref](/pkg/apis/admission/types.go#AdmissionRequest)).
@@ -6434,10 +6397,8 @@ pub struct ClusterPolicyStatusAutogenRulesValidateCelExpressions {
     /// - 'authorizer.requestResource' - A CEL ResourceCheck constructed from the 'authorizer' and configured with the
     ///   request resource.
     /// 
-    /// 
     /// The `apiVersion`, `kind`, `metadata.name` and `metadata.generateName` are always accessible from the root of the
     /// object. No other metadata properties are accessible.
-    /// 
     /// 
     /// Only property names of the form `[a-zA-Z_.-/][a-zA-Z0-9_.-/]*` are accessible.
     /// Accessible property names are escaped according to the following rules when accessed in the expression:
@@ -6452,7 +6413,6 @@ pub struct ClusterPolicyStatusAutogenRulesValidateCelExpressions {
     ///   - Expression accessing a property named "namespace": {"Expression": "object.__namespace__ > 0"}
     ///   - Expression accessing a property named "x-prop": {"Expression": "object.x__dash__prop > 0"}
     ///   - Expression accessing a property named "redact__d": {"Expression": "object.redact__underscores__d > 0"}
-    /// 
     /// 
     /// Equality on arrays with list type of 'set' or 'map' ignores element order, i.e. [1, 2] == [2, 1].
     /// Concatenation on arrays with x-kubernetes-list-type use the semantics of the list type:
@@ -6511,25 +6471,25 @@ pub struct ClusterPolicyStatusAutogenRulesValidateCelParamKind {
 /// ParamRef references a parameter resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyStatusAutogenRulesValidateCelParamRef {
-    /// `name` is the name of the resource being referenced.
+    /// name is the name of the resource being referenced.
     /// 
+    /// One of `name` or `selector` must be set, but `name` and `selector` are
+    /// mutually exclusive properties. If one is set, the other must be unset.
     /// 
-    /// `name` and `selector` are mutually exclusive properties. If one is set,
-    /// the other must be unset.
+    /// A single parameter used for all admission requests can be configured
+    /// by setting the `name` field, leaving `selector` blank, and setting namespace
+    /// if `paramKind` is namespace-scoped.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// namespace is the namespace of the referenced resource. Allows limiting
     /// the search for params to a specific namespace. Applies to both `name` and
     /// `selector` fields.
     /// 
-    /// 
     /// A per-namespace parameter may be used by specifying a namespace-scoped
     /// `paramKind` in the policy and leaving this field empty.
     /// 
-    /// 
     /// - If `paramKind` is cluster-scoped, this field MUST be unset. Setting this
     /// field results in a configuration error.
-    /// 
     /// 
     /// - If `paramKind` is namespace-scoped, the namespace of the object being
     /// evaluated for admission will be used when this field is left unset. Take
@@ -6544,18 +6504,16 @@ pub struct ClusterPolicyStatusAutogenRulesValidateCelParamRef {
     /// If set to `Deny`, then no matched parameters will be subject to the
     /// `failurePolicy` of the policy.
     /// 
-    /// 
     /// Allowed values are `Allow` or `Deny`
-    /// Default to `Deny`
+    /// 
+    /// Required
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterNotFoundAction")]
     pub parameter_not_found_action: Option<String>,
     /// selector can be used to match multiple param objects based on their labels.
     /// Supply selector: {} to match all resources of the ParamKind.
     /// 
-    /// 
     /// If multiple params are found, they are all evaluated with the policy expressions
     /// and the results are ANDed together.
-    /// 
     /// 
     /// One of `name` or `selector` must be set, but `name` and `selector` are
     /// mutually exclusive properties. If one is set, the other must be unset.
@@ -6566,10 +6524,8 @@ pub struct ClusterPolicyStatusAutogenRulesValidateCelParamRef {
 /// selector can be used to match multiple param objects based on their labels.
 /// Supply selector: {} to match all resources of the ParamKind.
 /// 
-/// 
 /// If multiple params are found, they are all evaluated with the policy expressions
 /// and the results are ANDed together.
-/// 
 /// 
 /// One of `name` or `selector` must be set, but `name` and `selector` are
 /// mutually exclusive properties. If one is set, the other must be unset.
@@ -6602,7 +6558,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidateCelParamRefSelectorMatchExpres
     pub values: Option<Vec<String>>,
 }
 
-/// Variable is the definition of a variable that is used for composition.
+/// Variable is the definition of a variable that is used for composition. A variable is defined as a named expression.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyStatusAutogenRulesValidateCelVariables {
     /// Expression is the expression that will be evaluated as the value of the variable.
@@ -6623,6 +6579,71 @@ pub struct ClusterPolicyStatusAutogenRulesValidateDeny {
     /// See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<serde_json::Value>,
+}
+
+/// Validation is used to validate matching resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPolicyStatusAutogenRulesValidateFailureAction {
+    Audit,
+    Enforce,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPolicyStatusAutogenRulesValidateFailureActionOverrides {
+    /// ValidationFailureAction defines the policy validation failure action
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<ClusterPolicyStatusAutogenRulesValidateFailureActionOverridesAction>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and
+    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
+    /// label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<ClusterPolicyStatusAutogenRulesValidateFailureActionOverridesNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPolicyStatusAutogenRulesValidateFailureActionOverridesAction {
+    #[serde(rename = "audit")]
+    Audit,
+    #[serde(rename = "enforce")]
+    Enforce,
+    #[serde(rename = "Audit")]
+    AuditX,
+    #[serde(rename = "Enforce")]
+    EnforceX,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPolicyStatusAutogenRulesValidateFailureActionOverridesNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterPolicyStatusAutogenRulesValidateFailureActionOverridesNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPolicyStatusAutogenRulesValidateFailureActionOverridesNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// ForEachValidation applies validate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
@@ -6773,8 +6794,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidateForeachContextGlobalReference 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Name of the global context entry
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
@@ -7338,71 +7358,6 @@ pub enum ClusterPolicyStatusAutogenRulesValidatePodSecurityVersion {
     Latest,
 }
 
-/// Validation is used to validate matching resources.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterPolicyStatusAutogenRulesValidateValidationFailureAction {
-    Audit,
-    Enforce,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterPolicyStatusAutogenRulesValidateValidationFailureActionOverrides {
-    /// ValidationFailureAction defines the policy validation failure action
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub action: Option<ClusterPolicyStatusAutogenRulesValidateValidationFailureActionOverridesAction>,
-    /// A label selector is a label query over a set of resources. The result of matchLabels and
-    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
-    /// label selector matches no objects.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ClusterPolicyStatusAutogenRulesValidateValidationFailureActionOverridesNamespaceSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterPolicyStatusAutogenRulesValidateValidationFailureActionOverridesAction {
-    #[serde(rename = "audit")]
-    Audit,
-    #[serde(rename = "enforce")]
-    Enforce,
-    #[serde(rename = "Audit")]
-    AuditX,
-    #[serde(rename = "Enforce")]
-    EnforceX,
-}
-
-/// A label selector is a label query over a set of resources. The result of matchLabels and
-/// matchExpressions are ANDed. An empty label selector matches all objects. A null
-/// label selector matches no objects.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterPolicyStatusAutogenRulesValidateValidationFailureActionOverridesNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterPolicyStatusAutogenRulesValidateValidationFailureActionOverridesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterPolicyStatusAutogenRulesValidateValidationFailureActionOverridesNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
 /// ImageVerification validates that images that match the specified pattern
 /// are signed with the supplied public key. Once the image is verified it is
 /// mutated to include the SHA digest retrieved during the registration.
@@ -7426,6 +7381,9 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImages {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosignOCI11")]
     pub cosign_oci11: Option<bool>,
+    /// Allowed values are Audit or Enforce.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureAction")]
+    pub failure_action: Option<ClusterPolicyStatusAutogenRulesVerifyImagesFailureAction>,
     /// Deprecated. Use ImageReferences instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -7475,9 +7433,6 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImages {
     /// UseCache enables caching of image verify responses for this rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useCache")]
     pub use_cache: Option<bool>,
-    /// Allowed values are Audit or Enforce.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailureAction")]
-    pub validation_failure_action: Option<ClusterPolicyStatusAutogenRulesVerifyImagesValidationFailureAction>,
     /// VerifyDigest validates that images have a digest.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDigest")]
     pub verify_digest: Option<bool>,
@@ -8076,6 +8031,15 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeysSecret
     pub namespace: String,
 }
 
+/// ImageVerification validates that images that match the specified pattern
+/// are signed with the supplied public key. Once the image is verified it is
+/// mutated to include the SHA digest retrieved during the registration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPolicyStatusAutogenRulesVerifyImagesFailureAction {
+    Audit,
+    Enforce,
+}
+
 /// ImageRegistryCredentials provides credentials that will be used for authentication with registry.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyStatusAutogenRulesVerifyImagesImageRegistryCredentials {
@@ -8100,15 +8064,6 @@ pub enum ClusterPolicyStatusAutogenRulesVerifyImagesType {
     Cosign,
     SigstoreBundle,
     Notary,
-}
-
-/// ImageVerification validates that images that match the specified pattern
-/// are signed with the supplied public key. Once the image is verified it is
-/// mutated to include the SHA digest retrieved during the registration.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterPolicyStatusAutogenRulesVerifyImagesValidationFailureAction {
-    Audit,
-    Enforce,
 }
 
 /// RuleCountStatus contains four variables which describes counts for

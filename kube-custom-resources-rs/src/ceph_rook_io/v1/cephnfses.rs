@@ -551,7 +551,8 @@ pub struct CephNFSSecuritySssd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecar {
     /// AdditionalFiles defines any number of additional files that should be mounted into the SSSD
-    /// sidecar. These files may be referenced by the sssd.conf config file.
+    /// sidecar with a directory root of `/etc/sssd/rook-additional/`.
+    /// These files may be referenced by the sssd.conf config file.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalFiles")]
     pub additional_files: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFiles>>,
     /// DebugLevel sets the debug level for SSSD. If unset or set to 0, Rook does nothing. Otherwise,
@@ -573,12 +574,14 @@ pub struct CephNFSSecuritySssdSidecar {
     pub sssd_config_file: Option<CephNFSSecuritySssdSidecarSssdConfigFile>,
 }
 
-/// SSSDSidecarAdditionalFile represents the source from where additional files for the the SSSD
-/// configuration should come from and are made available.
+/// AdditionalVolumeMount represents the source from where additional files in pod containers
+/// should come from and what subdirectory they are made available in.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFiles {
-    /// SubPath defines the sub-path in `/etc/sssd/rook-additional/` where the additional file(s)
-    /// will be placed. Each subPath definition must be unique and must not contain ':'.
+    /// SubPath defines the sub-path (subdirectory) of the directory root where the volumeSource will
+    /// be mounted. All files/keys in the volume source's volume will be mounted to the subdirectory.
+    /// This is not the same as the Kubernetes `subPath` volume mount option.
+    /// Each subPath definition must be unique and must not contain ':'.
     #[serde(rename = "subPath")]
     pub sub_path: String,
     #[serde(rename = "volumeSource")]

@@ -408,7 +408,8 @@ pub struct CiliumNetworkPolicyEgressToPortsRulesHttp {
     /// Headers is a list of HTTP headers which must be present in the request. If omitted or empty, requests are allowed regardless of headers present.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
-    /// Host is an extended POSIX regex matched against the host header of a request, e.g. "foo.com" 
+    /// Host is an extended POSIX regex matched against the host header of a request. Examples: 
+    ///  - foo.bar.com will match the host fooXbar.com or foo-bar.com - foo\.bar\.com will only match the host foo.bar.com 
     ///  If omitted or empty, the value of the host header is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -1334,7 +1335,8 @@ pub struct CiliumNetworkPolicyIngressToPortsRulesHttp {
     /// Headers is a list of HTTP headers which must be present in the request. If omitted or empty, requests are allowed regardless of headers present.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
-    /// Host is an extended POSIX regex matched against the host header of a request, e.g. "foo.com" 
+    /// Host is an extended POSIX regex matched against the host header of a request. Examples: 
+    ///  - foo.bar.com will match the host fooXbar.com or foo-bar.com - foo\.bar\.com will only match the host foo.bar.com 
     ///  If omitted or empty, the value of the host header is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -2122,7 +2124,8 @@ pub struct CiliumNetworkPolicysEgressToPortsRulesHttp {
     /// Headers is a list of HTTP headers which must be present in the request. If omitted or empty, requests are allowed regardless of headers present.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
-    /// Host is an extended POSIX regex matched against the host header of a request, e.g. "foo.com" 
+    /// Host is an extended POSIX regex matched against the host header of a request. Examples: 
+    ///  - foo.bar.com will match the host fooXbar.com or foo-bar.com - foo\.bar\.com will only match the host foo.bar.com 
     ///  If omitted or empty, the value of the host header is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -3048,7 +3051,8 @@ pub struct CiliumNetworkPolicysIngressToPortsRulesHttp {
     /// Headers is a list of HTTP headers which must be present in the request. If omitted or empty, requests are allowed regardless of headers present.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
-    /// Host is an extended POSIX regex matched against the host header of a request, e.g. "foo.com" 
+    /// Host is an extended POSIX regex matched against the host header of a request. Examples: 
+    ///  - foo.bar.com will match the host fooXbar.com or foo-bar.com - foo\.bar\.com will only match the host foo.bar.com 
     ///  If omitted or empty, the value of the host header is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,

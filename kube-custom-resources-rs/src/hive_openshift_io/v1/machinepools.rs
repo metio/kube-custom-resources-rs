@@ -26,12 +26,15 @@ pub struct MachinePoolSpec {
     /// ClusterDeploymentRef references the cluster deployment to which this machine pool belongs.
     #[serde(rename = "clusterDeploymentRef")]
     pub cluster_deployment_ref: MachinePoolClusterDeploymentRef,
-    /// Map of label string keys and values that will be applied to the created MachineSet's MachineSpec. This list will overwrite any modifications made to Node labels on an ongoing basis.
+    /// Map of label string keys and values that will be applied to the created MachineSet's MachineSpec. This affects the labels that will end up on the *Nodes* (in contrast with the MachineLabels field). This list will overwrite any modifications made to Node labels on an ongoing basis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+    /// Map of label string keys and values that will be applied to the created MachineSet's MachineTemplateSpec. This affects the labels that will end up on the *Machines* (in contrast with the Labels field). This list will overwrite any modifications made to Machine labels on an ongoing basis. Note: We ignore entries that conflict with generated labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineLabels")]
+    pub machine_labels: Option<BTreeMap<String, String>>,
     /// Name is the name of the machine pool.
     pub name: String,
-    /// Platform is configuration for machine pool specific to the platform.
+    /// Platform is configuration for machine pool specific to the platform. When using a MachinePool to control the default worker machines created by installer, these must match the values provided in the install-config.
     pub platform: MachinePoolPlatform,
     /// Replicas is the count of machines for this machine pool. Replicas and autoscaling cannot be used together. Default is 1, if autoscaling is not used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,7 +63,7 @@ pub struct MachinePoolClusterDeploymentRef {
     pub name: Option<String>,
 }
 
-/// Platform is configuration for machine pool specific to the platform.
+/// Platform is configuration for machine pool specific to the platform. When using a MachinePool to control the default worker machines created by installer, these must match the values provided in the install-config.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolPlatform {
     /// AWS is the configuration used when installing on AWS.
@@ -150,6 +153,12 @@ pub struct MachinePoolPlatformAwsSpotMarketOptions {
 /// Azure is the configuration used when installing on Azure.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolPlatformAzure {
+    /// ComputeSubnet specifies an existing subnet for use by compute nodes. If omitted, the default (${infraID}-worker-subnet) will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "computeSubnet")]
+    pub compute_subnet: Option<String>,
+    /// NetworkResourceGroupName specifies the network resource group that contains an existing VNet. Ignored unless VirtualNetwork is also specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkResourceGroupName")]
+    pub network_resource_group_name: Option<String>,
     /// OSDisk defines the storage for instance.
     #[serde(rename = "osDisk")]
     pub os_disk: MachinePoolPlatformAzureOsDisk,
@@ -159,6 +168,9 @@ pub struct MachinePoolPlatformAzure {
     /// InstanceType defines the azure instance type. eg. Standard_DS_V2
     #[serde(rename = "type")]
     pub r#type: String,
+    /// VirtualNetwork specifies the name of an existing VNet for the Machines to use If omitted, the default (${infraID}-vnet) will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNetwork")]
+    pub virtual_network: Option<String>,
     /// Zones is list of availability zones that can be used. eg. ["1", "2", "3"]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zones: Option<Vec<String>>,
@@ -458,9 +470,12 @@ pub struct MachinePoolStatus {
     /// MachineSets is the status of the machine sets for the machine pool on the remote cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineSets")]
     pub machine_sets: Option<Vec<MachinePoolStatusMachineSets>>,
-    /// OwnedLabels lists the keys of labels this MachinePool created on the remote MachineSet. Used to identify labels to remove from the remote MachineSet when they are absent from the MachinePool's spec.labels.
+    /// OwnedLabels lists the keys of labels this MachinePool created on the remote MachineSet's MachineSpec. (In contrast with OwnedMachineLabels.) Used to identify labels to remove from the remote MachineSet when they are absent from the MachinePool's spec.labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownedLabels")]
     pub owned_labels: Option<Vec<String>>,
+    /// OwnedMachineLabels lists the keys of labels this MachinePool created on the remote MachineSet's MachineTemplateSpec. (In contrast with OwnedLabels.) Used to identify labels to remove from the remote MachineSet when they are absent from the MachinePool's spec.machineLabels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownedMachineLabels")]
+    pub owned_machine_labels: Option<Vec<String>>,
     /// OwnedTaints lists identifiers of taints this MachinePool created on the remote MachineSet. Used to identify taints to remove from the remote MachineSet when they are absent from the MachinePool's spec.taints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownedTaints")]
     pub owned_taints: Option<Vec<MachinePoolStatusOwnedTaints>>,

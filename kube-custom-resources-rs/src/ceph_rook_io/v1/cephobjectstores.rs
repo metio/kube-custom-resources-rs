@@ -284,6 +284,12 @@ pub struct CephObjectStoreDataPoolStatusCheckMirror {
 /// The rgw pod info
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGateway {
+    /// AdditionalVolumeMounts allows additional volumes to be mounted to the RGW pod.
+    /// The root directory for each additional volume mount is `/var/rgw`.
+    /// Example: for an additional mount at subPath `ldap`, mounted from a secret that has key
+    /// `bindpass.secret`, the file would reside at `/var/rgw/ldap/bindpass.secret`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalVolumeMounts")]
+    pub additional_volume_mounts: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMounts>>,
     /// The annotations-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
@@ -334,6 +340,229 @@ pub struct CephObjectStoreGateway {
     /// The name of the secret that stores the ssl certificate for secure rgw connections
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslCertificateRef")]
     pub ssl_certificate_ref: Option<String>,
+}
+
+/// AdditionalVolumeMount represents the source from where additional files in pod containers
+/// should come from and what subdirectory they are made available in.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMounts {
+    /// SubPath defines the sub-path (subdirectory) of the directory root where the volumeSource will
+    /// be mounted. All files/keys in the volume source's volume will be mounted to the subdirectory.
+    /// This is not the same as the Kubernetes `subPath` volume mount option.
+    /// Each subPath definition must be unique and must not contain ':'.
+    #[serde(rename = "subPath")]
+    pub sub_path: String,
+    #[serde(rename = "volumeSource")]
+    pub volume_source: CephObjectStoreGatewayAdditionalVolumeMountsVolumeSource,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceConfigMap>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceEmptyDir>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
+    pub host_path: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub projected: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjected>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceSecret>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceConfigMap {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceConfigMapItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceConfigMapItems {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    pub path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceEmptyDir {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
+    pub size_limit: Option<IntOrString>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceHostPath {
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourcePersistentVolumeClaim {
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjected {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sources: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSources>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesConfigMap>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesServiceAccountToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesClusterTrustBundle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesConfigMap {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesConfigMapItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesConfigMapItems {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    pub path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApi {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApiItems>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApiItems {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesSecret {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesSecretItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesSecretItems {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    pub path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesServiceAccountToken {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
+    pub expiration_seconds: Option<i64>,
+    pub path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceSecret {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceSecretItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceSecretItems {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    pub path: String,
 }
 
 /// EndpointAddress is a tuple that describes a single IP address or host name. This is a subset of

@@ -204,6 +204,9 @@ pub struct IBMPowerVSClusterLoadBalancers {
     /// AdditionalListeners sets the additional listeners for the control plane load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalListeners")]
     pub additional_listeners: Option<Vec<IBMPowerVSClusterLoadBalancersAdditionalListeners>>,
+    /// backendPools defines the load balancer's backend pools.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendPools")]
+    pub backend_pools: Option<Vec<IBMPowerVSClusterLoadBalancersBackendPools>>,
     /// id of the loadbalancer
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -213,14 +216,135 @@ pub struct IBMPowerVSClusterLoadBalancers {
     /// public indicates that load balancer is public or private
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public: Option<bool>,
+    /// securityGroups defines the Security Groups to attach to the load balancer.
+    /// Security Groups defined here are expected to already exist when the load balancer is reconciled (these do not get created when reconciling the load balancer).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
+    pub security_groups: Option<Vec<IBMPowerVSClusterLoadBalancersSecurityGroups>>,
+    /// subnets defines the VPC Subnets to attach to the load balancer.
+    /// Subnets defiens here are expected to already exist when the load balancer is reconciled (these do not get created when reconciling the load balancer).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub subnets: Option<Vec<IBMPowerVSClusterLoadBalancersSubnets>>,
 }
 
 /// AdditionalListenerSpec defines the desired state of an
 /// additional listener on an VPC load balancer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterLoadBalancersAdditionalListeners {
+    /// defaultPoolName defines the name of a VPC Load Balancer Backend Pool to use for the VPC Load Balancer Listener.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultPoolName")]
+    pub default_pool_name: Option<String>,
     /// Port sets the port for the additional listener.
     pub port: i64,
+    /// protocol defines the protocol to use for the VPC Load Balancer Listener.
+    /// Will default to TCP protocol if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<IBMPowerVSClusterLoadBalancersAdditionalListenersProtocol>,
+}
+
+/// AdditionalListenerSpec defines the desired state of an
+/// additional listener on an VPC load balancer.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IBMPowerVSClusterLoadBalancersAdditionalListenersProtocol {
+    #[serde(rename = "http")]
+    Http,
+    #[serde(rename = "https")]
+    Https,
+    #[serde(rename = "tcp")]
+    Tcp,
+    #[serde(rename = "udp")]
+    Udp,
+}
+
+/// VPCLoadBalancerBackendPoolSpec defines the desired configuration of a VPC Load Balancer Backend Pool.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct IBMPowerVSClusterLoadBalancersBackendPools {
+    /// algorithm defines the load balancing algorithm to use.
+    pub algorithm: IBMPowerVSClusterLoadBalancersBackendPoolsAlgorithm,
+    /// healthMonitor defines the backend pool's health monitor.
+    #[serde(rename = "healthMonitor")]
+    pub health_monitor: IBMPowerVSClusterLoadBalancersBackendPoolsHealthMonitor,
+    /// name defines the name of the Backend Pool.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// protocol defines the protocol to use for the Backend Pool.
+    pub protocol: IBMPowerVSClusterLoadBalancersBackendPoolsProtocol,
+}
+
+/// VPCLoadBalancerBackendPoolSpec defines the desired configuration of a VPC Load Balancer Backend Pool.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IBMPowerVSClusterLoadBalancersBackendPoolsAlgorithm {
+    #[serde(rename = "least_connections")]
+    LeastConnections,
+    #[serde(rename = "round_robin")]
+    RoundRobin,
+    #[serde(rename = "weighted_round_robin")]
+    WeightedRoundRobin,
+}
+
+/// healthMonitor defines the backend pool's health monitor.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct IBMPowerVSClusterLoadBalancersBackendPoolsHealthMonitor {
+    /// delay defines the seconds to wait between health checks.
+    pub delay: i64,
+    /// port defines the port to perform health monitoring on.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
+    /// retries defines the max retries for health check.
+    pub retries: i64,
+    /// timeout defines the seconds to wait for a health check response.
+    pub timeout: i64,
+    /// type defines the protocol used for health checks.
+    #[serde(rename = "type")]
+    pub r#type: IBMPowerVSClusterLoadBalancersBackendPoolsHealthMonitorType,
+    /// urlPath defines the URL to use for health monitoring.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
+    pub url_path: Option<String>,
+}
+
+/// healthMonitor defines the backend pool's health monitor.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IBMPowerVSClusterLoadBalancersBackendPoolsHealthMonitorType {
+    #[serde(rename = "http")]
+    Http,
+    #[serde(rename = "https")]
+    Https,
+    #[serde(rename = "tcp")]
+    Tcp,
+}
+
+/// VPCLoadBalancerBackendPoolSpec defines the desired configuration of a VPC Load Balancer Backend Pool.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IBMPowerVSClusterLoadBalancersBackendPoolsProtocol {
+    #[serde(rename = "http")]
+    Http,
+    #[serde(rename = "https")]
+    Https,
+    #[serde(rename = "tcp")]
+    Tcp,
+    #[serde(rename = "udp")]
+    Udp,
+}
+
+/// VPCResource represents a VPC resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSClusterLoadBalancersSecurityGroups {
+    /// id of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// name of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// VPCResource represents a VPC resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSClusterLoadBalancersSubnets {
+    /// id of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// name of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Network is the reference to the Network to use for this cluster.

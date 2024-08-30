@@ -35,6 +35,10 @@ spec:
           jsonPath: ".status.runtimeVersion"
           name: "Runtime Version"
           type: "string"
+        - description: "The catalog version"
+          jsonPath: ".status.catalog.version"
+          name: "Catalog Version"
+          type: "string"
         - description: "The integration kit"
           jsonPath: ".status.integrationKit.name"
           name: "Kit"
@@ -4418,6 +4422,9 @@ spec:
                         host:
                           description: "To configure the host exposed by the ingress."
                           type: "string"
+                        ingressClassName:
+                          description: "The Ingress class name as defined by the Ingress spec\nSee https://kubernetes.io/docs/concepts/services-networking/ingress/"
+                          type: "string"
                         path:
                           description: "To configure the path exposed by the ingress (default `/`)."
                           type: "string"
@@ -5095,6 +5102,15 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                catalog:
+                  description: "the catalog used to build/operate the Integration."
+                  properties:
+                    provider:
+                      description: "RuntimeProvider is the provider chosen for the runtime."
+                      type: "string"
+                    version:
+                      type: "string"
+                  type: "object"
                 conditions:
                   description: "a list of events happened for the Integration"
                   items:

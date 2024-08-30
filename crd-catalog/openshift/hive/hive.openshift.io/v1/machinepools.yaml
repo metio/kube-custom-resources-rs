@@ -66,13 +66,18 @@ spec:
                 labels:
                   additionalProperties:
                     type: "string"
-                  description: "Map of label string keys and values that will be applied to the created MachineSet's MachineSpec. This list will overwrite any modifications made to Node labels on an ongoing basis."
+                  description: "Map of label string keys and values that will be applied to the created MachineSet's MachineSpec. This affects the labels that will end up on the *Nodes* (in contrast with the MachineLabels field). This list will overwrite any modifications made to Node labels on an ongoing basis."
+                  type: "object"
+                machineLabels:
+                  additionalProperties:
+                    type: "string"
+                  description: "Map of label string keys and values that will be applied to the created MachineSet's MachineTemplateSpec. This affects the labels that will end up on the *Machines* (in contrast with the Labels field). This list will overwrite any modifications made to Machine labels on an ongoing basis. Note: We ignore entries that conflict with generated labels."
                   type: "object"
                 name:
                   description: "Name is the name of the machine pool."
                   type: "string"
                 platform:
-                  description: "Platform is configuration for machine pool specific to the platform."
+                  description: "Platform is configuration for machine pool specific to the platform. When using a MachinePool to control the default worker machines created by installer, these must match the values provided in the install-config."
                   properties:
                     aws:
                       description: "AWS is the configuration used when installing on AWS."
@@ -140,6 +145,12 @@ spec:
                     azure:
                       description: "Azure is the configuration used when installing on Azure."
                       properties:
+                        computeSubnet:
+                          description: "ComputeSubnet specifies an existing subnet for use by compute nodes. If omitted, the default (${infraID}-worker-subnet) will be used."
+                          type: "string"
+                        networkResourceGroupName:
+                          description: "NetworkResourceGroupName specifies the network resource group that contains an existing VNet. Ignored unless VirtualNetwork is also specified."
+                          type: "string"
                         osDisk:
                           description: "OSDisk defines the storage for instance."
                           properties:
@@ -197,6 +208,9 @@ spec:
                           type: "object"
                         type:
                           description: "InstanceType defines the azure instance type. eg. Standard_DS_V2"
+                          type: "string"
+                        virtualNetwork:
+                          description: "VirtualNetwork specifies the name of an existing VNet for the Machines to use If omitted, the default (${infraID}-vnet) will be used."
                           type: "string"
                         zones:
                           description: "Zones is list of availability zones that can be used. eg. [\"1\", \"2\", \"3\"]"
@@ -515,7 +529,12 @@ spec:
                     type: "object"
                   type: "array"
                 ownedLabels:
-                  description: "OwnedLabels lists the keys of labels this MachinePool created on the remote MachineSet. Used to identify labels to remove from the remote MachineSet when they are absent from the MachinePool's spec.labels."
+                  description: "OwnedLabels lists the keys of labels this MachinePool created on the remote MachineSet's MachineSpec. (In contrast with OwnedMachineLabels.) Used to identify labels to remove from the remote MachineSet when they are absent from the MachinePool's spec.labels."
+                  items:
+                    type: "string"
+                  type: "array"
+                ownedMachineLabels:
+                  description: "OwnedMachineLabels lists the keys of labels this MachinePool created on the remote MachineSet's MachineTemplateSpec. (In contrast with OwnedLabels.) Used to identify labels to remove from the remote MachineSet when they are absent from the MachinePool's spec.machineLabels."
                   items:
                     type: "string"
                   type: "array"

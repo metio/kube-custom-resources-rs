@@ -111,13 +111,11 @@ pub struct GitRepositoryRef {
     pub branch: Option<String>,
     /// Commit SHA to check out, takes precedence over all reference fields.
     /// 
-    /// 
     /// This can be combined with Branch to shallow clone the branch, in which
     /// the commit is expected to exist.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commit: Option<String>,
     /// Name of the reference to check out; takes precedence over Branch, Tag and SemVer.
-    /// 
     /// 
     /// It must be a valid Git reference: https://git-scm.com/docs/git-check-ref-format#_description
     /// Examples: "refs/heads/main", "refs/tags/v0.1.0", "refs/pull/420/head", "refs/merge-requests/1/head"
@@ -148,7 +146,6 @@ pub struct GitRepositorySecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GitRepositoryVerify {
     /// Mode specifies which Git object(s) should be verified.
-    /// 
     /// 
     /// The variants "head" and "HEAD" both imply the same thing, i.e. verify
     /// the commit that the HEAD of the Git repository points to. The variant

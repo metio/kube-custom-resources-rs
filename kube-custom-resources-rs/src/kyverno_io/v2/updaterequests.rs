@@ -104,13 +104,11 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequest {
     /// RequestKind is the fully-qualified type of the original API request (for example, v1.Pod or autoscaling.v1.Scale).
     /// If this is specified and differs from the value in "kind", an equivalent match and conversion was performed.
     /// 
-    /// 
     /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
     /// `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]` and `matchPolicy: Equivalent`,
     /// an API request to apps/v1beta1 deployments would be converted and sent to the webhook
     /// with `kind: {group:"apps", version:"v1", kind:"Deployment"}` (matching the rule the webhook registered for),
     /// and `requestKind: {group:"apps", version:"v1beta1", kind:"Deployment"}` (indicating the kind of the original API request).
-    /// 
     /// 
     /// See documentation for the "matchPolicy" field in the webhook configuration type for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestKind")]
@@ -118,13 +116,11 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequest {
     /// RequestResource is the fully-qualified resource of the original API request (for example, v1.pods).
     /// If this is specified and differs from the value in "resource", an equivalent match and conversion was performed.
     /// 
-    /// 
     /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
     /// `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]` and `matchPolicy: Equivalent`,
     /// an API request to apps/v1beta1 deployments would be converted and sent to the webhook
     /// with `resource: {group:"apps", version:"v1", resource:"deployments"}` (matching the resource the webhook registered for),
     /// and `requestResource: {group:"apps", version:"v1beta1", resource:"deployments"}` (indicating the resource of the original API request).
-    /// 
     /// 
     /// See documentation for the "matchPolicy" field in the webhook configuration type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestResource")]
@@ -160,13 +156,11 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestKind {
 /// RequestKind is the fully-qualified type of the original API request (for example, v1.Pod or autoscaling.v1.Scale).
 /// If this is specified and differs from the value in "kind", an equivalent match and conversion was performed.
 /// 
-/// 
 /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
 /// `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]` and `matchPolicy: Equivalent`,
 /// an API request to apps/v1beta1 deployments would be converted and sent to the webhook
 /// with `kind: {group:"apps", version:"v1", kind:"Deployment"}` (matching the rule the webhook registered for),
 /// and `requestKind: {group:"apps", version:"v1beta1", kind:"Deployment"}` (indicating the kind of the original API request).
-/// 
 /// 
 /// See documentation for the "matchPolicy" field in the webhook configuration type for more details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -179,13 +173,11 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestKind {
 /// RequestResource is the fully-qualified resource of the original API request (for example, v1.pods).
 /// If this is specified and differs from the value in "resource", an equivalent match and conversion was performed.
 /// 
-/// 
 /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
 /// `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]` and `matchPolicy: Equivalent`,
 /// an API request to apps/v1beta1 deployments would be converted and sent to the webhook
 /// with `resource: {group:"apps", version:"v1", resource:"deployments"}` (matching the resource the webhook registered for),
 /// and `requestResource: {group:"apps", version:"v1beta1", resource:"deployments"}` (indicating the resource of the original API request).
-/// 
 /// 
 /// See documentation for the "matchPolicy" field in the webhook configuration type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

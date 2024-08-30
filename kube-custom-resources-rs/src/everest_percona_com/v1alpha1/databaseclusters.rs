@@ -42,6 +42,9 @@ pub struct DatabaseClusterSpec {
     /// external access to the database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<DatabaseClusterProxy>,
+    /// Sharding is the sharding configuration. PSMDB-only
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sharding: Option<DatabaseClusterSharding>,
 }
 
 /// Backup is the backup specification
@@ -61,6 +64,7 @@ pub struct DatabaseClusterBackup {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterBackupPitr {
     /// BackupStorageName is the name of the BackupStorage where the PITR is enabled
+    /// The BackupStorage must be created in the same namespace as the DatabaseCluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupStorageName")]
     pub backup_storage_name: Option<String>,
     /// Enabled is a flag to enable PITR
@@ -74,7 +78,8 @@ pub struct DatabaseClusterBackupPitr {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterBackupSchedules {
     /// BackupStorageName is the name of the BackupStorage CR that defines the
-    /// storage location
+    /// storage location.
+    /// The BackupStorage must be created in the same namespace as the DatabaseCluster.
     #[serde(rename = "backupStorageName")]
     pub backup_storage_name: String,
     /// Enabled is a flag to enable the schedule
@@ -106,6 +111,7 @@ pub struct DatabaseClusterDataSource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterDataSourceBackupSource {
     /// BackupStorageName is the name of the BackupStorage used for backups.
+    /// The BackupStorage must be created in the same namespace as the DatabaseCluster.
     #[serde(rename = "backupStorageName")]
     pub backup_storage_name: String,
     /// Path is the path to the backup file/directory.
@@ -203,6 +209,7 @@ pub enum DatabaseClusterEngineType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterMonitoring {
     /// MonitoringConfigName is the name of a monitoringConfig CR.
+    /// The MonitoringConfig must be created in the same namespace as the DatabaseCluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitoringConfigName")]
     pub monitoring_config_name: Option<String>,
     /// Resources defines resource limitations for the monitoring.
@@ -318,6 +325,25 @@ pub enum DatabaseClusterProxyType {
     Pgbouncer,
 }
 
+/// Sharding is the sharding configuration. PSMDB-only
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterSharding {
+    /// ConfigServer represents the sharding configuration server settings
+    #[serde(rename = "configServer")]
+    pub config_server: DatabaseClusterShardingConfigServer,
+    /// Enabled defines if the sharding is enabled
+    pub enabled: bool,
+    /// Shards defines the number of shards
+    pub shards: i32,
+}
+
+/// ConfigServer represents the sharding configuration server settings
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterShardingConfigServer {
+    /// Replicas is the amount of configServers
+    pub replicas: i32,
+}
+
 /// DatabaseClusterStatus defines the observed state of DatabaseCluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterStatus {
@@ -327,6 +353,9 @@ pub struct DatabaseClusterStatus {
     /// CRVersion is the observed version of the CR used with the underlying operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crVersion")]
     pub cr_version: Option<String>,
+    /// Details provides full status of the upstream cluster as a plain text.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub details: Option<String>,
     /// Hostname is the hostname where the cluster can be reached
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,

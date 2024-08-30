@@ -134,22 +134,6 @@ pub struct EphemeralReportResultsResourceSelectorMatchExpressions {
 }
 
 /// ObjectReference contains enough information to let you inspect or modify the referred object.
-/// ---
-/// New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs.
-///  1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage.
-///  2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular
-///     restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted".
-///     Those cannot be well described when embedded.
-///  3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen.
-///  4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity
-///     during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple
-///     and the version of the actual struct is irrelevant.
-///  5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type
-///     will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control.
-/// 
-/// 
-/// Instead of using this type, create a locally provided and used type that is well-focused on your reference.
-/// For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EphemeralReportResultsResources {
     /// API version of the referent.
@@ -162,7 +146,6 @@ pub struct EphemeralReportResultsResources {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.

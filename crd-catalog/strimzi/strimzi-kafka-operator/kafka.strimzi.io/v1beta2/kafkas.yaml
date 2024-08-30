@@ -108,6 +108,32 @@ spec:
                 cruiseControl:
                   description: "Configuration for Cruise Control deployment. Deploys a Cruise Control instance when specified."
                   properties:
+                    apiUsers:
+                      description: "Configuration of the Cruise Control REST API users."
+                      properties:
+                        type:
+                          description: "Type of the Cruise Control API users configuration. Supported format is: `hashLoginService`."
+                          enum:
+                            - "hashLoginService"
+                          type: "string"
+                        valueFrom:
+                          description: "Secret from which the custom Cruise Control API authentication credentials are read."
+                          properties:
+                            secretKeyRef:
+                              description: "Selects a key of a Secret in the resource's namespace."
+                              properties:
+                                key:
+                                  type: "string"
+                                name:
+                                  type: "string"
+                                optional:
+                                  type: "boolean"
+                              type: "object"
+                          type: "object"
+                      required:
+                        - "type"
+                        - "valueFrom"
+                      type: "object"
                     brokerCapacity:
                       description: "The Cruise Control `brokerCapacity` configuration."
                       properties:
@@ -445,6 +471,26 @@ spec:
                                       type: "string"
                                   type: "object"
                               type: "object"
+                            volumeMounts:
+                              description: "Additional volume mounts which should be applied to the container."
+                              items:
+                                properties:
+                                  mountPath:
+                                    type: "string"
+                                  mountPropagation:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                  recursiveReadOnly:
+                                    type: "string"
+                                  subPath:
+                                    type: "string"
+                                  subPathExpr:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                           type: "object"
                         deployment:
                           description: "Template for Cruise Control `Deployment`."
@@ -913,7 +959,7 @@ spec:
                               minimum: 0.0
                               type: "integer"
                             tmpDirSizeLimit:
-                              description: "Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`."
+                              description: "Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources."
                               pattern: "^([0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
                               type: "string"
                             tolerations:
@@ -972,6 +1018,85 @@ spec:
                                     type: "string"
                                   whenUnsatisfiable:
                                     type: "string"
+                                type: "object"
+                              type: "array"
+                            volumes:
+                              description: "Additional volumes that can be mounted to the pod."
+                              items:
+                                oneOf:
+                                  - properties:
+                                      configMap: {}
+                                      emptyDir: {}
+                                      persistentVolumeClaim: {}
+                                      secret: {}
+                                    required: []
+                                properties:
+                                  configMap:
+                                    description: "ConfigMap to use to populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      name:
+                                        type: "string"
+                                      optional:
+                                        type: "boolean"
+                                    type: "object"
+                                  emptyDir:
+                                    description: "EmptyDir to use to populate the volume."
+                                    properties:
+                                      medium:
+                                        type: "string"
+                                      sizeLimit:
+                                        properties:
+                                          amount:
+                                            type: "string"
+                                          format:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  name:
+                                    description: "Name to use for the volume. Required."
+                                    type: "string"
+                                  persistentVolumeClaim:
+                                    description: "PersistentVolumeClaim object to use to populate the volume."
+                                    properties:
+                                      claimName:
+                                        type: "string"
+                                      readOnly:
+                                        type: "boolean"
+                                    type: "object"
+                                  secret:
+                                    description: "Secret to use populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      optional:
+                                        type: "boolean"
+                                      secretName:
+                                        type: "string"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                           type: "object"
@@ -1095,6 +1220,26 @@ spec:
                                       type: "string"
                                   type: "object"
                               type: "object"
+                            volumeMounts:
+                              description: "Additional volume mounts which should be applied to the container."
+                              items:
+                                properties:
+                                  mountPath:
+                                    type: "string"
+                                  mountPropagation:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                  recursiveReadOnly:
+                                    type: "string"
+                                  subPath:
+                                    type: "string"
+                                  subPathExpr:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                           type: "object"
                       type: "object"
                     tlsSidecar:
@@ -1683,7 +1828,7 @@ spec:
                               minimum: 0.0
                               type: "integer"
                             tmpDirSizeLimit:
-                              description: "Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`."
+                              description: "Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources."
                               pattern: "^([0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
                               type: "string"
                             tolerations:
@@ -1742,6 +1887,85 @@ spec:
                                     type: "string"
                                   whenUnsatisfiable:
                                     type: "string"
+                                type: "object"
+                              type: "array"
+                            volumes:
+                              description: "Additional volumes that can be mounted to the pod."
+                              items:
+                                oneOf:
+                                  - properties:
+                                      configMap: {}
+                                      emptyDir: {}
+                                      persistentVolumeClaim: {}
+                                      secret: {}
+                                    required: []
+                                properties:
+                                  configMap:
+                                    description: "ConfigMap to use to populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      name:
+                                        type: "string"
+                                      optional:
+                                        type: "boolean"
+                                    type: "object"
+                                  emptyDir:
+                                    description: "EmptyDir to use to populate the volume."
+                                    properties:
+                                      medium:
+                                        type: "string"
+                                      sizeLimit:
+                                        properties:
+                                          amount:
+                                            type: "string"
+                                          format:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  name:
+                                    description: "Name to use for the volume. Required."
+                                    type: "string"
+                                  persistentVolumeClaim:
+                                    description: "PersistentVolumeClaim object to use to populate the volume."
+                                    properties:
+                                      claimName:
+                                        type: "string"
+                                      readOnly:
+                                        type: "boolean"
+                                    type: "object"
+                                  secret:
+                                    description: "Secret to use populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      optional:
+                                        type: "boolean"
+                                      secretName:
+                                        type: "string"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                           type: "object"
@@ -1843,6 +2067,26 @@ spec:
                                       type: "string"
                                   type: "object"
                               type: "object"
+                            volumeMounts:
+                              description: "Additional volume mounts which should be applied to the container."
+                              items:
+                                properties:
+                                  mountPath:
+                                    type: "string"
+                                  mountPropagation:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                  recursiveReadOnly:
+                                    type: "string"
+                                  subPath:
+                                    type: "string"
+                                  subPathExpr:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                           type: "object"
                         topicOperatorContainer:
                           description: "Template for the Entity Topic Operator container."
@@ -1924,6 +2168,26 @@ spec:
                                       type: "string"
                                   type: "object"
                               type: "object"
+                            volumeMounts:
+                              description: "Additional volume mounts which should be applied to the container."
+                              items:
+                                properties:
+                                  mountPath:
+                                    type: "string"
+                                  mountPropagation:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                  recursiveReadOnly:
+                                    type: "string"
+                                  subPath:
+                                    type: "string"
+                                  subPathExpr:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                           type: "object"
                         topicOperatorRoleBinding:
                           description: "Template for the Entity Topic Operator RoleBinding."
@@ -2023,6 +2287,26 @@ spec:
                                       type: "string"
                                   type: "object"
                               type: "object"
+                            volumeMounts:
+                              description: "Additional volume mounts which should be applied to the container."
+                              items:
+                                properties:
+                                  mountPath:
+                                    type: "string"
+                                  mountPropagation:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                  recursiveReadOnly:
+                                    type: "string"
+                                  subPath:
+                                    type: "string"
+                                  subPathExpr:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                           type: "object"
                         userOperatorRoleBinding:
                           description: "Template for the Entity Topic Operator RoleBinding."
@@ -2660,6 +2944,26 @@ spec:
                                       type: "string"
                                   type: "object"
                               type: "object"
+                            volumeMounts:
+                              description: "Additional volume mounts which should be applied to the container."
+                              items:
+                                properties:
+                                  mountPath:
+                                    type: "string"
+                                  mountPropagation:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                  recursiveReadOnly:
+                                    type: "string"
+                                  subPath:
+                                    type: "string"
+                                  subPathExpr:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                           type: "object"
                         deployment:
                           description: "Template for JmxTrans `Deployment`."
@@ -3128,7 +3432,7 @@ spec:
                               minimum: 0.0
                               type: "integer"
                             tmpDirSizeLimit:
-                              description: "Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`."
+                              description: "Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources."
                               pattern: "^([0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
                               type: "string"
                             tolerations:
@@ -3187,6 +3491,85 @@ spec:
                                     type: "string"
                                   whenUnsatisfiable:
                                     type: "string"
+                                type: "object"
+                              type: "array"
+                            volumes:
+                              description: "Additional volumes that can be mounted to the pod."
+                              items:
+                                oneOf:
+                                  - properties:
+                                      configMap: {}
+                                      emptyDir: {}
+                                      persistentVolumeClaim: {}
+                                      secret: {}
+                                    required: []
+                                properties:
+                                  configMap:
+                                    description: "ConfigMap to use to populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      name:
+                                        type: "string"
+                                      optional:
+                                        type: "boolean"
+                                    type: "object"
+                                  emptyDir:
+                                    description: "EmptyDir to use to populate the volume."
+                                    properties:
+                                      medium:
+                                        type: "string"
+                                      sizeLimit:
+                                        properties:
+                                          amount:
+                                            type: "string"
+                                          format:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  name:
+                                    description: "Name to use for the volume. Required."
+                                    type: "string"
+                                  persistentVolumeClaim:
+                                    description: "PersistentVolumeClaim object to use to populate the volume."
+                                    properties:
+                                      claimName:
+                                        type: "string"
+                                      readOnly:
+                                        type: "boolean"
+                                    type: "object"
+                                  secret:
+                                    description: "Secret to use populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      optional:
+                                        type: "boolean"
+                                      secretName:
+                                        type: "string"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                           type: "object"
@@ -3390,7 +3773,7 @@ spec:
                           type: "array"
                       type: "object"
                     listeners:
-                      description: "Configures listeners of Kafka brokers."
+                      description: "Configures listeners to provide access to Kafka brokers."
                       items:
                         properties:
                           authentication:
@@ -3455,7 +3838,7 @@ spec:
                                 description: "Enable or disable termination of Kafka broker processes due to potentially recoverable runtime errors during startup. Default value is `true`."
                                 type: "boolean"
                               fallbackUserNameClaim:
-                                description: "The fallback username claim to be used for the user id if the claim specified by `userNameClaim` is not present. This is useful when `client_credentials` authentication only results in the client id being provided in another claim. It only takes effect if `userNameClaim` is set."
+                                description: "The fallback username claim to be used for the user ID if the claim specified by `userNameClaim` is not present. This is useful when `client_credentials` authentication only results in the client ID being provided in another claim. It only takes effect if `userNameClaim` is set."
                                 type: "string"
                               fallbackUserNamePrefix:
                                 description: "The prefix to use with the value of `fallbackUserNameClaim` to construct the user id. This only takes effect if `fallbackUserNameClaim` is true, and the value is present for the claim. Mapping usernames and client ids into the same user id space is useful in preventing name collisions."
@@ -3497,7 +3880,7 @@ spec:
                                 minimum: 1.0
                                 type: "integer"
                               listenerConfig:
-                                description: "Configuration to be used for a specific listener. All values are prefixed with listener.name._<listener_name>_."
+                                description: "Configuration to be used for a specific listener. All values are prefixed with `listener.name.<listener_name>`."
                                 type: "object"
                                 x-kubernetes-preserve-unknown-fields: true
                               maxSecondsWithoutReauthentication:
@@ -3510,7 +3893,7 @@ spec:
                                 description: "Enable or disable SASL on this listener."
                                 type: "boolean"
                               secrets:
-                                description: "Secrets to be mounted to /opt/kafka/custom-authn-secrets/custom-listener-_<listener_name>-<port>_/_<secret_name>_."
+                                description: "Secrets to be mounted to `/opt/kafka/custom-authn-secrets/custom-listener-<listener_name>-<port>/<secret_name>`."
                                 items:
                                   properties:
                                     key:
@@ -3524,6 +3907,9 @@ spec:
                                     - "secretName"
                                   type: "object"
                                 type: "array"
+                              serverBearerTokenLocation:
+                                description: "Path to the file on the local filesystem that contains a bearer token to be used instead of client ID and secret when authenticating to authorization server."
+                                type: "string"
                               tlsTrustedCertificates:
                                 description: "Trusted certificates for TLS connection to the OAuth server."
                                 items:
@@ -3567,6 +3953,9 @@ spec:
                               userNameClaim:
                                 description: "Name of the claim from the JWT authentication token, Introspection Endpoint response or User Info Endpoint response which will be used to extract the user id. Defaults to `sub`."
                                 type: "string"
+                              userNamePrefix:
+                                description: "The prefix to use with the value of `userNameClaim` to construct the user ID. This only takes effect if `userNameClaim` is specified and the value is present for the claim. When used in combination with `fallbackUserNameClaims`, it ensures consistent mapping of usernames and client IDs into the same user ID space and prevents name collisions."
+                                type: "string"
                               validIssuerUri:
                                 description: "URI of the token issuer used for authentication."
                                 type: "string"
@@ -3590,26 +3979,26 @@ spec:
                                   annotations:
                                     additionalProperties:
                                       type: "string"
-                                    description: "Annotations that will be added to the `Ingress`, `Route`, or `Service` resource. You can use this field to configure DNS providers such as External DNS. This field can be used only with `loadbalancer`, `nodeport`, `route`, or `ingress` type listeners."
+                                    description: "Annotations added to `Ingress`, `Route`, or `Service` resources. You can use this property to configure DNS providers such as External DNS. For `loadbalancer`, `nodeport`, `route`, or `ingress` listeners only."
                                     type: "object"
                                   externalIPs:
-                                    description: "External IPs associated to the nodeport service. These IPs are used by clients external to the Kubernetes cluster to access the Kafka brokers. This field is helpful when `nodeport` without `externalIP` is not sufficient. For example on bare-metal Kubernetes clusters that do not support Loadbalancer service types. This field can only be used with `nodeport` type listener."
+                                    description: "External IPs associated to the nodeport service. These IPs are used by clients external to the Kubernetes cluster to access the Kafka brokers. This property is helpful when `nodeport` without `externalIP` is not sufficient. For example on bare-metal Kubernetes clusters that do not support Loadbalancer service types. For `nodeport` listeners only."
                                     items:
                                       type: "string"
                                     type: "array"
                                   host:
-                                    description: "The bootstrap host. This field will be used in the Ingress resource or in the Route resource to specify the desired hostname. This field can be used only with `route` (optional) or `ingress` (required) type listeners."
+                                    description: "Specifies the hostname used for the bootstrap resource. For `route` (optional) or `ingress` (required) listeners only. Ensure the hostname resolves to the Ingress endpoints; no validation is performed by Strimzi."
                                     type: "string"
                                   labels:
                                     additionalProperties:
                                       type: "string"
-                                    description: "Labels that will be added to the `Ingress`, `Route`, or `Service` resource. This field can be used only with `loadbalancer`, `nodeport`, `route`, or `ingress` type listeners."
+                                    description: "Labels added to `Ingress`, `Route`, or `Service` resources. For `loadbalancer`, `nodeport`, `route`, or `ingress` listeners only."
                                     type: "object"
                                   loadBalancerIP:
-                                    description: "The loadbalancer is requested with the IP address specified in this field. This feature depends on whether the underlying cloud provider supports specifying the `loadBalancerIP` when a load balancer is created. This field is ignored if the cloud provider does not support the feature.This field can be used only with `loadbalancer` type listener."
+                                    description: "The loadbalancer is requested with the IP address specified in this property. This feature depends on whether the underlying cloud provider supports specifying the `loadBalancerIP` when a load balancer is created. This property is ignored if the cloud provider does not support the feature. For `loadbalancer` listeners only."
                                     type: "string"
                                   nodePort:
-                                    description: "Node port for the bootstrap service. This field can be used only with `nodeport` type listener."
+                                    description: "Node port for the bootstrap service. For `nodeport` listeners only."
                                     type: "integer"
                                 type: "object"
                               brokerCertChainAndKey:
@@ -3671,19 +4060,19 @@ spec:
                                   type: "object"
                                 type: "array"
                               class:
-                                description: "Configures a specific class for `Ingress` and `LoadBalancer` that defines which controller will be used. This field can only be used with `ingress` and `loadbalancer` type listeners. If not specified, the default controller is used. For an `ingress` listener, set the `ingressClassName` property in the `Ingress` resources. For a `loadbalancer` listener, set the `loadBalancerClass` property  in the `Service` resources."
+                                description: "Configures a specific class for `Ingress` and `LoadBalancer` that defines which controller is used. If not specified, the default controller is used.\n\n* For an `ingress` listener, the operator uses this property to set the `ingressClassName` property in the `Ingress` resources.\n* For a `loadbalancer` listener, the operator uses this property to set the `loadBalancerClass` property  in the `Service` resources.\n\nFor `ingress` and `loadbalancer` listeners only."
                                 type: "string"
                               createBootstrapService:
-                                description: "Whether to create the bootstrap service or not. The bootstrap service is created by default (if not specified differently). This field can be used with the `loadBalancer` type listener."
+                                description: "Whether to create the bootstrap service or not. The bootstrap service is created by default (if not specified differently). This field can be used with the `loadbalancer` listener."
                                 type: "boolean"
                               externalTrafficPolicy:
-                                description: "Specifies whether the service routes external traffic to node-local or cluster-wide endpoints. `Cluster` may cause a second hop to another node and obscures the client source IP. `Local` avoids a second hop for LoadBalancer and Nodeport type services and preserves the client source IP (when supported by the infrastructure). If unspecified, Kubernetes will use `Cluster` as the default.This field can be used only with `loadbalancer` or `nodeport` type listener."
+                                description: "Specifies whether the service routes external traffic to cluster-wide or node-local endpoints:\n\n* `Cluster` may cause a second hop to another node and obscures the client source IP.\n* `Local` avoids a second hop for `LoadBalancer` and `Nodeport` type services and preserves the client source IP (when supported by the infrastructure).\n\nIf unspecified, Kubernetes uses `Cluster` as the default. For `loadbalancer` or `nodeport` listeners only."
                                 enum:
                                   - "Local"
                                   - "Cluster"
                                 type: "string"
                               finalizers:
-                                description: "A list of finalizers which will be configured for the `LoadBalancer` type Services created for this listener. If supported by the platform, the finalizer `service.kubernetes.io/load-balancer-cleanup` to make sure that the external load balancer is deleted together with the service.For more information, see https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#garbage-collecting-load-balancers. This field can be used only with `loadbalancer` type listeners."
+                                description: "A list of finalizers configured for the `LoadBalancer` type services created for this listener. If supported by the platform, the finalizer `service.kubernetes.io/load-balancer-cleanup` to make sure that the external load balancer is deleted together with the service.For more information, see https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#garbage-collecting-load-balancers. For `loadbalancer` listeners only."
                                 items:
                                   type: "string"
                                 type: "array"
@@ -3696,14 +4085,14 @@ spec:
                                   type: "string"
                                 type: "array"
                               ipFamilyPolicy:
-                                description: "Specifies the IP Family Policy used by the service. Available options are `SingleStack`, `PreferDualStack` and `RequireDualStack`. `SingleStack` is for a single IP family. `PreferDualStack` is for two IP families on dual-stack configured clusters or a single IP family on single-stack clusters. `RequireDualStack` fails unless there are two IP families on dual-stack configured clusters. If unspecified, Kubernetes will choose the default value based on the service type."
+                                description: "Specifies the IP Family Policy used by the service. Available options are `SingleStack`, `PreferDualStack` and `RequireDualStack`:\n\n* `SingleStack` is for a single IP family.\n* `PreferDualStack` is for two IP families on dual-stack configured clusters or a single IP family on single-stack clusters.\n* `RequireDualStack` fails unless there are two IP families on dual-stack configured clusters.\n\nIf unspecified, Kubernetes will choose the default value based on the service type."
                                 enum:
                                   - "SingleStack"
                                   - "PreferDualStack"
                                   - "RequireDualStack"
                                 type: "string"
                               loadBalancerSourceRanges:
-                                description: "A list of CIDR ranges (for example `10.0.0.0/8` or `130.211.204.1/32`) from which clients can connect to load balancer type listeners. If supported by the platform, traffic through the loadbalancer is restricted to the specified CIDR ranges. This field is applicable only for loadbalancer type services and is ignored if the cloud provider does not support the feature. This field can be used only with `loadbalancer` type listener."
+                                description: "A list of CIDR ranges (for example `10.0.0.0/8` or `130.211.204.1/32`) from which clients can connect to loadbalancer listeners. If supported by the platform, traffic through the loadbalancer is restricted to the specified CIDR ranges. This field is applicable only for loadbalancer type services and is ignored if the cloud provider does not support the feature. For `loadbalancer` listeners only."
                                 items:
                                   type: "string"
                                 type: "array"
@@ -3714,7 +4103,7 @@ spec:
                                 description: "The maximum number of connections we allow for this listener in the broker at any time. New connections are blocked if the limit is reached."
                                 type: "integer"
                               preferredNodePortAddressType:
-                                description: "Defines which address type should be used as the node address. Available types are: `ExternalDNS`, `ExternalIP`, `InternalDNS`, `InternalIP` and `Hostname`. By default, the addresses will be used in the following order (the first one found will be used):\n\n* `ExternalDNS`\n* `ExternalIP`\n* `InternalDNS`\n* `InternalIP`\n* `Hostname`\n\nThis field is used to select the preferred address type, which is checked first. If no address is found for this address type, the other types are checked in the default order. This field can only be used with `nodeport` type listener."
+                                description: "Defines which address type should be used as the node address. Available types are: `ExternalDNS`, `ExternalIP`, `InternalDNS`, `InternalIP` and `Hostname`. By default, the addresses are used in the following order (the first one found is used):\n\n* `ExternalDNS`\n* `ExternalIP`\n* `InternalDNS`\n* `InternalIP`\n* `Hostname`\n\nThis property is used to select the preferred address type, which is checked first. If no address is found for this address type, the other types are checked in the default order.For `nodeport` listeners only."
                                 enum:
                                   - "ExternalIP"
                                   - "ExternalDNS"
@@ -3723,10 +4112,10 @@ spec:
                                   - "Hostname"
                                 type: "string"
                               publishNotReadyAddresses:
-                                description: "Configures whether the service endpoints are considered \"ready\" even if the Pods themselves are not. Defaults to `false`. This field can not be used with `internal` type listeners."
+                                description: "Configures whether the service endpoints are considered \"ready\" even if the Pods themselves are not. Defaults to `false`. This field can not be used with `internal` listeners."
                                 type: "boolean"
                               useServiceDnsDomain:
-                                description: "Configures whether the Kubernetes service DNS domain should be used or not. If set to `true`, the generated addresses will contain the service DNS domain suffix (by default `.cluster.local`, can be configured using environment variable `KUBERNETES_SERVICE_DNS_DOMAIN`). Defaults to `false`.This field can be used only with `internal` and `cluster-ip` type listeners."
+                                description: "Configures whether the Kubernetes service DNS domain should be included in the generated addresses.\n\n* If set to `false`, the generated addresses do not contain the service DNS domain suffix. For example, `my-cluster-kafka-0.my-cluster-kafka-brokers.myproject.svc`.\n* If set to `true`, the generated addresses contain the service DNS domain suffix. For example, `my-cluster-kafka-0.my-cluster-kafka-brokers.myproject.svc.cluster.local`.\n\nThe default is `.cluster.local`, but this is customizable using the environment variable `KUBERNETES_SERVICE_DNS_DOMAIN`. For `internal` and `cluster-ip` listeners only."
                                 type: "boolean"
                             type: "object"
                           name:
@@ -3793,7 +4182,7 @@ spec:
                             minimum: 9092.0
                             type: "integer"
                           tls:
-                            description: "Enables TLS encryption on the listener. This is a required property."
+                            description: "Enables TLS encryption on the listener. This is a required property. For `route` and `ingress` type listeners, TLS encryption must be always enabled."
                             type: "boolean"
                           type:
                             description: "Type of the listener. The supported types are as follows: \n\n* `internal` type exposes Kafka internally only within the Kubernetes cluster.\n* `route` type uses OpenShift Routes to expose Kafka.\n* `loadbalancer` type uses LoadBalancer type services to expose Kafka.\n* `nodeport` type uses NodePort type services to expose Kafka.\n* `ingress` type uses Kubernetes Nginx Ingress to expose Kafka with TLS passthrough.\n* `cluster-ip` type uses a per-broker `ClusterIP` service.\n"
@@ -4023,7 +4412,7 @@ spec:
                             - "shared"
                           type: "string"
                         overrides:
-                          description: "Overrides for individual brokers. The `overrides` field allows to specify a different configuration for different brokers."
+                          description: "Overrides for individual brokers. The `overrides` field allows you to specify a different configuration for different brokers."
                           items:
                             properties:
                               broker:
@@ -4073,7 +4462,7 @@ spec:
                                   - "shared"
                                 type: "string"
                               overrides:
-                                description: "Overrides for individual brokers. The `overrides` field allows to specify a different configuration for different brokers."
+                                description: "Overrides for individual brokers. The `overrides` field allows you to specify a different configuration for different brokers."
                                 items:
                                   properties:
                                     broker:
@@ -4348,6 +4737,26 @@ spec:
                                       type: "string"
                                   type: "object"
                               type: "object"
+                            volumeMounts:
+                              description: "Additional volume mounts which should be applied to the container."
+                              items:
+                                properties:
+                                  mountPath:
+                                    type: "string"
+                                  mountPropagation:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                  recursiveReadOnly:
+                                    type: "string"
+                                  subPath:
+                                    type: "string"
+                                  subPathExpr:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                           type: "object"
                         jmxSecret:
                           description: "Template for Secret of the Kafka Cluster JMX authentication."
@@ -4447,6 +4856,26 @@ spec:
                                       type: "string"
                                   type: "object"
                               type: "object"
+                            volumeMounts:
+                              description: "Additional volume mounts which should be applied to the container."
+                              items:
+                                properties:
+                                  mountPath:
+                                    type: "string"
+                                  mountPropagation:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                  recursiveReadOnly:
+                                    type: "string"
+                                  subPath:
+                                    type: "string"
+                                  subPathExpr:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                           type: "object"
                         perPodIngress:
                           description: "Template for Kafka per-pod `Ingress` used for access from outside of Kubernetes."
@@ -4963,7 +5392,7 @@ spec:
                               minimum: 0.0
                               type: "integer"
                             tmpDirSizeLimit:
-                              description: "Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`."
+                              description: "Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources."
                               pattern: "^([0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
                               type: "string"
                             tolerations:
@@ -5022,6 +5451,85 @@ spec:
                                     type: "string"
                                   whenUnsatisfiable:
                                     type: "string"
+                                type: "object"
+                              type: "array"
+                            volumes:
+                              description: "Additional volumes that can be mounted to the pod."
+                              items:
+                                oneOf:
+                                  - properties:
+                                      configMap: {}
+                                      emptyDir: {}
+                                      persistentVolumeClaim: {}
+                                      secret: {}
+                                    required: []
+                                properties:
+                                  configMap:
+                                    description: "ConfigMap to use to populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      name:
+                                        type: "string"
+                                      optional:
+                                        type: "boolean"
+                                    type: "object"
+                                  emptyDir:
+                                    description: "EmptyDir to use to populate the volume."
+                                    properties:
+                                      medium:
+                                        type: "string"
+                                      sizeLimit:
+                                        properties:
+                                          amount:
+                                            type: "string"
+                                          format:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  name:
+                                    description: "Name to use for the volume. Required."
+                                    type: "string"
+                                  persistentVolumeClaim:
+                                    description: "PersistentVolumeClaim object to use to populate the volume."
+                                    properties:
+                                      claimName:
+                                        type: "string"
+                                      readOnly:
+                                        type: "boolean"
+                                    type: "object"
+                                  secret:
+                                    description: "Secret to use populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      optional:
+                                        type: "boolean"
+                                      secretName:
+                                        type: "string"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                           type: "object"
@@ -5319,6 +5827,26 @@ spec:
                                       type: "string"
                                   type: "object"
                               type: "object"
+                            volumeMounts:
+                              description: "Additional volume mounts which should be applied to the container."
+                              items:
+                                properties:
+                                  mountPath:
+                                    type: "string"
+                                  mountPropagation:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                  recursiveReadOnly:
+                                    type: "string"
+                                  subPath:
+                                    type: "string"
+                                  subPathExpr:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                           type: "object"
                         deployment:
                           description: "Template for Kafka Exporter `Deployment`."
@@ -5787,7 +6315,7 @@ spec:
                               minimum: 0.0
                               type: "integer"
                             tmpDirSizeLimit:
-                              description: "Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`."
+                              description: "Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources."
                               pattern: "^([0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
                               type: "string"
                             tolerations:
@@ -5846,6 +6374,85 @@ spec:
                                     type: "string"
                                   whenUnsatisfiable:
                                     type: "string"
+                                type: "object"
+                              type: "array"
+                            volumes:
+                              description: "Additional volumes that can be mounted to the pod."
+                              items:
+                                oneOf:
+                                  - properties:
+                                      configMap: {}
+                                      emptyDir: {}
+                                      persistentVolumeClaim: {}
+                                      secret: {}
+                                    required: []
+                                properties:
+                                  configMap:
+                                    description: "ConfigMap to use to populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      name:
+                                        type: "string"
+                                      optional:
+                                        type: "boolean"
+                                    type: "object"
+                                  emptyDir:
+                                    description: "EmptyDir to use to populate the volume."
+                                    properties:
+                                      medium:
+                                        type: "string"
+                                      sizeLimit:
+                                        properties:
+                                          amount:
+                                            type: "string"
+                                          format:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  name:
+                                    description: "Name to use for the volume. Required."
+                                    type: "string"
+                                  persistentVolumeClaim:
+                                    description: "PersistentVolumeClaim object to use to populate the volume."
+                                    properties:
+                                      claimName:
+                                        type: "string"
+                                      readOnly:
+                                        type: "boolean"
+                                    type: "object"
+                                  secret:
+                                    description: "Secret to use populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      optional:
+                                        type: "boolean"
+                                      secretName:
+                                        type: "string"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                           type: "object"
@@ -6110,7 +6717,7 @@ spec:
                             - "shared"
                           type: "string"
                         overrides:
-                          description: "Overrides for individual brokers. The `overrides` field allows to specify a different configuration for different brokers."
+                          description: "Overrides for individual brokers. The `overrides` field allows you to specify a different configuration for different brokers."
                           items:
                             properties:
                               broker:
@@ -6690,7 +7297,7 @@ spec:
                               minimum: 0.0
                               type: "integer"
                             tmpDirSizeLimit:
-                              description: "Defines the total amount (for example `1Gi`) of local storage required for temporary EmptyDir volume (`/tmp`). Default value is `5Mi`."
+                              description: "Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources."
                               pattern: "^([0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
                               type: "string"
                             tolerations:
@@ -6749,6 +7356,85 @@ spec:
                                     type: "string"
                                   whenUnsatisfiable:
                                     type: "string"
+                                type: "object"
+                              type: "array"
+                            volumes:
+                              description: "Additional volumes that can be mounted to the pod."
+                              items:
+                                oneOf:
+                                  - properties:
+                                      configMap: {}
+                                      emptyDir: {}
+                                      persistentVolumeClaim: {}
+                                      secret: {}
+                                    required: []
+                                properties:
+                                  configMap:
+                                    description: "ConfigMap to use to populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      name:
+                                        type: "string"
+                                      optional:
+                                        type: "boolean"
+                                    type: "object"
+                                  emptyDir:
+                                    description: "EmptyDir to use to populate the volume."
+                                    properties:
+                                      medium:
+                                        type: "string"
+                                      sizeLimit:
+                                        properties:
+                                          amount:
+                                            type: "string"
+                                          format:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  name:
+                                    description: "Name to use for the volume. Required."
+                                    type: "string"
+                                  persistentVolumeClaim:
+                                    description: "PersistentVolumeClaim object to use to populate the volume."
+                                    properties:
+                                      claimName:
+                                        type: "string"
+                                      readOnly:
+                                        type: "boolean"
+                                    type: "object"
+                                  secret:
+                                    description: "Secret to use populate the volume."
+                                    properties:
+                                      defaultMode:
+                                        type: "integer"
+                                      items:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            mode:
+                                              type: "integer"
+                                            path:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
+                                      optional:
+                                        type: "boolean"
+                                      secretName:
+                                        type: "string"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                           type: "object"
@@ -6914,6 +7600,26 @@ spec:
                                       type: "string"
                                   type: "object"
                               type: "object"
+                            volumeMounts:
+                              description: "Additional volume mounts which should be applied to the container."
+                              items:
+                                properties:
+                                  mountPath:
+                                    type: "string"
+                                  mountPropagation:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  readOnly:
+                                    type: "boolean"
+                                  recursiveReadOnly:
+                                    type: "string"
+                                  subPath:
+                                    type: "string"
+                                  subPathExpr:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                           type: "object"
                       type: "object"
                   required:
@@ -7013,6 +7719,11 @@ spec:
                 operatorLastSuccessfulVersion:
                   description: "The version of the Strimzi Cluster Operator which performed the last successful reconciliation."
                   type: "string"
+                registeredNodeIds:
+                  description: "Registered node IDs used by this Kafka cluster. This field is used for internal purposes only and will be removed in the future."
+                  items:
+                    type: "integer"
+                  type: "array"
               type: "object"
           type: "object"
       served: true

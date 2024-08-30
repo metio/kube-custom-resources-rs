@@ -202,7 +202,7 @@ spec:
                                         x-kubernetes-list-type: "map"
                                     type: "object"
                                   requestMirror:
-                                    description: "RequestMirror defines a schema for a filter that mirrors requests.\nRequests are sent to the specified destination, but responses from\nthat destination are ignored.\n\n\nThis filter can be used multiple times within the same rule. Note that\nnot all implementations will be able to support mirroring to multiple\nbackends.\n\n\nSupport: Extended"
+                                    description: "RequestMirror defines a schema for a filter that mirrors requests.\nRequests are sent to the specified destination, but responses from\nthat destination are ignored.\n\n\nThis filter can be used multiple times within the same rule. Note that\nnot all implementations will be able to support mirroring to multiple\nbackends.\n\n\nSupport: Extended\n\n\n"
                                     properties:
                                       backendRef:
                                         description: "BackendRef references a resource where mirrored requests are sent.\n\n\nMirrored requests must be sent only to a single destination endpoint\nwithin this BackendRef, irrespective of how many endpoints are present\nwithin this BackendRef.\n\n\nIf the referent cannot be found, this BackendRef is invalid and must be\ndropped from the Gateway. The controller must ensure the \"ResolvedRefs\"\ncondition on the Route status is set to `status: False` and not configure\nthis backend in the underlying implementation.\n\n\nIf there is a cross-namespace reference to an *existing* object\nthat is not allowed by a ReferenceGrant, the controller must ensure the\n\"ResolvedRefs\"  condition on the Route is set to `status: False`,\nwith the \"RefNotPermitted\" reason and not configure this backend in the\nunderlying implementation.\n\n\nIn either error case, the Message of the `ResolvedRefs` Condition\nshould be used to provide more detail about the problem.\n\n\nSupport: Extended for Kubernetes Service\n\n\nSupport: Implementation-specific for any other resource"
@@ -243,9 +243,36 @@ spec:
                                         x-kubernetes-validations:
                                           - message: "Must have port for Service reference"
                                             rule: "(size(self.group) == 0 && self.kind == 'Service') ? has(self.port) : true"
+                                      fraction:
+                                        description: "Fraction represents the fraction of requests that should be\nmirrored to BackendRef.\n\n\nOnly one of Fraction or Percent may be specified. If neither field\nis specified, 100% of requests will be mirrored.\n\n\n"
+                                        properties:
+                                          denominator:
+                                            default: 100
+                                            format: "int32"
+                                            minimum: 1.0
+                                            type: "integer"
+                                          numerator:
+                                            format: "int32"
+                                            minimum: 0.0
+                                            type: "integer"
+                                        required:
+                                          - "numerator"
+                                        type: "object"
+                                        x-kubernetes-validations:
+                                          - message: "numerator must be less than or equal to denominator"
+                                            rule: "self.numerator <= self.denominator"
+                                      percent:
+                                        description: "Percent represents the percentage of requests that should be\nmirrored to BackendRef. Its minimum value is 0 (indicating 0% of\nrequests) and its maximum value is 100 (indicating 100% of requests).\n\n\nOnly one of Fraction or Percent may be specified. If neither field\nis specified, 100% of requests will be mirrored.\n\n\n"
+                                        format: "int32"
+                                        maximum: 100.0
+                                        minimum: 0.0
+                                        type: "integer"
                                     required:
                                       - "backendRef"
                                     type: "object"
+                                    x-kubernetes-validations:
+                                      - message: "Only one of percent or fraction may be specified in HTTPRequestMirrorFilter"
+                                        rule: "!(has(self.percent) && has(self.fraction))"
                                   responseHeaderModifier:
                                     description: "ResponseHeaderModifier defines a schema for a filter that modifies response\nheaders.\n\n\nSupport: Extended"
                                     properties:
@@ -478,7 +505,7 @@ spec:
                                   x-kubernetes-list-type: "map"
                               type: "object"
                             requestMirror:
-                              description: "RequestMirror defines a schema for a filter that mirrors requests.\nRequests are sent to the specified destination, but responses from\nthat destination are ignored.\n\n\nThis filter can be used multiple times within the same rule. Note that\nnot all implementations will be able to support mirroring to multiple\nbackends.\n\n\nSupport: Extended"
+                              description: "RequestMirror defines a schema for a filter that mirrors requests.\nRequests are sent to the specified destination, but responses from\nthat destination are ignored.\n\n\nThis filter can be used multiple times within the same rule. Note that\nnot all implementations will be able to support mirroring to multiple\nbackends.\n\n\nSupport: Extended\n\n\n"
                               properties:
                                 backendRef:
                                   description: "BackendRef references a resource where mirrored requests are sent.\n\n\nMirrored requests must be sent only to a single destination endpoint\nwithin this BackendRef, irrespective of how many endpoints are present\nwithin this BackendRef.\n\n\nIf the referent cannot be found, this BackendRef is invalid and must be\ndropped from the Gateway. The controller must ensure the \"ResolvedRefs\"\ncondition on the Route status is set to `status: False` and not configure\nthis backend in the underlying implementation.\n\n\nIf there is a cross-namespace reference to an *existing* object\nthat is not allowed by a ReferenceGrant, the controller must ensure the\n\"ResolvedRefs\"  condition on the Route is set to `status: False`,\nwith the \"RefNotPermitted\" reason and not configure this backend in the\nunderlying implementation.\n\n\nIn either error case, the Message of the `ResolvedRefs` Condition\nshould be used to provide more detail about the problem.\n\n\nSupport: Extended for Kubernetes Service\n\n\nSupport: Implementation-specific for any other resource"
@@ -519,9 +546,36 @@ spec:
                                   x-kubernetes-validations:
                                     - message: "Must have port for Service reference"
                                       rule: "(size(self.group) == 0 && self.kind == 'Service') ? has(self.port) : true"
+                                fraction:
+                                  description: "Fraction represents the fraction of requests that should be\nmirrored to BackendRef.\n\n\nOnly one of Fraction or Percent may be specified. If neither field\nis specified, 100% of requests will be mirrored.\n\n\n"
+                                  properties:
+                                    denominator:
+                                      default: 100
+                                      format: "int32"
+                                      minimum: 1.0
+                                      type: "integer"
+                                    numerator:
+                                      format: "int32"
+                                      minimum: 0.0
+                                      type: "integer"
+                                  required:
+                                    - "numerator"
+                                  type: "object"
+                                  x-kubernetes-validations:
+                                    - message: "numerator must be less than or equal to denominator"
+                                      rule: "self.numerator <= self.denominator"
+                                percent:
+                                  description: "Percent represents the percentage of requests that should be\nmirrored to BackendRef. Its minimum value is 0 (indicating 0% of\nrequests) and its maximum value is 100 (indicating 100% of requests).\n\n\nOnly one of Fraction or Percent may be specified. If neither field\nis specified, 100% of requests will be mirrored.\n\n\n"
+                                  format: "int32"
+                                  maximum: 100.0
+                                  minimum: 0.0
+                                  type: "integer"
                               required:
                                 - "backendRef"
                               type: "object"
+                              x-kubernetes-validations:
+                                - message: "Only one of percent or fraction may be specified in HTTPRequestMirrorFilter"
+                                  rule: "!(has(self.percent) && has(self.fraction))"
                             responseHeaderModifier:
                               description: "ResponseHeaderModifier defines a schema for a filter that modifies response\nheaders.\n\n\nSupport: Extended"
                               properties:

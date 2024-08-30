@@ -658,7 +658,8 @@ pub struct ConfigurationErrorCatchWaitForJsonPath {
     /// Path defines the json path to wait for, e.g. '{.status.phase}'.
     pub path: String,
     /// Value defines the expected value to wait for, e.g., "Running".
-    pub value: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// Execution contains tests execution configuration.

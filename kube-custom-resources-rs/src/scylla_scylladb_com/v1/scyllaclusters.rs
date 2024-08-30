@@ -48,7 +48,7 @@ pub struct ScyllaClusterSpec {
     /// dnsDomains is a list of DNS domains this cluster is reachable by. These domains are used when setting up the infrastructure, like certificates. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsDomains")]
     pub dns_domains: Option<Vec<String>>,
-    /// exposeOptions specifies options for exposing ScyllaCluster services. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
+    /// exposeOptions specifies options for exposing ScyllaCluster services. This field is immutable. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeOptions")]
     pub expose_options: Option<ScyllaClusterExposeOptions>,
     /// externalSeeds specifies the external seeds to propagate to ScyllaDB binary on startup as "seeds" parameter of seed-provider.
@@ -1831,7 +1831,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesVsphereVolume {
     pub volume_path: String,
 }
 
-/// exposeOptions specifies options for exposing ScyllaCluster services. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
+/// exposeOptions specifies options for exposing ScyllaCluster services. This field is immutable. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterExposeOptions {
     /// BroadcastOptions defines how ScyllaDB node publishes its IP address to other nodes and clients.

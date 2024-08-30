@@ -36,6 +36,7 @@ pub struct SqlJobSpec {
     /// DependsOn defines dependencies with other SqlJob objectecs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
     pub depends_on: Option<Vec<SqlJobDependsOn>>,
+    /// FailedJobsHistoryLimit defines the maximum number of failed Jobs to be displayed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i32>,
     /// ImagePullSecrets is the list of pull Secrets to be used to pull the image.
@@ -84,8 +85,10 @@ pub struct SqlJobSpec {
     /// It is defaulted to a ConfigMap with the contents of the Sql field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sqlConfigMapKeyRef")]
     pub sql_config_map_key_ref: Option<SqlJobSqlConfigMapKeyRef>,
+    /// SuccessfulJobsHistoryLimit defines the maximum number of successful Jobs to be displayed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i32>,
+    /// TimeZone defines the timezone associated with the cron expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
     pub time_zone: Option<String>,
     /// Tolerations to be used in the Pod.
