@@ -144,6 +144,9 @@ spec:
                         x-kubernetes-preserve-unknown-fields: true
                       health:
                         type: "string"
+                      healthExpr:
+                        description: "healthExpr allows defining a cel expression to evaluate the health of a component\nbased on the summary."
+                        type: "string"
                       hidden:
                         description: "If set to true, do not display in UI"
                         type: "boolean"
@@ -399,7 +402,7 @@ spec:
                           type: "object"
                         type: "array"
                       statusExpr:
-                        description: "statusExpr allows defining a cel expression to evaluate the status of a component\nbased on the summary and the related config"
+                        description: "statusExpr allows defining a cel expression to evaluate the status of a component\nbased on the summary."
                         type: "string"
                       summary:
                         description: "Summary is the health, incidents, insights & check summary"
@@ -534,6 +537,9 @@ spec:
                   required:
                     - "tag"
                   type: "object"
+                healthExpr:
+                  description: "statusExpr allows defining a cel expression to evaluate the status of a component\nbased on the summary."
+                  type: "string"
                 icon:
                   type: "string"
                 id:
@@ -1066,7 +1072,7 @@ spec:
                 schedule:
                   type: "string"
                 statusExpr:
-                  description: "statusExpr allows defining a cel expression to evaluate the status of a component\nbased on the summary and the related config"
+                  description: "statusExpr allows defining a cel expression to evaluate the status of a component\nbased on the summary."
                   type: "string"
                 text:
                   type: "string"

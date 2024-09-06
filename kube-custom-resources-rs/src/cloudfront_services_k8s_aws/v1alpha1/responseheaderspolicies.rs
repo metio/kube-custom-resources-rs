@@ -298,8 +298,8 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
     /// For more information about the X-XSS-Protection HTTP response header, see
     /// X-XSS-Protection (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection)
     /// in the MDN Web Docs.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xSSProtection")]
-    pub x_ss_protection: Option<ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfigXSsProtection>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xssProtection")]
+    pub xss_protection: Option<ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfigXssProtection>,
 }
 
 /// The policy directives and their values that CloudFront includes as values
@@ -387,7 +387,7 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
 /// X-XSS-Protection (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection)
 /// in the MDN Web Docs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfigXSsProtection {
+pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfigXssProtection {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modeBlock")]
     pub mode_block: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "override")]

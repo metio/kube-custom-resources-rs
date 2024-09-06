@@ -74,6 +74,9 @@ pub struct GrafanaDashboardSpec {
     /// dashboard url
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+    /// authorization options for dashboard from url
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlAuthorization")]
+    pub url_authorization: Option<GrafanaDashboardUrlAuthorization>,
 }
 
 /// dashboard from configmap
@@ -264,6 +267,61 @@ pub struct GrafanaDashboardJsonnetLib {
 pub struct GrafanaDashboardPlugins {
     pub name: String,
     pub version: String,
+}
+
+/// authorization options for dashboard from url
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaDashboardUrlAuthorization {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
+    pub basic_auth: Option<GrafanaDashboardUrlAuthorizationBasicAuth>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaDashboardUrlAuthorizationBasicAuth {
+    /// SecretKeySelector selects a key of a Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<GrafanaDashboardUrlAuthorizationBasicAuthPassword>,
+    /// SecretKeySelector selects a key of a Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub username: Option<GrafanaDashboardUrlAuthorizationBasicAuthUsername>,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaDashboardUrlAuthorizationBasicAuthPassword {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaDashboardUrlAuthorizationBasicAuthUsername {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// GrafanaDashboardStatus defines the observed state of GrafanaDashboard

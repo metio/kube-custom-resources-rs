@@ -20,10 +20,9 @@ use self::prelude::*;
 pub struct EmqxPluginSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginName")]
-    pub plugin_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<BTreeMap<String, String>>,
+    #[serde(rename = "pluginName")]
+    pub plugin_name: String,
+    pub selector: BTreeMap<String, String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

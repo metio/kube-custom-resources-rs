@@ -49,6 +49,16 @@ pub struct GatewaySpec {
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<GatewayAddresses>>,
+    /// BackendTLS configures TLS settings for when this Gateway is connecting to
+    /// backends with TLS.
+    /// 
+    /// 
+    /// Support: Core
+    /// 
+    /// 
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendTLS")]
+    pub backend_tls: Option<GatewayBackendTls>,
     /// GatewayClassName used for this Gateway. This is the name of a
     /// GatewayClass resource.
     #[serde(rename = "gatewayClassName")]
@@ -56,10 +66,7 @@ pub struct GatewaySpec {
     /// Infrastructure defines infrastructure level attributes about this Gateway instance.
     /// 
     /// 
-    /// Support: Core
-    /// 
-    /// 
-    /// 
+    /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub infrastructure: Option<GatewayInfrastructure>,
     /// Listeners associated with this Gateway. Listeners define
@@ -223,13 +230,94 @@ pub struct GatewayAddresses {
     pub value: String,
 }
 
-/// Infrastructure defines infrastructure level attributes about this Gateway instance.
+/// BackendTLS configures TLS settings for when this Gateway is connecting to
+/// backends with TLS.
 /// 
 /// 
 /// Support: Core
 /// 
 /// 
 /// 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayBackendTls {
+    /// ClientCertificateRef is a reference to an object that contains a Client
+    /// Certificate and the associated private key.
+    /// 
+    /// 
+    /// References to a resource in different namespace are invalid UNLESS there
+    /// is a ReferenceGrant in the target namespace that allows the certificate
+    /// to be attached. If a ReferenceGrant does not allow this reference, the
+    /// "ResolvedRefs" condition MUST be set to False for this listener with the
+    /// "RefNotPermitted" reason.
+    /// 
+    /// 
+    /// ClientCertificateRef can reference to standard Kubernetes resources, i.e.
+    /// Secret, or implementation-specific custom resources.
+    /// 
+    /// 
+    /// This setting can be overridden on the service level by use of BackendTLSPolicy.
+    /// 
+    /// 
+    /// Support: Core
+    /// 
+    /// 
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificateRef")]
+    pub client_certificate_ref: Option<GatewayBackendTlsClientCertificateRef>,
+}
+
+/// ClientCertificateRef is a reference to an object that contains a Client
+/// Certificate and the associated private key.
+/// 
+/// 
+/// References to a resource in different namespace are invalid UNLESS there
+/// is a ReferenceGrant in the target namespace that allows the certificate
+/// to be attached. If a ReferenceGrant does not allow this reference, the
+/// "ResolvedRefs" condition MUST be set to False for this listener with the
+/// "RefNotPermitted" reason.
+/// 
+/// 
+/// ClientCertificateRef can reference to standard Kubernetes resources, i.e.
+/// Secret, or implementation-specific custom resources.
+/// 
+/// 
+/// This setting can be overridden on the service level by use of BackendTLSPolicy.
+/// 
+/// 
+/// Support: Core
+/// 
+/// 
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayBackendTlsClientCertificateRef {
+    /// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+    /// When unspecified or empty string, core API group is inferred.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// Kind is kind of the referent. For example "Secret".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name is the name of the referent.
+    pub name: String,
+    /// Namespace is the namespace of the referenced object. When unspecified, the local
+    /// namespace is inferred.
+    /// 
+    /// 
+    /// Note that when a namespace different than the local namespace is specified,
+    /// a ReferenceGrant object is required in the referent namespace to allow that
+    /// namespace's owner to accept the reference. See the ReferenceGrant
+    /// documentation for details.
+    /// 
+    /// 
+    /// Support: Core
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Infrastructure defines infrastructure level attributes about this Gateway instance.
+/// 
+/// 
+/// Support: Extended
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayInfrastructure {
     /// Annotations that SHOULD be applied to any resources created in response to this Gateway.
@@ -253,6 +341,10 @@ pub struct GatewayInfrastructure {
     /// 
     /// 
     /// An implementation may chose to add additional implementation-specific labels as they see fit.
+    /// 
+    /// 
+    /// If an implementation maps these labels to Pods, or any other resource that would need to be recreated when labels
+    /// change, it SHOULD clearly warn about this behavior in documentation.
     /// 
     /// 
     /// Support: Extended

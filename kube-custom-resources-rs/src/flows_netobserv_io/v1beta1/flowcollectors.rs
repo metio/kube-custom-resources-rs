@@ -107,6 +107,8 @@ pub struct FlowCollectorAgentEbpf {
     /// If the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>
     /// - `DNSTracking`: enable the DNS tracking feature.<br>
     /// - `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>
+    /// - `NetworkEvents`: enable the Network events monitoring feature. This feature requires mounting
+    /// the kernel debug filesystem, so the eBPF pod has to run as privileged.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering

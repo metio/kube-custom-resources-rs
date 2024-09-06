@@ -151,6 +151,9 @@ pub struct TestCatchCommand {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// WorkDir is the working directory for command.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDir")]
+    pub work_dir: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -494,6 +497,9 @@ pub struct TestCatchScript {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// WorkDir is the working directory for script.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDir")]
+    pub work_dir: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -792,6 +798,9 @@ pub struct TestStepsCatchCommand {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// WorkDir is the working directory for command.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDir")]
+    pub work_dir: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -1135,6 +1144,9 @@ pub struct TestStepsCatchScript {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// WorkDir is the working directory for script.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDir")]
+    pub work_dir: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -1339,6 +1351,9 @@ pub struct TestStepsCleanupCommand {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// WorkDir is the working directory for command.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDir")]
+    pub work_dir: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -1682,6 +1697,9 @@ pub struct TestStepsCleanupScript {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// WorkDir is the working directory for script.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDir")]
+    pub work_dir: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -1905,6 +1923,9 @@ pub struct TestStepsFinallyCommand {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// WorkDir is the working directory for command.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDir")]
+    pub work_dir: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -2248,6 +2269,9 @@ pub struct TestStepsFinallyScript {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// WorkDir is the working directory for script.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDir")]
+    pub work_dir: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -2631,6 +2655,9 @@ pub struct TestStepsTryCommand {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// WorkDir is the working directory for command.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDir")]
+    pub work_dir: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -3243,6 +3270,9 @@ pub struct TestStepsTryScript {
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// WorkDir is the working directory for script.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDir")]
+    pub work_dir: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.

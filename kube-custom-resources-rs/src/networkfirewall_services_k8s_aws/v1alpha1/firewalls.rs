@@ -276,14 +276,14 @@ pub struct FirewallStatusFirewallStatusCapacityUsageSummary {
 pub struct FirewallStatusFirewallStatusCapacityUsageSummaryCidrs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableCIDRCount")]
     pub available_cidr_count: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iPSetReferences")]
-    pub i_p_set_references: Option<BTreeMap<String, FirewallStatusFirewallStatusCapacityUsageSummaryCidrsIPSetReferences>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipSetReferences")]
+    pub ip_set_references: Option<BTreeMap<String, FirewallStatusFirewallStatusCapacityUsageSummaryCidrsIpSetReferences>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "utilizedCIDRCount")]
     pub utilized_cidr_count: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FirewallStatusFirewallStatusCapacityUsageSummaryCidrsIPSetReferences {
+pub struct FirewallStatusFirewallStatusCapacityUsageSummaryCidrsIpSetReferences {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvedCIDRCount")]
     pub resolved_cidr_count: Option<i64>,
 }

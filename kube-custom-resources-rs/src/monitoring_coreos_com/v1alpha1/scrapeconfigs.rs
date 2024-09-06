@@ -18,9 +18,6 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ScrapeConfigSpec {
-    /// NomadSDConfigs defines a list of Nomad service discovery configurations.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "NomadSDConfigs")]
-    pub nomad_sd_configs: Option<Vec<ScrapeConfigNomadSdConfigs>>,
     /// Authorization header to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigAuthorization>,
@@ -76,6 +73,9 @@ pub struct ScrapeConfigSpec {
     /// HTTPSDConfigs defines a list of HTTP service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpSDConfigs")]
     pub http_sd_configs: Option<Vec<ScrapeConfigHttpSdConfigs>>,
+    /// IonosSDConfigs defines a list of IONOS service discovery configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ionosSDConfigs")]
+    pub ionos_sd_configs: Option<Vec<ScrapeConfigIonosSdConfigs>>,
     /// The value of the `job` label assigned to the scraped metrics by default.
     /// 
     /// The `job_name` field in the rendered scrape configuration is always controlled by the
@@ -126,7 +126,10 @@ pub struct ScrapeConfigSpec {
     /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// OAuth2 client credentials used to fetch a token for the targets.
+    /// NomadSDConfigs defines a list of Nomad service discovery configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nomadSDConfigs")]
+    pub nomad_sd_configs: Option<Vec<ScrapeConfigNomadSdConfigs>>,
+    /// OAuth2 configuration to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ScrapeConfigOauth2>,
     /// OpenStackSDConfigs defines a list of OpenStack service discovery configurations.
@@ -204,627 +207,6 @@ pub struct ScrapeConfigSpec {
     /// It requires Prometheus >= v2.48.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackTimestampsStaleness")]
     pub track_timestamps_staleness: Option<bool>,
-}
-
-/// NomadSDConfig configurations allow retrieving scrape targets from Nomad's Service API.
-/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#nomad_sd_config
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigs {
-    /// The information to access the Nomad API. It is to be defined
-    /// as the Nomad documentation requires.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStale")]
-    pub allow_stale: Option<bool>,
-    /// Authorization header to use on every scrape request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub authorization: Option<ScrapeConfigNomadSdConfigsAuthorization>,
-    /// BasicAuth information to use on every scrape request.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
-    pub basic_auth: Option<ScrapeConfigNomadSdConfigsBasicAuth>,
-    /// Whether to enable HTTP2.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
-    pub enable_http2: Option<bool>,
-    /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
-    pub follow_redirects: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
-    /// that should be excluded from proxying. IP and domain names can
-    /// contain port numbers.
-    /// 
-    /// It requires Prometheus >= v2.43.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
-    pub no_proxy: Option<String>,
-    /// Optional OAuth 2.0 configuration.
-    /// Cannot be set at the same time as `authorization` or `basic_auth`.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub oauth2: Option<ScrapeConfigNomadSdConfigsOauth2>,
-    /// ProxyConnectHeader optionally specifies headers to send to
-    /// proxies during CONNECT requests.
-    /// 
-    /// It requires Prometheus >= v2.43.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
-    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigNomadSdConfigsProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    /// If unset, Prometheus uses its default value.
-    /// 
-    /// It requires Prometheus >= v2.43.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
-    pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
-    /// Duration is a valid time duration that can be parsed by Prometheus model.ParseDuration() function.
-    /// Supported units: y, w, d, h, m, s, ms
-    /// Examples: `30s`, `1m`, `1h20m15s`, `15d`
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
-    pub refresh_interval: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub region: Option<String>,
-    pub server: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
-    pub tag_separator: Option<String>,
-    /// TLS configuration applying to the target HTTP endpoint.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
-    pub tls_config: Option<ScrapeConfigNomadSdConfigsTlsConfig>,
-}
-
-/// Authorization header to use on every scrape request.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsAuthorization {
-    /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials: Option<ScrapeConfigNomadSdConfigsAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive.
-    /// 
-    /// "Basic" is not a supported value.
-    /// 
-    /// Default: "Bearer"
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-}
-
-/// Selects a key of a Secret in the namespace that contains the credentials for authentication.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// BasicAuth information to use on every scrape request.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for
-    /// authentication.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub password: Option<ScrapeConfigNomadSdConfigsBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for
-    /// authentication.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub username: Option<ScrapeConfigNomadSdConfigsBasicAuthUsername>,
-}
-
-/// `password` specifies a key of a Secret containing the password for
-/// authentication.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// `username` specifies a key of a Secret containing the username for
-/// authentication.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Optional OAuth 2.0 configuration.
-/// Cannot be set at the same time as `authorization` or `basic_auth`.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the
-    /// OAuth2 client's ID.
-    #[serde(rename = "clientId")]
-    pub client_id: ScrapeConfigNomadSdConfigsOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2
-    /// client's secret.
-    #[serde(rename = "clientSecret")]
-    pub client_secret: ScrapeConfigNomadSdConfigsOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token
-    /// URL.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
-    pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
-    /// that should be excluded from proxying. IP and domain names can
-    /// contain port numbers.
-    /// 
-    /// It requires Prometheus >= v2.43.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
-    pub no_proxy: Option<String>,
-    /// ProxyConnectHeader optionally specifies headers to send to
-    /// proxies during CONNECT requests.
-    /// 
-    /// It requires Prometheus >= v2.43.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
-    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigNomadSdConfigsOauth2ProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    /// If unset, Prometheus uses its default value.
-    /// 
-    /// It requires Prometheus >= v2.43.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
-    pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
-    /// `scopes` defines the OAuth2 scopes used for the token request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scopes: Option<Vec<String>>,
-    /// TLS configuration to use when connecting to the OAuth2 server.
-    /// It requires Prometheus >= v2.43.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
-    pub tls_config: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfig>,
-    /// `tokenURL` configures the URL to fetch the token from.
-    #[serde(rename = "tokenUrl")]
-    pub token_url: String,
-}
-
-/// `clientId` specifies a key of a Secret or ConfigMap containing the
-/// OAuth2 client's ID.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ScrapeConfigNomadSdConfigsOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ScrapeConfigNomadSdConfigsOauth2ClientIdSecret>,
-}
-
-/// ConfigMap containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2ClientIdConfigMap {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Secret containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// `clientSecret` specifies a key of a Secret containing the OAuth2
-/// client's secret.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// SecretKeySelector selects a key of a Secret.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2ProxyConnectHeader {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// TLS configuration to use when connecting to the OAuth2 server.
-/// It requires Prometheus >= v2.43.0.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfig {
-    /// Certificate authority used when verifying server certificates.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ca: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCa>,
-    /// Client certificate to present when doing client-authentication.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cert: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCert>,
-    /// Disable target certificate validation.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
-    pub insecure_skip_verify: Option<bool>,
-    /// Secret containing the client key file for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigKeySecret>,
-    /// Maximum acceptable TLS version.
-    /// 
-    /// It requires Prometheus >= v2.41.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
-    pub max_version: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigMaxVersion>,
-    /// Minimum acceptable TLS version.
-    /// 
-    /// It requires Prometheus >= v2.35.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
-    pub min_version: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigMinVersion>,
-    /// Used to verify the hostname for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
-    pub server_name: Option<String>,
-}
-
-/// Certificate authority used when verifying server certificates.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCaSecret>,
-}
-
-/// ConfigMap containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCaConfigMap {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Secret containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Client certificate to present when doing client-authentication.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCertSecret>,
-}
-
-/// ConfigMap containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCertConfigMap {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Secret containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Secret containing the client key file for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// TLS configuration to use when connecting to the OAuth2 server.
-/// It requires Prometheus >= v2.43.0.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ScrapeConfigNomadSdConfigsOauth2TlsConfigMaxVersion {
-    #[serde(rename = "TLS10")]
-    Tls10,
-    #[serde(rename = "TLS11")]
-    Tls11,
-    #[serde(rename = "TLS12")]
-    Tls12,
-    #[serde(rename = "TLS13")]
-    Tls13,
-}
-
-/// TLS configuration to use when connecting to the OAuth2 server.
-/// It requires Prometheus >= v2.43.0.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ScrapeConfigNomadSdConfigsOauth2TlsConfigMinVersion {
-    #[serde(rename = "TLS10")]
-    Tls10,
-    #[serde(rename = "TLS11")]
-    Tls11,
-    #[serde(rename = "TLS12")]
-    Tls12,
-    #[serde(rename = "TLS13")]
-    Tls13,
-}
-
-/// SecretKeySelector selects a key of a Secret.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsProxyConnectHeader {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// TLS configuration applying to the target HTTP endpoint.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsTlsConfig {
-    /// Certificate authority used when verifying server certificates.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ca: Option<ScrapeConfigNomadSdConfigsTlsConfigCa>,
-    /// Client certificate to present when doing client-authentication.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cert: Option<ScrapeConfigNomadSdConfigsTlsConfigCert>,
-    /// Disable target certificate validation.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
-    pub insecure_skip_verify: Option<bool>,
-    /// Secret containing the client key file for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret: Option<ScrapeConfigNomadSdConfigsTlsConfigKeySecret>,
-    /// Maximum acceptable TLS version.
-    /// 
-    /// It requires Prometheus >= v2.41.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
-    pub max_version: Option<ScrapeConfigNomadSdConfigsTlsConfigMaxVersion>,
-    /// Minimum acceptable TLS version.
-    /// 
-    /// It requires Prometheus >= v2.35.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
-    pub min_version: Option<ScrapeConfigNomadSdConfigsTlsConfigMinVersion>,
-    /// Used to verify the hostname for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
-    pub server_name: Option<String>,
-}
-
-/// Certificate authority used when verifying server certificates.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ScrapeConfigNomadSdConfigsTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ScrapeConfigNomadSdConfigsTlsConfigCaSecret>,
-}
-
-/// ConfigMap containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsTlsConfigCaConfigMap {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Secret containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Client certificate to present when doing client-authentication.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ScrapeConfigNomadSdConfigsTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ScrapeConfigNomadSdConfigsTlsConfigCertSecret>,
-}
-
-/// ConfigMap containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsTlsConfigCertConfigMap {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Secret containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Secret containing the client key file for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScrapeConfigNomadSdConfigsTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// TLS configuration applying to the target HTTP endpoint.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ScrapeConfigNomadSdConfigsTlsConfigMaxVersion {
-    #[serde(rename = "TLS10")]
-    Tls10,
-    #[serde(rename = "TLS11")]
-    Tls11,
-    #[serde(rename = "TLS12")]
-    Tls12,
-    #[serde(rename = "TLS13")]
-    Tls13,
-}
-
-/// TLS configuration applying to the target HTTP endpoint.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ScrapeConfigNomadSdConfigsTlsConfigMinVersion {
-    #[serde(rename = "TLS10")]
-    Tls10,
-    #[serde(rename = "TLS11")]
-    Tls11,
-    #[serde(rename = "TLS12")]
-    Tls12,
-    #[serde(rename = "TLS13")]
-    Tls13,
 }
 
 /// Authorization header to use on every scrape request.
@@ -2276,7 +1658,7 @@ pub struct ScrapeConfigDockerSdConfigs {
     pub host_networking_host: Option<String>,
     /// Configure whether to match the first network if the container has multiple networks defined.
     /// If unset, Prometheus uses true by default.
-    /// It requires Prometheus >= v2.54.0.
+    /// It requires Prometheus >= v2.54.1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFirstNetwork")]
     pub match_first_network: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
@@ -5734,6 +5116,266 @@ pub enum ScrapeConfigHttpSdConfigsTlsConfigMinVersion {
     Tls13,
 }
 
+/// IonosSDConfig configurations allow retrieving scrape targets from IONOS resources.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ionos_sd_config
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigs {
+    /// Authorization` header configuration, required when using IONOS.
+    pub authorization: ScrapeConfigIonosSdConfigsAuthorization,
+    /// The unique ID of the IONOS data center.
+    #[serde(rename = "datacenterID")]
+    pub datacenter_id: String,
+    /// Configure whether to enable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
+    pub enable_http2: Option<bool>,
+    /// Configure whether the HTTP requests should follow HTTP 3xx redirects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
+    pub follow_redirects: Option<bool>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
+    /// Port to scrape the metrics from.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigIonosSdConfigsProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
+    pub proxy_url: Option<String>,
+    /// Refresh interval to re-read the list of resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
+    pub refresh_interval: Option<String>,
+    /// TLS configuration to use when connecting to the IONOS API.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<ScrapeConfigIonosSdConfigsTlsConfig>,
+}
+
+/// Authorization` header configuration, required when using IONOS.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsAuthorization {
+    /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<ScrapeConfigIonosSdConfigsAuthorizationCredentials>,
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// Default: "Bearer"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsAuthorizationCredentials {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration to use when connecting to the IONOS API.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsTlsConfig {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<ScrapeConfigIonosSdConfigsTlsConfigCa>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<ScrapeConfigIonosSdConfigsTlsConfigCert>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<ScrapeConfigIonosSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigIonosSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigIonosSdConfigsTlsConfigMinVersion>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsTlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigIonosSdConfigsTlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigIonosSdConfigsTlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsTlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsTlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsTlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigIonosSdConfigsTlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigIonosSdConfigsTlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsTlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsTlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigIonosSdConfigsTlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration to use when connecting to the IONOS API.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigIonosSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use when connecting to the IONOS API.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigIonosSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
 /// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API.
 /// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -8367,7 +8009,628 @@ pub enum ScrapeConfigMetricRelabelingsAction {
     DropEqual,
 }
 
-/// OAuth2 client credentials used to fetch a token for the targets.
+/// NomadSDConfig configurations allow retrieving scrape targets from Nomad's Service API.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#nomad_sd_config
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigs {
+    /// The information to access the Nomad API. It is to be defined
+    /// as the Nomad documentation requires.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStale")]
+    pub allow_stale: Option<bool>,
+    /// Authorization header to use on every scrape request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization: Option<ScrapeConfigNomadSdConfigsAuthorization>,
+    /// BasicAuth information to use on every scrape request.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
+    pub basic_auth: Option<ScrapeConfigNomadSdConfigsBasicAuth>,
+    /// Whether to enable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
+    pub enable_http2: Option<bool>,
+    /// Configure whether HTTP requests follow HTTP 3xx redirects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
+    pub follow_redirects: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
+    /// Optional OAuth 2.0 configuration.
+    /// Cannot be set at the same time as `authorization` or `basic_auth`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth2: Option<ScrapeConfigNomadSdConfigsOauth2>,
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigNomadSdConfigsProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
+    pub proxy_url: Option<String>,
+    /// Duration is a valid time duration that can be parsed by Prometheus model.ParseDuration() function.
+    /// Supported units: y, w, d, h, m, s, ms
+    /// Examples: `30s`, `1m`, `1h20m15s`, `15d`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
+    pub refresh_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    pub server: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
+    pub tag_separator: Option<String>,
+    /// TLS configuration applying to the target HTTP endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<ScrapeConfigNomadSdConfigsTlsConfig>,
+}
+
+/// Authorization header to use on every scrape request.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsAuthorization {
+    /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<ScrapeConfigNomadSdConfigsAuthorizationCredentials>,
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// Default: "Bearer"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsAuthorizationCredentials {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// BasicAuth information to use on every scrape request.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsBasicAuth {
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<ScrapeConfigNomadSdConfigsBasicAuthPassword>,
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub username: Option<ScrapeConfigNomadSdConfigsBasicAuthUsername>,
+}
+
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsBasicAuthPassword {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsBasicAuthUsername {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Optional OAuth 2.0 configuration.
+/// Cannot be set at the same time as `authorization` or `basic_auth`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2 {
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
+    #[serde(rename = "clientId")]
+    pub client_id: ScrapeConfigNomadSdConfigsOauth2ClientId,
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
+    #[serde(rename = "clientSecret")]
+    pub client_secret: ScrapeConfigNomadSdConfigsOauth2ClientSecret,
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
+    pub endpoint_params: Option<BTreeMap<String, String>>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigNomadSdConfigsOauth2ProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
+    pub proxy_url: Option<String>,
+    /// `scopes` defines the OAuth2 scopes used for the token request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    /// TLS configuration to use when connecting to the OAuth2 server.
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfig>,
+    /// `tokenURL` configures the URL to fetch the token from.
+    #[serde(rename = "tokenUrl")]
+    pub token_url: String,
+}
+
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2ClientId {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigNomadSdConfigsOauth2ClientIdConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigNomadSdConfigsOauth2ClientIdSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2ClientIdConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2ClientIdSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2ClientSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2ProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration to use when connecting to the OAuth2 server.
+/// It requires Prometheus >= v2.43.0.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfig {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCa>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCert>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigMinVersion>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration to use when connecting to the OAuth2 server.
+/// It requires Prometheus >= v2.43.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigNomadSdConfigsOauth2TlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use when connecting to the OAuth2 server.
+/// It requires Prometheus >= v2.43.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigNomadSdConfigsOauth2TlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsTlsConfig {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<ScrapeConfigNomadSdConfigsTlsConfigCa>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<ScrapeConfigNomadSdConfigsTlsConfigCert>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<ScrapeConfigNomadSdConfigsTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ScrapeConfigNomadSdConfigsTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ScrapeConfigNomadSdConfigsTlsConfigMinVersion>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsTlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigNomadSdConfigsTlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigNomadSdConfigsTlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsTlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsTlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsTlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigNomadSdConfigsTlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigNomadSdConfigsTlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsTlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsTlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigNomadSdConfigsTlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigNomadSdConfigsTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigNomadSdConfigsTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// OAuth2 configuration to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigOauth2 {
     /// `clientId` specifies a key of a Secret or ConfigMap containing the

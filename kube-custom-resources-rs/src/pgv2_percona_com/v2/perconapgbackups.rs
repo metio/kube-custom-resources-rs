@@ -205,7 +205,7 @@ pub struct PerconaPGBackupStatusRepoVolumeVolumeClaimSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.

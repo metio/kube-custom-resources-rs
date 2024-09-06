@@ -24,8 +24,8 @@ pub struct MeshProxyPatchSpec {
     /// TargetRef is a reference to the resource the policy takes an effect on.
     /// The resource could be either a real store object or virtual resource
     /// defined inplace.
-    #[serde(rename = "targetRef")]
-    pub target_ref: MeshProxyPatchTargetRef,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
+    pub target_ref: Option<MeshProxyPatchTargetRef>,
 }
 
 /// Default is a configuration specific to the group of destinations

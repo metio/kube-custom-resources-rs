@@ -35,6 +35,10 @@ pub struct PolicySpec {
     /// uses variables that are only available in the admission review request (e.g. user name).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub background: Option<bool>,
+    /// EmitWarning enables API response warnings for mutate policy rules or validate policy rules with validationFailureAction set to Audit.
+    /// Enabling this option will extend admission request processing times. The default value is "false".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitWarning")]
+    pub emit_warning: Option<bool>,
     /// Deprecated, use failurePolicy under the webhookConfiguration instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<PolicyFailurePolicy>,
@@ -129,6 +133,9 @@ pub struct PolicyRules {
     /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<serde_json::Value>,
+    /// ReportProperties are the additional properties from the rule that will be added to the policy report result
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportProperties")]
+    pub report_properties: Option<BTreeMap<String, String>>,
     /// SkipBackgroundRequests bypasses admission requests that are sent by the background controller.
     /// The default value is set to "true", it must be set to "false" to apply
     /// generate and mutateExisting rules to those requests.
@@ -190,8 +197,7 @@ pub struct PolicyRulesContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyRulesContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<PolicyRulesContextVariable>,
@@ -205,6 +211,10 @@ pub struct PolicyRulesContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyRulesContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response
@@ -1021,8 +1031,7 @@ pub struct PolicyRulesGenerateForeachContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyRulesGenerateForeachContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<PolicyRulesGenerateForeachContextVariable>,
@@ -1036,6 +1045,10 @@ pub struct PolicyRulesGenerateForeachContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyRulesGenerateForeachContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response
@@ -1824,8 +1837,7 @@ pub struct PolicyRulesMutateForeachContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyRulesMutateForeachContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<PolicyRulesMutateForeachContextVariable>,
@@ -1839,6 +1851,10 @@ pub struct PolicyRulesMutateForeachContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyRulesMutateForeachContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response
@@ -2129,8 +2145,7 @@ pub struct PolicyRulesMutateTargetsContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyRulesMutateTargetsContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<PolicyRulesMutateTargetsContextVariable>,
@@ -2144,6 +2159,10 @@ pub struct PolicyRulesMutateTargetsContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyRulesMutateTargetsContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response
@@ -2278,6 +2297,9 @@ pub struct PolicyRulesMutateTargetsContextVariable {
 /// Validation is used to validate matching resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyRulesValidate {
+    /// AllowExistingViolations allows prexisting violating resources to continue violating a policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowExistingViolations")]
+    pub allow_existing_violations: Option<bool>,
     /// AnyPattern specifies list of validation patterns. At least one of the patterns
     /// must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
@@ -2701,8 +2723,7 @@ pub struct PolicyRulesValidateForeachContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyRulesValidateForeachContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<PolicyRulesValidateForeachContextVariable>,
@@ -2716,6 +2737,10 @@ pub struct PolicyRulesValidateForeachContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyRulesValidateForeachContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response
@@ -3019,6 +3044,9 @@ pub struct PolicyRulesValidateManifestsAttestorsEntries {
     /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
+    pub signature_algorithm: Option<String>,
 }
 
 /// Certificates specifies one or more certificates.
@@ -3169,7 +3197,7 @@ pub struct PolicyRulesValidateManifestsAttestorsEntriesKeys {
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyRulesValidateManifestsAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    /// Deprecated. Use attestor.signatureAlgorithm instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -3434,6 +3462,10 @@ pub struct PolicyRulesVerifyImages {
     /// UseCache enables caching of image verify responses for this rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useCache")]
     pub use_cache: Option<bool>,
+    /// Validation checks conditions across multiple image
+    /// verification attestations or context entries
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub validate: Option<PolicyRulesVerifyImagesValidate>,
     /// VerifyDigest validates that images have a digest.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDigest")]
     pub verify_digest: Option<bool>,
@@ -3451,6 +3483,9 @@ pub struct PolicyRulesVerifyImagesAttestations {
     /// the attestation check is satisfied as long there are predicates that match the predicate type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<PolicyRulesVerifyImagesAttestationsConditions>>,
+    /// Name is the variable name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Deprecated in favour of 'Type', to be removed soon
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "predicateType")]
     pub predicate_type: Option<String>,
@@ -3496,6 +3531,9 @@ pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntries {
     /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
+    pub signature_algorithm: Option<String>,
 }
 
 /// Certificates specifies one or more certificates.
@@ -3646,7 +3684,7 @@ pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeys {
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    /// Deprecated. Use attestor.signatureAlgorithm instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -3834,6 +3872,9 @@ pub struct PolicyRulesVerifyImagesAttestorsEntries {
     /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
+    pub signature_algorithm: Option<String>,
 }
 
 /// Certificates specifies one or more certificates.
@@ -3984,7 +4025,7 @@ pub struct PolicyRulesVerifyImagesAttestorsEntriesKeys {
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyRulesVerifyImagesAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    /// Deprecated. Use attestor.signatureAlgorithm instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -4065,6 +4106,29 @@ pub enum PolicyRulesVerifyImagesType {
     Cosign,
     SigstoreBundle,
     Notary,
+}
+
+/// Validation checks conditions across multiple image
+/// verification attestations or context entries
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesVerifyImagesValidate {
+    /// Deny defines conditions used to pass or fail a validation rule.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deny: Option<PolicyRulesVerifyImagesValidateDeny>,
+    /// Message specifies a custom message to be displayed on failure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+}
+
+/// Deny defines conditions used to pass or fail a validation rule.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRulesVerifyImagesValidateDeny {
+    /// Multiple conditions can be declared under an `any` or `all` statement. A direct list
+    /// of conditions (without `any` or `all` statements) is also supported for backwards compatibility
+    /// but will be deprecated in the next major release.
+    /// See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<serde_json::Value>,
 }
 
 /// Spec defines policy behaviors and contains one or more rules.
@@ -4203,7 +4267,8 @@ pub struct PolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Deprecated in favor of Conditions
-    pub ready: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ready: Option<bool>,
     /// RuleCountStatus contains four variables which describes counts for
     /// validate, generate, mutate and verify images rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4263,6 +4328,9 @@ pub struct PolicyStatusAutogenRules {
     /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<serde_json::Value>,
+    /// ReportProperties are the additional properties from the rule that will be added to the policy report result
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportProperties")]
+    pub report_properties: Option<BTreeMap<String, String>>,
     /// SkipBackgroundRequests bypasses admission requests that are sent by the background controller.
     /// The default value is set to "true", it must be set to "false" to apply
     /// generate and mutateExisting rules to those requests.
@@ -4324,8 +4392,7 @@ pub struct PolicyStatusAutogenRulesContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyStatusAutogenRulesContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<PolicyStatusAutogenRulesContextVariable>,
@@ -4339,6 +4406,10 @@ pub struct PolicyStatusAutogenRulesContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyStatusAutogenRulesContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response
@@ -5155,8 +5226,7 @@ pub struct PolicyStatusAutogenRulesGenerateForeachContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyStatusAutogenRulesGenerateForeachContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<PolicyStatusAutogenRulesGenerateForeachContextVariable>,
@@ -5170,6 +5240,10 @@ pub struct PolicyStatusAutogenRulesGenerateForeachContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyStatusAutogenRulesGenerateForeachContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response
@@ -5958,8 +6032,7 @@ pub struct PolicyStatusAutogenRulesMutateForeachContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyStatusAutogenRulesMutateForeachContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<PolicyStatusAutogenRulesMutateForeachContextVariable>,
@@ -5973,6 +6046,10 @@ pub struct PolicyStatusAutogenRulesMutateForeachContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyStatusAutogenRulesMutateForeachContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response
@@ -6263,8 +6340,7 @@ pub struct PolicyStatusAutogenRulesMutateTargetsContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyStatusAutogenRulesMutateTargetsContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<PolicyStatusAutogenRulesMutateTargetsContextVariable>,
@@ -6278,6 +6354,10 @@ pub struct PolicyStatusAutogenRulesMutateTargetsContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyStatusAutogenRulesMutateTargetsContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response
@@ -6412,6 +6492,9 @@ pub struct PolicyStatusAutogenRulesMutateTargetsContextVariable {
 /// Validation is used to validate matching resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyStatusAutogenRulesValidate {
+    /// AllowExistingViolations allows prexisting violating resources to continue violating a policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowExistingViolations")]
+    pub allow_existing_violations: Option<bool>,
     /// AnyPattern specifies list of validation patterns. At least one of the patterns
     /// must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
@@ -6835,8 +6918,7 @@ pub struct PolicyStatusAutogenRulesValidateForeachContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<PolicyStatusAutogenRulesValidateForeachContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<PolicyStatusAutogenRulesValidateForeachContextVariable>,
@@ -6850,6 +6932,10 @@ pub struct PolicyStatusAutogenRulesValidateForeachContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<PolicyStatusAutogenRulesValidateForeachContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response
@@ -7153,6 +7239,9 @@ pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntries {
     /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
+    pub signature_algorithm: Option<String>,
 }
 
 /// Certificates specifies one or more certificates.
@@ -7303,7 +7392,7 @@ pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeys {
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    /// Deprecated. Use attestor.signatureAlgorithm instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -7568,6 +7657,10 @@ pub struct PolicyStatusAutogenRulesVerifyImages {
     /// UseCache enables caching of image verify responses for this rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useCache")]
     pub use_cache: Option<bool>,
+    /// Validation checks conditions across multiple image
+    /// verification attestations or context entries
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub validate: Option<PolicyStatusAutogenRulesVerifyImagesValidate>,
     /// VerifyDigest validates that images have a digest.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDigest")]
     pub verify_digest: Option<bool>,
@@ -7585,6 +7678,9 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestations {
     /// the attestation check is satisfied as long there are predicates that match the predicate type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<PolicyStatusAutogenRulesVerifyImagesAttestationsConditions>>,
+    /// Name is the variable name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Deprecated in favour of 'Type', to be removed soon
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "predicateType")]
     pub predicate_type: Option<String>,
@@ -7630,6 +7726,9 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntries {
     /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
+    pub signature_algorithm: Option<String>,
 }
 
 /// Certificates specifies one or more certificates.
@@ -7780,7 +7879,7 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeys 
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    /// Deprecated. Use attestor.signatureAlgorithm instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -7968,6 +8067,9 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntries {
     /// If specified Repository will override other OCI image repository locations for this Attestor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
+    pub signature_algorithm: Option<String>,
 }
 
 /// Certificates specifies one or more certificates.
@@ -8118,7 +8220,7 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeys {
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
+    /// Deprecated. Use attestor.signatureAlgorithm instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -8199,6 +8301,29 @@ pub enum PolicyStatusAutogenRulesVerifyImagesType {
     Cosign,
     SigstoreBundle,
     Notary,
+}
+
+/// Validation checks conditions across multiple image
+/// verification attestations or context entries
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesVerifyImagesValidate {
+    /// Deny defines conditions used to pass or fail a validation rule.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deny: Option<PolicyStatusAutogenRulesVerifyImagesValidateDeny>,
+    /// Message specifies a custom message to be displayed on failure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+}
+
+/// Deny defines conditions used to pass or fail a validation rule.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyStatusAutogenRulesVerifyImagesValidateDeny {
+    /// Multiple conditions can be declared under an `any` or `all` statement. A direct list
+    /// of conditions (without `any` or `all` statements) is also supported for backwards compatibility
+    /// but will be deprecated in the next major release.
+    /// See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<serde_json::Value>,
 }
 
 /// RuleCountStatus contains four variables which describes counts for

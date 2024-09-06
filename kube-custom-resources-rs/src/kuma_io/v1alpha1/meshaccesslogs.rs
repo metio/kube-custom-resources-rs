@@ -24,8 +24,8 @@ pub struct MeshAccessLogSpec {
     /// TargetRef is a reference to the resource the policy takes an effect on.
     /// The resource could be either a real store object or virtual resource
     /// defined in-place.
-    #[serde(rename = "targetRef")]
-    pub target_ref: MeshAccessLogTargetRef,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
+    pub target_ref: Option<MeshAccessLogTargetRef>,
     /// To list makes a match between the consumed services and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub to: Option<Vec<MeshAccessLogTo>>,

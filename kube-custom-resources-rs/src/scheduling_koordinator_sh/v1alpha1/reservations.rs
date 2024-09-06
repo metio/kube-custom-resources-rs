@@ -40,6 +40,10 @@ pub struct ReservationSpec {
     /// reservation would be waiting to be available until free resources are sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preAllocation")]
     pub pre_allocation: Option<bool>,
+    /// Specifies the reservation's taints. This can be toleranted by the reservation tolerance.
+    /// Eviction is not supported for NoExecute taints
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub taints: Option<Vec<ReservationTaints>>,
     /// Template defines the scheduling requirements (resources, affinities, images, ...) processed by the scheduler just
     /// like a normal pod.
     /// If the `template.spec.nodeName` is specified, the scheduler will not choose another node but reserve resources on
@@ -174,6 +178,25 @@ pub struct ReservationOwnersObject {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// The node this Taint is attached to has the "effect" on
+/// any pod that does not tolerate the Taint.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReservationTaints {
+    /// Required. The effect of the taint on pods
+    /// that do not tolerate the taint.
+    /// Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
+    pub effect: String,
+    /// Required. The taint key to be applied to a node.
+    pub key: String,
+    /// TimeAdded represents the time at which the taint was added.
+    /// It is only written for NoExecute taints.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAdded")]
+    pub time_added: Option<String>,
+    /// The taint value corresponding to the taint key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

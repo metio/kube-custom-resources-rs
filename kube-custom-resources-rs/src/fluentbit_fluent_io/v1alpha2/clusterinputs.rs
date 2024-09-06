@@ -30,6 +30,9 @@ pub struct ClusterInputSpec {
     /// Dummy defines Dummy Input configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dummy: Option<ClusterInputDummy>,
+    /// ExecWasi defines the exec wasi input plugin configuration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "execWasi")]
+    pub exec_wasi: Option<ClusterInputExecWasi>,
     /// FluentBitMetrics defines Fluent Bit Metrics Input configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fluentBitMetrics")]
     pub fluent_bit_metrics: Option<ClusterInputFluentBitMetrics>,
@@ -123,6 +126,37 @@ pub struct ClusterInputDummy {
     /// Tag name associated to all records comming from this plugin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
+}
+
+/// ExecWasi defines the exec wasi input plugin configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterInputExecWasi {
+    /// Specify the whitelist of paths to be able to access paths from WASM programs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessiblePaths")]
+    pub accessible_paths: Option<Vec<String>>,
+    /// Size of the buffer (check unit sizes for allowed values)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufSize")]
+    pub buf_size: Option<String>,
+    /// Polling interval (nanoseconds).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalNSec")]
+    pub interval_n_sec: Option<i64>,
+    /// Polling interval (seconds).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSec")]
+    pub interval_sec: Option<i32>,
+    /// Specify the name of a parser to interpret the entry as a structured message.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parser: Option<String>,
+    /// Indicates whether to run this input in its own thread. Default: false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub threaded: Option<bool>,
+    /// The place of a WASM program file.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wasiPath")]
+    pub wasi_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wasmHeapSize")]
+    pub wasm_heap_size: Option<String>,
+    /// Size of the stack size of Wasm execution. Review unit sizes for allowed values.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wasmStackSize")]
+    pub wasm_stack_size: Option<String>,
 }
 
 /// FluentBitMetrics defines Fluent Bit Metrics Input configuration.

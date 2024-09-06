@@ -41,6 +41,10 @@ pub struct TraefikServiceMirroring {
     /// Default value is -1, which means unlimited size.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBodySize")]
     pub max_body_size: Option<i64>,
+    /// MirrorBody defines whether the body of the request should be mirrored.
+    /// Default value is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirrorBody")]
+    pub mirror_body: Option<bool>,
     /// Mirrors defines the list of mirrors where Traefik will duplicate the traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mirrors: Option<Vec<TraefikServiceMirroringMirrors>>,

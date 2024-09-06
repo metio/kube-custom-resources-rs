@@ -193,7 +193,7 @@ spec:
                             availableCIDRCount:
                               format: "int64"
                               type: "integer"
-                            iPSetReferences:
+                            ipSetReferences:
                               additionalProperties:
                                 description: "General information about the IP set."
                                 properties:

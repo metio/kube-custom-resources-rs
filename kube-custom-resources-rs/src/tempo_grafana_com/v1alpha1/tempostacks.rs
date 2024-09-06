@@ -101,6 +101,9 @@ pub struct TempoStackHashRingMemberlist {
 /// Images defines the image for each container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackImages {
+    /// JaegerQuery defines the tempo-query container image.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jaegerQuery")]
+    pub jaeger_query: Option<String>,
     /// OauthProxy defines the oauth proxy image used to protect the jaegerUI on single tenant.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oauthProxy")]
     pub oauth_proxy: Option<String>,
@@ -1128,6 +1131,9 @@ pub struct TempoStackTemplateQueryFrontendJaegerQuery {
     /// ServicesQueryDuration defines how long the services will be available in the services list
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicesQueryDuration")]
     pub services_query_duration: Option<String>,
+    /// TempoQuery defines options specific to the Tempoo Query component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tempoQuery")]
+    pub tempo_query: Option<TempoStackTemplateQueryFrontendJaegerQueryTempoQuery>,
 }
 
 /// Authentication defines the options for the oauth proxy used to protect jaeger UI
@@ -1277,6 +1283,49 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendJaegerQueryResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// TempoQuery defines options specific to the Tempoo Query component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoStackTemplateQueryFrontendJaegerQueryTempoQuery {
+    /// Resources defines resources for this component, this will override the calculated resources derived from total
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<TempoStackTemplateQueryFrontendJaegerQueryTempoQueryResources>,
+}
+
+/// Resources defines resources for this component, this will override the calculated resources derived from total
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoStackTemplateQueryFrontendJaegerQueryTempoQueryResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<TempoStackTemplateQueryFrontendJaegerQueryTempoQueryResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoStackTemplateQueryFrontendJaegerQueryTempoQueryResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.

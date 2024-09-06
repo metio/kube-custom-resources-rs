@@ -92,13 +92,47 @@ spec:
                       rule: "self.all(a1, a1.type == 'IPAddress' ? self.exists_one(a2, a2.type == a1.type && a2.value == a1.value) : true )"
                     - message: "Hostname values must be unique"
                       rule: "self.all(a1, a1.type == 'Hostname' ? self.exists_one(a2, a2.type == a1.type && a2.value == a1.value) : true )"
+                backendTLS:
+                  description: "BackendTLS configures TLS settings for when this Gateway is connecting to\nbackends with TLS.\n\n\nSupport: Core\n\n\n"
+                  properties:
+                    clientCertificateRef:
+                      description: "ClientCertificateRef is a reference to an object that contains a Client\nCertificate and the associated private key.\n\n\nReferences to a resource in different namespace are invalid UNLESS there\nis a ReferenceGrant in the target namespace that allows the certificate\nto be attached. If a ReferenceGrant does not allow this reference, the\n\"ResolvedRefs\" condition MUST be set to False for this listener with the\n\"RefNotPermitted\" reason.\n\n\nClientCertificateRef can reference to standard Kubernetes resources, i.e.\nSecret, or implementation-specific custom resources.\n\n\nThis setting can be overridden on the service level by use of BackendTLSPolicy.\n\n\nSupport: Core\n\n\n"
+                      properties:
+                        group:
+                          default: ""
+                          description: "Group is the group of the referent. For example, \"gateway.networking.k8s.io\".\nWhen unspecified or empty string, core API group is inferred."
+                          maxLength: 253
+                          pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                          type: "string"
+                        kind:
+                          default: "Secret"
+                          description: "Kind is kind of the referent. For example \"Secret\"."
+                          maxLength: 63
+                          minLength: 1
+                          pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+                          type: "string"
+                        name:
+                          description: "Name is the name of the referent."
+                          maxLength: 253
+                          minLength: 1
+                          type: "string"
+                        namespace:
+                          description: "Namespace is the namespace of the referenced object. When unspecified, the local\nnamespace is inferred.\n\n\nNote that when a namespace different than the local namespace is specified,\na ReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\n\nSupport: Core"
+                          maxLength: 63
+                          minLength: 1
+                          pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                          type: "string"
+                      required:
+                        - "name"
+                      type: "object"
+                  type: "object"
                 gatewayClassName:
                   description: "GatewayClassName used for this Gateway. This is the name of a\nGatewayClass resource."
                   maxLength: 253
                   minLength: 1
                   type: "string"
                 infrastructure:
-                  description: "Infrastructure defines infrastructure level attributes about this Gateway instance.\n\n\nSupport: Core\n\n\n"
+                  description: "Infrastructure defines infrastructure level attributes about this Gateway instance.\n\n\nSupport: Extended"
                   properties:
                     annotations:
                       additionalProperties:
@@ -109,15 +143,26 @@ spec:
                       description: "Annotations that SHOULD be applied to any resources created in response to this Gateway.\n\n\nFor implementations creating other Kubernetes objects, this should be the `metadata.annotations` field on resources.\nFor other implementations, this refers to any relevant (implementation specific) \"annotations\" concepts.\n\n\nAn implementation may chose to add additional implementation-specific annotations as they see fit.\n\n\nSupport: Extended"
                       maxProperties: 8
                       type: "object"
+                      x-kubernetes-validations:
+                        - message: "Annotation keys must be in the form of an optional DNS subdomain prefix followed by a required name segment of up to 63 characters."
+                          rule: "self.all(key, key.matches(r\"\"\"^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?([A-Za-z0-9][-A-Za-z0-9_.]{0,61})?[A-Za-z0-9]$\"\"\"))"
+                        - message: "If specified, the annotation key's prefix must be a DNS subdomain not longer than 253 characters in total."
+                          rule: "self.all(key, key.split(\"/\")[0].size() < 253)"
                     labels:
                       additionalProperties:
-                        description: "AnnotationValue is the value of an annotation in Gateway API. This is used\nfor validation of maps such as TLS options. This roughly matches Kubernetes\nannotation validation, although the length validation in that case is based\non the entire size of the annotations struct."
-                        maxLength: 4096
+                        description: "LabelValue is the value of a label in the Gateway API. This is used for validation\nof maps such as Gateway infrastructure labels. This matches the Kubernetes\nlabel validation rules:\n* must be 63 characters or less (can be empty),\n* unless empty, must begin and end with an alphanumeric character ([a-z0-9A-Z]),\n* could contain dashes (-), underscores (_), dots (.), and alphanumerics between.\n\n\nValid values include:\n\n\n* MyValue\n* my.name\n* 123-my-value"
+                        maxLength: 63
                         minLength: 0
+                        pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
                         type: "string"
-                      description: "Labels that SHOULD be applied to any resources created in response to this Gateway.\n\n\nFor implementations creating other Kubernetes objects, this should be the `metadata.labels` field on resources.\nFor other implementations, this refers to any relevant (implementation specific) \"labels\" concepts.\n\n\nAn implementation may chose to add additional implementation-specific labels as they see fit.\n\n\nSupport: Extended"
+                      description: "Labels that SHOULD be applied to any resources created in response to this Gateway.\n\n\nFor implementations creating other Kubernetes objects, this should be the `metadata.labels` field on resources.\nFor other implementations, this refers to any relevant (implementation specific) \"labels\" concepts.\n\n\nAn implementation may chose to add additional implementation-specific labels as they see fit.\n\n\nIf an implementation maps these labels to Pods, or any other resource that would need to be recreated when labels\nchange, it SHOULD clearly warn about this behavior in documentation.\n\n\nSupport: Extended"
                       maxProperties: 8
                       type: "object"
+                      x-kubernetes-validations:
+                        - message: "Label keys must be in the form of an optional DNS subdomain prefix followed by a required name segment of up to 63 characters."
+                          rule: "self.all(key, key.matches(r\"\"\"^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?([A-Za-z0-9][-A-Za-z0-9_.]{0,61})?[A-Za-z0-9]$\"\"\"))"
+                        - message: "If specified, the label key's prefix must be a DNS subdomain not longer than 253 characters in total."
+                          rule: "self.all(key, key.split(\"/\")[0].size() < 253)"
                     parametersRef:
                       description: "ParametersRef is a reference to a resource that contains the configuration\nparameters corresponding to the Gateway. This is optional if the\ncontroller does not require any additional configuration.\n\n\nThis follows the same semantics as GatewayClass's `parametersRef`, but on a per-Gateway basis\n\n\nThe Gateway's GatewayClass may provide its own `parametersRef`. When both are specified,\nthe merging behavior is implementation specific.\nIt is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.\n\n\nSupport: Implementation-specific"
                       properties:

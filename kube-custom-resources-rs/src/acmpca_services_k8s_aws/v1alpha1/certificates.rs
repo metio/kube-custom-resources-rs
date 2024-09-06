@@ -49,6 +49,10 @@ pub struct CertificateSpec {
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityRef")]
     pub certificate_authority_ref: Option<CertificateCertificateAuthorityRef>,
+    /// SecretKeyReference combines a k8s corev1.SecretReference with a
+    /// specific key within the referred-to Secret
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateOutput")]
+    pub certificate_output: Option<CertificateCertificateOutput>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateSigningRequest")]
     pub certificate_signing_request: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -428,6 +432,20 @@ pub struct CertificateCertificateAuthorityRef {
 pub struct CertificateCertificateAuthorityRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// SecretKeyReference combines a k8s corev1.SecretReference with a
+/// specific key within the referred-to Secret
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CertificateCertificateOutput {
+    /// Key is the key within the secret
+    pub key: String,
+    /// name is unique within a namespace to reference a secret resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// namespace defines the space within which the secret name must be unique.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }

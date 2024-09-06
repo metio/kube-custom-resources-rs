@@ -109,6 +109,9 @@ pub struct PerconaPGClusterSpec {
 pub struct PerconaPGClusterBackups {
     /// pgBackRest archive configuration
     pub pgbackrest: PerconaPGClusterBackupsPgbackrest,
+    /// Enable tracking latest restorable time
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackLatestRestorableTime")]
+    pub track_latest_restorable_time: Option<bool>,
 }
 
 /// pgBackRest archive configuration
@@ -158,19 +161,17 @@ pub struct PerconaPGClusterBackupsPgbackrest {
     pub sidecars: Option<PerconaPGClusterBackupsPgbackrestSidecars>,
 }
 
-/// Projection that may be projected along with other supported volume types
+/// Projection that may be projected along with other supported volume types.
+/// Exactly one of these fields must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestConfiguration {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
     /// 
-    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    /// 
     /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    /// 
     /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -196,13 +197,10 @@ pub struct PerconaPGClusterBackupsPgbackrestConfiguration {
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
 /// 
-/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-/// 
 /// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-/// 
 /// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -286,9 +284,7 @@ pub struct PerconaPGClusterBackupsPgbackrestConfigurationConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -387,9 +383,7 @@ pub struct PerconaPGClusterBackupsPgbackrestConfigurationSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -464,10 +458,8 @@ pub struct PerconaPGClusterBackupsPgbackrestContainersPgbackrestResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -491,6 +483,11 @@ pub struct PerconaPGClusterBackupsPgbackrestContainersPgbackrestResourcesClaims 
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Defines the configuration for the pgBackRest config sidecar container
@@ -507,10 +504,8 @@ pub struct PerconaPGClusterBackupsPgbackrestContainersPgbackrestConfigResources 
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -534,6 +529,11 @@ pub struct PerconaPGClusterBackupsPgbackrestContainersPgbackrestConfigResourcesC
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Jobs field allows configuration for all backup jobs
@@ -771,7 +771,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -782,7 +782,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -892,7 +892,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -903,7 +903,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1044,7 +1044,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityPreferred
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1055,7 +1055,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityPreferred
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1165,7 +1165,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityRequiredD
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1176,7 +1176,7 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsAffinityPodAntiAffinityRequiredD
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1273,10 +1273,8 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1300,6 +1298,11 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security settings for PGBackRest pod.
@@ -1313,11 +1316,9 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -1368,15 +1369,24 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PerconaPGClusterBackupsPgbackrestJobsSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -1443,7 +1453,6 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -1788,7 +1797,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityPreferred
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1799,7 +1808,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityPreferred
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1909,7 +1918,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityRequiredD
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1920,7 +1929,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAffinityRequiredD
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2061,7 +2070,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityPrefe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2072,7 +2081,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityPrefe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2182,7 +2191,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityRequi
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2193,7 +2202,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostAffinityPodAntiAffinityRequi
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2289,10 +2298,8 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2316,6 +2323,11 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security settings for PGBackRest pod.
@@ -2329,11 +2341,9 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2384,15 +2394,24 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PerconaPGClusterBackupsPgbackrestRepoHostSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2460,7 +2479,6 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostSecurityContextSeccompProfil
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -2522,9 +2540,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostSshConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -2569,9 +2585,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostSshSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -2646,7 +2660,6 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostTopologySpreadConstraints {
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// 
-    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
@@ -2680,7 +2693,6 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostTopologySpreadConstraints {
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
     /// 
-    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -2696,7 +2708,6 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostTopologySpreadConstraints {
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
-    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
@@ -2706,7 +2717,6 @@ pub struct PerconaPGClusterBackupsPgbackrestRepoHostTopologySpreadConstraints {
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    /// 
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
@@ -2926,7 +2936,7 @@ pub struct PerconaPGClusterBackupsPgbackrestReposVolumeVolumeClaimSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -3296,7 +3306,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityPreferredD
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -3307,7 +3317,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityPreferredD
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3417,7 +3427,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityRequiredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -3428,7 +3438,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAffinityRequiredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3569,7 +3579,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityPrefer
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -3580,7 +3590,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityPrefer
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3690,7 +3700,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityRequir
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -3701,7 +3711,7 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreAffinityPodAntiAffinityRequir
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3797,10 +3807,8 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3824,6 +3832,11 @@ pub struct PerconaPGClusterBackupsPgbackrestRestoreResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches
@@ -3881,10 +3894,8 @@ pub struct PerconaPGClusterBackupsPgbackrestSidecarsPgbackrestResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3908,6 +3919,11 @@ pub struct PerconaPGClusterBackupsPgbackrestSidecarsPgbackrestResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Defines the configuration for the pgBackRest config sidecar container
@@ -3924,10 +3940,8 @@ pub struct PerconaPGClusterBackupsPgbackrestSidecarsPgbackrestConfigResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3951,6 +3965,11 @@ pub struct PerconaPGClusterBackupsPgbackrestSidecarsPgbackrestConfigResourcesCla
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Specifies a data source for bootstrapping the PostgreSQL cluster.
@@ -4225,7 +4244,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityPreferredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -4236,7 +4255,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityPreferredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -4346,7 +4365,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityRequiredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -4357,7 +4376,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAffinityRequiredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -4498,7 +4517,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityPreferredD
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -4509,7 +4528,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityPreferredD
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -4619,7 +4638,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityRequiredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -4630,7 +4649,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityRequiredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -4720,19 +4739,17 @@ pub struct PerconaPGClusterDataSourcePgbackrestAffinityPodAntiAffinityRequiredDu
     pub values: Option<Vec<String>>,
 }
 
-/// Projection that may be projected along with other supported volume types
+/// Projection that may be projected along with other supported volume types.
+/// Exactly one of these fields must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaPGClusterDataSourcePgbackrestConfiguration {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
     /// 
-    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    /// 
     /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    /// 
     /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -4758,13 +4775,10 @@ pub struct PerconaPGClusterDataSourcePgbackrestConfiguration {
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
 /// 
-/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-/// 
 /// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-/// 
 /// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -4848,9 +4862,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestConfigurationConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -4949,9 +4961,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestConfigurationSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -5149,7 +5159,7 @@ pub struct PerconaPGClusterDataSourcePgbackrestRepoVolumeVolumeClaimSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -5278,10 +5288,8 @@ pub struct PerconaPGClusterDataSourcePgbackrestResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5305,6 +5313,11 @@ pub struct PerconaPGClusterDataSourcePgbackrestResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches
@@ -5585,7 +5598,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityPreferred
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -5596,7 +5609,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityPreferred
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -5706,7 +5719,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityRequiredD
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -5717,7 +5730,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAffinityRequiredD
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -5858,7 +5871,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityPrefe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -5869,7 +5882,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityPrefe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -5979,7 +5992,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityRequi
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -5990,7 +6003,7 @@ pub struct PerconaPGClusterDataSourcePostgresClusterAffinityPodAntiAffinityRequi
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -6086,10 +6099,8 @@ pub struct PerconaPGClusterDataSourcePostgresClusterResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6113,6 +6124,11 @@ pub struct PerconaPGClusterDataSourcePostgresClusterResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches
@@ -6439,7 +6455,6 @@ pub struct PerconaPGClusterExtensionsStorage {
     pub region: Option<String>,
     /// Adapts a secret into a projected volume.
     /// 
-    /// 
     /// The contents of the target Secret's Data field will be presented in a
     /// projected volume as files using the keys in the Data field as the file names.
     /// Note that this is identical to a secret volume source without the default
@@ -6451,7 +6466,6 @@ pub struct PerconaPGClusterExtensionsStorage {
 }
 
 /// Adapts a secret into a projected volume.
-/// 
 /// 
 /// The contents of the target Secret's Data field will be presented in a
 /// projected volume as files using the keys in the Data field as the file names.
@@ -6472,9 +6486,7 @@ pub struct PerconaPGClusterExtensionsStorageSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -6527,9 +6539,7 @@ pub struct PerconaPGClusterImagePullSecrets {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6814,7 +6824,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAffinityPreferredDuringScheduling
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -6825,7 +6835,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAffinityPreferredDuringScheduling
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -6935,7 +6945,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAffinityRequiredDuringSchedulingI
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -6946,7 +6956,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAffinityRequiredDuringSchedulingI
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -7087,7 +7097,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityPreferredDuringSchedu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -7098,7 +7108,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityPreferredDuringSchedu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -7208,7 +7218,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityRequiredDuringSchedul
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -7219,7 +7229,7 @@ pub struct PerconaPGClusterInstancesAffinityPodAntiAffinityRequiredDuringSchedul
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -7331,10 +7341,8 @@ pub struct PerconaPGClusterInstancesContainersReplicaCertCopyResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7358,6 +7366,11 @@ pub struct PerconaPGClusterInstancesContainersReplicaCertCopyResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Defines a PersistentVolumeClaim for PostgreSQL data.
@@ -7428,7 +7441,7 @@ pub struct PerconaPGClusterInstancesDataVolumeClaimSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -7767,9 +7780,7 @@ pub struct PerconaPGClusterInstancesInitContainersEnvValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -7812,9 +7823,7 @@ pub struct PerconaPGClusterInstancesInitContainersEnvValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7843,9 +7852,7 @@ pub struct PerconaPGClusterInstancesInitContainersEnvFromConfigMapRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -7860,9 +7867,7 @@ pub struct PerconaPGClusterInstancesInitContainersEnvFromSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -8147,7 +8152,6 @@ pub struct PerconaPGClusterInstancesInitContainersLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -8298,7 +8302,6 @@ pub struct PerconaPGClusterInstancesInitContainersReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -8370,10 +8373,8 @@ pub struct PerconaPGClusterInstancesInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8397,6 +8398,11 @@ pub struct PerconaPGClusterInstancesInitContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -8430,7 +8436,7 @@ pub struct PerconaPGClusterInstancesInitContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8553,7 +8559,6 @@ pub struct PerconaPGClusterInstancesInitContainersSecurityContextSeccompProfile 
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -8665,7 +8670,6 @@ pub struct PerconaPGClusterInstancesInitContainersStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -8750,9 +8754,7 @@ pub struct PerconaPGClusterInstancesInitContainersVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -8761,10 +8763,8 @@ pub struct PerconaPGClusterInstancesInitContainersVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -8796,10 +8796,8 @@ pub struct PerconaPGClusterInstancesResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8823,6 +8821,11 @@ pub struct PerconaPGClusterInstancesResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security settings for a PostgreSQL pod.
@@ -8836,11 +8839,9 @@ pub struct PerconaPGClusterInstancesSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8891,15 +8892,24 @@ pub struct PerconaPGClusterInstancesSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PerconaPGClusterInstancesSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8966,7 +8976,6 @@ pub struct PerconaPGClusterInstancesSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -9228,9 +9237,7 @@ pub struct PerconaPGClusterInstancesSidecarsEnvValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -9273,9 +9280,7 @@ pub struct PerconaPGClusterInstancesSidecarsEnvValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -9304,9 +9309,7 @@ pub struct PerconaPGClusterInstancesSidecarsEnvFromConfigMapRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -9321,9 +9324,7 @@ pub struct PerconaPGClusterInstancesSidecarsEnvFromSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -9608,7 +9609,6 @@ pub struct PerconaPGClusterInstancesSidecarsLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9759,7 +9759,6 @@ pub struct PerconaPGClusterInstancesSidecarsReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9831,10 +9830,8 @@ pub struct PerconaPGClusterInstancesSidecarsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9858,6 +9855,11 @@ pub struct PerconaPGClusterInstancesSidecarsResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -9891,7 +9893,7 @@ pub struct PerconaPGClusterInstancesSidecarsSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -10014,7 +10016,6 @@ pub struct PerconaPGClusterInstancesSidecarsSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -10126,7 +10127,6 @@ pub struct PerconaPGClusterInstancesSidecarsStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -10211,9 +10211,7 @@ pub struct PerconaPGClusterInstancesSidecarsVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -10222,10 +10220,8 @@ pub struct PerconaPGClusterInstancesSidecarsVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -10321,7 +10317,7 @@ pub struct PerconaPGClusterInstancesTablespaceVolumesDataVolumeClaimSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -10491,7 +10487,6 @@ pub struct PerconaPGClusterInstancesTopologySpreadConstraints {
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// 
-    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
@@ -10525,7 +10520,6 @@ pub struct PerconaPGClusterInstancesTopologySpreadConstraints {
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
     /// 
-    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -10541,7 +10535,6 @@ pub struct PerconaPGClusterInstancesTopologySpreadConstraints {
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
-    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
@@ -10551,7 +10544,6 @@ pub struct PerconaPGClusterInstancesTopologySpreadConstraints {
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    /// 
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
@@ -10647,9 +10639,7 @@ pub struct PerconaPGClusterInstancesVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -10658,10 +10648,8 @@ pub struct PerconaPGClusterInstancesVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -10746,7 +10734,7 @@ pub struct PerconaPGClusterInstancesWalVolumeClaimSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -10951,10 +10939,9 @@ pub struct PerconaPGClusterPmm {
     pub resources: Option<PerconaPGClusterPmmResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverHost")]
-    pub server_host: Option<String>,
+    pub secret: String,
+    #[serde(rename = "serverHost")]
+    pub server_host: String,
 }
 
 /// SecurityContext holds security configuration that will be applied to a container.
@@ -10988,7 +10975,7 @@ pub struct PerconaPGClusterPmmContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -11111,7 +11098,6 @@ pub struct PerconaPGClusterPmmContainerSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -11161,10 +11147,8 @@ pub struct PerconaPGClusterPmmResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11188,6 +11172,11 @@ pub struct PerconaPGClusterPmmResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// The specification of a proxy that connects to PostgreSQL.
@@ -11485,7 +11474,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityPreferredDuringSched
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -11496,7 +11485,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityPreferredDuringSched
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -11606,7 +11595,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityRequiredDuringSchedu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -11617,7 +11606,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAffinityRequiredDuringSchedu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -11758,7 +11747,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityPreferredDuringS
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -11769,7 +11758,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityPreferredDuringS
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -11879,7 +11868,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityRequiredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -11890,7 +11879,7 @@ pub struct PerconaPGClusterProxyPgBouncerAffinityPodAntiAffinityRequiredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -12012,19 +12001,17 @@ pub struct PerconaPGClusterProxyPgBouncerConfig {
     pub users: Option<BTreeMap<String, String>>,
 }
 
-/// Projection that may be projected along with other supported volume types
+/// Projection that may be projected along with other supported volume types.
+/// Exactly one of these fields must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaPGClusterProxyPgBouncerConfigFiles {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
     /// 
-    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    /// 
     /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    /// 
     /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -12050,13 +12037,10 @@ pub struct PerconaPGClusterProxyPgBouncerConfigFiles {
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
 /// 
-/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-/// 
 /// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-/// 
 /// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -12140,9 +12124,7 @@ pub struct PerconaPGClusterProxyPgBouncerConfigFilesConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -12241,9 +12223,7 @@ pub struct PerconaPGClusterProxyPgBouncerConfigFilesSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -12315,10 +12295,8 @@ pub struct PerconaPGClusterProxyPgBouncerContainersPgbouncerConfigResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12342,6 +12320,11 @@ pub struct PerconaPGClusterProxyPgBouncerContainersPgbouncerConfigResourcesClaim
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// A secret projection containing a certificate and key with which to encrypt
@@ -12364,9 +12347,7 @@ pub struct PerconaPGClusterProxyPgBouncerCustomTlsSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -12442,10 +12423,8 @@ pub struct PerconaPGClusterProxyPgBouncerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12469,6 +12448,11 @@ pub struct PerconaPGClusterProxyPgBouncerResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security settings for PGBouncer pods.
@@ -12482,11 +12466,9 @@ pub struct PerconaPGClusterProxyPgBouncerSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -12537,15 +12519,24 @@ pub struct PerconaPGClusterProxyPgBouncerSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PerconaPGClusterProxyPgBouncerSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -12612,7 +12603,6 @@ pub struct PerconaPGClusterProxyPgBouncerSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -12874,9 +12864,7 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsEnvValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -12919,9 +12907,7 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsEnvValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -12950,9 +12936,7 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsEnvFromConfigMapRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -12967,9 +12951,7 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsEnvFromSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -13254,7 +13236,6 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -13405,7 +13386,6 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -13477,10 +13457,8 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13504,6 +13482,11 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -13537,7 +13520,7 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -13660,7 +13643,6 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -13772,7 +13754,6 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -13857,9 +13838,7 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -13868,10 +13847,8 @@ pub struct PerconaPGClusterProxyPgBouncerSidecarsVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -13935,7 +13912,6 @@ pub struct PerconaPGClusterProxyPgBouncerTopologySpreadConstraints {
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// 
-    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
@@ -13969,7 +13945,6 @@ pub struct PerconaPGClusterProxyPgBouncerTopologySpreadConstraints {
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
     /// 
-    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -13985,7 +13960,6 @@ pub struct PerconaPGClusterProxyPgBouncerTopologySpreadConstraints {
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
-    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
@@ -13995,7 +13969,6 @@ pub struct PerconaPGClusterProxyPgBouncerTopologySpreadConstraints {
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    /// 
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
@@ -14111,9 +14084,7 @@ pub struct PerconaPGClusterSecretsCustomReplicationTlsSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -14165,9 +14136,7 @@ pub struct PerconaPGClusterSecretsCustomTlsSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -14267,28 +14236,21 @@ pub struct PerconaPGClusterStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaPGClusterStatusPgbouncer {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ready: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<i32>,
+    pub ready: i32,
+    pub size: i32,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaPGClusterStatusPostgres {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub instances: Option<Vec<PerconaPGClusterStatusPostgresInstances>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ready: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<i32>,
+    pub instances: Vec<PerconaPGClusterStatusPostgresInstances>,
+    pub ready: i32,
+    pub size: i32,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaPGClusterStatusPostgresInstances {
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ready: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<i32>,
+    pub ready: i32,
+    pub size: i32,
 }
 

@@ -380,6 +380,9 @@ pub struct ActionSetEnvFromSecretRef {
 /// Specifies the restore action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetRestore {
+    /// Determines if a base backup is required during restoration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseBackupRequired")]
+    pub base_backup_required: Option<bool>,
     /// Specifies the actions that should be executed after the data has been prepared and is ready for restoration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postReady")]
     pub post_ready: Option<Vec<ActionSetRestorePostReady>>,
