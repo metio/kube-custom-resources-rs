@@ -157,6 +157,29 @@ spec:
                 preAllocation:
                   description: "By default, the resources requirements of reservation (specified in `template.spec`) is filtered by whether the\nnode has sufficient free resources (i.e. Reservation Request <  Node Free).\nWhen `preAllocation` is set, the scheduler will skip this validation and allow overcommitment. The scheduled\nreservation would be waiting to be available until free resources are sufficient."
                   type: "boolean"
+                taints:
+                  description: "Specifies the reservation's taints. This can be toleranted by the reservation tolerance.\nEviction is not supported for NoExecute taints"
+                  items:
+                    description: "The node this Taint is attached to has the \"effect\" on\nany pod that does not tolerate the Taint."
+                    properties:
+                      effect:
+                        description: "Required. The effect of the taint on pods\nthat do not tolerate the taint.\nValid effects are NoSchedule, PreferNoSchedule and NoExecute."
+                        type: "string"
+                      key:
+                        description: "Required. The taint key to be applied to a node."
+                        type: "string"
+                      timeAdded:
+                        description: "TimeAdded represents the time at which the taint was added.\nIt is only written for NoExecute taints."
+                        format: "date-time"
+                        type: "string"
+                      value:
+                        description: "The taint value corresponding to the taint key."
+                        type: "string"
+                    required:
+                      - "effect"
+                      - "key"
+                    type: "object"
+                  type: "array"
                 template:
                   description: "Template defines the scheduling requirements (resources, affinities, images, ...) processed by the scheduler just\nlike a normal pod.\nIf the `template.spec.nodeName` is specified, the scheduler will not choose another node but reserve resources on\nthe specified node."
                   x-kubernetes-preserve-unknown-fields: true

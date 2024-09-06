@@ -25,8 +25,8 @@ pub struct MeshFaultInjectionSpec {
     /// TargetRef is a reference to the resource the policy takes an effect on.
     /// The resource could be either a real store object or virtual resource
     /// defined inplace.
-    #[serde(rename = "targetRef")]
-    pub target_ref: MeshFaultInjectionTargetRef,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
+    pub target_ref: Option<MeshFaultInjectionTargetRef>,
     /// To list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub to: Option<Vec<MeshFaultInjectionTo>>,

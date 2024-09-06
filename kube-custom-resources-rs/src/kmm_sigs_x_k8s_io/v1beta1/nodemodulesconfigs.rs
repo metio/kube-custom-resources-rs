@@ -41,6 +41,9 @@ pub struct NodeModulesConfigModules {
 pub struct NodeModulesConfigModulesConfig {
     #[serde(rename = "containerImage")]
     pub container_image: String,
+    /// PullPolicy describes a policy for if/when to pull a container image
+    #[serde(rename = "imagePullPolicy")]
+    pub image_pull_policy: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModuleToRemove")]
     pub in_tree_module_to_remove: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModulesToRemove")]
@@ -163,6 +166,9 @@ pub struct NodeModulesConfigStatusModules {
 pub struct NodeModulesConfigStatusModulesConfig {
     #[serde(rename = "containerImage")]
     pub container_image: String,
+    /// PullPolicy describes a policy for if/when to pull a container image
+    #[serde(rename = "imagePullPolicy")]
+    pub image_pull_policy: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModuleToRemove")]
     pub in_tree_module_to_remove: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModulesToRemove")]

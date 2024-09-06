@@ -56,7 +56,7 @@ spec:
                     referenceSets:
                       description: "Contains a set of IP set references."
                       properties:
-                        iPSetReferences:
+                        ipSetReferences:
                           additionalProperties:
                             description: "Configures one or more IP set references for a Suricata-compatible rule group.\nThis is used in CreateRuleGroup or UpdateRuleGroup. An IP set reference is\na rule variable that references resources that you create and manage in another\nAmazon Web Services service, such as an Amazon VPC prefix list. Network Firewall\nIP set references enable you to dynamically update the contents of your rules.\nWhen you create, update, or delete the resource you are referencing in your\nrule, Network Firewall automatically updates the rule's content with the\nchanges. For more information about IP set references in Network Firewall,\nsee Using IP set references (https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references)\nin the Network Firewall Developer Guide.\n\n\nNetwork Firewall currently supports Amazon VPC prefix lists (https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html)\nand resource groups (https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references.html#rule-groups-referencing-resource-groups)\nin IP set references."
                             properties:
@@ -68,7 +68,7 @@ spec:
                     ruleVariables:
                       description: "Settings that are available for use in the rules in the RuleGroup where this\nis defined."
                       properties:
-                        iPSets:
+                        ipSets:
                           additionalProperties:
                             description: "A list of IP addresses and address ranges, in CIDR notation. This is part\nof a RuleVariables."
                             properties:

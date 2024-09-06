@@ -666,13 +666,14 @@ spec:
                             type: "string"
                           type: "array"
                         features:
-                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: enable the DNS tracking feature.<br>\n- `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>"
+                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: enable the DNS tracking feature.<br>\n- `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: enable the Network events monitoring feature.  This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged."
                           items:
-                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>"
+                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track Network events.<br>"
                             enum:
                               - "PacketDrop"
                               - "DNSTracking"
                               - "FlowRTT"
+                              - "NetworkEvents"
                             type: "string"
                           type: "array"
                         flowFilter:

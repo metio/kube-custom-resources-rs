@@ -153,7 +153,7 @@ spec:
                             preload:
                               type: "boolean"
                           type: "object"
-                        xSSProtection:
+                        xssProtection:
                           description: "Determines whether CloudFront includes the X-XSS-Protection HTTP response\nheader and the header's value.\n\n\nFor more information about the X-XSS-Protection HTTP response header, see\nX-XSS-Protection (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection)\nin the MDN Web Docs."
                           properties:
                             modeBlock:

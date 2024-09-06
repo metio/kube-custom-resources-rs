@@ -18,7 +18,11 @@ spec:
     singular: "ciliumclusterwidenetworkpolicy"
   scope: "Cluster"
   versions:
-    - name: "v2"
+    - additionalPrinterColumns:
+        - jsonPath: ".status.conditions[?(@.type=='Valid')].status"
+          name: "Valid"
+          type: "string"
+      name: "v2"
       schema:
         openAPIV3Schema:
           description: "CiliumClusterwideNetworkPolicy is a Kubernetes third-party resource with an modified version of CiliumNetworkPolicy which is cluster scoped rather than namespace scoped."

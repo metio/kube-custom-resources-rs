@@ -25,26 +25,29 @@ pub struct HardwareDataSpec {
 /// The hardware discovered on the host during its inspection.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareDataHardware {
-    /// CPU describes one processor on the host.
+    /// Details of the CPU(s) in the system.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<HardwareDataHardwareCpu>,
-    /// Firmware describes the firmware on the host.
+    /// System firmware information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub firmware: Option<HardwareDataHardwareFirmware>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
+    /// List of network interfaces for the host.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nics: Option<Vec<HardwareDataHardwareNics>>,
+    /// The host's amount of memory in Mebibytes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ramMebibytes")]
     pub ram_mebibytes: Option<i64>,
+    /// List of storage (disk, SSD, etc.) available to the host.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<Vec<HardwareDataHardwareStorage>>,
-    /// HardwareSystemVendor stores details about the whole hardware system.
+    /// System vendor information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemVendor")]
     pub system_vendor: Option<HardwareDataHardwareSystemVendor>,
 }
 
-/// CPU describes one processor on the host.
+/// Details of the CPU(s) in the system.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareDataHardwareCpu {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,7 +63,7 @@ pub struct HardwareDataHardwareCpu {
     pub model: Option<String>,
 }
 
-/// Firmware describes the firmware on the host.
+/// System firmware information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareDataHardwareFirmware {
     /// The BIOS for this firmware
@@ -173,7 +176,7 @@ pub enum HardwareDataHardwareStorageType {
     Nvme,
 }
 
-/// HardwareSystemVendor stores details about the whole hardware system.
+/// System vendor information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareDataHardwareSystemVendor {
     #[serde(default, skip_serializing_if = "Option::is_none")]

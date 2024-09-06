@@ -134,6 +134,7 @@ pub struct GlobalContextEntryStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastRefreshTime")]
     pub last_refresh_time: Option<String>,
     /// Deprecated in favor of Conditions
-    pub ready: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ready: Option<bool>,
 }
 

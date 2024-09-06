@@ -356,8 +356,7 @@ pub struct EmqxEnterpriseEmqxTemplate {
     pub extra_volume_mounts: Option<Vec<EmqxEnterpriseEmqxTemplateExtraVolumeMounts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraVolumes")]
     pub extra_volumes: Option<Vec<EmqxEnterpriseEmqxTemplateExtraVolumes>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
+    pub image: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

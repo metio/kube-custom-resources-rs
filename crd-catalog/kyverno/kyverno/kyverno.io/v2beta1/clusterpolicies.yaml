@@ -123,6 +123,17 @@ spec:
                         description: "Context defines variables and data sources that can be used during rule execution."
                         items:
                           description: "ContextEntry adds variables and data sources to a rule Context. Either a\nConfigMap reference or a APILookup must be provided."
+                          oneOf:
+                            - required:
+                                - "configMap"
+                            - required:
+                                - "apiCall"
+                            - required:
+                                - "imageRegistry"
+                            - required:
+                                - "variable"
+                            - required:
+                                - "globalReference"
                           properties:
                             apiCall:
                               description: "APICall is an HTTP request to the Kubernetes API server, or other JSON web service.\nThe data returned is stored in the context with the name for the context entry."
@@ -143,6 +154,9 @@ spec:
                                       - "value"
                                     type: "object"
                                   type: "array"
+                                default:
+                                  description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                  x-kubernetes-preserve-unknown-fields: true
                                 jmesPath:
                                   description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
                                   type: "string"
@@ -245,10 +259,16 @@ spec:
                                   description: "Value is any arbitrary JSON object representable in YAML or JSON form."
                                   x-kubernetes-preserve-unknown-fields: true
                               type: "object"
+                          required:
+                            - "name"
                           type: "object"
                         type: "array"
                       exclude:
                         description: "ExcludeResources defines when this policy rule should not be applied. The exclude\ncriteria can include resource information (e.g. kind, name, namespace, labels)\nand admission review request information like the name or role."
+                        not:
+                          required:
+                            - "any"
+                            - "all"
                         properties:
                           all:
                             description: "All allows specifying resources which will be ANDed"
@@ -262,6 +282,10 @@ spec:
                                   type: "array"
                                 resources:
                                   description: "ResourceDescription contains information about the resource being created or modified."
+                                  not:
+                                    required:
+                                      - "name"
+                                      - "names"
                                   properties:
                                     annotations:
                                       additionalProperties:
@@ -406,6 +430,10 @@ spec:
                                   type: "array"
                                 resources:
                                   description: "ResourceDescription contains information about the resource being created or modified."
+                                  not:
+                                    required:
+                                      - "name"
+                                      - "names"
                                   properties:
                                     annotations:
                                       additionalProperties:
@@ -669,6 +697,17 @@ spec:
                                   description: "Context defines variables and data sources that can be used during rule execution."
                                   items:
                                     description: "ContextEntry adds variables and data sources to a rule Context. Either a\nConfigMap reference or a APILookup must be provided."
+                                    oneOf:
+                                      - required:
+                                          - "configMap"
+                                      - required:
+                                          - "apiCall"
+                                      - required:
+                                          - "imageRegistry"
+                                      - required:
+                                          - "variable"
+                                      - required:
+                                          - "globalReference"
                                     properties:
                                       apiCall:
                                         description: "APICall is an HTTP request to the Kubernetes API server, or other JSON web service.\nThe data returned is stored in the context with the name for the context entry."
@@ -689,6 +728,9 @@ spec:
                                                 - "value"
                                               type: "object"
                                             type: "array"
+                                          default:
+                                            description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                            x-kubernetes-preserve-unknown-fields: true
                                           jmesPath:
                                             description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
                                             type: "string"
@@ -791,6 +833,8 @@ spec:
                                             description: "Value is any arbitrary JSON object representable in YAML or JSON form."
                                             x-kubernetes-preserve-unknown-fields: true
                                         type: "object"
+                                    required:
+                                      - "name"
                                     type: "object"
                                   type: "array"
                                 data:
@@ -939,6 +983,10 @@ spec:
                         type: "object"
                       match:
                         description: "MatchResources defines when this policy rule should be applied. The match\ncriteria can include resource information (e.g. kind, name, namespace, labels)\nand admission review request information like the user name or role.\nAt least one kind is required."
+                        not:
+                          required:
+                            - "any"
+                            - "all"
                         properties:
                           all:
                             description: "All allows specifying resources which will be ANDed"
@@ -952,6 +1000,10 @@ spec:
                                   type: "array"
                                 resources:
                                   description: "ResourceDescription contains information about the resource being created or modified."
+                                  not:
+                                    required:
+                                      - "name"
+                                      - "names"
                                   properties:
                                     annotations:
                                       additionalProperties:
@@ -1096,6 +1148,10 @@ spec:
                                   type: "array"
                                 resources:
                                   description: "ResourceDescription contains information about the resource being created or modified."
+                                  not:
+                                    required:
+                                      - "name"
+                                      - "names"
                                   properties:
                                     annotations:
                                       additionalProperties:
@@ -1241,6 +1297,17 @@ spec:
                                   description: "Context defines variables and data sources that can be used during rule execution."
                                   items:
                                     description: "ContextEntry adds variables and data sources to a rule Context. Either a\nConfigMap reference or a APILookup must be provided."
+                                    oneOf:
+                                      - required:
+                                          - "configMap"
+                                      - required:
+                                          - "apiCall"
+                                      - required:
+                                          - "imageRegistry"
+                                      - required:
+                                          - "variable"
+                                      - required:
+                                          - "globalReference"
                                     properties:
                                       apiCall:
                                         description: "APICall is an HTTP request to the Kubernetes API server, or other JSON web service.\nThe data returned is stored in the context with the name for the context entry."
@@ -1261,6 +1328,9 @@ spec:
                                                 - "value"
                                               type: "object"
                                             type: "array"
+                                          default:
+                                            description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                            x-kubernetes-preserve-unknown-fields: true
                                           jmesPath:
                                             description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
                                             type: "string"
@@ -1363,6 +1433,8 @@ spec:
                                             description: "Value is any arbitrary JSON object representable in YAML or JSON form."
                                             x-kubernetes-preserve-unknown-fields: true
                                         type: "object"
+                                    required:
+                                      - "name"
                                     type: "object"
                                   type: "array"
                                 foreach:
@@ -1483,6 +1555,17 @@ spec:
                                   description: "Context defines variables and data sources that can be used during rule execution."
                                   items:
                                     description: "ContextEntry adds variables and data sources to a rule Context. Either a\nConfigMap reference or a APILookup must be provided."
+                                    oneOf:
+                                      - required:
+                                          - "configMap"
+                                      - required:
+                                          - "apiCall"
+                                      - required:
+                                          - "imageRegistry"
+                                      - required:
+                                          - "variable"
+                                      - required:
+                                          - "globalReference"
                                     properties:
                                       apiCall:
                                         description: "APICall is an HTTP request to the Kubernetes API server, or other JSON web service.\nThe data returned is stored in the context with the name for the context entry."
@@ -1503,6 +1586,9 @@ spec:
                                                 - "value"
                                               type: "object"
                                             type: "array"
+                                          default:
+                                            description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                            x-kubernetes-preserve-unknown-fields: true
                                           jmesPath:
                                             description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
                                             type: "string"
@@ -1605,6 +1691,8 @@ spec:
                                             description: "Value is any arbitrary JSON object representable in YAML or JSON form."
                                             x-kubernetes-preserve-unknown-fields: true
                                         type: "object"
+                                    required:
+                                      - "name"
                                     type: "object"
                                   type: "array"
                                 kind:
@@ -1972,6 +2060,17 @@ spec:
                                   description: "Context defines variables and data sources that can be used during rule execution."
                                   items:
                                     description: "ContextEntry adds variables and data sources to a rule Context. Either a\nConfigMap reference or a APILookup must be provided."
+                                    oneOf:
+                                      - required:
+                                          - "configMap"
+                                      - required:
+                                          - "apiCall"
+                                      - required:
+                                          - "imageRegistry"
+                                      - required:
+                                          - "variable"
+                                      - required:
+                                          - "globalReference"
                                     properties:
                                       apiCall:
                                         description: "APICall is an HTTP request to the Kubernetes API server, or other JSON web service.\nThe data returned is stored in the context with the name for the context entry."
@@ -1992,6 +2091,9 @@ spec:
                                                 - "value"
                                               type: "object"
                                             type: "array"
+                                          default:
+                                            description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                            x-kubernetes-preserve-unknown-fields: true
                                           jmesPath:
                                             description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
                                             type: "string"
@@ -2094,6 +2196,8 @@ spec:
                                             description: "Value is any arbitrary JSON object representable in YAML or JSON form."
                                             x-kubernetes-preserve-unknown-fields: true
                                         type: "object"
+                                    required:
+                                      - "name"
                                     type: "object"
                                   type: "array"
                                 deny:
@@ -2356,11 +2460,15 @@ spec:
                                                 type: "object"
                                               signatureAlgorithm:
                                                 default: "sha256"
-                                                description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
+                                                description: "Deprecated. Use attestor.signatureAlgorithm instead."
                                                 type: "string"
                                             type: "object"
                                           repository:
                                             description: "Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.\nIf specified Repository will override other OCI image repository locations for this Attestor."
+                                            type: "string"
+                                          signatureAlgorithm:
+                                            default: "sha256"
+                                            description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
                                             type: "string"
                                         type: "object"
                                       type: "array"
@@ -2644,11 +2752,15 @@ spec:
                                                     type: "object"
                                                   signatureAlgorithm:
                                                     default: "sha256"
-                                                    description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
+                                                    description: "Deprecated. Use attestor.signatureAlgorithm instead."
                                                     type: "string"
                                                 type: "object"
                                               repository:
                                                 description: "Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.\nIf specified Repository will override other OCI image repository locations for this Attestor."
+                                                type: "string"
+                                              signatureAlgorithm:
+                                                default: "sha256"
+                                                description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
                                                 type: "string"
                                             type: "object"
                                           type: "array"
@@ -2733,6 +2845,9 @@ spec:
                                           type: "array"
                                       type: "object"
                                     type: "array"
+                                  name:
+                                    description: "Name is the variable name."
+                                    type: "string"
                                   predicateType:
                                     description: "Deprecated in favour of 'Type', to be removed soon"
                                     type: "string"
@@ -2897,11 +3012,15 @@ spec:
                                               type: "object"
                                             signatureAlgorithm:
                                               default: "sha256"
-                                              description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
+                                              description: "Deprecated. Use attestor.signatureAlgorithm instead."
                                               type: "string"
                                           type: "object"
                                         repository:
                                           description: "Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.\nIf specified Repository will override other OCI image repository locations for this Attestor."
+                                          type: "string"
+                                        signatureAlgorithm:
+                                          default: "sha256"
+                                          description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
                                           type: "string"
                                       type: "object"
                                     type: "array"
@@ -2969,6 +3088,20 @@ spec:
                               default: true
                               description: "UseCache enables caching of image verify responses for this rule"
                               type: "boolean"
+                            validate:
+                              description: "Validation checks conditions across multiple image\nverification attestations or context entries"
+                              properties:
+                                deny:
+                                  description: "Deny defines conditions used to pass or fail a validation rule."
+                                  properties:
+                                    conditions:
+                                      description: "Multiple conditions can be declared under an `any` or `all` statement. A direct list\nof conditions (without `any` or `all` statements) is also supported for backwards compatibility\nbut will be deprecated in the next major release.\nSee: https://kyverno.io/docs/writing-policies/validate/#deny-rules"
+                                      x-kubernetes-preserve-unknown-fields: true
+                                  type: "object"
+                                message:
+                                  description: "Message specifies a custom message to be displayed on failure."
+                                  type: "string"
+                              type: "object"
                             verifyDigest:
                               default: true
                               description: "VerifyDigest validates that images have a digest."
@@ -3111,6 +3244,17 @@ spec:
                             description: "Context defines variables and data sources that can be used during rule execution."
                             items:
                               description: "ContextEntry adds variables and data sources to a rule Context. Either a\nConfigMap reference or a APILookup must be provided."
+                              oneOf:
+                                - required:
+                                    - "configMap"
+                                - required:
+                                    - "apiCall"
+                                - required:
+                                    - "imageRegistry"
+                                - required:
+                                    - "variable"
+                                - required:
+                                    - "globalReference"
                               properties:
                                 apiCall:
                                   description: "APICall is an HTTP request to the Kubernetes API server, or other JSON web service.\nThe data returned is stored in the context with the name for the context entry."
@@ -3131,6 +3275,9 @@ spec:
                                           - "value"
                                         type: "object"
                                       type: "array"
+                                    default:
+                                      description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                      x-kubernetes-preserve-unknown-fields: true
                                     jmesPath:
                                       description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
                                       type: "string"
@@ -3233,10 +3380,16 @@ spec:
                                       description: "Value is any arbitrary JSON object representable in YAML or JSON form."
                                       x-kubernetes-preserve-unknown-fields: true
                                   type: "object"
+                              required:
+                                - "name"
                               type: "object"
                             type: "array"
                           exclude:
                             description: "ExcludeResources defines when this policy rule should not be applied. The exclude\ncriteria can include resource information (e.g. kind, name, namespace, labels)\nand admission review request information like the name or role."
+                            not:
+                              required:
+                                - "any"
+                                - "all"
                             properties:
                               all:
                                 description: "All allows specifying resources which will be ANDed"
@@ -3250,6 +3403,10 @@ spec:
                                       type: "array"
                                     resources:
                                       description: "ResourceDescription contains information about the resource being created or modified."
+                                      not:
+                                        required:
+                                          - "name"
+                                          - "names"
                                       properties:
                                         annotations:
                                           additionalProperties:
@@ -3394,6 +3551,10 @@ spec:
                                       type: "array"
                                     resources:
                                       description: "ResourceDescription contains information about the resource being created or modified."
+                                      not:
+                                        required:
+                                          - "name"
+                                          - "names"
                                       properties:
                                         annotations:
                                           additionalProperties:
@@ -3533,6 +3694,10 @@ spec:
                                 type: "array"
                               resources:
                                 description: "ResourceDescription contains information about the resource being created or modified.\nRequires at least one tag to be specified when under MatchResources.\nSpecifying ResourceDescription directly under match is being deprecated.\nPlease specify under \"any\" or \"all\" instead."
+                                not:
+                                  required:
+                                    - "name"
+                                    - "names"
                                 properties:
                                   annotations:
                                     additionalProperties:
@@ -3794,6 +3959,17 @@ spec:
                                       description: "Context defines variables and data sources that can be used during rule execution."
                                       items:
                                         description: "ContextEntry adds variables and data sources to a rule Context. Either a\nConfigMap reference or a APILookup must be provided."
+                                        oneOf:
+                                          - required:
+                                              - "configMap"
+                                          - required:
+                                              - "apiCall"
+                                          - required:
+                                              - "imageRegistry"
+                                          - required:
+                                              - "variable"
+                                          - required:
+                                              - "globalReference"
                                         properties:
                                           apiCall:
                                             description: "APICall is an HTTP request to the Kubernetes API server, or other JSON web service.\nThe data returned is stored in the context with the name for the context entry."
@@ -3814,6 +3990,9 @@ spec:
                                                     - "value"
                                                   type: "object"
                                                 type: "array"
+                                              default:
+                                                description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                                x-kubernetes-preserve-unknown-fields: true
                                               jmesPath:
                                                 description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
                                                 type: "string"
@@ -3916,6 +4095,8 @@ spec:
                                                 description: "Value is any arbitrary JSON object representable in YAML or JSON form."
                                                 x-kubernetes-preserve-unknown-fields: true
                                             type: "object"
+                                        required:
+                                          - "name"
                                         type: "object"
                                       type: "array"
                                     data:
@@ -4064,6 +4245,10 @@ spec:
                             type: "object"
                           match:
                             description: "MatchResources defines when this policy rule should be applied. The match\ncriteria can include resource information (e.g. kind, name, namespace, labels)\nand admission review request information like the user name or role.\nAt least one kind is required."
+                            not:
+                              required:
+                                - "any"
+                                - "all"
                             properties:
                               all:
                                 description: "All allows specifying resources which will be ANDed"
@@ -4077,6 +4262,10 @@ spec:
                                       type: "array"
                                     resources:
                                       description: "ResourceDescription contains information about the resource being created or modified."
+                                      not:
+                                        required:
+                                          - "name"
+                                          - "names"
                                       properties:
                                         annotations:
                                           additionalProperties:
@@ -4221,6 +4410,10 @@ spec:
                                       type: "array"
                                     resources:
                                       description: "ResourceDescription contains information about the resource being created or modified."
+                                      not:
+                                        required:
+                                          - "name"
+                                          - "names"
                                       properties:
                                         annotations:
                                           additionalProperties:
@@ -4360,6 +4553,10 @@ spec:
                                 type: "array"
                               resources:
                                 description: "ResourceDescription contains information about the resource being created or modified.\nRequires at least one tag to be specified when under MatchResources.\nSpecifying ResourceDescription directly under match is being deprecated.\nPlease specify under \"any\" or \"all\" instead."
+                                not:
+                                  required:
+                                    - "name"
+                                    - "names"
                                 properties:
                                   annotations:
                                     additionalProperties:
@@ -4503,6 +4700,17 @@ spec:
                                       description: "Context defines variables and data sources that can be used during rule execution."
                                       items:
                                         description: "ContextEntry adds variables and data sources to a rule Context. Either a\nConfigMap reference or a APILookup must be provided."
+                                        oneOf:
+                                          - required:
+                                              - "configMap"
+                                          - required:
+                                              - "apiCall"
+                                          - required:
+                                              - "imageRegistry"
+                                          - required:
+                                              - "variable"
+                                          - required:
+                                              - "globalReference"
                                         properties:
                                           apiCall:
                                             description: "APICall is an HTTP request to the Kubernetes API server, or other JSON web service.\nThe data returned is stored in the context with the name for the context entry."
@@ -4523,6 +4731,9 @@ spec:
                                                     - "value"
                                                   type: "object"
                                                 type: "array"
+                                              default:
+                                                description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                                x-kubernetes-preserve-unknown-fields: true
                                               jmesPath:
                                                 description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
                                                 type: "string"
@@ -4625,6 +4836,8 @@ spec:
                                                 description: "Value is any arbitrary JSON object representable in YAML or JSON form."
                                                 x-kubernetes-preserve-unknown-fields: true
                                             type: "object"
+                                        required:
+                                          - "name"
                                         type: "object"
                                       type: "array"
                                     foreach:
@@ -4745,6 +4958,17 @@ spec:
                                       description: "Context defines variables and data sources that can be used during rule execution."
                                       items:
                                         description: "ContextEntry adds variables and data sources to a rule Context. Either a\nConfigMap reference or a APILookup must be provided."
+                                        oneOf:
+                                          - required:
+                                              - "configMap"
+                                          - required:
+                                              - "apiCall"
+                                          - required:
+                                              - "imageRegistry"
+                                          - required:
+                                              - "variable"
+                                          - required:
+                                              - "globalReference"
                                         properties:
                                           apiCall:
                                             description: "APICall is an HTTP request to the Kubernetes API server, or other JSON web service.\nThe data returned is stored in the context with the name for the context entry."
@@ -4765,6 +4989,9 @@ spec:
                                                     - "value"
                                                   type: "object"
                                                 type: "array"
+                                              default:
+                                                description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                                x-kubernetes-preserve-unknown-fields: true
                                               jmesPath:
                                                 description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
                                                 type: "string"
@@ -4867,6 +5094,8 @@ spec:
                                                 description: "Value is any arbitrary JSON object representable in YAML or JSON form."
                                                 x-kubernetes-preserve-unknown-fields: true
                                             type: "object"
+                                        required:
+                                          - "name"
                                         type: "object"
                                       type: "array"
                                     kind:
@@ -4894,6 +5123,11 @@ spec:
                           preconditions:
                             description: "Preconditions are used to determine if a policy rule should be applied by evaluating a\nset of conditions. The declaration can contain nested `any` or `all` statements. A direct list\nof conditions (without `any` or `all` statements is supported for backwards compatibility but\nwill be deprecated in the next major release.\nSee: https://kyverno.io/docs/writing-policies/preconditions/"
                             x-kubernetes-preserve-unknown-fields: true
+                          reportProperties:
+                            additionalProperties:
+                              type: "string"
+                            description: "ReportProperties are the additional properties from the rule that will be added to the policy report result"
+                            type: "object"
                           skipBackgroundRequests:
                             default: true
                             description: "SkipBackgroundRequests bypasses admission requests that are sent by the background controller.\nThe default value is set to \"true\", it must be set to \"false\" to apply\ngenerate and mutateExisting rules to those requests."
@@ -4901,6 +5135,10 @@ spec:
                           validate:
                             description: "Validation is used to validate matching resources."
                             properties:
+                              allowExistingViolations:
+                                default: true
+                                description: "AllowExistingViolations allows prexisting violating resources to continue violating a policy."
+                                type: "boolean"
                               anyPattern:
                                 description: "AnyPattern specifies list of validation patterns. At least one of the patterns\nmust be satisfied for the validation rule to succeed."
                                 x-kubernetes-preserve-unknown-fields: true
@@ -5100,6 +5338,17 @@ spec:
                                       description: "Context defines variables and data sources that can be used during rule execution."
                                       items:
                                         description: "ContextEntry adds variables and data sources to a rule Context. Either a\nConfigMap reference or a APILookup must be provided."
+                                        oneOf:
+                                          - required:
+                                              - "configMap"
+                                          - required:
+                                              - "apiCall"
+                                          - required:
+                                              - "imageRegistry"
+                                          - required:
+                                              - "variable"
+                                          - required:
+                                              - "globalReference"
                                         properties:
                                           apiCall:
                                             description: "APICall is an HTTP request to the Kubernetes API server, or other JSON web service.\nThe data returned is stored in the context with the name for the context entry."
@@ -5120,6 +5369,9 @@ spec:
                                                     - "value"
                                                   type: "object"
                                                 type: "array"
+                                              default:
+                                                description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                                x-kubernetes-preserve-unknown-fields: true
                                               jmesPath:
                                                 description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
                                                 type: "string"
@@ -5222,6 +5474,8 @@ spec:
                                                 description: "Value is any arbitrary JSON object representable in YAML or JSON form."
                                                 x-kubernetes-preserve-unknown-fields: true
                                             type: "object"
+                                        required:
+                                          - "name"
                                         type: "object"
                                       type: "array"
                                     deny:
@@ -5484,11 +5738,15 @@ spec:
                                                     type: "object"
                                                   signatureAlgorithm:
                                                     default: "sha256"
-                                                    description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
+                                                    description: "Deprecated. Use attestor.signatureAlgorithm instead."
                                                     type: "string"
                                                 type: "object"
                                               repository:
                                                 description: "Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.\nIf specified Repository will override other OCI image repository locations for this Attestor."
+                                                type: "string"
+                                              signatureAlgorithm:
+                                                default: "sha256"
+                                                description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
                                                 type: "string"
                                             type: "object"
                                           type: "array"
@@ -5782,11 +6040,15 @@ spec:
                                                         type: "object"
                                                       signatureAlgorithm:
                                                         default: "sha256"
-                                                        description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
+                                                        description: "Deprecated. Use attestor.signatureAlgorithm instead."
                                                         type: "string"
                                                     type: "object"
                                                   repository:
                                                     description: "Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.\nIf specified Repository will override other OCI image repository locations for this Attestor."
+                                                    type: "string"
+                                                  signatureAlgorithm:
+                                                    default: "sha256"
+                                                    description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
                                                     type: "string"
                                                 type: "object"
                                               type: "array"
@@ -5871,6 +6133,9 @@ spec:
                                               type: "array"
                                           type: "object"
                                         type: "array"
+                                      name:
+                                        description: "Name is the variable name."
+                                        type: "string"
                                       predicateType:
                                         description: "Deprecated in favour of 'Type', to be removed soon"
                                         type: "string"
@@ -6035,11 +6300,15 @@ spec:
                                                   type: "object"
                                                 signatureAlgorithm:
                                                   default: "sha256"
-                                                  description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
+                                                  description: "Deprecated. Use attestor.signatureAlgorithm instead."
                                                   type: "string"
                                               type: "object"
                                             repository:
                                               description: "Repository is an optional alternate OCI repository to use for signatures and attestations that match this rule.\nIf specified Repository will override other OCI image repository locations for this Attestor."
+                                              type: "string"
+                                            signatureAlgorithm:
+                                              default: "sha256"
+                                              description: "Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512."
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -6125,6 +6394,20 @@ spec:
                                   default: true
                                   description: "UseCache enables caching of image verify responses for this rule."
                                   type: "boolean"
+                                validate:
+                                  description: "Validation checks conditions across multiple image\nverification attestations or context entries"
+                                  properties:
+                                    deny:
+                                      description: "Deny defines conditions used to pass or fail a validation rule."
+                                      properties:
+                                        conditions:
+                                          description: "Multiple conditions can be declared under an `any` or `all` statement. A direct list\nof conditions (without `any` or `all` statements) is also supported for backwards compatibility\nbut will be deprecated in the next major release.\nSee: https://kyverno.io/docs/writing-policies/validate/#deny-rules"
+                                          x-kubernetes-preserve-unknown-fields: true
+                                      type: "object"
+                                    message:
+                                      description: "Message specifies a custom message to be displayed on failure."
+                                      type: "string"
+                                  type: "object"
                                 verifyDigest:
                                   default: true
                                   description: "VerifyDigest validates that images have a digest."
@@ -6216,8 +6499,6 @@ spec:
                     - "generated"
                     - "message"
                   type: "object"
-              required:
-                - "ready"
               type: "object"
           required:
             - "spec"

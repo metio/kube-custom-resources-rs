@@ -194,12 +194,12 @@ pub struct RuleGroupRuleGroup {
 /// Contains a set of IP set references.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuleGroupRuleGroupReferenceSets {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iPSetReferences")]
-    pub i_p_set_references: Option<BTreeMap<String, RuleGroupRuleGroupReferenceSetsIPSetReferences>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipSetReferences")]
+    pub ip_set_references: Option<BTreeMap<String, RuleGroupRuleGroupReferenceSetsIpSetReferences>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RuleGroupRuleGroupReferenceSetsIPSetReferences {
+pub struct RuleGroupRuleGroupReferenceSetsIpSetReferences {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "referenceARN")]
     pub reference_arn: Option<String>,
 }
@@ -208,14 +208,14 @@ pub struct RuleGroupRuleGroupReferenceSetsIPSetReferences {
 /// is defined.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuleGroupRuleGroupRuleVariables {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iPSets")]
-    pub i_p_sets: Option<BTreeMap<String, RuleGroupRuleGroupRuleVariablesIPSets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipSets")]
+    pub ip_sets: Option<BTreeMap<String, RuleGroupRuleGroupRuleVariablesIpSets>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portSets")]
     pub port_sets: Option<BTreeMap<String, RuleGroupRuleGroupRuleVariablesPortSets>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RuleGroupRuleGroupRuleVariablesIPSets {
+pub struct RuleGroupRuleGroupRuleVariablesIpSets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub definition: Option<Vec<String>>,
 }

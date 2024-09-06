@@ -153,8 +153,7 @@ pub struct CleanupPolicyContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<CleanupPolicyContextImageRegistry>,
     /// Name is the variable name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<CleanupPolicyContextVariable>,
@@ -168,6 +167,10 @@ pub struct CleanupPolicyContextApiCall {
     /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<CleanupPolicyContextApiCallData>>,
+    /// Default is an optional arbitrary JSON object that the context may take if the apiCall
+    /// returns error
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<serde_json::Value>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the JSON response returned from the server. For example
     /// a JMESPath of "items | length(@)" applied to the API server response

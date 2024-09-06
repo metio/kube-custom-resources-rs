@@ -2977,8 +2977,7 @@ pub struct EMQXDashboardServiceTemplateStatusLoadBalancerIngress {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EMQXDashboardServiceTemplateStatusLoadBalancerIngressPorts {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error: Option<String>,
+    pub error: String,
     pub port: i32,
     pub protocol: String,
 }
@@ -3114,8 +3113,7 @@ pub struct EMQXListenersServiceTemplateStatusLoadBalancerIngress {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EMQXListenersServiceTemplateStatusLoadBalancerIngressPorts {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error: Option<String>,
+    pub error: String,
     pub port: i32,
     pub protocol: String,
 }

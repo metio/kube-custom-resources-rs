@@ -164,6 +164,9 @@ spec:
                           timeout:
                             description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                             type: "string"
+                          workDir:
+                            description: "WorkDir is the working directory for command."
+                            type: "string"
                         required:
                           - "entrypoint"
                         type: "object"
@@ -546,6 +549,9 @@ spec:
                           timeout:
                             description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                             type: "string"
+                          workDir:
+                            description: "WorkDir is the working directory for script."
+                            type: "string"
                         type: "object"
                       sleep:
                         description: "Sleep defines zzzz."
@@ -870,6 +876,9 @@ spec:
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                                   type: "string"
+                                workDir:
+                                  description: "WorkDir is the working directory for command."
+                                  type: "string"
                               required:
                                 - "entrypoint"
                               type: "object"
@@ -1251,6 +1260,9 @@ spec:
                                   type: "boolean"
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                                workDir:
+                                  description: "WorkDir is the working directory for script."
                                   type: "string"
                               type: "object"
                             sleep:
@@ -1465,6 +1477,9 @@ spec:
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                                   type: "string"
+                                workDir:
+                                  description: "WorkDir is the working directory for command."
+                                  type: "string"
                               required:
                                 - "entrypoint"
                               type: "object"
@@ -1846,6 +1861,9 @@ spec:
                                   type: "boolean"
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                                workDir:
+                                  description: "WorkDir is the working directory for script."
                                   type: "string"
                               type: "object"
                             sleep:
@@ -2088,6 +2106,9 @@ spec:
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
                                   type: "string"
+                                workDir:
+                                  description: "WorkDir is the working directory for command."
+                                  type: "string"
                               required:
                                 - "entrypoint"
                               type: "object"
@@ -2469,6 +2490,9 @@ spec:
                                   type: "boolean"
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                                workDir:
+                                  description: "WorkDir is the working directory for script."
                                   type: "string"
                               type: "object"
                             sleep:
@@ -2879,6 +2903,9 @@ spec:
                                   type: "boolean"
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                                workDir:
+                                  description: "WorkDir is the working directory for command."
                                   type: "string"
                               required:
                                 - "entrypoint"
@@ -3583,6 +3610,9 @@ spec:
                                   type: "boolean"
                                 timeout:
                                   description: "Timeout for the operation. Overrides the global timeout set in the Configuration."
+                                  type: "string"
+                                workDir:
+                                  description: "WorkDir is the working directory for script."
                                   type: "string"
                               type: "object"
                             sleep:

@@ -45,6 +45,11 @@ spec:
               type: "object"
             spec:
               description: "Spec declares policy exception behaviors."
+              oneOf:
+                - required:
+                    - "kubernetesResource"
+                - required:
+                    - "apiCall"
               properties:
                 apiCall:
                   description: "Stores results from an API call which will be cached.\nMutually exclusive with KubernetesResource.\nThis can be used to make calls to external (non-Kubernetes API server) services.\nIt can also be used to make calls to the Kubernetes API server in such cases:\n1. A POST is needed to create a resource.\n2. Finer-grained control is needed. Example: To restrict the number of resources cached."
@@ -171,8 +176,6 @@ spec:
                 ready:
                   description: "Deprecated in favor of Conditions"
                   type: "boolean"
-              required:
-                - "ready"
               type: "object"
           required:
             - "spec"

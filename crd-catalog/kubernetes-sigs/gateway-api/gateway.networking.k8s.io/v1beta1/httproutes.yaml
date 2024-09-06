@@ -1043,6 +1043,25 @@ spec:
                         minLength: 1
                         pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                         type: "string"
+                      retry:
+                        description: "Retry defines the configuration for when to retry an HTTP request.\n\n\nSupport: Extended\n\n\n"
+                        properties:
+                          attempts:
+                            description: "Attempts specifies the maxmimum number of times an individual request\nfrom the gateway to a backend should be retried.\n\n\nIf the maximum number of retries has been attempted without a successful\nresponse from the backend, the Gateway MUST return an error.\n\n\nWhen this field is unspecified, the number of times to attempt to retry\na backend request is implementation-specific.\n\n\nSupport: Extended"
+                            type: "integer"
+                          backoff:
+                            description: "Backoff specifies the minimum duration a Gateway should wait between\nretry attempts and is represented in Gateway API Duration formatting.\n\n\nFor example, setting the `rules[].retry.backoff` field to the value\n`100ms` will cause a backend request to first be retried approximately\n100 milliseconds after timing out or receiving a response code configured\nto be retryable.\n\n\nAn implementation MAY use an exponential or alternative backoff strategy\nfor subsequent retry attempts, MAY cap the maximum backoff duration to\nsome amount greater than the specified minimum, and MAY add arbitrary\njitter to stagger requests, as long as unsuccessful backend requests are\nnot retried before the configured minimum duration.\n\n\nIf a Request timeout (`rules[].timeouts.request`) is configured on the\nroute, the entire duration of the initial request and any retry attempts\nMUST not exceed the Request timeout duration. If any retry attempts are\nstill in progress when the Request timeout duration has been reached,\nthese SHOULD be canceled if possible and the Gateway MUST immediately\nreturn a timeout error.\n\n\nIf a BackendRequest timeout (`rules[].timeouts.backendRequest`) is\nconfigured on the route, any retry attempts which reach the configured\nBackendRequest timeout duration without a response SHOULD be canceled if\npossible and the Gateway should wait for at least the specified backoff\nduration before attempting to retry the backend request again.\n\n\nIf a BackendRequest timeout is _not_ configured on the route, retry\nattempts MAY time out after an implementation default duration, or MAY\nremain pending until a configured Request timeout or implementation\ndefault duration for total request time is reached.\n\n\nWhen this field is unspecified, the time to wait between retry attempts\nis implementation-specific.\n\n\nSupport: Extended"
+                            pattern: "^([0-9]{1,5}(h|m|s|ms)){1,4}$"
+                            type: "string"
+                          codes:
+                            description: "Codes defines the HTTP response status codes for which a backend request\nshould be retried.\n\n\nSupport: Extended"
+                            items:
+                              description: "HTTPRouteRetryStatusCode defines an HTTP response status code for\nwhich a backend request should be retried.\n\n\nImplementations MUST support the following status codes as retryable:\n\n\n* 500\n* 502\n* 503\n* 504\n\n\nImplementations MAY support specifying additional discrete values in the\n500-599 range.\n\n\nImplementations MAY support specifying discrete values in the 400-499 range,\nwhich are often inadvisable to retry.\n\n\n<gateway:experimental>"
+                              maximum: 599.0
+                              minimum: 400.0
+                              type: "integer"
+                            type: "array"
+                        type: "object"
                       sessionPersistence:
                         description: "SessionPersistence defines and configures session persistence\nfor the route rule.\n\n\nSupport: Extended\n\n\n"
                         properties:

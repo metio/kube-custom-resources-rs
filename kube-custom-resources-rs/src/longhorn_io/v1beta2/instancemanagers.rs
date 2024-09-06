@@ -21,12 +21,26 @@ use self::prelude::*;
 pub struct InstanceManagerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
     pub data_engine: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngineSpec")]
+    pub data_engine_spec: Option<InstanceManagerDataEngineSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeID")]
     pub node_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<InstanceManagerType>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceManagerDataEngineSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v2: Option<InstanceManagerDataEngineSpecV2>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceManagerDataEngineSpecV2 {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuMask")]
+    pub cpu_mask: Option<String>,
 }
 
 /// InstanceManagerSpec defines the desired state of the Longhorn instance manager
@@ -49,6 +63,8 @@ pub struct InstanceManagerStatus {
     pub api_version: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentState")]
     pub current_state: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngineStatus")]
+    pub data_engine_status: Option<InstanceManagerStatusDataEngineStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceEngines")]
     pub instance_engines: Option<BTreeMap<String, InstanceManagerStatusInstanceEngines>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceReplicas")]
@@ -64,6 +80,18 @@ pub struct InstanceManagerStatus {
     pub proxy_api_min_version: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyApiVersion")]
     pub proxy_api_version: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceManagerStatusDataEngineStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v2: Option<InstanceManagerStatusDataEngineStatusV2>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceManagerStatusDataEngineStatusV2 {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuMask")]
+    pub cpu_mask: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

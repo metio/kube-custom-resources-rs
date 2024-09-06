@@ -36,29 +36,6 @@ spec:
                       - "annotation"
                     type: "object"
                   type: "array"
-                api:
-                  properties:
-                    namespaces:
-                      description: "Settings that control what namespaces are returned by Kiali."
-                      properties:
-                        exclude:
-                          description: "A list of namespaces to be excluded from the list of namespaces provided by the Kiali API and Kiali UI. Regex is supported. This does not affect explicit namespace access."
-                          items:
-                            type: "string"
-                          type: "array"
-                        include:
-                          description: "A list of namespaces to be included in the list of namespaces provided by the Kiali API and Kiali UI (if those namespaces exist). Regex is supported. An undefined or empty list is ignored. This does not affect explicit namespace access."
-                          items:
-                            type: "string"
-                          type: "array"
-                        label_selector_exclude:
-                          description: "A Kubernetes label selector (e.g. `myLabel=myValue`) which is used for filtering out namespaces\nwhen fetching the list of available namespaces. This does not affect explicit namespace access.\n"
-                          type: "string"
-                        label_selector_include:
-                          description: "A Kubernetes label selector (e.g. `myLabel=myValue`) which is used when fetching the list of\navailable namespaces. This does not affect explicit namespace access.\n\nIf `deployment.accessible_namespaces` does not have the special value of `'**'`\nthen the Kiali operator will add a new label to all accessible namespaces - that new\nlabel will be this `label_selector_include` (this label is added regardless if the namespace matches the label_selector_exclude also).\n\nNote that if you do not set this `label_selector_include` setting but `deployment.accessible_namespaces`\ndoes not have the special \"all namespaces\" entry of `'**'` then this `label_selector_include` will be set\nto a default value of `kiali.io/[<deployment.instance_name>.]member-of=<deployment.namespace>`\nwhere `[<deployment.instance_name>.]` is the instance name assigned to the Kiali installation\nif it is not the default 'kiali' (otherwise, this is omitted) and `<deployment.namespace>`\nis the namespace where Kiali is to be installed.\n"
-                          type: "string"
-                      type: "object"
-                  type: "object"
                 auth:
                   properties:
                     openid:
@@ -173,11 +150,6 @@ spec:
                   type: "array"
                 deployment:
                   properties:
-                    accessible_namespaces:
-                      description: "When `cluster_wide_access=false` this must be set to the list of namespaces to which Kiali is to be given permissions.  You can provide names using regex expressions matched against all namespaces the operator can see.  If left unset it is required that `cluster_wide_access` be `true`, and Kiali will have permissions to all namespaces.  The list of namespaces that a user can access is a subset of these namespaces, given that user's RBAC settings."
-                      items:
-                        type: "string"
-                      type: "array"
                     additional_service_yaml:
                       description: "Additional custom yaml to add to the service definition. This is used mainly to customize the service type. For example, if the `deployment.service_type` is set to 'LoadBalancer' and you want to set the loadBalancerIP, you can do so here with: `additional_service_yaml: { 'loadBalancerIP': '78.11.24.19' }`. Another example would be if the `deployment.service_type` is set to 'ExternalName' you will need to configure the name via: `additional_service_yaml: { 'externalName': 'my.kiali.example.com' }`. A final example would be if external IPs need to be set: `additional_service_yaml: { 'externalIPs': ['80.11.12.10'] }`"
                       type: "object"
@@ -196,7 +168,7 @@ spec:
                           x-kubernetes-preserve-unknown-fields: true
                       type: "object"
                     cluster_wide_access:
-                      description: "Determines if the Kiali server will be granted cluster-wide permissions to see all namespaces. When true, this provides more efficient caching within the Kiali server. It must be `true` if `deployment.accessible_namespaces` is left unset. To limit the namespaces for which Kiali has permissions, set to `false` and list the desired namespaces in `deployment.accessible_namespaces`. When not set, this value will default to `false` if `deployment.accessible_namespaces` is set to a list of namespaces; otherwise this will be `true`."
+                      description: "Determines if the Kiali server will be granted cluster-wide permissions to see all namespaces. When true, this provides more efficient caching within the Kiali server. It must be `true` if `deployment.discovery_selectors.default` is left unset. To limit the namespaces for which Kiali has permissions, set to `false` and define the desired selectors in `deployment.discovery_selectors.default`. When not set, this value will default to `true`."
                       type: "boolean"
                     configmap_annotations:
                       description: "Custom annotations to be created on the Kiali ConfigMap."
@@ -224,6 +196,84 @@ spec:
                           - "mount"
                         type: "object"
                       type: "array"
+                    discovery_selectors:
+                      description: "Discovery selectors used to determine which namespaces are accessible to Kiali and which namespaces are visible to Kiali users.\nYou can define discovery selectors to match namespaces on the local cluster as well as remote clusters.\nThe list of namespaces that a user can access is a subset of these namespaces, given that user's RBAC permissions.\nThese selectors will have similar semantics as defined by Istio ( https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/#MeshConfig )\nand the syntax of the equality-based and set-based label selectors are documented by Kubernetes here\n( https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#resources-that-support-set-based-requirements )\n"
+                      properties:
+                        default:
+                          description: "These are label selectors for the Kiali local cluster and for all remote clusters that do not have overrides.\nNamespaces that match these selectors are visible to Kiali users.\nWhen `cluster_wide_access=false` these `default` selectors are used to restrict which namespaces Kiali will have access to.\nIf there are no default discovery selectors, then `cluster_wide_access` should be `true` in which case Kiali will have\npermissions to access all namespaces.\n"
+                          items:
+                            anyOf:
+                              - required:
+                                  - "matchLabels"
+                              - required:
+                                  - "matchExpressions"
+                            properties:
+                              matchExpressions:
+                                items:
+                                  properties:
+                                    key:
+                                      type: "string"
+                                    operator:
+                                      enum:
+                                        - "In"
+                                        - "NotIn"
+                                        - "Exists"
+                                        - "DoesNotExist"
+                                      type: "string"
+                                    values:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  required:
+                                    - "key"
+                                    - "operator"
+                                  type: "object"
+                                type: "array"
+                              matchLabels:
+                                additionalProperties:
+                                  type: "string"
+                                type: "object"
+                            type: "object"
+                          type: "array"
+                        overrides:
+                          additionalProperties:
+                            items:
+                              anyOf:
+                                - required:
+                                    - "matchLabels"
+                                - required:
+                                    - "matchExpressions"
+                              properties:
+                                matchExpressions:
+                                  items:
+                                    properties:
+                                      key:
+                                        type: "string"
+                                      operator:
+                                        enum:
+                                          - "In"
+                                          - "NotIn"
+                                          - "Exists"
+                                          - "DoesNotExist"
+                                        type: "string"
+                                      values:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                    required:
+                                      - "key"
+                                      - "operator"
+                                    type: "object"
+                                  type: "array"
+                                matchLabels:
+                                  additionalProperties:
+                                    type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          description: "If a remote cluster has different namespaces than the local cluster, these overrides provide a way for you to match those remote namespaces. Kiali will make these remote namespaces visible to users. The name of the overrides section is the name of the remote cluster. Note that the `default` selectors are ignored when matching namespaces on a remote cluster if that remote cluster has overrides defined."
+                          type: "object"
+                      type: "object"
                     dns:
                       description: "The Kiali server pod's DNS configuration. Kubernetes supports different DNS policies and configurations.\nFor further details, consult the Kubernetes documentation - https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/\n"
                       properties:

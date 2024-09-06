@@ -38,6 +38,9 @@ pub struct QueueSpec {
     /// Parent define the parent of queue
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent: Option<String>,
+    /// Priority define the priority of queue. Higher values are prioritized for scheduling and considered later during reclamation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i32>,
     /// Reclaimable indicate whether the queue can be reclaimed by other queue
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reclaimable: Option<bool>,
