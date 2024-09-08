@@ -1676,6 +1676,7 @@ apiVersion `kafka.strimzi.io/v1beta2`:
 - `KafkaConnector`
 - `KafkaConnect`
 - `KafkaMirrorMaker`
+- `KafkaNodePool`
 - `KafkaRebalance`
 - `Kafka`
 - `KafkaTopic`
