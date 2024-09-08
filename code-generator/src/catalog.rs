@@ -2888,6 +2888,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/strimzi/strimzi-kafka-operator/blob/main/helm-charts/helm3/strimzi-kafka-operator/crds/047-Crd-kafkaconnector.yaml",
             "https://github.com/strimzi/strimzi-kafka-operator/blob/main/helm-charts/helm3/strimzi-kafka-operator/crds/048-Crd-kafkamirrormaker2.yaml",
             "https://github.com/strimzi/strimzi-kafka-operator/blob/main/helm-charts/helm3/strimzi-kafka-operator/crds/049-Crd-kafkarebalance.yaml",
+            "https://github.com/strimzi/strimzi-kafka-operator/blob/main/helm-charts/helm3/strimzi-kafka-operator/crds/04A-Crd-kafkanodepool.yaml",
         ],
     },
     UpstreamSource {
