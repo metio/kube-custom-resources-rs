@@ -353,6 +353,10 @@ spec:
                 message:
                   description: "Message is extra information about the cluster"
                   type: "string"
+                observedGeneration:
+                  description: "ObservedGeneration is the most recent generation observed for this DatabaseCluster."
+                  format: "int64"
+                  type: "integer"
                 port:
                   description: "Port is the port where the cluster can be reached"
                   format: "int32"

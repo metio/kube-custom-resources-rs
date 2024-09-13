@@ -99,11 +99,13 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                       required:
                                         - "key"
                                         - "operator"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   matchFields:
                                     description: "A list of node selector requirements by node's fields."
                                     items:
@@ -120,11 +122,13 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                       required:
                                         - "key"
                                         - "operator"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               weight:
@@ -167,11 +171,13 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                       required:
                                         - "key"
                                         - "operator"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   matchLabels:
                                     additionalProperties:
                                       type: "string"
@@ -190,7 +196,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               minDomains:
-                                description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew.\n\n\nThis is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default)."
+                                description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew."
                                 format: "int32"
                                 type: "integer"
                               nodeAffinityPolicy:
@@ -296,11 +302,13 @@ spec:
                                   items:
                                     type: "string"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                               required:
                                 - "key"
                                 - "operator"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           matchLabels:
                             additionalProperties:
                               type: "string"

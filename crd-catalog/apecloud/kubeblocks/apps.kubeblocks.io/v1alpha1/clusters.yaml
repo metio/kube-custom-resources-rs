@@ -176,7 +176,7 @@ spec:
                         description: "Specifies Annotations to override or add for underlying Pods."
                         type: "object"
                       componentDef:
-                        description: "References the name of a ComponentDefinition object.\nThe ComponentDefinition specifies the behavior and characteristics of the Component.\nIf both `componentDefRef` and `componentDef` are provided,\nthe `componentDef` will take precedence over `componentDefRef`."
+                        description: "Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition\ncustom resource (CR) that defines the Component's characteristics and behavior.\n\n\nIf both `componentDefRef` and `componentDef` are provided,\nthe `componentDef` will take precedence over `componentDefRef`."
                         maxLength: 64
                         pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                         type: "string"
@@ -5207,7 +5207,7 @@ spec:
                             description: "Specifies Annotations to override or add for underlying Pods."
                             type: "object"
                           componentDef:
-                            description: "References the name of a ComponentDefinition object.\nThe ComponentDefinition specifies the behavior and characteristics of the Component.\nIf both `componentDefRef` and `componentDef` are provided,\nthe `componentDef` will take precedence over `componentDefRef`."
+                            description: "Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition\ncustom resource (CR) that defines the Component's characteristics and behavior.\n\n\nIf both `componentDefRef` and `componentDef` are provided,\nthe `componentDef` will take precedence over `componentDefRef`."
                             maxLength: 64
                             pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                             type: "string"
@@ -9385,7 +9385,7 @@ spec:
                     - "DedicatedNode"
                   type: "string"
                 terminationPolicy:
-                  description: "Specifies the behavior when a Cluster is deleted.\nIt defines how resources, data, and backups associated with a Cluster are managed during termination.\nChoose a policy based on the desired level of resource cleanup and data preservation:\n\n\n- `DoNotTerminate`: Prevents deletion of the Cluster. This policy ensures that all resources remain intact.\n- `Halt`: Deletes Cluster resources like Pods and Services but retains Persistent Volume Claims (PVCs),\n  allowing for data preservation while stopping other operations.\n- `Delete`: Extends the `Halt` policy by also removing PVCs, leading to a thorough cleanup while\n  removing all persistent data.\n- `WipeOut`: An aggressive policy that deletes all Cluster resources, including volume snapshots and\n  backups in external storage.\n  This results in complete data removal and should be used cautiously, primarily in non-production environments\n  to avoid irreversible data loss.\n\n\nWarning: Choosing an inappropriate termination policy can result in data loss.\nThe `WipeOut` policy is particularly risky in production environments due to its irreversible nature."
+                  description: "Specifies the behavior when a Cluster is deleted.\nIt defines how resources, data, and backups associated with a Cluster are managed during termination.\nChoose a policy based on the desired level of resource cleanup and data preservation:\n\n\n- `DoNotTerminate`: Prevents deletion of the Cluster. This policy ensures that all resources remain intact.\n- `Halt`: Deletes Cluster resources like Pods and Services but retains Persistent Volume Claims (PVCs),\n  allowing for data preservation while stopping other operations.\n   Warning: Halt policy is deprecated in 0.9.1 and will have same meaning as DoNotTerminate.\n- `Delete`: Extends the `Halt` policy by also removing PVCs, leading to a thorough cleanup while\n  removing all persistent data.\n- `WipeOut`: An aggressive policy that deletes all Cluster resources, including volume snapshots and\n  backups in external storage.\n  This results in complete data removal and should be used cautiously, primarily in non-production environments\n  to avoid irreversible data loss.\n\n\nWarning: Choosing an inappropriate termination policy can result in data loss.\nThe `WipeOut` policy is particularly risky in production environments due to its irreversible nature."
                   enum:
                     - "DoNotTerminate"
                     - "Halt"

@@ -155,7 +155,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 default:
-                                  description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                  description: "Default is an optional arbitrary JSON object that the context\nvalue is set to, if the apiCall returns error."
                                   x-kubernetes-preserve-unknown-fields: true
                                 jmesPath:
                                   description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
@@ -173,6 +173,21 @@ spec:
                                     caBundle:
                                       description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                                       type: "string"
+                                    headers:
+                                      description: "Headers is a list of optional HTTP headers to be included in the request."
+                                      items:
+                                        properties:
+                                          key:
+                                            description: "Key is the header key"
+                                            type: "string"
+                                          value:
+                                            description: "Value is the header value"
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                          - "value"
+                                        type: "object"
+                                      type: "array"
                                     url:
                                       description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                                       type: "string"
@@ -729,7 +744,7 @@ spec:
                                               type: "object"
                                             type: "array"
                                           default:
-                                            description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                            description: "Default is an optional arbitrary JSON object that the context\nvalue is set to, if the apiCall returns error."
                                             x-kubernetes-preserve-unknown-fields: true
                                           jmesPath:
                                             description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
@@ -747,6 +762,21 @@ spec:
                                               caBundle:
                                                 description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                                                 type: "string"
+                                              headers:
+                                                description: "Headers is a list of optional HTTP headers to be included in the request."
+                                                items:
+                                                  properties:
+                                                    key:
+                                                      description: "Key is the header key"
+                                                      type: "string"
+                                                    value:
+                                                      description: "Value is the header value"
+                                                      type: "string"
+                                                  required:
+                                                    - "key"
+                                                    - "value"
+                                                  type: "object"
+                                                type: "array"
                                               url:
                                                 description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                                                 type: "string"
@@ -1329,7 +1359,7 @@ spec:
                                               type: "object"
                                             type: "array"
                                           default:
-                                            description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                            description: "Default is an optional arbitrary JSON object that the context\nvalue is set to, if the apiCall returns error."
                                             x-kubernetes-preserve-unknown-fields: true
                                           jmesPath:
                                             description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
@@ -1347,6 +1377,21 @@ spec:
                                               caBundle:
                                                 description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                                                 type: "string"
+                                              headers:
+                                                description: "Headers is a list of optional HTTP headers to be included in the request."
+                                                items:
+                                                  properties:
+                                                    key:
+                                                      description: "Key is the header key"
+                                                      type: "string"
+                                                    value:
+                                                      description: "Value is the header value"
+                                                      type: "string"
+                                                  required:
+                                                    - "key"
+                                                    - "value"
+                                                  type: "object"
+                                                type: "array"
                                               url:
                                                 description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                                                 type: "string"
@@ -1587,7 +1632,7 @@ spec:
                                               type: "object"
                                             type: "array"
                                           default:
-                                            description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                            description: "Default is an optional arbitrary JSON object that the context\nvalue is set to, if the apiCall returns error."
                                             x-kubernetes-preserve-unknown-fields: true
                                           jmesPath:
                                             description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
@@ -1605,6 +1650,21 @@ spec:
                                               caBundle:
                                                 description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                                                 type: "string"
+                                              headers:
+                                                description: "Headers is a list of optional HTTP headers to be included in the request."
+                                                items:
+                                                  properties:
+                                                    key:
+                                                      description: "Key is the header key"
+                                                      type: "string"
+                                                    value:
+                                                      description: "Value is the header value"
+                                                      type: "string"
+                                                  required:
+                                                    - "key"
+                                                    - "value"
+                                                  type: "object"
+                                                type: "array"
                                               url:
                                                 description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                                                 type: "string"
@@ -2092,7 +2152,7 @@ spec:
                                               type: "object"
                                             type: "array"
                                           default:
-                                            description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                            description: "Default is an optional arbitrary JSON object that the context\nvalue is set to, if the apiCall returns error."
                                             x-kubernetes-preserve-unknown-fields: true
                                           jmesPath:
                                             description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
@@ -2110,6 +2170,21 @@ spec:
                                               caBundle:
                                                 description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                                                 type: "string"
+                                              headers:
+                                                description: "Headers is a list of optional HTTP headers to be included in the request."
+                                                items:
+                                                  properties:
+                                                    key:
+                                                      description: "Key is the header key"
+                                                      type: "string"
+                                                    value:
+                                                      description: "Value is the header value"
+                                                      type: "string"
+                                                  required:
+                                                    - "key"
+                                                    - "value"
+                                                  type: "object"
+                                                type: "array"
                                               url:
                                                 description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                                                 type: "string"
@@ -3109,6 +3184,7 @@ spec:
                           type: "object"
                         type: "array"
                     required:
+                      - "match"
                       - "name"
                     type: "object"
                   type: "array"
@@ -3276,7 +3352,7 @@ spec:
                                         type: "object"
                                       type: "array"
                                     default:
-                                      description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                      description: "Default is an optional arbitrary JSON object that the context\nvalue is set to, if the apiCall returns error."
                                       x-kubernetes-preserve-unknown-fields: true
                                     jmesPath:
                                       description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
@@ -3294,6 +3370,21 @@ spec:
                                         caBundle:
                                           description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                                           type: "string"
+                                        headers:
+                                          description: "Headers is a list of optional HTTP headers to be included in the request."
+                                          items:
+                                            properties:
+                                              key:
+                                                description: "Key is the header key"
+                                                type: "string"
+                                              value:
+                                                description: "Value is the header value"
+                                                type: "string"
+                                            required:
+                                              - "key"
+                                              - "value"
+                                            type: "object"
+                                          type: "array"
                                         url:
                                           description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                                           type: "string"
@@ -3991,7 +4082,7 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                               default:
-                                                description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                                description: "Default is an optional arbitrary JSON object that the context\nvalue is set to, if the apiCall returns error."
                                                 x-kubernetes-preserve-unknown-fields: true
                                               jmesPath:
                                                 description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
@@ -4009,6 +4100,21 @@ spec:
                                                   caBundle:
                                                     description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                                                     type: "string"
+                                                  headers:
+                                                    description: "Headers is a list of optional HTTP headers to be included in the request."
+                                                    items:
+                                                      properties:
+                                                        key:
+                                                          description: "Key is the header key"
+                                                          type: "string"
+                                                        value:
+                                                          description: "Value is the header value"
+                                                          type: "string"
+                                                      required:
+                                                        - "key"
+                                                        - "value"
+                                                      type: "object"
+                                                    type: "array"
                                                   url:
                                                     description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                                                     type: "string"
@@ -4732,7 +4838,7 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                               default:
-                                                description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                                description: "Default is an optional arbitrary JSON object that the context\nvalue is set to, if the apiCall returns error."
                                                 x-kubernetes-preserve-unknown-fields: true
                                               jmesPath:
                                                 description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
@@ -4750,6 +4856,21 @@ spec:
                                                   caBundle:
                                                     description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                                                     type: "string"
+                                                  headers:
+                                                    description: "Headers is a list of optional HTTP headers to be included in the request."
+                                                    items:
+                                                      properties:
+                                                        key:
+                                                          description: "Key is the header key"
+                                                          type: "string"
+                                                        value:
+                                                          description: "Value is the header value"
+                                                          type: "string"
+                                                      required:
+                                                        - "key"
+                                                        - "value"
+                                                      type: "object"
+                                                    type: "array"
                                                   url:
                                                     description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                                                     type: "string"
@@ -4990,7 +5111,7 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                               default:
-                                                description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                                description: "Default is an optional arbitrary JSON object that the context\nvalue is set to, if the apiCall returns error."
                                                 x-kubernetes-preserve-unknown-fields: true
                                               jmesPath:
                                                 description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
@@ -5008,6 +5129,21 @@ spec:
                                                   caBundle:
                                                     description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                                                     type: "string"
+                                                  headers:
+                                                    description: "Headers is a list of optional HTTP headers to be included in the request."
+                                                    items:
+                                                      properties:
+                                                        key:
+                                                          description: "Key is the header key"
+                                                          type: "string"
+                                                        value:
+                                                          description: "Value is the header value"
+                                                          type: "string"
+                                                      required:
+                                                        - "key"
+                                                        - "value"
+                                                      type: "object"
+                                                    type: "array"
                                                   url:
                                                     description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                                                     type: "string"
@@ -5370,7 +5506,7 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                               default:
-                                                description: "Default is an optional arbitrary JSON object that the context may take if the apiCall\nreturns error"
+                                                description: "Default is an optional arbitrary JSON object that the context\nvalue is set to, if the apiCall returns error."
                                                 x-kubernetes-preserve-unknown-fields: true
                                               jmesPath:
                                                 description: "JMESPath is an optional JSON Match Expression that can be used to\ntransform the JSON response returned from the server. For example\na JMESPath of \"items | length(@)\" applied to the API server response\nfor the URLPath \"/apis/apps/v1/deployments\" will return the total count\nof deployments across all namespaces."
@@ -5388,6 +5524,21 @@ spec:
                                                   caBundle:
                                                     description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                                                     type: "string"
+                                                  headers:
+                                                    description: "Headers is a list of optional HTTP headers to be included in the request."
+                                                    items:
+                                                      properties:
+                                                        key:
+                                                          description: "Key is the header key"
+                                                          type: "string"
+                                                        value:
+                                                          description: "Value is the header value"
+                                                          type: "string"
+                                                      required:
+                                                        - "key"
+                                                        - "value"
+                                                      type: "object"
+                                                    type: "array"
                                                   url:
                                                     description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                                                     type: "string"
@@ -6415,6 +6566,7 @@ spec:
                               type: "object"
                             type: "array"
                         required:
+                          - "match"
                           - "name"
                         type: "object"
                       type: "array"

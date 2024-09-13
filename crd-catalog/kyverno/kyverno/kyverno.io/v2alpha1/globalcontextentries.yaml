@@ -93,6 +93,21 @@ spec:
                         caBundle:
                           description: "CABundle is a PEM encoded CA bundle which will be used to validate\nthe server certificate."
                           type: "string"
+                        headers:
+                          description: "Headers is a list of optional HTTP headers to be included in the request."
+                          items:
+                            properties:
+                              key:
+                                description: "Key is the header key"
+                                type: "string"
+                              value:
+                                description: "Value is the header value"
+                                type: "string"
+                            required:
+                              - "key"
+                              - "value"
+                            type: "object"
+                          type: "array"
                         url:
                           description: "URL is the JSON web service URL. A typical form is\n`https://{service}.{namespace}:{port}/{path}`."
                           type: "string"

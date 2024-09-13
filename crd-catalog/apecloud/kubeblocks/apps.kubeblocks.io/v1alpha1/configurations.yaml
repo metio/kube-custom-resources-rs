@@ -71,6 +71,9 @@ spec:
                               type: "string"
                             type: "array"
                             x-kubernetes-list-type: "set"
+                          asSecret:
+                            description: "Whether to store the final rendered parameters as a secret."
+                            type: "boolean"
                           constraintRef:
                             description: "Specifies the name of the referenced configuration constraints object."
                             maxLength: 63
@@ -149,7 +152,6 @@ spec:
                             type: "string"
                         required:
                           - "name"
-                          - "volumeName"
                         type: "object"
                       importTemplateRef:
                         description: "Specifies the user-defined configuration template.\n\n\nWhen provided, the `importTemplateRef` overrides the default configuration template\nspecified in `configSpec.templateRef`.\nThis allows users to customize the configuration template according to their specific requirements."

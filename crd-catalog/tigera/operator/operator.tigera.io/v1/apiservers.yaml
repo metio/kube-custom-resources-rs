@@ -557,6 +557,7 @@ spec:
                                         enum:
                                           - "calico-apiserver"
                                           - "tigera-queryserver"
+                                          - "calico-l7-admission-controller"
                                         type: "string"
                                       resources:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named API server Deployment container's resources.\nIf omitted, the API server Deployment will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."

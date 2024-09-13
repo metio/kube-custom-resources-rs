@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "clusterqueues.kueue.x-k8s.io"
 spec:
   group: "kueue.x-k8s.io"
@@ -80,7 +80,7 @@ spec:
                       type: "array"
                   type: "object"
                 cohort:
-                  description: "cohort that this ClusterQueue belongs to. CQs that belong to the\nsame cohort can borrow unused resources from each other.\n\n\nA CQ can be a member of a single borrowing cohort. A workload submitted\nto a queue referencing this CQ can borrow quota from any CQ in the cohort.\nOnly quota for the [resource, flavor] pairs listed in the CQ can be\nborrowed.\nIf empty, this ClusterQueue cannot borrow from any other ClusterQueue and\nvice versa.\n\n\nA cohort is a name that links CQs together, but it doesn't reference any\nobject.\n\n\nValidation of a cohort name is equivalent to that of object names:\nsubdomain in DNS (RFC 1123)."
+                  description: "cohort that this ClusterQueue belongs to. CQs that belong to the\nsame cohort can borrow unused resources from each other.\n\nA CQ can be a member of a single borrowing cohort. A workload submitted\nto a queue referencing this CQ can borrow quota from any CQ in the cohort.\nOnly quota for the [resource, flavor] pairs listed in the CQ can be\nborrowed.\nIf empty, this ClusterQueue cannot borrow from any other ClusterQueue and\nvice versa.\n\nA cohort is a name that links CQs together, but it doesn't reference any\nobject.\n\nValidation of a cohort name is equivalent to that of object names:\nsubdomain in DNS (RFC 1123)."
                   maxLength: 253
                   pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                   type: "string"
@@ -102,14 +102,14 @@ spec:
                   properties:
                     whenCanBorrow:
                       default: "Borrow"
-                      description: "whenCanBorrow determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n\n- `Borrow` (default): allocate in current flavor if borrowing\n  is possible.\n- `TryNextFlavor`: try next flavor even if the current\n  flavor has enough resources to borrow."
+                      description: "whenCanBorrow determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n- `Borrow` (default): allocate in current flavor if borrowing\n  is possible.\n- `TryNextFlavor`: try next flavor even if the current\n  flavor has enough resources to borrow."
                       enum:
                         - "Borrow"
                         - "TryNextFlavor"
                       type: "string"
                     whenCanPreempt:
                       default: "TryNextFlavor"
-                      description: "whenCanPreempt determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n\n- `Preempt`: allocate in current flavor if it's possible to preempt some workloads.\n- `TryNextFlavor` (default): try next flavor even if there are enough\n  candidates for preemption in the current flavor."
+                      description: "whenCanPreempt determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n- `Preempt`: allocate in current flavor if it's possible to preempt some workloads.\n- `TryNextFlavor` (default): try next flavor even if there are enough\n  candidates for preemption in the current flavor."
                       enum:
                         - "Preempt"
                         - "TryNextFlavor"
@@ -150,7 +150,7 @@ spec:
                   x-kubernetes-map-type: "atomic"
                 preemption:
                   default: {}
-                  description: "preemption describes policies to preempt Workloads from this ClusterQueue\nor the ClusterQueue's cohort.\n\n\nPreemption can happen in two scenarios:\n\n\n- When a Workload fits within the nominal quota of the ClusterQueue, but\n  the quota is currently borrowed by other ClusterQueues in the cohort.\n  Preempting Workloads in other ClusterQueues allows this ClusterQueue to\n  reclaim its nominal quota.\n- When a Workload doesn't fit within the nominal quota of the ClusterQueue\n  and there are admitted Workloads in the ClusterQueue with lower priority.\n\n\nThe preemption algorithm tries to find a minimal set of Workloads to\npreempt to accomomdate the pending Workload, preempting Workloads with\nlower priority first."
+                  description: "preemption describes policies to preempt Workloads from this ClusterQueue\nor the ClusterQueue's cohort.\n\nPreemption can happen in two scenarios:\n\n- When a Workload fits within the nominal quota of the ClusterQueue, but\n  the quota is currently borrowed by other ClusterQueues in the cohort.\n  Preempting Workloads in other ClusterQueues allows this ClusterQueue to\n  reclaim its nominal quota.\n- When a Workload doesn't fit within the nominal quota of the ClusterQueue\n  and there are admitted Workloads in the ClusterQueue with lower priority.\n\nThe preemption algorithm tries to find a minimal set of Workloads to\npreempt to accomomdate the pending Workload, preempting Workloads with\nlower priority first."
                   properties:
                     borrowWithinCohort:
                       default: {}
@@ -170,7 +170,7 @@ spec:
                       type: "object"
                     reclaimWithinCohort:
                       default: "Never"
-                      description: "reclaimWithinCohort determines whether a pending Workload can preempt\nWorkloads from other ClusterQueues in the cohort that are using more than\ntheir nominal quota. The possible values are:\n\n\n- `Never` (default): do not preempt Workloads in the cohort.\n- `LowerPriority`: if the pending Workload fits within the nominal\n  quota of its ClusterQueue, only preempt Workloads in the cohort that have\n  lower priority than the pending Workload.\n- `Any`: if the pending Workload fits within the nominal quota of its\n  ClusterQueue, preempt any Workload in the cohort, irrespective of\n  priority."
+                      description: "reclaimWithinCohort determines whether a pending Workload can preempt\nWorkloads from other ClusterQueues in the cohort that are using more than\ntheir nominal quota. The possible values are:\n\n- `Never` (default): do not preempt Workloads in the cohort.\n- `LowerPriority`: if the pending Workload fits within the nominal\n  quota of its ClusterQueue, only preempt Workloads in the cohort that have\n  lower priority than the pending Workload.\n- `Any`: if the pending Workload fits within the nominal quota of its\n  ClusterQueue, preempt any Workload in the cohort, irrespective of\n  priority."
                       enum:
                         - "Never"
                         - "LowerPriority"
@@ -178,7 +178,7 @@ spec:
                       type: "string"
                     withinClusterQueue:
                       default: "Never"
-                      description: "withinClusterQueue determines whether a pending Workload that doesn't fit\nwithin the nominal quota for its ClusterQueue, can preempt active Workloads in\nthe ClusterQueue. The possible values are:\n\n\n- `Never` (default): do not preempt Workloads in the ClusterQueue.\n- `LowerPriority`: only preempt Workloads in the ClusterQueue that have\n  lower priority than the pending Workload.\n- `LowerOrNewerEqualPriority`: only preempt Workloads in the ClusterQueue that\n  either have a lower priority than the pending workload or equal priority\n  and are newer than the pending workload."
+                      description: "withinClusterQueue determines whether a pending Workload that doesn't fit\nwithin the nominal quota for its ClusterQueue, can preempt active Workloads in\nthe ClusterQueue. The possible values are:\n\n- `Never` (default): do not preempt Workloads in the ClusterQueue.\n- `LowerPriority`: only preempt Workloads in the ClusterQueue that have\n  lower priority than the pending Workload.\n- `LowerOrNewerEqualPriority`: only preempt Workloads in the ClusterQueue that\n  either have a lower priority than the pending workload or equal priority\n  and are newer than the pending workload."
                       enum:
                         - "Never"
                         - "LowerPriority"
@@ -190,7 +190,7 @@ spec:
                       rule: "!(self.reclaimWithinCohort == 'Never' && has(self.borrowWithinCohort) &&  self.borrowWithinCohort.policy != 'Never')"
                 queueingStrategy:
                   default: "BestEffortFIFO"
-                  description: "QueueingStrategy indicates the queueing strategy of the workloads\nacross the queues in this ClusterQueue.\nCurrent Supported Strategies:\n\n\n- StrictFIFO: workloads are ordered strictly by creation time.\nOlder workloads that can't be admitted will block admitting newer\nworkloads even if they fit available quota.\n- BestEffortFIFO: workloads are ordered by creation time,\nhowever older workloads that can't be admitted will not block\nadmitting newer workloads that fit existing quota."
+                  description: "QueueingStrategy indicates the queueing strategy of the workloads\nacross the queues in this ClusterQueue.\nCurrent Supported Strategies:\n\n- StrictFIFO: workloads are ordered strictly by creation time.\nOlder workloads that can't be admitted will block admitting newer\nworkloads even if they fit available quota.\n- BestEffortFIFO: workloads are ordered by creation time,\nhowever older workloads that can't be admitted will not block\nadmitting newer workloads that fit existing quota."
                   enum:
                     - "StrictFIFO"
                     - "BestEffortFIFO"
@@ -241,7 +241,7 @@ spec:
                                     anyOf:
                                       - type: "integer"
                                       - type: "string"
-                                    description: "nominalQuota is the quantity of this resource that is available for\nWorkloads admitted by this ClusterQueue at a point in time.\nThe nominalQuota must be non-negative.\nnominalQuota should represent the resources in the cluster available for\nrunning jobs (after discounting resources consumed by system components\nand pods not managed by kueue). In an autoscaled cluster, nominalQuota\nshould account for resources that can be provided by a component such as\nKubernetes cluster-autoscaler.\n\n\nIf the ClusterQueue belongs to a cohort, the sum of the quotas for each\n(flavor, resource) combination defines the maximum quantity that can be\nallocated by a ClusterQueue in the cohort."
+                                    description: "nominalQuota is the quantity of this resource that is available for\nWorkloads admitted by this ClusterQueue at a point in time.\nThe nominalQuota must be non-negative.\nnominalQuota should represent the resources in the cluster available for\nrunning jobs (after discounting resources consumed by system components\nand pods not managed by kueue). In an autoscaled cluster, nominalQuota\nshould account for resources that can be provided by a component such as\nKubernetes cluster-autoscaler.\n\nIf the ClusterQueue belongs to a cohort, the sum of the quotas for each\n(flavor, resource) combination defines the maximum quantity that can be\nallocated by a ClusterQueue in the cohort."
                                     pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                     x-kubernetes-int-or-string: true
                                 required:
@@ -276,7 +276,7 @@ spec:
                   x-kubernetes-list-type: "atomic"
                 stopPolicy:
                   default: "None"
-                  description: "stopPolicy - if set to a value different from None, the ClusterQueue is considered Inactive, no new reservation being\nmade.\n\n\nDepending on its value, its associated workloads will:\n\n\n- None - Workloads are admitted\n- HoldAndDrain - Admitted workloads are evicted and Reserving workloads will cancel the reservation.\n- Hold - Admitted workloads will run to completion and Reserving workloads will cancel the reservation."
+                  description: "stopPolicy - if set to a value different from None, the ClusterQueue is considered Inactive, no new reservation being\nmade.\n\nDepending on its value, its associated workloads will:\n\n- None - Workloads are admitted\n- HoldAndDrain - Admitted workloads are evicted and Reserving workloads will cancel the reservation.\n- Hold - Admitted workloads will run to completion and Reserving workloads will cancel the reservation."
                   enum:
                     - "None"
                     - "Hold"
@@ -296,7 +296,7 @@ spec:
                 conditions:
                   description: "conditions hold the latest available observations of the ClusterQueue\ncurrent state."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -325,7 +325,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"
