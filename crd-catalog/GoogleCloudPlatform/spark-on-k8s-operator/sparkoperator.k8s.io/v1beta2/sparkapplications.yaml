@@ -1985,6 +1985,9 @@ spec:
                           - "protocol"
                         type: "object"
                       type: "array"
+                    priorityClassName:
+                      description: "PriorityClassName is the name of the PriorityClass for the driver pod."
+                      type: "string"
                     schedulerName:
                       description: "SchedulerName specifies the scheduler that will be used for scheduling"
                       type: "string"
@@ -4960,6 +4963,9 @@ spec:
                           - "protocol"
                         type: "object"
                       type: "array"
+                    priorityClassName:
+                      description: "PriorityClassName is the name of the PriorityClass for the executor pod."
+                      type: "string"
                     schedulerName:
                       description: "SchedulerName specifies the scheduler that will be used for scheduling"
                       type: "string"

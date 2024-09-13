@@ -43,6 +43,10 @@ spec:
                   type: "string"
                 clusterID:
                   type: "string"
+                clustersetIPCIDR:
+                  type: "string"
+                clustersetIPEnabled:
+                  type: "boolean"
                 coreDNSCustomConfig:
                   properties:
                     configMapName:

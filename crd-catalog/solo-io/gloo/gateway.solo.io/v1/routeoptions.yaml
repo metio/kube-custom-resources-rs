@@ -106,6 +106,27 @@ spec:
                               type: "object"
                             embedding:
                               properties:
+                                azureOpenai:
+                                  properties:
+                                    apiVersion:
+                                      type: "string"
+                                    authToken:
+                                      properties:
+                                        inline:
+                                          type: "string"
+                                        secretRef:
+                                          properties:
+                                            name:
+                                              type: "string"
+                                            namespace:
+                                              type: "string"
+                                          type: "object"
+                                      type: "object"
+                                    deploymentName:
+                                      type: "string"
+                                    endpoint:
+                                      type: "string"
+                                  type: "object"
                                 openai:
                                   properties:
                                     authToken:
@@ -139,6 +160,27 @@ spec:
                               type: "object"
                             embedding:
                               properties:
+                                azureOpenai:
+                                  properties:
+                                    apiVersion:
+                                      type: "string"
+                                    authToken:
+                                      properties:
+                                        inline:
+                                          type: "string"
+                                        secretRef:
+                                          properties:
+                                            name:
+                                              type: "string"
+                                            namespace:
+                                              type: "string"
+                                          type: "object"
+                                      type: "object"
+                                    deploymentName:
+                                      type: "string"
+                                    endpoint:
+                                      type: "string"
+                                  type: "object"
                                 openai:
                                   properties:
                                     authToken:
@@ -625,6 +667,9 @@ spec:
                                     type: "object"
                                 type: "object"
                               type: "object"
+                            validationPolicy:
+                              type: "string"
+                              x-kubernetes-int-or-string: true
                           type: "object"
                         beforeExtAuth:
                           properties:
@@ -702,6 +747,9 @@ spec:
                                     type: "object"
                                 type: "object"
                               type: "object"
+                            validationPolicy:
+                              type: "string"
+                              x-kubernetes-int-or-string: true
                           type: "object"
                       type: "object"
                     jwtStaged:

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "flowcollectors.flows.netobserv.io"
 spec:
   group: "flows.netobserv.io"
@@ -103,7 +103,7 @@ spec:
                               anyOf:
                                 - type: "integer"
                                 - type: "string"
-                              description: "DestPorts defines the destination ports to filter flows by.\nTo filter a single port, set a single port as an integer value. For example destPorts: 80.\nTo filter a range of ports, use a \"start-end\" range, string format. For example destPorts: \"80-100\"."
+                              description: "DestPorts defines the destination ports to filter flows by.\nTo filter a single port, set a single port as an integer value. For example, destPorts: 80.\nTo filter a range of ports, use a \"start-end\" range in string format. For example, destPorts: \"80-100\".\nTo filter two ports, use a \"port1,port2\" in string format. For example, `ports: \"80,100\"`."
                               x-kubernetes-int-or-string: true
                             direction:
                               description: "Direction defines the direction to filter flows by."
@@ -127,7 +127,7 @@ spec:
                               anyOf:
                                 - type: "integer"
                                 - type: "string"
-                              description: "Ports defines the ports to filter flows by. it can be user for either source or destination ports.\nTo filter a single port, set a single port as an integer value. For example ports: 80.\nTo filter a range of ports, use a \"start-end\" range, string format. For example ports: \"80-10"
+                              description: "Ports defines the ports to filter flows by. it can be user for either source or destination ports.\nTo filter a single port, set a single port as an integer value. For example, ports: 80.\nTo filter a range of ports, use a \"start-end\" range in string format. For example, ports: \"80-100\".\nTo filter two ports, use a \"port1,port2\" in string format. For example, `ports: \"80,100\"`."
                               x-kubernetes-int-or-string: true
                             protocol:
                               description: "Protocol defines the protocol to filter flows by."
@@ -142,7 +142,7 @@ spec:
                               anyOf:
                                 - type: "integer"
                                 - type: "string"
-                              description: "SourcePorts defines the source ports to filter flows by.\nTo filter a single port, set a single port as an integer value. For example sourcePorts: 80.\nTo filter a range of ports, use a \"start-end\" range, string format. For example sourcePorts: \"80-100\"."
+                              description: "SourcePorts defines the source ports to filter flows by.\nTo filter a single port, set a single port as an integer value. For example, sourcePorts: 80.\nTo filter a range of ports, use a \"start-end\" range in string format. For example, sourcePorts: \"80-100\".\nTo filter two ports, use a \"port1,port2\" in string format. For example, `ports: \"80,100\"`."
                               x-kubernetes-int-or-string: true
                             tcpFlags:
                               description: "`tcpFlags` defines the TCP flags to filter flows by."
@@ -269,6 +269,8 @@ spec:
                                         - "PROVIDED"
                                         - "AUTO"
                                       type: "string"
+                                  required:
+                                    - "type"
                                   type: "object"
                               type: "object"
                           type: "object"
@@ -285,12 +287,15 @@ spec:
                           description: "`resources` are the compute resources required by this container.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           properties:
                             claims:
-                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                               items:
                                 description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                 properties:
                                   name:
                                     description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                    type: "string"
+                                  request:
+                                    description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                     type: "string"
                                 required:
                                   - "name"
@@ -777,12 +782,15 @@ spec:
                       description: "`resources`, in terms of compute resources, required by this container.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -1795,6 +1803,8 @@ spec:
                                     - "PROVIDED"
                                     - "AUTO"
                                   type: "string"
+                              required:
+                                - "type"
                               type: "object"
                           type: "object"
                       type: "object"
@@ -1825,12 +1835,15 @@ spec:
                       description: "`resources` are the compute resources required by this container.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -1874,6 +1887,9 @@ spec:
                               name:
                                 description: "Label name, used to flag matching flows."
                                 type: "string"
+                            required:
+                              - "cidrs"
+                              - "name"
                             type: "object"
                           type: "array"
                         openShiftAutoDetect:
@@ -1971,6 +1987,8 @@ spec:
                           default: "30s"
                           description: "`timeout` is the read timeout for console plugin queries to Prometheus.\nA timeout of zero means no timeout."
                           type: "string"
+                      required:
+                        - "mode"
                       type: "object"
                   type: "object"
               type: "object"
@@ -1980,7 +1998,7 @@ spec:
                 conditions:
                   description: "`conditions` represent the latest available observations of an object's state"
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -2009,7 +2027,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

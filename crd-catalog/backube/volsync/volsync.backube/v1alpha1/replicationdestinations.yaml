@@ -868,6 +868,9 @@ spec:
                     destinationPVC:
                       description: "destinationPVC is a PVC to use as the transfer destination instead of\nautomatically provisioning one. Either this field or both capacity and\naccessModes must be specified."
                       type: "string"
+                    enableFileDeletion:
+                      description: "enableFileDeletion will pass the --delete flag to the restic restore command.\nThis will remove files and directories in the pvc that do not exist in the snapshot being restored.\nDefaults to false."
+                      type: "boolean"
                     moverAffinity:
                       description: "MoverAffinity allows specifying the PodAffinity that will be used by the data mover"
                       properties:

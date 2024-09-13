@@ -476,8 +476,6 @@ spec:
                               required:
                                 - "secretRef"
                               type: "object"
-                          required:
-                            - "migrateDBOnStartUp"
                           type: "object"
                         podTemplate:
                           description: "PodTemplate describes the deployment details of this platform service instance."
@@ -4790,8 +4788,6 @@ spec:
                               required:
                                 - "secretRef"
                               type: "object"
-                          required:
-                            - "migrateDBOnStartUp"
                           type: "object"
                         podTemplate:
                           description: "PodTemplate describes the deployment details of this platform service instance."

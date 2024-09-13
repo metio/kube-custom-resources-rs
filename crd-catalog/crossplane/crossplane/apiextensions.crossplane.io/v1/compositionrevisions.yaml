@@ -1098,12 +1098,9 @@ spec:
                     type: "object"
                   type: "array"
                 revision:
-                  description: "Revision number. Newer revisions have larger numbers."
+                  description: "Revision number. Newer revisions have larger numbers.\n\n\nThis number can change. When a Composition transitions from state A\n-> B -> A there will be only two CompositionRevisions. Crossplane will\nedit the original CompositionRevision to change its revision number from\n0 to 2."
                   format: "int64"
                   type: "integer"
-                  x-kubernetes-validations:
-                    - message: "Value is immutable"
-                      rule: "self == oldSelf"
                 writeConnectionSecretsToNamespace:
                   description: "WriteConnectionSecretsToNamespace specifies the namespace in which the\nconnection secrets of composite resource dynamically provisioned using\nthis composition will be created.\nThis field is planned to be replaced in a future release in favor of\nPublishConnectionDetailsWithStoreConfigRef. Currently, both could be\nset independently and connection details would be published to both\nwithout affecting each other as long as related fields at MR level\nspecified."
                   type: "string"

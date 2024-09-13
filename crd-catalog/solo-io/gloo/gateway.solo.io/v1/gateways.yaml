@@ -1295,6 +1295,22 @@ spec:
                           type: "object"
                         tap:
                           properties:
+                            maxBufferedRxBytes:
+                              maximum: 4294967295.0
+                              minimum: 0.0
+                              nullable: true
+                              type: "integer"
+                            maxBufferedTxBytes:
+                              maximum: 4294967295.0
+                              minimum: 0.0
+                              nullable: true
+                              type: "integer"
+                            recordDownstreamConnection:
+                              nullable: true
+                              type: "boolean"
+                            recordHeadersReceivedTime:
+                              nullable: true
+                              type: "boolean"
                             sinks:
                               items:
                                 properties:
@@ -3223,6 +3239,22 @@ spec:
                                     type: "object"
                                   tap:
                                     properties:
+                                      maxBufferedRxBytes:
+                                        maximum: 4294967295.0
+                                        minimum: 0.0
+                                        nullable: true
+                                        type: "integer"
+                                      maxBufferedTxBytes:
+                                        maximum: 4294967295.0
+                                        minimum: 0.0
+                                        nullable: true
+                                        type: "integer"
+                                      recordDownstreamConnection:
+                                        nullable: true
+                                        type: "boolean"
+                                      recordHeadersReceivedTime:
+                                        nullable: true
+                                        type: "boolean"
                                       sinks:
                                         items:
                                           properties:
