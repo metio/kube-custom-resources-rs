@@ -2505,6 +2505,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "openshift/certman-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/openshift/certman-operator/blob/master/deploy/crds/certman.managed.openshift.io_certificaterequests.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "openshift/hive",
         license: APACHE_V2,
         urls: &[

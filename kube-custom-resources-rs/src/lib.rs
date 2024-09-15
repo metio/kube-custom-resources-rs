@@ -589,6 +589,11 @@ apiVersion `cert-manager.io/v1`:
 - `ClusterIssuer`
 - `Issuer`
 
+## certman_managed_openshift_io
+
+apiVersion `certman.managed.openshift.io/v1alpha1`:
+- `CertificateRequest`
+
 ## chainsaw_kyverno_io
 
 apiVersion `chainsaw.kyverno.io/v1alpha1`:
@@ -3425,6 +3430,8 @@ pub mod cassandra_datastax_com;
 pub mod ceph_rook_io;
 #[cfg(feature = "cert_manager_io")]
 pub mod cert_manager_io;
+#[cfg(feature = "certman_managed_openshift_io")]
+pub mod certman_managed_openshift_io;
 #[cfg(feature = "chainsaw_kyverno_io")]
 pub mod chainsaw_kyverno_io;
 #[cfg(feature = "chaos_mesh_org")]
