@@ -2923,6 +2923,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/listener-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/listener-operator/blob/main/deploy/helm/listener-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stackabletech/nifi-operator",
         license: OSL_V3,
         urls: &[

@@ -1952,6 +1952,13 @@ apiVersion `lerentis.uploadfilter24.eu/v1beta7`:
 apiVersion `limitador.kuadrant.io/v1alpha1`:
 - `Limitador`
 
+## listeners_stackable_tech
+
+apiVersion `listeners.stackable.tech/v1alpha1`:
+- `ListenerClass`
+- `Listener`
+- `PodListeners`
+
 ## litmuschaos_io
 
 apiVersion `litmuschaos.io/v1alpha1`:
@@ -3745,6 +3752,8 @@ pub mod leaksignal_com;
 pub mod lerentis_uploadfilter24_eu;
 #[cfg(feature = "limitador_kuadrant_io")]
 pub mod limitador_kuadrant_io;
+#[cfg(feature = "listeners_stackable_tech")]
+pub mod listeners_stackable_tech;
 #[cfg(feature = "litmuschaos_io")]
 pub mod litmuschaos_io;
 #[cfg(feature = "logging_extensions_banzaicloud_io")]
