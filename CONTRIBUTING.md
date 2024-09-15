@@ -54,7 +54,15 @@ $ ./code-generator/test-custom-resources.sh <feature_name>
 
 The `<feature_name>` argument corresponds to the newly generated folder in `kube-custom-resources-rs/src` for the new CRDs added by yourself.
 
-### 4. Adjust Output
+### 4. Fix Cargo Warnings
+
+The generated code trigger Cargo warnings, fix those automatically with:
+
+```console
+$ ./code-generator/fix-cargo-warnings.sh <feature_name>
+```
+
+### 5. Adjust Output
 
 By default, we call kopium with the following arguments:
 
@@ -75,6 +83,6 @@ Some CRDs cannot be converted to Rust code at all. In those cases, add an `.igno
 CRD has no spec field
 ```
 
-### 5. Open Pull Request
+### 6. Open Pull Request
 
 Commit your changes, push them into your fork and open a pull request. Don't worry if certain steps did not work on your machine, we will sort them out during review. Thanks again for contributing :tada::+1:
