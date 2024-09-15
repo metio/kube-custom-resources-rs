@@ -3049,6 +3049,17 @@ apiVersion `spv.no/v2beta1`:
 apiVersion `sqs.services.k8s.aws/v1alpha1`:
 - `Queue`
 
+## sriovnetwork_openshift_io
+
+apiVersion `sriovnetwork.openshift.io/v1`:
+- `OVSNetwork`
+- `SriovIBNetwork`
+- `SriovNetworkNodePolicy`
+- `SriovNetworkNodeState`
+- `SriovNetworkPoolConfig`
+- `SriovNetwork`
+- `SriovOperatorConfig`
+
 ## status_gatekeeper_sh
 
 apiVersion `status.gatekeeper.sh/v1beta1`:
@@ -4029,6 +4040,8 @@ pub mod sparkoperator_k8s_io;
 pub mod spv_no;
 #[cfg(feature = "sqs_services_k8s_aws")]
 pub mod sqs_services_k8s_aws;
+#[cfg(feature = "sriovnetwork_openshift_io")]
+pub mod sriovnetwork_openshift_io;
 #[cfg(feature = "status_gatekeeper_sh")]
 pub mod status_gatekeeper_sh;
 #[cfg(feature = "storage_kubeblocks_io")]
