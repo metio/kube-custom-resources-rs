@@ -349,6 +349,11 @@ apiVersion `atlasmap.io/v1alpha1`:
 apiVersion `auth.ops42.org/v1alpha1`:
 - `AwsAuthSyncConfig`
 
+## authentication_stackable_tech
+
+apiVersion `authentication.stackable.tech/v1alpha1`:
+- `AuthenticationClass`
+
 ## authzed_com
 
 apiVersion `authzed.com/v1alpha1`:
@@ -3415,6 +3420,8 @@ pub mod asdb_aerospike_com;
 pub mod atlasmap_io;
 #[cfg(feature = "auth_ops42_org")]
 pub mod auth_ops42_org;
+#[cfg(feature = "authentication_stackable_tech")]
+pub mod authentication_stackable_tech;
 #[cfg(feature = "authzed_com")]
 pub mod authzed_com;
 #[cfg(feature = "automation_kubensync_com")]
