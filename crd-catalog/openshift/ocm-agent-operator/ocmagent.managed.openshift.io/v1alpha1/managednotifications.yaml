@@ -1,0 +1,129 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.15.0"
+  name: "managednotifications.ocmagent.managed.openshift.io"
+spec:
+  group: "ocmagent.managed.openshift.io"
+  names:
+    kind: "ManagedNotification"
+    listKind: "ManagedNotificationList"
+    plural: "managednotifications"
+    singular: "managednotification"
+  scope: "Namespaced"
+  versions:
+    - name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "ManagedNotification is the Schema for the managednotifications API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "ManagedNotificationSpec defines the desired state of ManagedNotification"
+              properties:
+                notifications:
+                  description: "AgentConfig refers to OCM agent config fields separated"
+                  items:
+                    properties:
+                      activeBody:
+                        description: "The body text of the Service Log notification when the alert is active"
+                        type: "string"
+                      logType:
+                        description: "LogType is a categorization property that can be used to group service logs for aggregation and managing notification preferences."
+                        type: "string"
+                      name:
+                        description: "The name of the notification used to associate with an alert"
+                        type: "string"
+                      references:
+                        description: "References useful for context or remediation - this could be links to documentation, KB articles, etc"
+                        items:
+                          pattern: "^https?:\\/\\/.+$"
+                          type: "string"
+                        type: "array"
+                      resendWait:
+                        description: "Measured in hours. The minimum time interval that must elapse between active Service Log notifications"
+                        format: "int32"
+                        type: "integer"
+                      resolvedBody:
+                        description: "The body text of the Service Log notification when the alert is resolved"
+                        type: "string"
+                      severity:
+                        description: "The severity of the Service Log notification"
+                        enum:
+                          - "Debug"
+                          - "Info"
+                          - "Warning"
+                          - "Major"
+                          - "Critical"
+                        type: "string"
+                      summary:
+                        description: "The summary line of the Service Log notification"
+                        type: "string"
+                    required:
+                      - "activeBody"
+                      - "name"
+                      - "resendWait"
+                      - "severity"
+                      - "summary"
+                    type: "object"
+                  type: "array"
+              required:
+                - "notifications"
+              type: "object"
+            status:
+              description: "ManagedNotificationStatus defines the observed state of ManagedNotification"
+              properties:
+                notificationRecords:
+                  items:
+                    properties:
+                      conditions:
+                        description: "Conditions is a set of Condition instances."
+                        items:
+                          properties:
+                            lastTransitionTime:
+                              description: "Last time the condition transit from one status to another."
+                              format: "date-time"
+                              type: "string"
+                            reason:
+                              description: "(brief) reason for the condition's last transition."
+                              type: "string"
+                            status:
+                              description: "Status of condition, one of True, False, Unknown"
+                              type: "string"
+                            type:
+                              description: "Type of Notification condition"
+                              enum:
+                                - "AlertFiring"
+                                - "AlertResolved"
+                                - "ServiceLogSent"
+                              type: "string"
+                          required:
+                            - "status"
+                            - "type"
+                          type: "object"
+                        type: "array"
+                      name:
+                        description: "Name of the notification"
+                        type: "string"
+                      serviceLogSentCount:
+                        description: "ServiceLogSentCount records the number of service logs sent for the notification"
+                        format: "int32"
+                        type: "integer"
+                    required:
+                      - "name"
+                    type: "object"
+                  type: "array"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

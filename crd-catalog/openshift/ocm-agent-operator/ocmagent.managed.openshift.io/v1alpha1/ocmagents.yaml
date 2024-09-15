@@ -1,0 +1,83 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.15.0"
+  name: "ocmagents.ocmagent.managed.openshift.io"
+spec:
+  group: "ocmagent.managed.openshift.io"
+  names:
+    kind: "OcmAgent"
+    listKind: "OcmAgentList"
+    plural: "ocmagents"
+    singular: "ocmagent"
+  scope: "Namespaced"
+  versions:
+    - name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "OcmAgent is the Schema for the ocmagents API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "OcmAgentSpec defines the desired state of OcmAgent"
+              properties:
+                agentConfig:
+                  description: "AgentConfig refers to OCM agent config fields separated"
+                  properties:
+                    ocmBaseUrl:
+                      description: "OcmBaseUrl defines the OCM api endpoint for OCM agent to access"
+                      type: "string"
+                    services:
+                      description: "Services defines the supported OCM services, eg, service_log, cluster_management"
+                      items:
+                        type: "string"
+                      type: "array"
+                  required:
+                    - "ocmBaseUrl"
+                    - "services"
+                  type: "object"
+                fleetMode:
+                  description: "FleetMode indicates if the OCM agent is running in fleet mode, default to false"
+                  type: "boolean"
+                ocmAgentImage:
+                  description: "OcmAgentImage defines the image which will be used by the OCM Agent"
+                  type: "string"
+                replicas:
+                  description: "Replicas defines the replica count for the OCM Agent service"
+                  format: "int32"
+                  type: "integer"
+                tokenSecret:
+                  description: "TokenSecret points to the secret name which stores the access token to OCM server"
+                  type: "string"
+              required:
+                - "agentConfig"
+                - "ocmAgentImage"
+                - "replicas"
+                - "tokenSecret"
+              type: "object"
+            status:
+              description: "OcmAgentStatus defines the observed state of OcmAgent"
+              properties:
+                availableReplicas:
+                  format: "int32"
+                  type: "integer"
+                serviceStatus:
+                  description: "ServiceStatus indicates the status of OCM Agent service"
+                  type: "string"
+              required:
+                - "availableReplicas"
+                - "serviceStatus"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

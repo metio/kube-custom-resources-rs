@@ -2321,6 +2321,14 @@ apiVersion `objectbucket.io/v1alpha1`:
 - `ObjectBucketClaim`
 - `ObjectBucket`
 
+## ocmagent_managed_openshift_io
+
+apiVersion `ocmagent.managed.openshift.io/v1alpha1`:
+- `ManagedFleetNotificationRecord`
+- `ManagedFleetNotification`
+- `ManagedNotification`
+- `OcmAgent`
+
 ## onepassword_com
 
 apiVersion `onepassword.com/v1`:
@@ -3796,6 +3804,8 @@ pub mod notebook_kubedl_io;
 pub mod notification_toolkit_fluxcd_io;
 #[cfg(feature = "objectbucket_io")]
 pub mod objectbucket_io;
+#[cfg(feature = "ocmagent_managed_openshift_io")]
+pub mod ocmagent_managed_openshift_io;
 #[cfg(feature = "onepassword_com")]
 pub mod onepassword_com;
 #[cfg(feature = "opensearchservice_services_k8s_aws")]
