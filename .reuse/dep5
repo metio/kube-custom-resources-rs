@@ -1179,6 +1179,10 @@ Files: crd-catalog/stackabletech/kafka-operator/*
 Copyright: The stackabletech/kafka-operator Authors
 License: OSL-3.0
 
+Files: crd-catalog/stackabletech/nifi-operator/*
+Copyright: The stackabletech/nifi-operator Authors
+License: OSL-3.0
+
 Files: crd-catalog/stackabletech/trino-operator/*
 Copyright: The stackabletech/trino-operator Authors
 License: OSL-3.0
