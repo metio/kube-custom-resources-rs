@@ -1159,6 +1159,10 @@ Files: crd-catalog/SparebankenVest/azure-key-vault-to-kubernetes/*
 Copyright: The SparebankenVest/azure-key-vault-to-kubernetes Authors
 License: Apache-2.0
 
+Files: crd-catalog/stackabletech/druid-operator/*
+Copyright: The stackabletech/druid-operator Authors
+License: OSL-3.0
+
 Files: crd-catalog/stackabletech/hbase-operator/*
 Copyright: The stackabletech/hbase-operator Authors
 License: OSL-3.0
