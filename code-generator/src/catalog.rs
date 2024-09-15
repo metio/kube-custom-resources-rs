@@ -2881,6 +2881,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/druid-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/druid-operator/blob/main/deploy/helm/druid-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stackabletech/hbase-operator",
         license: OSL_V3,
         urls: &[
