@@ -2565,6 +2565,19 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "openshift/sriov-network-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/openshift/sriov-network-operator/blob/master/config/crd/bases/sriovnetwork.openshift.io_ovsnetworks.yaml",
+            "https://github.com/openshift/sriov-network-operator/blob/master/config/crd/bases/sriovnetwork.openshift.io_sriovibnetworks.yaml",
+            "https://github.com/openshift/sriov-network-operator/blob/master/config/crd/bases/sriovnetwork.openshift.io_sriovnetworknodepolicies.yaml",
+            "https://github.com/openshift/sriov-network-operator/blob/master/config/crd/bases/sriovnetwork.openshift.io_sriovnetworknodestates.yaml",
+            "https://github.com/openshift/sriov-network-operator/blob/master/config/crd/bases/sriovnetwork.openshift.io_sriovnetworkpoolconfigs.yaml",
+            "https://github.com/openshift/sriov-network-operator/blob/master/config/crd/bases/sriovnetwork.openshift.io_sriovnetworks.yaml",
+            "https://github.com/openshift/sriov-network-operator/blob/master/config/crd/bases/sriovnetwork.openshift.io_sriovoperatorconfigs.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "otterize/helm-charts",
         license: APACHE_V2,
         urls: &[

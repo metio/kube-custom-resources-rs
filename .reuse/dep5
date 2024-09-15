@@ -1011,6 +1011,10 @@ Files: crd-catalog/openshift/ptp-operator/*
 Copyright: The openshift/ptp-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/openshift/sriov-network-operator/*
+Copyright: The openshift/sriov-network-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/otterize/helm-charts/*
 Copyright: The otterize/helm-charts Authors
 License: Apache-2.0
