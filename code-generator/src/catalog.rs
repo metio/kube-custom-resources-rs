@@ -2895,6 +2895,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/hdfs-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/hdfs-operator/blob/main/deploy/helm/hdfs-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stackabletech/hive-operator",
         license: OSL_V3,
         urls: &[
