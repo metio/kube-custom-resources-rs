@@ -1187,6 +1187,10 @@ Files: crd-catalog/stackabletech/nifi-operator/*
 Copyright: The stackabletech/nifi-operator Authors
 License: OSL-3.0
 
+Files: crd-catalog/stackabletech/spark-k8s-operator/*
+Copyright: The stackabletech/spark-k8s-operator Authors
+License: OSL-3.0
+
 Files: crd-catalog/stackabletech/trino-operator/*
 Copyright: The stackabletech/trino-operator Authors
 License: OSL-3.0
