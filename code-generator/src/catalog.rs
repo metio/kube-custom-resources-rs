@@ -2937,6 +2937,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/secret-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/secret-operator/blob/main/deploy/helm/secret-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stackabletech/spark-k8s-operator",
         license: OSL_V3,
         urls: &[
