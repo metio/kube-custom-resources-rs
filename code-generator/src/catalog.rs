@@ -2888,6 +2888,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/commons-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/commons-operator/blob/main/deploy/crd/authentication.crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stackabletech/druid-operator",
         license: OSL_V3,
         urls: &[

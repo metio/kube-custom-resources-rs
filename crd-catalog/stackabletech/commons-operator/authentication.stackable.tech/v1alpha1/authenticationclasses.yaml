@@ -1,0 +1,167 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "authenticationclasses.authentication.stackable.tech"
+spec:
+  group: "authentication.stackable.tech"
+  names:
+    categories: []
+    kind: "AuthenticationClass"
+    plural: "authenticationclasses"
+    shortNames: []
+    singular: "authenticationclass"
+  scope: "Cluster"
+  versions:
+    - additionalPrinterColumns: []
+      name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "Auto-generated derived type for AuthenticationClassSpec via `CustomResource`"
+          properties:
+            spec:
+              properties:
+                protocol:
+                  description: "Protocol used for authentication"
+                  oneOf:
+                    - required:
+                        - "ldap"
+                  properties:
+                    ldap:
+                      properties:
+                        bindCredentials:
+                          description: "In case you need a special account for searching the LDAP server you can specify it here"
+                          nullable: true
+                          properties:
+                            scope:
+                              description: "[Scope](https://docs.stackable.tech/secret-operator/scope.html) of the [SecretClass](https://docs.stackable.tech/secret-operator/secretclass.html)"
+                              nullable: true
+                              properties:
+                                node:
+                                  default: false
+                                  type: "boolean"
+                                pod:
+                                  default: false
+                                  type: "boolean"
+                                services:
+                                  default: []
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                              type: "object"
+                            secretClass:
+                              description: "[SecretClass](https://docs.stackable.tech/secret-operator/secretclass.html) containing the LDAP bind credentials"
+                              type: "string"
+                          required:
+                            - "secretClass"
+                          type: "object"
+                        emailField:
+                          default: "mail"
+                          description: "The name of the email field"
+                          type: "string"
+                        firstnameField:
+                          default: "givenName"
+                          description: "The name of the firstname field"
+                          type: "string"
+                        groupField:
+                          default: "memberof"
+                          description: "The name of the group field"
+                          type: "string"
+                        hostname:
+                          description: "Hostname of the LDAP server"
+                          type: "string"
+                        lastnameField:
+                          default: "sn"
+                          description: "The name of the lastname field"
+                          type: "string"
+                        port:
+                          default: 389
+                          description: "Port of the LDAP server"
+                          format: "uint16"
+                          minimum: 0.0
+                          type: "integer"
+                        searchBase:
+                          default: ""
+                          description: "LDAP search base"
+                          type: "string"
+                        searchFilter:
+                          default: ""
+                          description: "LDAP query to filter users"
+                          type: "string"
+                        tls:
+                          description: "Use a TLS connection. If not specified no TLS will be used"
+                          nullable: true
+                          oneOf:
+                            - required:
+                                - "insecure"
+                            - required:
+                                - "systemProvided"
+                            - required:
+                                - "serverVerification"
+                            - required:
+                                - "mutualVerification"
+                          properties:
+                            insecure:
+                              description: "Use TLS but don't verify certificates. We have to use an empty struct instead of an empty Enum because of limitations of [kube-rs](https://github.com/kube-rs/kube-rs/)"
+                              type: "object"
+                            mutualVerification:
+                              description: "Use TLS and ca certificate to verify the server and the client"
+                              properties:
+                                secretClass:
+                                  description: "[SecretClass](https://docs.stackable.tech/secret-operator/secretclass.html) which will provide ca.crt, tls.crt and tls.key"
+                                  type: "string"
+                              required:
+                                - "secretClass"
+                              type: "object"
+                            serverVerification:
+                              description: "Use TLS and ca certificate to verify the server"
+                              properties:
+                                serverCaCert:
+                                  description: "Ca cert to verify the server"
+                                  oneOf:
+                                    - required:
+                                        - "configmap"
+                                    - required:
+                                        - "secret"
+                                    - required:
+                                        - "path"
+                                    - required:
+                                        - "secretClass"
+                                  properties:
+                                    configmap:
+                                      description: "Name of the ConfigMap containing the ca cert. Key must be \"ca.crt\"."
+                                      type: "string"
+                                    path:
+                                      description: "Path to the ca cert"
+                                      type: "string"
+                                    secret:
+                                      description: "Name of the Secret containing the ca cert. Key must be \"ca.crt\"."
+                                      type: "string"
+                                    secretClass:
+                                      description: "Name of the SecretClass which will provide the ca cert"
+                                      type: "string"
+                                  type: "object"
+                              required:
+                                - "serverCaCert"
+                              type: "object"
+                            systemProvided:
+                              description: "Use TLS and the ca certificates provided by the system - in this case the Docker image - to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services."
+                              type: "object"
+                          type: "object"
+                        uidField:
+                          default: "uid"
+                          description: "The name of the username field"
+                          type: "string"
+                      required:
+                        - "hostname"
+                      type: "object"
+                  type: "object"
+              required:
+                - "protocol"
+              type: "object"
+          required:
+            - "spec"
+          title: "AuthenticationClass"
+          type: "object"
+      served: true
+      storage: true
+      subresources: {}

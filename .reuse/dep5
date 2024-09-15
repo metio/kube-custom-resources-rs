@@ -1163,6 +1163,10 @@ Files: crd-catalog/stackabletech/airflow-operator/*
 Copyright: The stackabletech/airflow-operator Authors
 License: OSL-3.0
 
+Files: crd-catalog/stackabletech/commons-operator/*
+Copyright: The stackabletech/commons-operator Authors
+License: OSL-3.0
+
 Files: crd-catalog/stackabletech/druid-operator/*
 Copyright: The stackabletech/druid-operator Authors
 License: OSL-3.0
