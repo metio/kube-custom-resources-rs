@@ -1159,6 +1159,14 @@ Files: crd-catalog/SparebankenVest/azure-key-vault-to-kubernetes/*
 Copyright: The SparebankenVest/azure-key-vault-to-kubernetes Authors
 License: Apache-2.0
 
+Files: crd-catalog/spidernet-io/egressgateway/*
+Copyright: The spidernet-io/egressgateway Authors
+License: Apache-2.0
+
+Files: crd-catalog/spotahome/redis-operator/*
+Copyright: The spotahome/redis-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/stackabletech/airflow-operator/*
 Copyright: The stackabletech/airflow-operator Authors
 License: OSL-3.0
@@ -1241,10 +1249,6 @@ License: Apache-2.0
 
 Files: crd-catalog/superedge/superedge/*
 Copyright: The superedge/superedge Authors
-License: Apache-2.0
-
-Files: crd-catalog/spotahome/redis-operator/*
-Copyright: The spotahome/redis-operator Authors
 License: Apache-2.0
 
 Files: crd-catalog/tektoncd/operator/*

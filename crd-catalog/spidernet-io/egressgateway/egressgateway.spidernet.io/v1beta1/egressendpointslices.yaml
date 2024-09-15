@@ -1,0 +1,58 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "(unknown)"
+  name: "egressendpointslices.egressgateway.spidernet.io"
+spec:
+  group: "egressgateway.spidernet.io"
+  names:
+    categories:
+      - "egressendpointslice"
+    kind: "EgressEndpointSlice"
+    listKind: "EgressEndpointSliceList"
+    plural: "egressendpointslices"
+    shortNames:
+      - "egep"
+    singular: "egressendpointslice"
+  scope: "Namespaced"
+  versions:
+    - name: "v1beta1"
+      schema:
+        openAPIV3Schema:
+          description: "EgressEndpointSlice is a list of endpoint"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            endpoints:
+              items:
+                properties:
+                  ipv4:
+                    items:
+                      type: "string"
+                    type: "array"
+                  ipv6:
+                    items:
+                      type: "string"
+                    type: "array"
+                  node:
+                    type: "string"
+                  ns:
+                    type: "string"
+                  pod:
+                    type: "string"
+                type: "object"
+              type: "array"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+          required:
+            - "metadata"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
