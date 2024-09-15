@@ -2965,6 +2965,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/superset-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/superset-operator/blob/main/deploy/helm/superset-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stackabletech/trino-operator",
         license: OSL_V3,
         urls: &[

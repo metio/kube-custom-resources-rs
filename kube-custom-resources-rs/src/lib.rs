@@ -3079,6 +3079,11 @@ apiVersion `submariner.io/v1alpha1`:
 - `ServiceDiscovery`
 - `Submariner`
 
+## superset_stackable_tech
+
+apiVersion `superset.stackable.tech/v1alpha1`:
+- `DruidConnection`
+
 ## telemetry_istio_io
 
 apiVersion `telemetry.istio.io/v1`:
@@ -4016,6 +4021,8 @@ pub mod sts_min_io;
 pub mod stunner_l7mp_io;
 #[cfg(feature = "submariner_io")]
 pub mod submariner_io;
+#[cfg(feature = "superset_stackable_tech")]
+pub mod superset_stackable_tech;
 #[cfg(feature = "telemetry_istio_io")]
 pub mod telemetry_istio_io;
 #[cfg(feature = "templates_gatekeeper_sh")]
