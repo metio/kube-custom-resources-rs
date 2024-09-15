@@ -3199,6 +3199,11 @@ apiVersion `training.kubedl.io/v1alpha1`:
 apiVersion `trident.netapp.io/v1`:
 - `TridentOrchestrator`
 
+## trino_stackable_tech
+
+apiVersion `trino.stackable.tech/v1alpha1`:
+- `TrinoCatalog`
+
 ## trust_cert_manager_io
 
 apiVersion `trust.cert-manager.io/v1alpha1`:
@@ -4016,6 +4021,8 @@ pub mod traefik_io;
 pub mod training_kubedl_io;
 #[cfg(feature = "trident_netapp_io")]
 pub mod trident_netapp_io;
+#[cfg(feature = "trino_stackable_tech")]
+pub mod trino_stackable_tech;
 #[cfg(feature = "trust_cert_manager_io")]
 pub mod trust_cert_manager_io;
 #[cfg(feature = "upgrade_cattle_io")]

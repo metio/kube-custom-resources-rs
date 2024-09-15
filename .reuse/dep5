@@ -1179,6 +1179,10 @@ Files: crd-catalog/spotahome/redis-operator/*
 Copyright: The spotahome/redis-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/stackabletech/trino-operator/*
+Copyright: The stackabletech/trino-operator Authors
+License: OSL-2.0
+
 Files: crd-catalog/storageos/operator/*
 Copyright: The storageos/operator Authors
 License: Apache-2.0
