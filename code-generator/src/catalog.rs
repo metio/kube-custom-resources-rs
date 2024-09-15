@@ -2930,6 +2930,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/spark-k8s-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/spark-k8s-operator/blob/main/deploy/helm/spark-k8s-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stackabletech/trino-operator",
         license: OSL_V3,
         urls: &[
