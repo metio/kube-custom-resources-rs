@@ -2881,6 +2881,26 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "spidernet-io/egressgateway",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/spidernet-io/egressgateway/blob/main/charts/crds/egressgateway.spidernet.io_egressclusterendpointslices.yaml",
+            "https://github.com/spidernet-io/egressgateway/blob/main/charts/crds/egressgateway.spidernet.io_egressclusterinfos.yaml",
+            "https://github.com/spidernet-io/egressgateway/blob/main/charts/crds/egressgateway.spidernet.io_egressclusterpolicies.yaml",
+            "https://github.com/spidernet-io/egressgateway/blob/main/charts/crds/egressgateway.spidernet.io_egressendpointslices.yaml",
+            "https://github.com/spidernet-io/egressgateway/blob/main/charts/crds/egressgateway.spidernet.io_egressgateways.yaml",
+            "https://github.com/spidernet-io/egressgateway/blob/main/charts/crds/egressgateway.spidernet.io_egresspolicies.yaml",
+            "https://github.com/spidernet-io/egressgateway/blob/main/charts/crds/egressgateway.spidernet.io_egresstunnels.yaml",
+        ],
+    },
+    UpstreamSource {
+        project_name: "spotahome/redis-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/spotahome/redis-operator/blob/master/manifests/databases.spotahome.com_redisfailovers.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stackabletech/airflow-operator",
         license: OSL_V3,
         urls: &[
@@ -3043,13 +3063,6 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         urls: &[
             "https://github.com/superedge/superedge/blob/main/pkg/site-manager/crd/site.superedge.io_nodegroups.yaml",
             "https://github.com/superedge/superedge/blob/main/pkg/site-manager/crd/site.superedge.io_nodeunits.yaml",
-        ],
-    },
-    UpstreamSource {
-        project_name: "spotahome/redis-operator",
-        license: APACHE_V2,
-        urls: &[
-            "https://github.com/spotahome/redis-operator/blob/master/manifests/databases.spotahome.com_redisfailovers.yaml",
         ],
     },
     UpstreamSource {

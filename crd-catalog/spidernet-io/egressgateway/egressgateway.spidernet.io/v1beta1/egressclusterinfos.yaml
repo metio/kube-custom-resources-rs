@@ -1,0 +1,104 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "(unknown)"
+  name: "egressclusterinfos.egressgateway.spidernet.io"
+spec:
+  group: "egressgateway.spidernet.io"
+  names:
+    categories:
+      - "egressclusterinfo"
+    kind: "EgressClusterInfo"
+    listKind: "EgressClusterInfoList"
+    plural: "egressclusterinfos"
+    shortNames:
+      - "egci"
+    singular: "egressclusterinfo"
+  scope: "Cluster"
+  versions:
+    - name: "v1beta1"
+      schema:
+        openAPIV3Schema:
+          description: "EgressClusterInfo describes the status of cluster"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              properties:
+                autoDetect:
+                  properties:
+                    clusterIP:
+                      default: true
+                      type: "boolean"
+                    nodeIP:
+                      default: true
+                      type: "boolean"
+                    podCidrMode:
+                      default: "auto"
+                      type: "string"
+                  type: "object"
+                extraCidr:
+                  items:
+                    type: "string"
+                  type: "array"
+              type: "object"
+            status:
+              properties:
+                clusterIP:
+                  properties:
+                    ipv4:
+                      items:
+                        type: "string"
+                      type: "array"
+                    ipv6:
+                      items:
+                        type: "string"
+                      type: "array"
+                  type: "object"
+                extraCidr:
+                  items:
+                    type: "string"
+                  type: "array"
+                nodeIP:
+                  additionalProperties:
+                    properties:
+                      ipv4:
+                        items:
+                          type: "string"
+                        type: "array"
+                      ipv6:
+                        items:
+                          type: "string"
+                        type: "array"
+                    type: "object"
+                  type: "object"
+                podCIDR:
+                  additionalProperties:
+                    properties:
+                      ipv4:
+                        items:
+                          type: "string"
+                        type: "array"
+                      ipv6:
+                        items:
+                          type: "string"
+                        type: "array"
+                    type: "object"
+                  type: "object"
+                podCidrMode:
+                  type: "string"
+              type: "object"
+          required:
+            - "metadata"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

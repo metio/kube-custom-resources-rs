@@ -1,0 +1,167 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "(unknown)"
+  name: "egressgateways.egressgateway.spidernet.io"
+spec:
+  group: "egressgateway.spidernet.io"
+  names:
+    categories:
+      - "egressgateway"
+    kind: "EgressGateway"
+    listKind: "EgressGatewayList"
+    plural: "egressgateways"
+    shortNames:
+      - "egw"
+    singular: "egressgateway"
+  scope: "Cluster"
+  versions:
+    - additionalPrinterColumns:
+        - description: "ipv4DefaultEIP"
+          jsonPath: ".spec.ippools.ipv4DefaultEIP"
+          name: "ipv4DefaultEIP"
+          type: "string"
+        - description: "ipv6DefaultEIP"
+          jsonPath: ".spec.ippools.ipv6DefaultEIP"
+          name: "ipv6DefaultEIP"
+          type: "string"
+        - description: "clusterDefault"
+          jsonPath: ".spec.clusterDefault"
+          name: "clusterDefault"
+          type: "boolean"
+        - description: "ipv4Total"
+          jsonPath: ".status.ipUsage.ipv4Total"
+          name: "ipv4Total"
+          type: "integer"
+        - description: "ipv4Free"
+          jsonPath: ".status.ipUsage.ipv4Free"
+          name: "ipv4Free"
+          type: "integer"
+        - description: "ipv6Total"
+          jsonPath: ".status.ipUsage.ipv6Total"
+          name: "ipv6Total"
+          type: "integer"
+        - description: "ipv6Free"
+          jsonPath: ".status.ipUsage.ipv6Free"
+          name: "ipv6Free"
+          type: "integer"
+      name: "v1beta1"
+      schema:
+        openAPIV3Schema:
+          description: "EgressGateway egress gateway"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              properties:
+                clusterDefault:
+                  type: "boolean"
+                ippools:
+                  properties:
+                    ipv4:
+                      items:
+                        type: "string"
+                      type: "array"
+                    ipv4DefaultEIP:
+                      type: "string"
+                    ipv6:
+                      items:
+                        type: "string"
+                      type: "array"
+                    ipv6DefaultEIP:
+                      type: "string"
+                  type: "object"
+                nodeSelector:
+                  properties:
+                    policy:
+                      type: "string"
+                    selector:
+                      description: "A label selector is a label query over a set of resources. The result of matchLabels and\nmatchExpressions are ANDed. An empty label selector matches all objects. A null\nlabel selector matches no objects."
+                      properties:
+                        matchExpressions:
+                          description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                          items:
+                            description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                            properties:
+                              key:
+                                description: "key is the label key that the selector applies to."
+                                type: "string"
+                              operator:
+                                description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                type: "string"
+                              values:
+                                description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                items:
+                                  type: "string"
+                                type: "array"
+                                x-kubernetes-list-type: "atomic"
+                            required:
+                              - "key"
+                              - "operator"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-type: "atomic"
+                        matchLabels:
+                          additionalProperties:
+                            type: "string"
+                          description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                          type: "object"
+                      type: "object"
+                      x-kubernetes-map-type: "atomic"
+                  type: "object"
+              type: "object"
+            status:
+              properties:
+                ipUsage:
+                  properties:
+                    ipv4Free:
+                      type: "integer"
+                    ipv4Total:
+                      type: "integer"
+                    ipv6Free:
+                      type: "integer"
+                    ipv6Total:
+                      type: "integer"
+                  type: "object"
+                nodeList:
+                  items:
+                    properties:
+                      eips:
+                        items:
+                          properties:
+                            ipv4:
+                              type: "string"
+                            ipv6:
+                              type: "string"
+                            policies:
+                              items:
+                                properties:
+                                  name:
+                                    type: "string"
+                                  namespace:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                          type: "object"
+                        type: "array"
+                      name:
+                        type: "string"
+                      status:
+                        type: "string"
+                    type: "object"
+                  type: "array"
+              type: "object"
+          required:
+            - "metadata"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

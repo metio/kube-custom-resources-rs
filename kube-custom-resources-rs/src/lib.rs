@@ -1055,6 +1055,17 @@ apiVersion `efs.services.k8s.aws/v1alpha1`:
 - `FileSystem`
 - `MountTarget`
 
+## egressgateway_spidernet_io
+
+apiVersion `egressgateway.spidernet.io/v1beta1`:
+- `EgressClusterEndpointSlice`
+- `EgressClusterInfo`
+- `EgressClusterPolicy`
+- `EgressEndpointSlice`
+- `EgressGateway`
+- `EgressPolicy`
+- `EgressTunnel`
+
 ## eks_services_k8s_aws
 
 apiVersion `eks.services.k8s.aws/v1alpha1`:
@@ -3582,6 +3593,8 @@ pub mod ec2_services_k8s_aws;
 pub mod ecr_services_k8s_aws;
 #[cfg(feature = "efs_services_k8s_aws")]
 pub mod efs_services_k8s_aws;
+#[cfg(feature = "egressgateway_spidernet_io")]
+pub mod egressgateway_spidernet_io;
 #[cfg(feature = "eks_services_k8s_aws")]
 pub mod eks_services_k8s_aws;
 #[cfg(feature = "elasticache_services_k8s_aws")]
