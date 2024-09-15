@@ -2881,6 +2881,20 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/hbase-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/hbase-operator/blob/main/deploy/helm/hbase-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/trino-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/trino-operator/blob/main/deploy/helm/trino-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stolostron/cluster-templates-operator",
         license: APACHE_V2,
         urls: &[
@@ -2889,6 +2903,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/stolostron/cluster-templates-operator/blob/main/config/crd/bases/clustertemplate.openshift.io_clustertemplates.yaml",
             "https://github.com/stolostron/cluster-templates-operator/blob/main/config/crd/bases/clustertemplate.openshift.io_clustertemplatesetup.yaml",
             "https://github.com/stolostron/cluster-templates-operator/blob/main/config/crd/bases/clustertemplate.openshift.io_config.yaml",
+        ],
+    },
+    UpstreamSource {
+        project_name: "storageos/operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/storageos/operator/blob/main/config/crd/bases/config.storageos.com_operatorconfigs.yaml",
+            "https://github.com/storageos/operator/blob/main/config/crd/bases/storageos.com_storageosclusters.yaml",
         ],
     },
     UpstreamSource {
@@ -2930,21 +2952,6 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         license: APACHE_V2,
         urls: &[
             "https://github.com/spotahome/redis-operator/blob/master/manifests/databases.spotahome.com_redisfailovers.yaml",
-        ],
-    },
-    UpstreamSource {
-        project_name: "stackabletech/trino-operator",
-        license: OSL_V3,
-        urls: &[
-            "https://github.com/stackabletech/trino-operator/blob/main/deploy/helm/trino-operator/crds/crds.yaml",
-        ],
-    },
-    UpstreamSource {
-        project_name: "storageos/operator",
-        license: APACHE_V2,
-        urls: &[
-            "https://github.com/storageos/operator/blob/main/config/crd/bases/config.storageos.com_operatorconfigs.yaml",
-            "https://github.com/storageos/operator/blob/main/config/crd/bases/storageos.com_storageosclusters.yaml",
         ],
     },
     UpstreamSource {
