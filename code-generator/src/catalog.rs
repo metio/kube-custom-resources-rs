@@ -2909,6 +2909,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/kafka-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/kafka-operator/blob/main/deploy/helm/kafka-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stackabletech/trino-operator",
         license: OSL_V3,
         urls: &[
