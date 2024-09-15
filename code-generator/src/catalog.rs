@@ -2933,6 +2933,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/trino-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/trino-operator/blob/main/deploy/helm/trino-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "storageos/operator",
         license: APACHE_V2,
         urls: &[
@@ -3176,3 +3183,4 @@ const UPL_V1: &'static str = "UPL-1.0";
 const MPL_V2: &'static str = "MPL-2.0";
 const KUBEMOD: &'static str = "LicenseRef-Kubemod";
 const HASHICORP: &'static str = "LicenseRef-HashiCorp";
+const OSL_V3: &'static str = "OSL-2.0";
