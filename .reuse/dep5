@@ -1167,6 +1167,10 @@ Files: crd-catalog/stackabletech/druid-operator/*
 Copyright: The stackabletech/druid-operator Authors
 License: OSL-3.0
 
+Files: crd-catalog/stackabletech/edc-operator/*
+Copyright: The stackabletech/edc-operator Authors
+License: OSL-3.0
+
 Files: crd-catalog/stackabletech/hbase-operator/*
 Copyright: The stackabletech/hbase-operator Authors
 License: OSL-3.0
