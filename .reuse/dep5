@@ -1191,6 +1191,10 @@ Files: crd-catalog/stackabletech/opa-operator/*
 Copyright: The stackabletech/opa-operator Authors
 License: OSL-3.0
 
+Files: crd-catalog/stackabletech/secret-operator/*
+Copyright: The stackabletech/secret-operator Authors
+License: OSL-3.0
+
 Files: crd-catalog/stackabletech/spark-k8s-operator/*
 Copyright: The stackabletech/spark-k8s-operator Authors
 License: OSL-3.0
