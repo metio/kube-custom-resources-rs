@@ -3311,6 +3311,11 @@ apiVersion `zonecontrol.k8s.aws/v1`:
 
 apiVersion `zookeeper.pravega.io/v1beta1`:
 - `ZookeeperCluster`
+
+## zookeeper_stackable_tech
+
+apiVersion `zookeeper.stackable.tech/v1alpha1`:
+- `ZookeeperZnode`
  */
 
 #[cfg(feature = "about_k8s_io")]
@@ -4051,3 +4056,5 @@ pub mod workloads_kubeblocks_io;
 pub mod zonecontrol_k8s_aws;
 #[cfg(feature = "zookeeper_pravega_io")]
 pub mod zookeeper_pravega_io;
+#[cfg(feature = "zookeeper_stackable_tech")]
+pub mod zookeeper_stackable_tech;

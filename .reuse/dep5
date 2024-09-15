@@ -1187,6 +1187,10 @@ Files: crd-catalog/stackabletech/trino-operator/*
 Copyright: The stackabletech/trino-operator Authors
 License: OSL-3.0
 
+Files: crd-catalog/stackabletech/zookeeper-operator/*
+Copyright: The stackabletech/zookeeper-operator Authors
+License: OSL-3.0
+
 Files: crd-catalog/stolostron/cluster-templates-operator/*
 Copyright: The stolostron/cluster-templates-operator Authors
 License: Apache-2.0

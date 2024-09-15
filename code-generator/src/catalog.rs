@@ -2930,6 +2930,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stackabletech/zookeeper-operator",
+        license: OSL_V3,
+        urls: &[
+            "https://github.com/stackabletech/zookeeper-operator/blob/main/deploy/helm/zookeeper-operator/crds/crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "stolostron/cluster-templates-operator",
         license: APACHE_V2,
         urls: &[
