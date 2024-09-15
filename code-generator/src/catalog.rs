@@ -2546,6 +2546,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "openshift/ocm-agent-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/openshift/ocm-agent-operator/blob/master/deploy/crds/ocmagent.managed.openshift.io_managedfleetnotificationrecords.yaml",
+            "https://github.com/openshift/ocm-agent-operator/blob/master/deploy/crds/ocmagent.managed.openshift.io_managedfleetnotifications.yaml",
+            "https://github.com/openshift/ocm-agent-operator/blob/master/deploy/crds/ocmagent.managed.openshift.io_managednotifications.yaml",
+            "https://github.com/openshift/ocm-agent-operator/blob/master/deploy/crds/ocmagent.managed.openshift.io_ocmagents.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "openshift/ptp-operator",
         license: APACHE_V2,
         urls: &[

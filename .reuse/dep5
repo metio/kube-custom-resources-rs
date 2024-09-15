@@ -1003,6 +1003,10 @@ Files: crd-catalog/openshift/managed-upgrade-operator/*
 Copyright: The openshift/managed-upgrade-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/openshift/ocm-agent-operator/*
+Copyright: The openshift/ocm-agent-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/openshift/ptp-operator/*
 Copyright: The openshift/ptp-operator Authors
 License: Apache-2.0
