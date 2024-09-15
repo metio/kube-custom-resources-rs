@@ -6,3 +6,5 @@ FROM docker.io/metio/devcontainers-rust:latest
 
 COPY --from=yq /usr/bin/yq /usr/bin/yq
 RUN cargo install kopium
+
+ENV K8S_OPENAPI_ENABLED_VERSION=1.30
