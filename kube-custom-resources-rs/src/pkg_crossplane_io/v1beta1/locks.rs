@@ -29,7 +29,7 @@ pub struct LockPackages {
 /// A Dependency is a dependency of a package in the lock.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LockPackagesDependencies {
-    /// Constraints is a valid semver range, which will be used to select a valid
+    /// Constraints is a valid semver range or a digest, which will be used to select a valid
     /// dependency version.
     pub constraints: String,
     /// Package is the OCI image name without a tag or digest.

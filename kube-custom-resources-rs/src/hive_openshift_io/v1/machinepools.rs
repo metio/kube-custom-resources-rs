@@ -252,9 +252,15 @@ pub struct MachinePoolPlatformGcp {
     /// SecureBoot Defines whether the instance should have secure boot enabled. Verifies the digital signature of all boot components, and halts the boot process if signature verification fails. If omitted, the platform chooses a default, which is subject to change over time. Currently that default is "Disabled".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secureBoot")]
     pub secure_boot: Option<MachinePoolPlatformGcpSecureBoot>,
+    /// ServiceAccount is the email of a gcp service account to be attached to worker nodes in order to provide the permissions required by the cloud provider. For the default worker MachinePool, it is the user's responsibility to match this to the value provided in the install-config.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
     /// InstanceType defines the GCP instance type. eg. n1-standard-4
     #[serde(rename = "type")]
     pub r#type: String,
+    /// userTags has additional keys and values that we will add as tags to the providerSpec of MachineSets that we creates on GCP. Tag key and tag value should be the shortnames of the tag key and tag value resource. Consumer is responsible for using this only for spokes where custom tags are supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userTags")]
+    pub user_tags: Option<Vec<MachinePoolPlatformGcpUserTags>>,
     /// Zones is list of availability zones that can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zones: Option<Vec<String>>,
@@ -321,6 +327,18 @@ pub struct MachinePoolPlatformGcpOsDiskEncryptionKeyKmsKey {
 pub enum MachinePoolPlatformGcpSecureBoot {
     Enabled,
     Disabled,
+}
+
+/// UserTag is a tag to apply to GCP resources created for the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachinePoolPlatformGcpUserTags {
+    /// key is the key part of the tag. A tag key can have a maximum of 63 characters and cannot be empty. Tag key must begin and end with an alphanumeric character, and must contain only uppercase, lowercase alphanumeric characters, and the following special characters `._-`.
+    pub key: String,
+    /// parentID is the ID of the hierarchical resource where the tags are defined, e.g. at the Organization or the Project level. To find the Organization ID or Project ID refer to the following pages: https://cloud.google.com/resource-manager/docs/creating-managing-organization#retrieving_your_organization_id, https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects. An OrganizationID must consist of decimal numbers, and cannot have leading zeroes. A ProjectID must be 6 to 30 characters in length, can only contain lowercase letters, numbers, and hyphens, and must start with a letter, and cannot end with a hyphen.
+    #[serde(rename = "parentID")]
+    pub parent_id: String,
+    /// value is the value part of the tag. A tag value can have a maximum of 63 characters and cannot be empty. Tag value must begin and end with an alphanumeric character, and must contain only uppercase, lowercase alphanumeric characters, and the following special characters `_-.@%=+:,*#&(){}[]` and spaces.
+    pub value: String,
 }
 
 /// IBMCloud is the configuration used when installing on IBM Cloud.

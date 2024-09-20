@@ -75,6 +75,13 @@ spec:
                   description: "Interval at which the GitRepository URL is checked for updates.\nThis interval is approximate and may be subject to jitter to ensure\nefficient use of resources."
                   pattern: "^([0-9]+(\\.[0-9]+)?(ms|s|m|h))+$"
                   type: "string"
+                provider:
+                  default: "generic"
+                  description: "Provider used for authentication, can be 'azure', 'generic'.\nWhen not specified, defaults to 'generic'."
+                  enum:
+                    - "generic"
+                    - "azure"
+                  type: "string"
                 proxySecretRef:
                   description: "ProxySecretRef specifies the Secret containing the proxy configuration\nto use while communicating with the Git server."
                   properties:

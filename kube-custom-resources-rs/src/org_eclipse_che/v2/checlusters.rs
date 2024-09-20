@@ -1067,9 +1067,9 @@ pub struct CheClusterContainerRegistry {
 /// Development environment default configuration options.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironments {
-    /// AllowedSource defines the allowed sources on which workspaces can be started.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedSource")]
-    pub allowed_source: Option<CheClusterDevEnvironmentsAllowedSource>,
+    /// AllowedSources defines the allowed sources on which workspaces can be started.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedSources")]
+    pub allowed_sources: Option<CheClusterDevEnvironmentsAllowedSources>,
     /// Container build configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerBuildConfiguration")]
     pub container_build_configuration: Option<CheClusterDevEnvironmentsContainerBuildConfiguration>,
@@ -1149,6 +1149,9 @@ pub struct CheClusterDevEnvironments {
     /// Project clone container configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectCloneContainer")]
     pub project_clone_container: Option<CheClusterDevEnvironmentsProjectCloneContainer>,
+    /// RuntimeClassName specifies the spec.runtimeClassName for workspace pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
+    pub runtime_class_name: Option<String>,
     /// Idle timeout for workspaces in seconds.
     /// This timeout is the duration after which a workspace will be idled if there is no activity.
     /// To disable workspace idling due to inactivity, set this value to -1.
@@ -1190,11 +1193,13 @@ pub struct CheClusterDevEnvironments {
     pub workspaces_pod_annotations: Option<BTreeMap<String, String>>,
 }
 
-/// AllowedSource defines the allowed sources on which workspaces can be started.
+/// AllowedSources defines the allowed sources on which workspaces can be started.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CheClusterDevEnvironmentsAllowedSource {
+pub struct CheClusterDevEnvironmentsAllowedSources {
     /// The list of approved URLs for starting Cloud Development Environments (CDEs). CDEs can only be
-    /// initiated from these URLs.
+    /// initiated from these URLs. Wildcards `*` are supported in URLs, allowing flexible matching for
+    /// specific URL patterns. For instance, `https://example.com/*` would allow CDEs to be initiated
+    /// from any path within 'example.com'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub urls: Option<Vec<String>>,
 }

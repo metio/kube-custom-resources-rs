@@ -3494,8 +3494,27 @@ pub struct TestStepsTryWaitForJsonPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsUse {
     /// Template references a step template.
+    pub template: String,
+    /// With defines arguments passed to the step template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<String>,
+    pub with: Option<TestStepsUseWith>,
+}
+
+/// With defines arguments passed to the step template.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsUseWith {
+    /// Bindings defines additional binding key/values.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bindings: Option<Vec<TestStepsUseWithBindings>>,
+}
+
+/// Binding represents a key/value set as a binding in an executing test.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsUseWithBindings {
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
 }
 
 /// Timeouts for the test. Overrides the global timeouts set in the Configuration on a per operation basis.

@@ -173,7 +173,21 @@ spec:
                       annotations:
                         additionalProperties:
                           type: "string"
-                        description: "Specifies Annotations to override or add for underlying Pods."
+                        description: "Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
+                        type: "object"
+                      classDefRef:
+                        description: "References the class defined in ComponentClassDefinition.\n\n\nDeprecated since v0.9.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
+                        properties:
+                          class:
+                            description: "Defines the name of the class that is defined in the ComponentClassDefinition."
+                            type: "string"
+                          name:
+                            description: "Specifies the name of the ComponentClassDefinition."
+                            maxLength: 63
+                            pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
+                            type: "string"
+                        required:
+                          - "class"
                         type: "object"
                       componentDef:
                         description: "Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition\ncustom resource (CR) that defines the Component's characteristics and behavior.\n\n\nIf both `componentDefRef` and `componentDef` are provided,\nthe `componentDef` will take precedence over `componentDefRef`."
@@ -323,6 +337,20 @@ spec:
                             - "name"
                           type: "object"
                         type: "array"
+                      instanceUpdateStrategy:
+                        description: "Indicates the InstanceUpdateStrategy that will be\nemployed to update Pods in the InstanceSet when a revision is made to\nTemplate."
+                        properties:
+                          maxUnavailable:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            description: "The maximum number of pods that can be unavailable during the update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nAbsolute number is calculated from percentage by rounding up. This can not be 0.\nDefaults to 1. The field applies to all pods. That means if there is any unavailable pod,\nit will be counted towards MaxUnavailable."
+                            x-kubernetes-int-or-string: true
+                          partition:
+                            description: "Partition indicates the number of pods that should be updated during a rolling update.\nThe remaining pods will remain untouched. This is helpful in defining how many pods\nshould participate in the update process. The update process will follow the order\nof pod names in descending lexicographical (dictionary) order. The default value is\nComponentSpec.Replicas (i.e., update all pods)."
+                            format: "int32"
+                            type: "integer"
+                        type: "object"
                       instances:
                         description: "Allows for the customization of configuration values for each instance within a Component.\nAn instance represent a single replica (Pod and associated K8s resources like PVCs, Services, and ConfigMaps).\nWhile instances typically share a common configuration as defined in the ClusterComponentSpec,\nthey can require unique settings in various scenarios:\n\n\nFor example:\n- A database Component might require different resource allocations for primary and secondary instances,\n  with primaries needing more resources.\n- During a rolling upgrade, a Component may first update the image for one or a few instances,\n  and then update the remaining instances after verifying that the updated instances are functioning correctly.\n\n\nInstanceTemplate allows for specifying these unique configurations per instance.\nEach instance's name is constructed using the pattern: $(component.name)-$(template.name)-$(ordinal),\nstarting with an ordinal of 0.\nIt is crucial to maintain unique names for each InstanceTemplate to avoid conflicts.\n\n\nThe sum of replicas across all InstanceTemplates should not exceed the total number of replicas specified for the Component.\nAny remaining replicas will be generated using the default template and will follow the default naming rules."
                         items:
@@ -2231,7 +2259,7 @@ spec:
                       labels:
                         additionalProperties:
                           type: "string"
-                        description: "Specifies Labels to override or add for underlying Pods."
+                        description: "Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                         type: "object"
                       monitor:
                         description: "Deprecated since v0.9\nDetermines whether metrics exporter information is annotated on the Component's headless Service.\n\n\nIf set to true, the following annotations will be patched into the Service:\n\n\n- \"monitor.kubeblocks.io/path\"\n- \"monitor.kubeblocks.io/port\"\n- \"monitor.kubeblocks.io/scheme\"\n\n\nThese annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter."
@@ -5204,7 +5232,21 @@ spec:
                           annotations:
                             additionalProperties:
                               type: "string"
-                            description: "Specifies Annotations to override or add for underlying Pods."
+                            description: "Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
+                            type: "object"
+                          classDefRef:
+                            description: "References the class defined in ComponentClassDefinition.\n\n\nDeprecated since v0.9.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
+                            properties:
+                              class:
+                                description: "Defines the name of the class that is defined in the ComponentClassDefinition."
+                                type: "string"
+                              name:
+                                description: "Specifies the name of the ComponentClassDefinition."
+                                maxLength: 63
+                                pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
+                                type: "string"
+                            required:
+                              - "class"
                             type: "object"
                           componentDef:
                             description: "Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition\ncustom resource (CR) that defines the Component's characteristics and behavior.\n\n\nIf both `componentDefRef` and `componentDef` are provided,\nthe `componentDef` will take precedence over `componentDefRef`."
@@ -5354,6 +5396,20 @@ spec:
                                 - "name"
                               type: "object"
                             type: "array"
+                          instanceUpdateStrategy:
+                            description: "Indicates the InstanceUpdateStrategy that will be\nemployed to update Pods in the InstanceSet when a revision is made to\nTemplate."
+                            properties:
+                              maxUnavailable:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                description: "The maximum number of pods that can be unavailable during the update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nAbsolute number is calculated from percentage by rounding up. This can not be 0.\nDefaults to 1. The field applies to all pods. That means if there is any unavailable pod,\nit will be counted towards MaxUnavailable."
+                                x-kubernetes-int-or-string: true
+                              partition:
+                                description: "Partition indicates the number of pods that should be updated during a rolling update.\nThe remaining pods will remain untouched. This is helpful in defining how many pods\nshould participate in the update process. The update process will follow the order\nof pod names in descending lexicographical (dictionary) order. The default value is\nComponentSpec.Replicas (i.e., update all pods)."
+                                format: "int32"
+                                type: "integer"
+                            type: "object"
                           instances:
                             description: "Allows for the customization of configuration values for each instance within a Component.\nAn instance represent a single replica (Pod and associated K8s resources like PVCs, Services, and ConfigMaps).\nWhile instances typically share a common configuration as defined in the ClusterComponentSpec,\nthey can require unique settings in various scenarios:\n\n\nFor example:\n- A database Component might require different resource allocations for primary and secondary instances,\n  with primaries needing more resources.\n- During a rolling upgrade, a Component may first update the image for one or a few instances,\n  and then update the remaining instances after verifying that the updated instances are functioning correctly.\n\n\nInstanceTemplate allows for specifying these unique configurations per instance.\nEach instance's name is constructed using the pattern: $(component.name)-$(template.name)-$(ordinal),\nstarting with an ordinal of 0.\nIt is crucial to maintain unique names for each InstanceTemplate to avoid conflicts.\n\n\nThe sum of replicas across all InstanceTemplates should not exceed the total number of replicas specified for the Component.\nAny remaining replicas will be generated using the default template and will follow the default naming rules."
                             items:
@@ -7262,7 +7318,7 @@ spec:
                           labels:
                             additionalProperties:
                               type: "string"
-                            description: "Specifies Labels to override or add for underlying Pods."
+                            description: "Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                             type: "object"
                           monitor:
                             description: "Deprecated since v0.9\nDetermines whether metrics exporter information is annotated on the Component's headless Service.\n\n\nIf set to true, the following annotations will be patched into the Service:\n\n\n- \"monitor.kubeblocks.io/path\"\n- \"monitor.kubeblocks.io/port\"\n- \"monitor.kubeblocks.io/scheme\"\n\n\nThese annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter."
@@ -9566,6 +9622,6 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

@@ -151,6 +151,9 @@ pub struct MigrationStatusVms {
     /// Only relevant for an openshift source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// The new name of the VM after matching DNS1123 requirements.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "newName")]
+    pub new_name: Option<String>,
     /// The Operating System detected by virt-v2v.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatingSystem")]
     pub operating_system: Option<String>,

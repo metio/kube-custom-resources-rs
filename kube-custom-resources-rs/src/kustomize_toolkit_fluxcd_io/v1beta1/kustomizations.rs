@@ -179,8 +179,8 @@ pub struct KustomizationKubeConfig {
     /// Cloud specific `cmd-path` auth helpers will not function without adding
     /// binaries and credentials to the Pod that is responsible for reconciling
     /// the Kustomization.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<KustomizationKubeConfigSecretRef>,
+    #[serde(rename = "secretRef")]
+    pub secret_ref: KustomizationKubeConfigSecretRef,
 }
 
 /// SecretRef holds the name to a secret that contains a 'value' key with

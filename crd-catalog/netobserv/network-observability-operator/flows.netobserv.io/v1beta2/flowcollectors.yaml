@@ -3446,6 +3446,28 @@ spec:
                                 type: "object"
                               type: "array"
                           type: "object"
+                        secondaryNetworks:
+                          description: "Define secondary networks to be checked for resources identification.\nIn order to guarantee a correct identification, it is important that the indexed values form an unique identifier across the cluster.\nIf there are collisions in the indexes (same index used by several resources), those resources might be wrongly labelled."
+                          items:
+                            properties:
+                              index:
+                                description: "`index` is a list of fields to use for indexing the pods. They should form a unique Pod identifier across the cluster.\nCan be any of: MAC, IP, Interface"
+                                items:
+                                  description: "Field to index for secondary network pod identification, can be any of: MAC, IP, Interface"
+                                  enum:
+                                    - "MAC"
+                                    - "IP"
+                                    - "Interface"
+                                  type: "string"
+                                type: "array"
+                              name:
+                                description: "`name` should match the network name as visible in the pods annotation 'k8s.v1.cni.cncf.io/network-status'."
+                                type: "string"
+                            required:
+                              - "index"
+                              - "name"
+                            type: "object"
+                          type: "array"
                       type: "object"
                     clusterName:
                       default: ""
@@ -3796,7 +3818,7 @@ spec:
                             type: "string"
                           type: "array"
                         includeList:
-                          description: "`includeList` is a list of metric names to specify which ones to generate.\nThe names correspond to the names in Prometheus without the prefix. For example,\n`namespace_egress_packets_total` shows up as `netobserv_namespace_egress_packets_total` in Prometheus.\nNote that the more metrics you add, the bigger is the impact on Prometheus workload resources.\nMetrics enabled by default are:\n`namespace_flows_total`, `node_ingress_bytes_total`, `workload_ingress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled),\n`namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled).\nMore information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md"
+                          description: "`includeList` is a list of metric names to specify which ones to generate.\nThe names correspond to the names in Prometheus without the prefix. For example,\n`namespace_egress_packets_total` shows up as `netobserv_namespace_egress_packets_total` in Prometheus.\nNote that the more metrics you add, the bigger is the impact on Prometheus workload resources.\nMetrics enabled by default are:\n`namespace_flows_total`, `node_ingress_bytes_total`, `node_egress_bytes_total`, `workload_ingress_bytes_total`,\n`workload_egress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled),\n`namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled).\nMore information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md"
                           items:
                             description: "Metric name. More information in https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md."
                             enum:

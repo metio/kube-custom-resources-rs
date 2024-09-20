@@ -7260,7 +7260,12 @@ pub enum AlertmanagerWebHttpConfigHeadersXFrameOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerWebTlsConfig {
     /// Contains the TLS certificate for the server.
-    pub cert: AlertmanagerWebTlsConfigCert,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<AlertmanagerWebTlsConfigCert>,
+    /// Path to the TLS certificate file in the Prometheus container for the server.
+    /// Mutually exclusive with `cert`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
     /// List of supported cipher suites for TLS versions up to TLS 1.2. If empty,
     /// Go default cipher suites are used. Available cipher suites are documented
     /// in the go documentation: https://golang.org/pkg/crypto/tls/#pkg-constants
@@ -7271,6 +7276,10 @@ pub struct AlertmanagerWebTlsConfig {
     /// https://golang.org/pkg/crypto/tls/#ClientAuthType
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAuthType")]
     pub client_auth_type: Option<String>,
+    /// Path to the CA certificate file for client certificate authentication to the server.
+    /// Mutually exclusive with `client_ca`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCAFile")]
+    pub client_ca_file: Option<String>,
     /// Contains the CA certificate for client certificate authentication to the server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_ca: Option<AlertmanagerWebTlsConfigClientCa>,
@@ -7279,9 +7288,13 @@ pub struct AlertmanagerWebTlsConfig {
     /// https://golang.org/pkg/crypto/tls/#CurveID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "curvePreferences")]
     pub curve_preferences: Option<Vec<String>>,
+    /// Path to the TLS key file in the Prometheus container for the server.
+    /// Mutually exclusive with `keySecret`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
+    pub key_file: Option<String>,
     /// Secret containing the TLS key for the server.
-    #[serde(rename = "keySecret")]
-    pub key_secret: AlertmanagerWebTlsConfigKeySecret,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<AlertmanagerWebTlsConfigKeySecret>,
     /// Maximum TLS version that is acceptable. Defaults to TLS13.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<String>,

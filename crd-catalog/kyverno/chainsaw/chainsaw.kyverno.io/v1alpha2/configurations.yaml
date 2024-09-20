@@ -730,10 +730,13 @@ spec:
                   properties:
                     format:
                       default: "JSON"
-                      description: "ReportFormat determines test report format (JSON|XML)."
+                      description: "ReportFormat determines test report format (JSON|XML|JUNIT-TEST|JUNIT-STEP|JUNIT-OPERATION)."
                       enum:
                         - "JSON"
                         - "XML"
+                        - "JUNIT-TEST"
+                        - "JUNIT-STEP"
+                        - "JUNIT-OPERATION"
                       type: "string"
                     name:
                       default: "chainsaw-report"

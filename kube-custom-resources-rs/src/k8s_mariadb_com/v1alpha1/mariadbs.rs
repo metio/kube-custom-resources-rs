@@ -20000,6 +20000,10 @@ pub struct MariaDBTopologySpreadConstraintsLabelSelectorMatchExpressions {
 /// UpdateStrategy defines how a MariaDB resource is updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBUpdateStrategy {
+    /// AutoUpdateDataPlane indicates whether the Galera data plane version (agent and init containers) should be automatically updated based on the operator version. It defaults to false.
+    /// Updating the operator will trigger updates on all the MariaDB instances that have this flag set to true. Thus, it is recommended to progressively set this flag after having updated the operator.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoUpdateDataPlane")]
+    pub auto_update_data_plane: Option<bool>,
     /// RollingUpdate defines parameters for the RollingUpdate type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<MariaDBUpdateStrategyRollingUpdate>,
@@ -20034,6 +20038,7 @@ pub enum MariaDBUpdateStrategyType {
     ReplicasFirstPrimaryLast,
     RollingUpdate,
     OnDelete,
+    Never,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.

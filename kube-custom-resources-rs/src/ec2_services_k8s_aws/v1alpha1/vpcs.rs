@@ -29,6 +29,8 @@ pub struct VPCSpec {
     pub amazon_provided_i_pv6_cidr_block: Option<bool>,
     #[serde(rename = "cidrBlocks")]
     pub cidr_blocks: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disallowSecurityGroupDefaultRules")]
+    pub disallow_security_group_default_rules: Option<bool>,
     /// The attribute value. The valid values are true or false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDNSHostnames")]
     pub enable_dns_hostnames: Option<bool>,
@@ -137,6 +139,8 @@ pub struct VPCStatus {
     /// The ID of the Amazon Web Services account that owns the VPC.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupDefaultRulesExist")]
+    pub security_group_default_rules_exist: Option<bool>,
     /// The current state of the VPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,

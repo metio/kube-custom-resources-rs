@@ -761,6 +761,9 @@ spec:
                   maxLength: 255
                   pattern: "^[a-zA-Z0-9][-a-zA-Z0-9]{0,253}[a-zA-Z0-9]$"
                   type: "string"
+                pg_dump_suffix:
+                  description: "Additional parameters for the pg_dump command during a migration"
+                  type: "string"
                 postgres_annotations:
                   description: "Annotations to add to the Postgres deployment."
                   type: "string"

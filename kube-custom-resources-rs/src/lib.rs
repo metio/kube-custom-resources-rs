@@ -275,6 +275,14 @@ apiVersion `apps.gitlab.com/v1beta2`:
 
 ## apps_kubeblocks_io
 
+apiVersion `apps.kubeblocks.io/v1`:
+- `ClusterDefinition`
+- `Cluster`
+- `ComponentDefinition`
+- `Component`
+- `ComponentVersion`
+- `ServiceDescriptor`
+
 apiVersion `apps.kubeblocks.io/v1alpha1`:
 - `BackupPolicyTemplate`
 - `ClusterDefinition`
@@ -2562,6 +2570,7 @@ apiVersion `policy.kubeedge.io/v1alpha1`:
 apiVersion `policy.networking.k8s.io/v1alpha1`:
 - `AdminNetworkPolicy`
 - `BaselineAdminNetworkPolicy`
+- `AdminNetworkPolicy`
 
 ## postgres_operator_crunchydata_com
 
@@ -3340,6 +3349,9 @@ apiVersion `workload.codeflare.dev/v1beta2`:
 - `AppWrapper`
 
 ## workloads_kubeblocks_io
+
+apiVersion `workloads.kubeblocks.io/v1`:
+- `InstanceSet`
 
 apiVersion `workloads.kubeblocks.io/v1alpha1`:
 - `InstanceSet`
