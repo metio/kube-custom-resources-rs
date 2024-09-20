@@ -39,7 +39,7 @@ spec:
                       items:
                         properties:
                           authenticationClass:
-                            description: "The [AuthenticationClass](https://docs.stackable.tech/home/stable/concepts/authentication) to use.\n\n## mTLS\n\nOnly affects client connections. This setting controls: - If clients need to authenticate themselves against the server via TLS - Which ca.crt to use when validating the provided client certs This will override the server TLS settings (if set) in `spec.clusterConfig.tls.serverSecretClass`."
+                            description: "The [AuthenticationClass](https://docs.stackable.tech/home/stable/concepts/authentication) to use.\n\n## mTLS\n\nOnly affects client connections. This setting controls: - If clients need to authenticate themselves against the server via TLS - Which ca.crt to use when validating the provided client certs\n\nThis will override the server TLS settings (if set) in `spec.clusterConfig.tls.serverSecretClass`."
                             type: "string"
                         required:
                           - "authenticationClass"
@@ -61,11 +61,11 @@ spec:
                       properties:
                         quorumSecretClass:
                           default: "tls"
-                          description: "The [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) to use for internal quorum communication. Use mutual verification between Zookeeper Nodes (mandatory). This setting controls: - Which cert the servers should use to authenticate themselves against other servers - Which ca.crt to use when validating the other server Defaults to `tls`"
+                          description: "The [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) to use for internal quorum communication. Use mutual verification between Zookeeper Nodes (mandatory). This setting controls: - Which cert the servers should use to authenticate themselves against other servers - Which ca.crt to use when validating the other server\n\nDefaults to `tls`"
                           type: "string"
                         serverSecretClass:
                           default: "tls"
-                          description: "The [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) to use for client connections. This setting controls: - If TLS encryption is used at all - Which cert the servers should use to authenticate themselves against the client Defaults to `tls`."
+                          description: "The [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) to use for client connections. This setting controls: - If TLS encryption is used at all - Which cert the servers should use to authenticate themselves against the client\n\nDefaults to `tls`."
                           nullable: true
                           type: "string"
                       type: "object"
@@ -118,8 +118,10 @@ spec:
                         description: "LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace."
                         properties:
                           name:
-                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
+                        required:
+                          - "name"
                         type: "object"
                       nullable: true
                       type: "array"
@@ -173,10 +175,6 @@ spec:
                               nullable: true
                               type: "object"
                               x-kubernetes-preserve-unknown-fields: true
-                          required:
-                            - "nodeAffinity"
-                            - "podAffinity"
-                            - "podAntiAffinity"
                           type: "object"
                         gracefulShutdownTimeout:
                           description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
@@ -455,10 +453,6 @@ spec:
                                     nullable: true
                                     type: "object"
                                     x-kubernetes-preserve-unknown-fields: true
-                                required:
-                                  - "nodeAffinity"
-                                  - "podAffinity"
-                                  - "podAntiAffinity"
                                 type: "object"
                               gracefulShutdownTimeout:
                                 description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."

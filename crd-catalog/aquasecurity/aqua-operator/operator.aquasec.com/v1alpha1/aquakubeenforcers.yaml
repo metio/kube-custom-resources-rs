@@ -1846,6 +1846,10 @@ spec:
                   type: "object"
                 mtls:
                   type: "boolean"
+                mutatingWebhookTimeout:
+                  default: 5
+                  description: "Timeout for the mutating webhook in seconds"
+                  type: "integer"
                 registry:
                   properties:
                     email:
@@ -3708,6 +3712,10 @@ spec:
                   type: "string"
                 updateEnforcer:
                   type: "boolean"
+                validatingWebhookTimeout:
+                  default: 5
+                  description: "Timeout for the validating webhook in seconds"
+                  type: "integer"
               required:
                 - "config"
               type: "object"

@@ -43,6 +43,9 @@ pub struct HCPVaultSecretsAppSpec {
     /// RolloutRestartTarget for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutRestartTargets")]
     pub rollout_restart_targets: Option<Vec<HCPVaultSecretsAppRolloutRestartTargets>>,
+    /// SyncConfig configures sync behavior from HVS to VSO
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncConfig")]
+    pub sync_config: Option<HCPVaultSecretsAppSyncConfig>,
 }
 
 /// Destination provides configuration necessary for syncing the HCP Vault
@@ -197,9 +200,30 @@ pub enum HCPVaultSecretsAppRolloutRestartTargetsKind {
     ArgoRollout,
 }
 
+/// SyncConfig configures sync behavior from HVS to VSO
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HCPVaultSecretsAppSyncConfig {
+    /// Dynamic configures sync behavior for dynamic secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dynamic: Option<HCPVaultSecretsAppSyncConfigDynamic>,
+}
+
+/// Dynamic configures sync behavior for dynamic secrets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HCPVaultSecretsAppSyncConfigDynamic {
+    /// RenewalPercent is the percent out of 100 of a dynamic secret's TTL when
+    /// new secrets are generated. Defaults to 67 percent minus jitter.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "renewalPercent")]
+    pub renewal_percent: Option<i64>,
+}
+
 /// HCPVaultSecretsAppStatus defines the observed state of HCPVaultSecretsApp
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HCPVaultSecretsAppStatus {
+    /// DynamicSecrets lists the last observed state of any dynamic secrets
+    /// within the HCP Vault Secrets App
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicSecrets")]
+    pub dynamic_secrets: Option<Vec<HCPVaultSecretsAppStatusDynamicSecrets>>,
     /// LastGeneration is the Generation of the last reconciled resource.
     #[serde(rename = "lastGeneration")]
     pub last_generation: i64,
@@ -215,5 +239,23 @@ pub struct HCPVaultSecretsAppStatus {
     /// If drift is detected the data will be synced to the Destination.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretMAC")]
     pub secret_mac: Option<String>,
+}
+
+/// HVSDynamicStatus defines the observed state of a dynamic secret within an HCP
+/// Vault Secrets App
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HCPVaultSecretsAppStatusDynamicSecrets {
+    /// CreatedAt is the timestamp string of when the dynamic secret was created
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdAt")]
+    pub created_at: Option<String>,
+    /// ExpiresAt is the timestamp string of when the dynamic secret will expire
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expiresAt")]
+    pub expires_at: Option<String>,
+    /// Name of the dynamic secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// TTL is the time-to-live of the dynamic secret in seconds
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ttl: Option<String>,
 }
 

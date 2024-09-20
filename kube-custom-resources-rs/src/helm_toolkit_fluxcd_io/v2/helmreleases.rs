@@ -61,12 +61,10 @@ pub struct HelmReleaseSpec {
     /// duration of the reconciliation, instead of being created and destroyed
     /// for each (step of a) Helm action.
     /// 
-    /// 
     /// This can improve performance, but may cause issues with some Helm charts
     /// that for example do create Custom Resource Definitions during installation
     /// outside Helm's CRD lifecycle hooks, which are then not observed to be
     /// available by e.g. post-install hooks.
-    /// 
     /// 
     /// If not set, it defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentClient")]
@@ -122,7 +120,7 @@ pub struct HelmReleaseSpec {
 
 /// Chart defines the template of the v1.HelmChart that should be created
 /// for this HelmRelease.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChart {
     /// ObjectMeta holds the template for metadata like labels and annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -148,7 +146,7 @@ pub struct HelmReleaseChartMetadata {
 }
 
 /// Spec holds the template for the v1.HelmChartSpec for this HelmRelease.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChartSpec {
     /// The name or path the Helm chart is available at in the SourceRef.
     pub chart: String,
@@ -196,14 +194,13 @@ pub enum HelmReleaseChartSpecReconcileStrategy {
 }
 
 /// The name and namespace of the v1.Source the chart is available at.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChartSpecSourceRef {
     /// APIVersion of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<HelmReleaseChartSpecSourceRefKind>,
+    pub kind: HelmReleaseChartSpecSourceRefKind,
     /// Name of the referent.
     pub name: String,
     /// Namespace of the referent.
@@ -386,16 +383,12 @@ pub struct HelmReleaseInstall {
     /// `Create` or `CreateReplace`. Default is `Create` and if omitted
     /// CRDs are installed but not updated.
     /// 
-    /// 
     /// Skip: do neither install nor replace (update) any CRDs.
-    /// 
     /// 
     /// Create: new CRDs are created, existing CRDs are neither updated nor deleted.
     /// 
-    /// 
     /// CreateReplace: new CRDs are created, existing CRDs are updated (replaced)
     /// but not deleted.
-    /// 
     /// 
     /// By default, CRDs are applied (installed) during Helm install action.
     /// With this option users can opt in to CRD replace existing CRDs on Helm
@@ -433,7 +426,6 @@ pub struct HelmReleaseInstall {
     pub replace: Option<bool>,
     /// SkipCRDs tells the Helm install action to not install any CRDs. By default,
     /// CRDs are installed if not already present.
-    /// 
     /// 
     /// Deprecated use CRD policy (`crds`) attribute with value `Skip` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCRDs")]
@@ -709,16 +701,12 @@ pub struct HelmReleaseUpgrade {
     /// `Create` or `CreateReplace`. Default is `Skip` and if omitted
     /// CRDs are neither installed nor upgraded.
     /// 
-    /// 
     /// Skip: do neither install nor replace (update) any CRDs.
-    /// 
     /// 
     /// Create: new CRDs are created, existing CRDs are neither updated nor deleted.
     /// 
-    /// 
     /// CreateReplace: new CRDs are created, existing CRDs are updated (replaced)
     /// but not deleted.
-    /// 
     /// 
     /// By default, CRDs are not applied during Helm upgrade action. With this
     /// option users can opt-in to CRD upgrade, which is not (yet) natively supported by Helm.

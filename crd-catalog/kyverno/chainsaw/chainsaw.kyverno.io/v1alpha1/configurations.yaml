@@ -689,10 +689,13 @@ spec:
                   minimum: 1.0
                   type: "integer"
                 reportFormat:
-                  description: "ReportFormat determines test report format (JSON|XML|nil) nil == no report.\nmaps to report.Type, however we don't want generated.deepcopy to have reference to it."
+                  description: "ReportFormat determines test report format (JSON|XML|JUNIT-TEST|JUNIT-STEP|JUNIT-OPERATION|nil) nil == no report.\nmaps to report.Type, however we don't want generated.deepcopy to have reference to it."
                   enum:
                     - "JSON"
                     - "XML"
+                    - "JUNIT-TEST"
+                    - "JUNIT-STEP"
+                    - "JUNIT-OPERATION"
                   type: "string"
                 reportName:
                   default: "chainsaw-report"

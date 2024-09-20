@@ -72,6 +72,9 @@ spec:
                       description: "capacity is the size of the destination volume to create."
                       pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                       x-kubernetes-int-or-string: true
+                    cleanupTempPVC:
+                      description: "Set this to true to delete the temp destination PVC (dynamically provisioned\nby VolSync) at the end of each successful ReplicationDestination sync iteration.\nIf destinationPVC is set, this will have no effect, VolSync will only\ncleanup temp PVCs that it deployed.\nNote that if this is set to true, every sync this ReplicationDestination\nmakes will re-provision a new temp destination PVC and all data\nwill need to be sent again during the sync.\nDynamically provisioned destination PVCs will always be deleted if the\nowning ReplicationDestination is removed, even if this setting is false.\nThe default is false."
+                      type: "boolean"
                     copyMethod:
                       description: "copyMethod describes how a point-in-time (PiT) image of the destination\nvolume should be created."
                       enum:
@@ -844,6 +847,12 @@ spec:
                       description: "capacity is the size of the destination volume to create."
                       pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                       x-kubernetes-int-or-string: true
+                    cleanupCachePVC:
+                      description: "Set this to true to delete the restic cache PVC (dynamically provisioned\nby VolSync) at the end of each successful ReplicationDestination sync iteration.\nCache PVCs will always be deleted if the owning ReplicationDestination is\nremoved, even if this setting is false.\nThe default is false."
+                      type: "boolean"
+                    cleanupTempPVC:
+                      description: "Set this to true to delete the temp destination PVC (dynamically provisioned\nby VolSync) at the end of each successful ReplicationDestination sync iteration.\nIf destinationPVC is set, this will have no effect, VolSync will only\ncleanup temp PVCs that it deployed.\nNote that if this is set to true, every sync this ReplicationDestination\nmakes will re-provision a new temp destination PVC and all data\nwill need to be sent again during the sync.\nDynamically provisioned destination PVCs will always be deleted if the\nowning ReplicationDestination is removed, even if this setting is false.\nThe default is false."
+                      type: "boolean"
                     copyMethod:
                       description: "copyMethod describes how a point-in-time (PiT) image of the destination\nvolume should be created."
                       enum:
@@ -1609,6 +1618,9 @@ spec:
                       description: "capacity is the size of the destination volume to create."
                       pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                       x-kubernetes-int-or-string: true
+                    cleanupTempPVC:
+                      description: "Set this to true to delete the temp destination PVC (dynamically provisioned\nby VolSync) at the end of each successful ReplicationDestination sync iteration.\nIf destinationPVC is set, this will have no effect, VolSync will only\ncleanup temp PVCs that it deployed.\nNote that if this is set to true, every sync this ReplicationDestination\nmakes will re-provision a new temp destination PVC and all data\nwill need to be sent again during the sync.\nDynamically provisioned destination PVCs will always be deleted if the\nowning ReplicationDestination is removed, even if this setting is false.\nThe default is false."
+                      type: "boolean"
                     copyMethod:
                       description: "copyMethod describes how a point-in-time (PiT) image of the destination\nvolume should be created."
                       enum:
@@ -1711,6 +1723,9 @@ spec:
                       description: "capacity is the size of the destination volume to create."
                       pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                       x-kubernetes-int-or-string: true
+                    cleanupTempPVC:
+                      description: "Set this to true to delete the temp destination PVC (dynamically provisioned\nby VolSync) at the end of each successful ReplicationDestination sync iteration.\nIf destinationPVC is set, this will have no effect, VolSync will only\ncleanup temp PVCs that it deployed.\nNote that if this is set to true, every sync this ReplicationDestination\nmakes will re-provision a new temp destination PVC and all data\nwill need to be sent again during the sync.\nDynamically provisioned destination PVCs will always be deleted if the\nowning ReplicationDestination is removed, even if this setting is false.\nThe default is false."
+                      type: "boolean"
                     copyMethod:
                       description: "copyMethod describes how a point-in-time (PiT) image of the destination\nvolume should be created."
                       enum:

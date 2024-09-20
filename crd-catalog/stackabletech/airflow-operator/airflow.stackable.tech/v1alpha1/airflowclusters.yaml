@@ -69,10 +69,6 @@ spec:
                               nullable: true
                               type: "object"
                               x-kubernetes-preserve-unknown-fields: true
-                          required:
-                            - "nodeAffinity"
-                            - "podAffinity"
-                            - "podAntiAffinity"
                           type: "object"
                         gracefulShutdownTimeout:
                           description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
@@ -285,10 +281,6 @@ spec:
                                     nullable: true
                                     type: "object"
                                     x-kubernetes-preserve-unknown-fields: true
-                                required:
-                                  - "nodeAffinity"
-                                  - "podAffinity"
-                                  - "podAntiAffinity"
                                 type: "object"
                               gracefulShutdownTimeout:
                                 description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
@@ -601,8 +593,10 @@ spec:
                         description: "LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace."
                         properties:
                           name:
-                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
+                        required:
+                          - "name"
                         type: "object"
                       nullable: true
                       type: "array"
@@ -655,10 +649,6 @@ spec:
                               nullable: true
                               type: "object"
                               x-kubernetes-preserve-unknown-fields: true
-                          required:
-                            - "nodeAffinity"
-                            - "podAffinity"
-                            - "podAntiAffinity"
                           type: "object"
                         gracefulShutdownTimeout:
                           description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
@@ -848,10 +838,6 @@ spec:
                               nullable: true
                               type: "object"
                               x-kubernetes-preserve-unknown-fields: true
-                          required:
-                            - "nodeAffinity"
-                            - "podAffinity"
-                            - "podAntiAffinity"
                           type: "object"
                         gracefulShutdownTimeout:
                           description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
@@ -1064,10 +1050,6 @@ spec:
                                     nullable: true
                                     type: "object"
                                     x-kubernetes-preserve-unknown-fields: true
-                                required:
-                                  - "nodeAffinity"
-                                  - "podAffinity"
-                                  - "podAntiAffinity"
                                 type: "object"
                               gracefulShutdownTimeout:
                                 description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
@@ -1266,10 +1248,6 @@ spec:
                               nullable: true
                               type: "object"
                               x-kubernetes-preserve-unknown-fields: true
-                          required:
-                            - "nodeAffinity"
-                            - "podAffinity"
-                            - "podAntiAffinity"
                           type: "object"
                         gracefulShutdownTimeout:
                           description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
@@ -1482,10 +1460,6 @@ spec:
                                     nullable: true
                                     type: "object"
                                     x-kubernetes-preserve-unknown-fields: true
-                                required:
-                                  - "nodeAffinity"
-                                  - "podAffinity"
-                                  - "podAntiAffinity"
                                 type: "object"
                               gracefulShutdownTimeout:
                                 description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."

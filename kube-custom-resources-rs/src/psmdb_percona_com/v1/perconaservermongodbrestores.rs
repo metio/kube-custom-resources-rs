@@ -28,6 +28,8 @@ pub struct PerconaServerMongoDBRestoreSpec {
     pub pitr: Option<PerconaServerMongoDBRestorePitr>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replset: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selective: Option<PerconaServerMongoDBRestoreSelective>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageName")]
     pub storage_name: Option<String>,
 }
@@ -135,6 +137,14 @@ pub struct PerconaServerMongoDBRestorePitr {
     pub date: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDBRestoreSelective {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withUsersAndRoles")]
+    pub with_users_and_roles: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -60,7 +60,7 @@ pub struct ConfigurationSpec {
     /// RepeatCount indicates how many times the tests should be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repeatCount")]
     pub repeat_count: Option<i64>,
-    /// ReportFormat determines test report format (JSON|XML|nil) nil == no report.
+    /// ReportFormat determines test report format (JSON|XML|JUNIT-TEST|JUNIT-STEP|JUNIT-OPERATION|nil) nil == no report.
     /// maps to report.Type, however we don't want generated.deepcopy to have reference to it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportFormat")]
     pub report_format: Option<ConfigurationReportFormat>,
@@ -664,6 +664,12 @@ pub enum ConfigurationReportFormat {
     Json,
     #[serde(rename = "XML")]
     Xml,
+    #[serde(rename = "JUNIT-TEST")]
+    JunitTest,
+    #[serde(rename = "JUNIT-STEP")]
+    JunitStep,
+    #[serde(rename = "JUNIT-OPERATION")]
+    JunitOperation,
 }
 
 /// Global timeouts configuration. Applies to all tests/test steps if not overridden.

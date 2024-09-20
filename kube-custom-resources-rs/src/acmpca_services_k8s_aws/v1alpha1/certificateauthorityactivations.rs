@@ -44,6 +44,10 @@ pub struct CertificateAuthorityActivationSpec {
     /// specific key within the referred-to Secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChain")]
     pub certificate_chain: Option<CertificateAuthorityActivationCertificateChain>,
+    /// SecretKeyReference combines a k8s corev1.SecretReference with a
+    /// specific key within the referred-to Secret
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completeCertificateChainOutput")]
+    pub complete_certificate_chain_output: Option<CertificateAuthorityActivationCompleteCertificateChainOutput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
@@ -92,6 +96,20 @@ pub struct CertificateAuthorityActivationCertificateAuthorityRefFrom {
 /// specific key within the referred-to Secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateAuthorityActivationCertificateChain {
+    /// Key is the key within the secret
+    pub key: String,
+    /// name is unique within a namespace to reference a secret resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// namespace defines the space within which the secret name must be unique.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// SecretKeyReference combines a k8s corev1.SecretReference with a
+/// specific key within the referred-to Secret
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CertificateAuthorityActivationCompleteCertificateChainOutput {
     /// Key is the key within the secret
     pub key: String,
     /// name is unique within a namespace to reference a secret resource.

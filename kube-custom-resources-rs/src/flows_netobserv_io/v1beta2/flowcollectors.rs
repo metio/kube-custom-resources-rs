@@ -3540,6 +3540,11 @@ pub struct FlowCollectorProcessorAdvanced {
     /// scheduling controls how the pods are scheduled on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduling: Option<FlowCollectorProcessorAdvancedScheduling>,
+    /// Define secondary networks to be checked for resources identification.
+    /// In order to guarantee a correct identification, it is important that the indexed values form an unique identifier across the cluster.
+    /// If there are collisions in the indexes (same index used by several resources), those resources might be wrongly labelled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryNetworks")]
+    pub secondary_networks: Option<Vec<FlowCollectorProcessorAdvancedSecondaryNetworks>>,
 }
 
 /// scheduling controls how the pods are scheduled on nodes.
@@ -4293,6 +4298,15 @@ pub struct FlowCollectorProcessorAdvancedSchedulingTolerations {
     pub value: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorProcessorAdvancedSecondaryNetworks {
+    /// `index` is a list of fields to use for indexing the pods. They should form a unique Pod identifier across the cluster.
+    /// Can be any of: MAC, IP, Interface
+    pub index: Vec<String>,
+    /// `name` should match the network name as visible in the pods annotation 'k8s.v1.cni.cncf.io/network-status'.
+    pub name: String,
+}
+
 /// `processor` defines the settings of the component that receives the flows from the agent,
 /// enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -4564,7 +4578,8 @@ pub struct FlowCollectorProcessorMetrics {
     /// `namespace_egress_packets_total` shows up as `netobserv_namespace_egress_packets_total` in Prometheus.
     /// Note that the more metrics you add, the bigger is the impact on Prometheus workload resources.
     /// Metrics enabled by default are:
-    /// `namespace_flows_total`, `node_ingress_bytes_total`, `workload_ingress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled),
+    /// `namespace_flows_total`, `node_ingress_bytes_total`, `node_egress_bytes_total`, `workload_ingress_bytes_total`,
+    /// `workload_egress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled),
     /// `namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled).
     /// More information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeList")]

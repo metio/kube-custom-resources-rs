@@ -26,7 +26,8 @@ pub struct RayJobSpec {
     pub backoff_limit: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSelector")]
     pub cluster_selector: Option<BTreeMap<String, String>>,
-    pub entrypoint: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub entrypoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entrypointNumCpus")]
     pub entrypoint_num_cpus: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entrypointNumGpus")]

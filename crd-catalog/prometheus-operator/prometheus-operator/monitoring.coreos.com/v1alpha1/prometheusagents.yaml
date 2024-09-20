@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.1"
+    controller-gen.kubebuilder.io/version: "v0.16.3"
   name: "prometheusagents.monitoring.coreos.com"
 spec:
   group: "monitoring.coreos.com"
@@ -6156,6 +6156,9 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                           type: "object"
+                        certFile:
+                          description: "Path to the TLS certificate file in the Prometheus container for the server.\nMutually exclusive with `cert`."
+                          type: "string"
                         cipherSuites:
                           description: "List of supported cipher suites for TLS versions up to TLS 1.2. If empty,\nGo default cipher suites are used. Available cipher suites are documented\nin the go documentation: https://golang.org/pkg/crypto/tls/#pkg-constants"
                           items:
@@ -6163,6 +6166,9 @@ spec:
                           type: "array"
                         clientAuthType:
                           description: "Server policy for client authentication. Maps to ClientAuth Policies.\nFor more detail on clientAuth options:\nhttps://golang.org/pkg/crypto/tls/#ClientAuthType"
+                          type: "string"
+                        clientCAFile:
+                          description: "Path to the CA certificate file for client certificate authentication to the server.\nMutually exclusive with `client_ca`."
                           type: "string"
                         client_ca:
                           description: "Contains the CA certificate for client certificate authentication to the server."
@@ -6207,6 +6213,9 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        keyFile:
+                          description: "Path to the TLS key file in the Prometheus container for the server.\nMutually exclusive with `keySecret`."
+                          type: "string"
                         keySecret:
                           description: "Secret containing the TLS key for the server."
                           properties:
@@ -6233,9 +6242,6 @@ spec:
                         preferServerCipherSuites:
                           description: "Controls whether the server selects the\nclient's most preferred cipher suite, or the server's most preferred\ncipher suite. If true then the server's preference, as expressed in\nthe order of elements in cipherSuites, is used."
                           type: "boolean"
-                      required:
-                        - "cert"
-                        - "keySecret"
                       type: "object"
                   type: "object"
               type: "object"

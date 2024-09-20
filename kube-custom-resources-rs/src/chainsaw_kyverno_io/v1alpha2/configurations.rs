@@ -701,7 +701,7 @@ pub struct ConfigurationNamespace {
 /// Report contains properties for the report.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationReport {
-    /// ReportFormat determines test report format (JSON|XML).
+    /// ReportFormat determines test report format (JSON|XML|JUNIT-TEST|JUNIT-STEP|JUNIT-OPERATION).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<ConfigurationReportFormat>,
     /// ReportName defines the name of report to create. It defaults to "chainsaw-report".
@@ -719,6 +719,12 @@ pub enum ConfigurationReportFormat {
     Json,
     #[serde(rename = "XML")]
     Xml,
+    #[serde(rename = "JUNIT-TEST")]
+    JunitTest,
+    #[serde(rename = "JUNIT-STEP")]
+    JunitStep,
+    #[serde(rename = "JUNIT-OPERATION")]
+    JunitOperation,
 }
 
 /// Templating contains the templating config.

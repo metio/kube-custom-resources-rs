@@ -40,7 +40,7 @@ spec:
                       description: "A Dependency is a dependency of a package in the lock."
                       properties:
                         constraints:
-                          description: "Constraints is a valid semver range, which will be used to select a valid\ndependency version."
+                          description: "Constraints is a valid semver range or a digest, which will be used to select a valid\ndependency version."
                           type: "string"
                         package:
                           description: "Package is the OCI image name without a tag or digest."

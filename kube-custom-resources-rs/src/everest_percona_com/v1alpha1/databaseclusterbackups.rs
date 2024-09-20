@@ -41,6 +41,9 @@ pub struct DatabaseClusterBackupStatus {
     pub destination: Option<String>,
     /// Gaps identifies if there are gaps detected in the PITR logs
     pub gaps: bool,
+    /// LatestRestorableTime is the latest time that can be used for PITR restore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
+    pub latest_restorable_time: Option<String>,
     /// State is the DatabaseBackup state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,

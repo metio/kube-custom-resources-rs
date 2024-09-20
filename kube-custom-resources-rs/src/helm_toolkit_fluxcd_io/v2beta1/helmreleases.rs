@@ -12,21 +12,18 @@ mod prelude {
 use self::prelude::*;
 
 /// HelmReleaseSpec defines the desired state of a Helm release.
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "helm.toolkit.fluxcd.io", version = "v2beta1", kind = "HelmRelease", plural = "helmreleases")]
 #[kube(namespaced)]
 #[kube(status = "HelmReleaseStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct HelmReleaseSpec {
     /// Chart defines the template of the v1beta2.HelmChart that should be created
     /// for this HelmRelease.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub chart: Option<HelmReleaseChart>,
+    pub chart: HelmReleaseChart,
     /// ChartRef holds a reference to a source controller resource containing the
     /// Helm chart artifact.
-    /// 
     /// 
     /// Note: this field is provisional to the v2 API, and not actively used
     /// by v2beta1 HelmReleases.
@@ -40,7 +37,6 @@ pub struct HelmReleaseSpec {
     /// DriftDetection holds the configuration for detecting and handling
     /// differences between the manifest in the Helm storage and the resources
     /// currently existing in the cluster.
-    /// 
     /// 
     /// Note: this field is provisional to the v2beta2 API, and not actively used
     /// by v2beta1 HelmReleases.
@@ -71,12 +67,10 @@ pub struct HelmReleaseSpec {
     /// duration of the reconciliation, instead of being created and destroyed
     /// for each (step of a) Helm action.
     /// 
-    /// 
     /// This can improve performance, but may cause issues with some Helm charts
     /// that for example do create Custom Resource Definitions during installation
     /// outside Helm's CRD lifecycle hooks, which are then not observed to be
     /// available by e.g. post-install hooks.
-    /// 
     /// 
     /// If not set, it defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentClient")]
@@ -132,7 +126,7 @@ pub struct HelmReleaseSpec {
 
 /// Chart defines the template of the v1beta2.HelmChart that should be created
 /// for this HelmRelease.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChart {
     /// ObjectMeta holds the template for metadata like labels and annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -158,7 +152,7 @@ pub struct HelmReleaseChartMetadata {
 }
 
 /// Spec holds the template for the v1beta2.HelmChartSpec for this HelmRelease.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChartSpec {
     /// The name or path the Helm chart is available at in the SourceRef.
     pub chart: String,
@@ -208,14 +202,13 @@ pub enum HelmReleaseChartSpecReconcileStrategy {
 }
 
 /// The name and namespace of the v1beta2.Source the chart is available at.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChartSpecSourceRef {
     /// APIVersion of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<HelmReleaseChartSpecSourceRefKind>,
+    pub kind: HelmReleaseChartSpecSourceRefKind,
     /// Name of the referent.
     pub name: String,
     /// Namespace of the referent.
@@ -268,7 +261,6 @@ pub struct HelmReleaseChartSpecVerifySecretRef {
 /// ChartRef holds a reference to a source controller resource containing the
 /// Helm chart artifact.
 /// 
-/// 
 /// Note: this field is provisional to the v2 API, and not actively used
 /// by v2beta1 HelmReleases.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -288,7 +280,6 @@ pub struct HelmReleaseChartRef {
 
 /// ChartRef holds a reference to a source controller resource containing the
 /// Helm chart artifact.
-/// 
 /// 
 /// Note: this field is provisional to the v2 API, and not actively used
 /// by v2beta1 HelmReleases.
@@ -313,7 +304,6 @@ pub struct HelmReleaseDependsOn {
 /// DriftDetection holds the configuration for detecting and handling
 /// differences between the manifest in the Helm storage and the resources
 /// currently existing in the cluster.
-/// 
 /// 
 /// Note: this field is provisional to the v2beta2 API, and not actively used
 /// by v2beta1 HelmReleases.
@@ -389,7 +379,6 @@ pub struct HelmReleaseDriftDetectionIgnoreTarget {
 /// differences between the manifest in the Helm storage and the resources
 /// currently existing in the cluster.
 /// 
-/// 
 /// Note: this field is provisional to the v2beta2 API, and not actively used
 /// by v2beta1 HelmReleases.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -410,16 +399,12 @@ pub struct HelmReleaseInstall {
     /// `Create` or `CreateReplace`. Default is `Create` and if omitted
     /// CRDs are installed but not updated.
     /// 
-    /// 
     /// Skip: do neither install nor replace (update) any CRDs.
-    /// 
     /// 
     /// Create: new CRDs are created, existing CRDs are neither updated nor deleted.
     /// 
-    /// 
     /// CreateReplace: new CRDs are created, existing CRDs are updated (replaced)
     /// but not deleted.
-    /// 
     /// 
     /// By default, CRDs are applied (installed) during Helm install action.
     /// With this option users can opt-in to CRD replace existing CRDs on Helm
@@ -457,7 +442,6 @@ pub struct HelmReleaseInstall {
     pub replace: Option<bool>,
     /// SkipCRDs tells the Helm install action to not install any CRDs. By default,
     /// CRDs are installed if not already present.
-    /// 
     /// 
     /// Deprecated use CRD policy (`crds`) attribute with value `Skip` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCRDs")]
@@ -811,16 +795,12 @@ pub struct HelmReleaseUpgrade {
     /// `Create` or `CreateReplace`. Default is `Skip` and if omitted
     /// CRDs are neither installed nor upgraded.
     /// 
-    /// 
     /// Skip: do neither install nor replace (update) any CRDs.
-    /// 
     /// 
     /// Create: new CRDs are created, existing CRDs are neither updated nor deleted.
     /// 
-    /// 
     /// CreateReplace: new CRDs are created, existing CRDs are updated (replaced)
     /// but not deleted.
-    /// 
     /// 
     /// By default, CRDs are not applied during Helm upgrade action. With this
     /// option users can opt-in to CRD upgrade, which is not (yet) natively supported by Helm.
@@ -954,7 +934,6 @@ pub struct HelmReleaseStatus {
     /// History holds the history of Helm releases performed for this HelmRelease
     /// up to the last successfully completed release.
     /// 
-    /// 
     /// Note: this field is provisional to the v2beta2 API, and not actively used
     /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -969,7 +948,6 @@ pub struct HelmReleaseStatus {
     /// LastAttemptedConfigDigest is the digest for the config (better known as
     /// "values") of the last reconciliation attempt.
     /// 
-    /// 
     /// Note: this field is provisional to the v2beta2 API, and not actively used
     /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedConfigDigest")]
@@ -977,14 +955,12 @@ pub struct HelmReleaseStatus {
     /// LastAttemptedGeneration is the last generation the controller attempted
     /// to reconcile.
     /// 
-    /// 
     /// Note: this field is provisional to the v2beta2 API, and not actively used
     /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedGeneration")]
     pub last_attempted_generation: Option<i64>,
     /// LastAttemptedReleaseAction is the last release action performed for this
     /// HelmRelease. It is used to determine the active remediation strategy.
-    /// 
     /// 
     /// Note: this field is provisional to the v2beta2 API, and not actively used
     /// by v2beta1 HelmReleases.
@@ -1000,7 +976,6 @@ pub struct HelmReleaseStatus {
     /// LastHandledForceAt holds the value of the most recent force request
     /// value, so a change of the annotation value can be detected.
     /// 
-    /// 
     /// Note: this field is provisional to the v2beta2 API, and not actively used
     /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledForceAt")]
@@ -1012,7 +987,6 @@ pub struct HelmReleaseStatus {
     pub last_handled_reconcile_at: Option<String>,
     /// LastHandledResetAt holds the value of the most recent reset request
     /// value, so a change of the annotation value can be detected.
-    /// 
     /// 
     /// Note: this field is provisional to the v2beta2 API, and not actively used
     /// by v2beta1 HelmReleases.
@@ -1030,7 +1004,6 @@ pub struct HelmReleaseStatus {
     pub observed_post_renderers_digest: Option<String>,
     /// StorageNamespace is the namespace of the Helm release storage for the
     /// current release.
-    /// 
     /// 
     /// Note: this field is provisional to the v2beta2 API, and not actively used
     /// by v2beta1 HelmReleases.

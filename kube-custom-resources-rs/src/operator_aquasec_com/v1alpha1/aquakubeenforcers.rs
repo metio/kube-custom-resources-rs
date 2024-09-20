@@ -36,6 +36,9 @@ pub struct AquaKubeEnforcerSpec {
     pub infra: Option<AquaKubeEnforcerInfra>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mtls: Option<bool>,
+    /// Timeout for the mutating webhook in seconds
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutatingWebhookTimeout")]
+    pub mutating_webhook_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<AquaKubeEnforcerRegistry>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -44,6 +47,9 @@ pub struct AquaKubeEnforcerSpec {
     pub token: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateEnforcer")]
     pub update_enforcer: Option<bool>,
+    /// Timeout for the validating webhook in seconds
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validatingWebhookTimeout")]
+    pub validating_webhook_timeout: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

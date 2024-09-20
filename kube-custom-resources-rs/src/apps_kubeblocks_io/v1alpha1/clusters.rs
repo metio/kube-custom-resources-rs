@@ -359,9 +359,17 @@ pub struct ClusterComponentSpecs {
     /// Deprecated since v0.10, replaced by the `schedulingPolicy` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ClusterComponentSpecsAffinity>,
-    /// Specifies Annotations to override or add for underlying Pods.
+    /// Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// References the class defined in ComponentClassDefinition.
+    /// 
+    /// 
+    /// Deprecated since v0.9.
+    /// This field is maintained for backward compatibility and its use is discouraged.
+    /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "classDefRef")]
+    pub class_def_ref: Option<ClusterComponentSpecsClassDefRef>,
     /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
     /// custom resource (CR) that defines the Component's characteristics and behavior.
     /// 
@@ -420,6 +428,11 @@ pub struct ClusterComponentSpecs {
     /// These environment variables will be placed after the environment variables declared in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterComponentSpecsEnv>>,
+    /// Indicates the InstanceUpdateStrategy that will be
+    /// employed to update Pods in the InstanceSet when a revision is made to
+    /// Template.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceUpdateStrategy")]
+    pub instance_update_strategy: Option<ClusterComponentSpecsInstanceUpdateStrategy>,
     /// Allows for the customization of configuration values for each instance within a Component.
     /// An instance represent a single replica (Pod and associated K8s resources like PVCs, Services, and ConfigMaps).
     /// While instances typically share a common configuration as defined in the ClusterComponentSpec,
@@ -449,7 +462,7 @@ pub struct ClusterComponentSpecs {
     /// Required when TLS is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<ClusterComponentSpecsIssuer>,
-    /// Specifies Labels to override or add for underlying Pods.
+    /// Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Deprecated since v0.9
@@ -745,6 +758,21 @@ pub enum ClusterComponentSpecsAffinityTenancy {
     DedicatedNode,
 }
 
+/// References the class defined in ComponentClassDefinition.
+/// 
+/// 
+/// Deprecated since v0.9.
+/// This field is maintained for backward compatibility and its use is discouraged.
+/// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsClassDefRef {
+    /// Defines the name of the class that is defined in the ComponentClassDefinition.
+    pub class: String,
+    /// Specifies the name of the ComponentClassDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// ClusterComponentConfig represents a config with its source bound.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsConfigs {
@@ -901,6 +929,27 @@ pub struct ClusterComponentSpecsEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Indicates the InstanceUpdateStrategy that will be
+/// employed to update Pods in the InstanceSet when a revision is made to
+/// Template.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstanceUpdateStrategy {
+    /// The maximum number of pods that can be unavailable during the update.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding up. This can not be 0.
+    /// Defaults to 1. The field applies to all pods. That means if there is any unavailable pod,
+    /// it will be counted towards MaxUnavailable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+    /// Partition indicates the number of pods that should be updated during a rolling update.
+    /// The remaining pods will remain untouched. This is helpful in defining how many pods
+    /// should participate in the update process. The update process will follow the order
+    /// of pod names in descending lexicographical (dictionary) order. The default value is
+    /// ComponentSpec.Replicas (i.e., update all pods).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
 }
 
 /// InstanceTemplate allows customization of individual replica configurations in a Component.
@@ -8177,9 +8226,17 @@ pub struct ClusterShardingSpecsTemplate {
     /// Deprecated since v0.10, replaced by the `schedulingPolicy` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ClusterShardingSpecsTemplateAffinity>,
-    /// Specifies Annotations to override or add for underlying Pods.
+    /// Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// References the class defined in ComponentClassDefinition.
+    /// 
+    /// 
+    /// Deprecated since v0.9.
+    /// This field is maintained for backward compatibility and its use is discouraged.
+    /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "classDefRef")]
+    pub class_def_ref: Option<ClusterShardingSpecsTemplateClassDefRef>,
     /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
     /// custom resource (CR) that defines the Component's characteristics and behavior.
     /// 
@@ -8238,6 +8295,11 @@ pub struct ClusterShardingSpecsTemplate {
     /// These environment variables will be placed after the environment variables declared in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterShardingSpecsTemplateEnv>>,
+    /// Indicates the InstanceUpdateStrategy that will be
+    /// employed to update Pods in the InstanceSet when a revision is made to
+    /// Template.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceUpdateStrategy")]
+    pub instance_update_strategy: Option<ClusterShardingSpecsTemplateInstanceUpdateStrategy>,
     /// Allows for the customization of configuration values for each instance within a Component.
     /// An instance represent a single replica (Pod and associated K8s resources like PVCs, Services, and ConfigMaps).
     /// While instances typically share a common configuration as defined in the ClusterComponentSpec,
@@ -8267,7 +8329,7 @@ pub struct ClusterShardingSpecsTemplate {
     /// Required when TLS is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<ClusterShardingSpecsTemplateIssuer>,
-    /// Specifies Labels to override or add for underlying Pods.
+    /// Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Deprecated since v0.9
@@ -8563,6 +8625,21 @@ pub enum ClusterShardingSpecsTemplateAffinityTenancy {
     DedicatedNode,
 }
 
+/// References the class defined in ComponentClassDefinition.
+/// 
+/// 
+/// Deprecated since v0.9.
+/// This field is maintained for backward compatibility and its use is discouraged.
+/// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingSpecsTemplateClassDefRef {
+    /// Defines the name of the class that is defined in the ComponentClassDefinition.
+    pub class: String,
+    /// Specifies the name of the ComponentClassDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// ClusterComponentConfig represents a config with its source bound.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingSpecsTemplateConfigs {
@@ -8719,6 +8796,27 @@ pub struct ClusterShardingSpecsTemplateEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Indicates the InstanceUpdateStrategy that will be
+/// employed to update Pods in the InstanceSet when a revision is made to
+/// Template.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingSpecsTemplateInstanceUpdateStrategy {
+    /// The maximum number of pods that can be unavailable during the update.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding up. This can not be 0.
+    /// Defaults to 1. The field applies to all pods. That means if there is any unavailable pod,
+    /// it will be counted towards MaxUnavailable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+    /// Partition indicates the number of pods that should be updated during a rolling update.
+    /// The remaining pods will remain untouched. This is helpful in defining how many pods
+    /// should participate in the update process. The update process will follow the order
+    /// of pod names in descending lexicographical (dictionary) order. The default value is
+    /// ComponentSpec.Replicas (i.e., update all pods).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
 }
 
 /// InstanceTemplate allows customization of individual replica configurations in a Component.

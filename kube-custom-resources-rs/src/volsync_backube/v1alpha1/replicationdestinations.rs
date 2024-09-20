@@ -71,6 +71,18 @@ pub struct ReplicationDestinationRclone {
     /// capacity is the size of the destination volume to create.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<IntOrString>,
+    /// Set this to true to delete the temp destination PVC (dynamically provisioned
+    /// by VolSync) at the end of each successful ReplicationDestination sync iteration.
+    /// If destinationPVC is set, this will have no effect, VolSync will only
+    /// cleanup temp PVCs that it deployed.
+    /// Note that if this is set to true, every sync this ReplicationDestination
+    /// makes will re-provision a new temp destination PVC and all data
+    /// will need to be sent again during the sync.
+    /// Dynamically provisioned destination PVCs will always be deleted if the
+    /// owning ReplicationDestination is removed, even if this setting is false.
+    /// The default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupTempPVC")]
+    pub cleanup_temp_pvc: Option<bool>,
     /// copyMethod describes how a point-in-time (PiT) image of the destination
     /// volume should be created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "copyMethod")]
@@ -1098,6 +1110,25 @@ pub struct ReplicationDestinationRestic {
     /// capacity is the size of the destination volume to create.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<IntOrString>,
+    /// Set this to true to delete the restic cache PVC (dynamically provisioned
+    /// by VolSync) at the end of each successful ReplicationDestination sync iteration.
+    /// Cache PVCs will always be deleted if the owning ReplicationDestination is
+    /// removed, even if this setting is false.
+    /// The default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupCachePVC")]
+    pub cleanup_cache_pvc: Option<bool>,
+    /// Set this to true to delete the temp destination PVC (dynamically provisioned
+    /// by VolSync) at the end of each successful ReplicationDestination sync iteration.
+    /// If destinationPVC is set, this will have no effect, VolSync will only
+    /// cleanup temp PVCs that it deployed.
+    /// Note that if this is set to true, every sync this ReplicationDestination
+    /// makes will re-provision a new temp destination PVC and all data
+    /// will need to be sent again during the sync.
+    /// Dynamically provisioned destination PVCs will always be deleted if the
+    /// owning ReplicationDestination is removed, even if this setting is false.
+    /// The default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupTempPVC")]
+    pub cleanup_temp_pvc: Option<bool>,
     /// copyMethod describes how a point-in-time (PiT) image of the destination
     /// volume should be created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "copyMethod")]
@@ -2123,6 +2154,18 @@ pub struct ReplicationDestinationRsync {
     /// capacity is the size of the destination volume to create.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<IntOrString>,
+    /// Set this to true to delete the temp destination PVC (dynamically provisioned
+    /// by VolSync) at the end of each successful ReplicationDestination sync iteration.
+    /// If destinationPVC is set, this will have no effect, VolSync will only
+    /// cleanup temp PVCs that it deployed.
+    /// Note that if this is set to true, every sync this ReplicationDestination
+    /// makes will re-provision a new temp destination PVC and all data
+    /// will need to be sent again during the sync.
+    /// Dynamically provisioned destination PVCs will always be deleted if the
+    /// owning ReplicationDestination is removed, even if this setting is false.
+    /// The default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupTempPVC")]
+    pub cleanup_temp_pvc: Option<bool>,
     /// copyMethod describes how a point-in-time (PiT) image of the destination
     /// volume should be created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "copyMethod")]
@@ -2238,6 +2281,18 @@ pub struct ReplicationDestinationRsyncTls {
     /// capacity is the size of the destination volume to create.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<IntOrString>,
+    /// Set this to true to delete the temp destination PVC (dynamically provisioned
+    /// by VolSync) at the end of each successful ReplicationDestination sync iteration.
+    /// If destinationPVC is set, this will have no effect, VolSync will only
+    /// cleanup temp PVCs that it deployed.
+    /// Note that if this is set to true, every sync this ReplicationDestination
+    /// makes will re-provision a new temp destination PVC and all data
+    /// will need to be sent again during the sync.
+    /// Dynamically provisioned destination PVCs will always be deleted if the
+    /// owning ReplicationDestination is removed, even if this setting is false.
+    /// The default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupTempPVC")]
+    pub cleanup_temp_pvc: Option<bool>,
     /// copyMethod describes how a point-in-time (PiT) image of the destination
     /// volume should be created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "copyMethod")]

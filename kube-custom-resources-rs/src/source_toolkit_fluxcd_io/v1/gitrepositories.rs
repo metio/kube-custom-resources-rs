@@ -34,6 +34,10 @@ pub struct GitRepositorySpec {
     /// This interval is approximate and may be subject to jitter to ensure
     /// efficient use of resources.
     pub interval: String,
+    /// Provider used for authentication, can be 'azure', 'generic'.
+    /// When not specified, defaults to 'generic'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provider: Option<GitRepositoryProvider>,
     /// ProxySecretRef specifies the Secret containing the proxy configuration
     /// to use while communicating with the Git server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySecretRef")]
@@ -92,6 +96,16 @@ pub struct GitRepositoryInclude {
 pub struct GitRepositoryIncludeRepository {
     /// Name of the referent.
     pub name: String,
+}
+
+/// GitRepositorySpec specifies the required configuration to produce an
+/// Artifact for a Git repository.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum GitRepositoryProvider {
+    #[serde(rename = "generic")]
+    Generic,
+    #[serde(rename = "azure")]
+    Azure,
 }
 
 /// ProxySecretRef specifies the Secret containing the proxy configuration

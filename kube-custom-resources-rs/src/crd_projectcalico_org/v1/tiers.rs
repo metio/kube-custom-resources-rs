@@ -16,8 +16,18 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct TierSpec {
+    /// DefaultAction specifies the action applied to workloads selected by a policy in the tier, but not rule matched the workload's traffic. [Default: Deny]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultAction")]
+    pub default_action: Option<TierDefaultAction>,
     /// Order is an optional field that specifies the order in which the tier is applied. Tiers with higher "order" are applied after those with lower order.  If the order is omitted, it may be considered to be "infinite" - i.e. the tier will be applied last.  Tiers with identical order will be applied in alphanumerical order based on the Tier "Name".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub order: Option<f64>,
+}
+
+/// TierSpec contains the specification for a security policy tier resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TierDefaultAction {
+    Pass,
+    Deny,
 }
 

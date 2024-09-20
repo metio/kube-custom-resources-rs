@@ -288,17 +288,14 @@ pub struct GslbIngressTls {
 /// ResourceRef spec
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbResourceRef {
-    /// Ingress selects a kubernetes.networking.k8s.io/v1.Ingress resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ingress: Option<GslbResourceRefIngress>,
-}
-
-/// Ingress selects a kubernetes.networking.k8s.io/v1.Ingress resource
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GslbResourceRefIngress {
+    /// APIVersion of the referenced resource
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// Kind of the referenced resource
+    pub kind: String,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GslbResourceRefIngressMatchExpressions>>,
+    pub match_expressions: Option<Vec<GslbResourceRefMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -309,7 +306,7 @@ pub struct GslbResourceRefIngress {
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GslbResourceRefIngressMatchExpressions {
+pub struct GslbResourceRefMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.

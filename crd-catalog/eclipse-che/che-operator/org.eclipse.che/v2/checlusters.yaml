@@ -877,11 +877,11 @@ spec:
                       pvcStrategy: "per-user"
                   description: "Development environment default configuration options."
                   properties:
-                    allowedSource:
-                      description: "AllowedSource defines the allowed sources on which workspaces can be started."
+                    allowedSources:
+                      description: "AllowedSources defines the allowed sources on which workspaces can be started."
                       properties:
                         urls:
-                          description: "The list of approved URLs for starting Cloud Development Environments (CDEs). CDEs can only be\ninitiated from these URLs."
+                          description: "The list of approved URLs for starting Cloud Development Environments (CDEs). CDEs can only be\ninitiated from these URLs. Wildcards `*` are supported in URLs, allowing flexible matching for\nspecific URL patterns. For instance, `https://example.com/*` would allow CDEs to be initiated\nfrom any path within 'example.com'."
                           items:
                             type: "string"
                           type: "array"
@@ -1997,6 +1997,8 @@ spec:
                           type: "object"
                       type: "object"
                     ignoredUnrecoverableEvents:
+                      default:
+                        - "FailedScheduling"
                       description: "IgnoredUnrecoverableEvents defines a list of Kubernetes event names that should\nbe ignored when deciding to fail a workspace that is starting. This option should be used\nif a transient cluster issue is triggering false-positives (for example, if\nthe cluster occasionally encounters FailedScheduling events). Events listed\nhere will not trigger workspace failures."
                       items:
                         type: "string"
@@ -2183,6 +2185,9 @@ spec:
                               type: "object"
                           type: "object"
                       type: "object"
+                    runtimeClassName:
+                      description: "RuntimeClassName specifies the spec.runtimeClassName for workspace pods."
+                      type: "string"
                     secondsOfInactivityBeforeIdling:
                       default: 1800
                       description: "Idle timeout for workspaces in seconds.\nThis timeout is the duration after which a workspace will be idled if there is no activity.\nTo disable workspace idling due to inactivity, set this value to -1."
