@@ -24,6 +24,10 @@ fn main() {
                     if response.status().is_success() {
                         if let Ok(content) = response.text() {
                             for crd in parse_crds(content) {
+                                if source.ignores.iter().any(|&ignore| ignore.group == crd.spec.group && ignore.version == crd.spec.versions[0].name) {
+                                    println!("  Ignoring {}/{}", crd.spec.group, crd.spec.versions[0].name);
+                                    continue
+                                }
                                 let directory = format!(
                                     "{}/crd-catalog/{}/{}/{}",
                                     root,

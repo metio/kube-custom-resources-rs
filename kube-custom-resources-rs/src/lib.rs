@@ -2570,7 +2570,6 @@ apiVersion `policy.kubeedge.io/v1alpha1`:
 apiVersion `policy.networking.k8s.io/v1alpha1`:
 - `AdminNetworkPolicy`
 - `BaselineAdminNetworkPolicy`
-- `AdminNetworkPolicy`
 
 ## postgres_operator_crunchydata_com
 
