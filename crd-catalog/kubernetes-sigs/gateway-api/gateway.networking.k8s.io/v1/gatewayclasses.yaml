@@ -4,7 +4,7 @@ metadata:
   annotations:
     api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/2997"
     gateway.networking.k8s.io/bundle-version: "v1.2.0-rc1"
-    gateway.networking.k8s.io/channel: "experimental"
+    gateway.networking.k8s.io/channel: "standard"
   name: "gatewayclasses.gateway.networking.k8s.io"
 spec:
   group: "gateway.networking.k8s.io"
@@ -158,21 +158,6 @@ spec:
                   type: "array"
                   x-kubernetes-list-map-keys:
                     - "type"
-                  x-kubernetes-list-type: "map"
-                supportedFeatures:
-                  description: "SupportedFeatures is the set of features the GatewayClass support.\nIt MUST be sorted in ascending alphabetical order by the Name key.\n"
-                  items:
-                    properties:
-                      name:
-                        description: "FeatureName is used to describe distinct features that are covered by\nconformance tests."
-                        type: "string"
-                    required:
-                      - "name"
-                    type: "object"
-                  maxItems: 64
-                  type: "array"
-                  x-kubernetes-list-map-keys:
-                    - "name"
                   x-kubernetes-list-type: "map"
               type: "object"
           required:
