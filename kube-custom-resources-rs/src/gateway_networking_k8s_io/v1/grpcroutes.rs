@@ -123,16 +123,6 @@ pub struct GRPCRouteSpec {
     /// generic way to enable other kinds of cross-namespace reference.
     /// 
     /// 
-    /// ParentRefs from a Route to a Service in the same namespace are "producer"
-    /// routes, which apply default routing rules to inbound connections from
-    /// any namespace to the Service.
-    /// 
-    /// ParentRefs from a Route to a Service in a different namespace are
-    /// "consumer" routes, and these routing rules are only applied to outbound
-    /// connections originating from the same namespace as the Route, for which
-    /// the intended destination of the connections are a Service targeted as a
-    /// ParentRef of the Route.
-    /// 
     /// 
     /// 
     /// 
@@ -193,16 +183,6 @@ pub struct GRPCRouteParentRefs {
     /// generic way to enable any other kind of cross-namespace reference.
     /// 
     /// 
-    /// ParentRefs from a Route to a Service in the same namespace are "producer"
-    /// routes, which apply default routing rules to inbound connections from
-    /// any namespace to the Service.
-    /// 
-    /// ParentRefs from a Route to a Service in a different namespace are
-    /// "consumer" routes, and these routing rules are only applied to outbound
-    /// connections originating from the same namespace as the Route, for which
-    /// the intended destination of the connections are a Service targeted as a
-    /// ParentRef of the Route.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -218,10 +198,6 @@ pub struct GRPCRouteParentRefs {
     /// and SectionName are specified, the name and port of the selected listener
     /// must match both specified values.
     /// 
-    /// 
-    /// When the parent resource is a Service, this targets a specific port in the
-    /// Service spec. When both Port (experimental) and SectionName are specified,
-    /// the name and port of the selected port must match both specified values.
     /// 
     /// 
     /// Implementations MAY choose to support other parent resources.
@@ -379,20 +355,6 @@ pub struct GRPCRouteRules {
     /// the above criteria.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matches: Option<Vec<GRPCRouteRulesMatches>>,
-    /// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
-    /// 
-    /// Support: Extended
-    /// 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// SessionPersistence defines and configures session persistence
-    /// for the route rule.
-    /// 
-    /// Support: Extended
-    /// 
-    /// 
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionPersistence")]
-    pub session_persistence: Option<GRPCRouteRulesSessionPersistence>,
 }
 
 /// GRPCBackendRef defines how a GRPCRoute forwards a gRPC request.
@@ -709,25 +671,6 @@ pub struct GRPCRouteRulesBackendRefsFiltersRequestMirror {
     /// Support: Implementation-specific for any other resource
     #[serde(rename = "backendRef")]
     pub backend_ref: GRPCRouteRulesBackendRefsFiltersRequestMirrorBackendRef,
-    /// Fraction represents the fraction of requests that should be
-    /// mirrored to BackendRef.
-    /// 
-    /// Only one of Fraction or Percent may be specified. If neither field
-    /// is specified, 100% of requests will be mirrored.
-    /// 
-    /// 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fraction: Option<GRPCRouteRulesBackendRefsFiltersRequestMirrorFraction>,
-    /// Percent represents the percentage of requests that should be
-    /// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
-    /// requests) and its maximum value is 100 (indicating 100% of requests).
-    /// 
-    /// Only one of Fraction or Percent may be specified. If neither field
-    /// is specified, 100% of requests will be mirrored.
-    /// 
-    /// 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub percent: Option<i32>,
 }
 
 /// BackendRef references a resource where mirrored requests are sent.
@@ -795,20 +738,6 @@ pub struct GRPCRouteRulesBackendRefsFiltersRequestMirrorBackendRef {
     /// resource or this field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-}
-
-/// Fraction represents the fraction of requests that should be
-/// mirrored to BackendRef.
-/// 
-/// Only one of Fraction or Percent may be specified. If neither field
-/// is specified, 100% of requests will be mirrored.
-/// 
-/// 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GRPCRouteRulesBackendRefsFiltersRequestMirrorFraction {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub denominator: Option<i32>,
-    pub numerator: i32,
 }
 
 /// ResponseHeaderModifier defines a schema for a filter that modifies response
@@ -1143,25 +1072,6 @@ pub struct GRPCRouteRulesFiltersRequestMirror {
     /// Support: Implementation-specific for any other resource
     #[serde(rename = "backendRef")]
     pub backend_ref: GRPCRouteRulesFiltersRequestMirrorBackendRef,
-    /// Fraction represents the fraction of requests that should be
-    /// mirrored to BackendRef.
-    /// 
-    /// Only one of Fraction or Percent may be specified. If neither field
-    /// is specified, 100% of requests will be mirrored.
-    /// 
-    /// 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fraction: Option<GRPCRouteRulesFiltersRequestMirrorFraction>,
-    /// Percent represents the percentage of requests that should be
-    /// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
-    /// requests) and its maximum value is 100 (indicating 100% of requests).
-    /// 
-    /// Only one of Fraction or Percent may be specified. If neither field
-    /// is specified, 100% of requests will be mirrored.
-    /// 
-    /// 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub percent: Option<i32>,
 }
 
 /// BackendRef references a resource where mirrored requests are sent.
@@ -1229,20 +1139,6 @@ pub struct GRPCRouteRulesFiltersRequestMirrorBackendRef {
     /// resource or this field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-}
-
-/// Fraction represents the fraction of requests that should be
-/// mirrored to BackendRef.
-/// 
-/// Only one of Fraction or Percent may be specified. If neither field
-/// is specified, 100% of requests will be mirrored.
-/// 
-/// 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GRPCRouteRulesFiltersRequestMirrorFraction {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub denominator: Option<i32>,
-    pub numerator: i32,
 }
 
 /// ResponseHeaderModifier defines a schema for a filter that modifies response
@@ -1444,102 +1340,6 @@ pub enum GRPCRouteRulesMatchesMethodType {
     RegularExpression,
 }
 
-/// SessionPersistence defines and configures session persistence
-/// for the route rule.
-/// 
-/// Support: Extended
-/// 
-/// 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GRPCRouteRulesSessionPersistence {
-    /// AbsoluteTimeout defines the absolute timeout of the persistent
-    /// session. Once the AbsoluteTimeout duration has elapsed, the
-    /// session becomes invalid.
-    /// 
-    /// Support: Extended
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "absoluteTimeout")]
-    pub absolute_timeout: Option<String>,
-    /// CookieConfig provides configuration settings that are specific
-    /// to cookie-based session persistence.
-    /// 
-    /// Support: Core
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cookieConfig")]
-    pub cookie_config: Option<GRPCRouteRulesSessionPersistenceCookieConfig>,
-    /// IdleTimeout defines the idle timeout of the persistent session.
-    /// Once the session has been idle for more than the specified
-    /// IdleTimeout duration, the session becomes invalid.
-    /// 
-    /// Support: Extended
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
-    pub idle_timeout: Option<String>,
-    /// SessionName defines the name of the persistent session token
-    /// which may be reflected in the cookie or the header. Users
-    /// should avoid reusing session names to prevent unintended
-    /// consequences, such as rejection or unpredictable behavior.
-    /// 
-    /// Support: Implementation-specific
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionName")]
-    pub session_name: Option<String>,
-    /// Type defines the type of session persistence such as through
-    /// the use a header or cookie. Defaults to cookie based session
-    /// persistence.
-    /// 
-    /// Support: Core for "Cookie" type
-    /// 
-    /// Support: Extended for "Header" type
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<GRPCRouteRulesSessionPersistenceType>,
-}
-
-/// CookieConfig provides configuration settings that are specific
-/// to cookie-based session persistence.
-/// 
-/// Support: Core
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GRPCRouteRulesSessionPersistenceCookieConfig {
-    /// LifetimeType specifies whether the cookie has a permanent or
-    /// session-based lifetime. A permanent cookie persists until its
-    /// specified expiry time, defined by the Expires or Max-Age cookie
-    /// attributes, while a session cookie is deleted when the current
-    /// session ends.
-    /// 
-    /// When set to "Permanent", AbsoluteTimeout indicates the
-    /// cookie's lifetime via the Expires or Max-Age cookie attributes
-    /// and is required.
-    /// 
-    /// When set to "Session", AbsoluteTimeout indicates the
-    /// absolute lifetime of the cookie tracked by the gateway and
-    /// is optional.
-    /// 
-    /// Support: Core for "Session" type
-    /// 
-    /// Support: Extended for "Permanent" type
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifetimeType")]
-    pub lifetime_type: Option<GRPCRouteRulesSessionPersistenceCookieConfigLifetimeType>,
-}
-
-/// CookieConfig provides configuration settings that are specific
-/// to cookie-based session persistence.
-/// 
-/// Support: Core
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum GRPCRouteRulesSessionPersistenceCookieConfigLifetimeType {
-    Permanent,
-    Session,
-}
-
-/// SessionPersistence defines and configures session persistence
-/// for the route rule.
-/// 
-/// Support: Extended
-/// 
-/// 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum GRPCRouteRulesSessionPersistenceType {
-    Cookie,
-    Header,
-}
-
 /// Status defines the current state of GRPCRoute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteStatus {
@@ -1642,16 +1442,6 @@ pub struct GRPCRouteStatusParentsParentRef {
     /// generic way to enable any other kind of cross-namespace reference.
     /// 
     /// 
-    /// ParentRefs from a Route to a Service in the same namespace are "producer"
-    /// routes, which apply default routing rules to inbound connections from
-    /// any namespace to the Service.
-    /// 
-    /// ParentRefs from a Route to a Service in a different namespace are
-    /// "consumer" routes, and these routing rules are only applied to outbound
-    /// connections originating from the same namespace as the Route, for which
-    /// the intended destination of the connections are a Service targeted as a
-    /// ParentRef of the Route.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1667,10 +1457,6 @@ pub struct GRPCRouteStatusParentsParentRef {
     /// and SectionName are specified, the name and port of the selected listener
     /// must match both specified values.
     /// 
-    /// 
-    /// When the parent resource is a Service, this targets a specific port in the
-    /// Service spec. When both Port (experimental) and SectionName are specified,
-    /// the name and port of the selected port must match both specified values.
     /// 
     /// 
     /// Implementations MAY choose to support other parent resources.
