@@ -1836,11 +1836,18 @@ apiVersion `kubevious.io/v1alpha1`:
 
 ## kueue_x_k8s_io
 
+apiVersion `kueue.x-k8s.io/v1alpha1`:
+- `Cohort`
+- `MultiKueueCluster`
+- `MultiKueueConfig`
+
 apiVersion `kueue.x-k8s.io/v1beta1`:
 - `AdmissionCheck`
 - `ClusterQueue`
 - `LocalQueue`
+- `ProvisioningRequestConfig`
 - `ResourceFlavor`
+- `WorkloadPriorityClass`
 - `Workload`
 
 ## kuma_io

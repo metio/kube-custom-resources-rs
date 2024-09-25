@@ -2215,8 +2215,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         urls: &[
             "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_admissionchecks.yaml",
             "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_clusterqueues.yaml",
+            "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_cohorts.yaml",
             "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_localqueues.yaml",
+            "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_multikueueclusters.yaml",
+            "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_multikueueconfigs.yaml",
+            "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_provisioningrequestconfigs.yaml",
             "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_resourceflavors.yaml",
+            "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_workloadpriorityclasses.yaml",
             "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_workloads.yaml",
         ],
         ignores: &[],
