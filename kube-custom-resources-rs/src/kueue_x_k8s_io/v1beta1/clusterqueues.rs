@@ -455,6 +455,9 @@ pub struct ClusterQueueStatus {
     pub pending_workloads: Option<i32>,
     /// PendingWorkloadsStatus contains the information exposed about the current
     /// status of the pending workloads in the cluster queue.
+    /// Deprecated: This field will be removed on v1beta2, use VisibilityOnDemand
+    /// (https://kueue.sigs.k8s.io/docs/tasks/manage/monitor_pending_workloads/pending_workloads_on_demand/)
+    /// instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingWorkloadsStatus")]
     pub pending_workloads_status: Option<ClusterQueueStatusPendingWorkloadsStatus>,
     /// reservingWorkloads is the number of workloads currently reserving quota in this
@@ -522,6 +525,9 @@ pub struct ClusterQueueStatusFlavorsUsageResources {
 
 /// PendingWorkloadsStatus contains the information exposed about the current
 /// status of the pending workloads in the cluster queue.
+/// Deprecated: This field will be removed on v1beta2, use VisibilityOnDemand
+/// (https://kueue.sigs.k8s.io/docs/tasks/manage/monitor_pending_workloads/pending_workloads_on_demand/)
+/// instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueStatusPendingWorkloadsStatus {
     /// Head contains the list of top pending workloads.

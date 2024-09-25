@@ -449,7 +449,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 pendingWorkloadsStatus:
-                  description: "PendingWorkloadsStatus contains the information exposed about the current\nstatus of the pending workloads in the cluster queue."
+                  description: "PendingWorkloadsStatus contains the information exposed about the current\nstatus of the pending workloads in the cluster queue.\nDeprecated: This field will be removed on v1beta2, use VisibilityOnDemand\n(https://kueue.sigs.k8s.io/docs/tasks/manage/monitor_pending_workloads/pending_workloads_on_demand/)\ninstead."
                   properties:
                     clusterQueuePendingWorkload:
                       description: "Head contains the list of top pending workloads."
