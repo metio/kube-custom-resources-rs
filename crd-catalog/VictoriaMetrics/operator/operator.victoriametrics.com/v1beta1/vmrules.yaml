@@ -5,6 +5,16 @@ metadata:
     controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "vmrules.operator.victoriametrics.com"
 spec:
+  conversion:
+    strategy: "Webhook"
+    webhook:
+      clientConfig:
+        service:
+          name: "webhook-service"
+          namespace: "vm"
+          path: "/convert"
+      conversionReviewVersions:
+        - "v1"
   group: "operator.victoriametrics.com"
   names:
     kind: "VMRule"
@@ -13,7 +23,17 @@ spec:
     singular: "vmrule"
   scope: "Namespaced"
   versions:
-    - name: "v1beta1"
+    - additionalPrinterColumns:
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+        - jsonPath: ".status.status"
+          name: "Status"
+          type: "string"
+        - jsonPath: ".status.lastSyncError"
+          name: "Sync Error"
+          type: "string"
+      name: "v1beta1"
       schema:
         openAPIV3Schema:
           description: "VMRule defines rule records for vmalert application"
@@ -37,10 +57,19 @@ spec:
                       concurrency:
                         description: "Concurrency defines how many rules execute at once."
                         type: "integer"
+                      eval_alignment:
+                        description: "Optional\nThe evaluation timestamp will be aligned with group's interval,\ninstead of using the actual timestamp that evaluation happens at.\nIt is enabled by default to get more predictable results\nand to visually align with graphs plotted via Grafana or vmui."
+                        type: "boolean"
+                      eval_delay:
+                        description: "Optional\nAdjust the `time` parameter of group evaluation requests to compensate intentional query delay from the datasource."
+                        type: "string"
+                      eval_offset:
+                        description: "Optional\nGroup will be evaluated at the exact offset in the range of [0...interval]."
+                        type: "string"
                       extra_filter_labels:
                         additionalProperties:
                           type: "string"
-                        description: "ExtraFilterLabels optional list of label filters applied to every rule's\nrequest withing a group. Is compatible only with VM datasource.\nSee more details at https://docs.victoriametrics.com#prometheus-querying-api-enhancements\nDeprecated, use params instead"
+                        description: "ExtraFilterLabels optional list of label filters applied to every rule's\nrequest within a group. Is compatible only with VM datasource.\nSee more details [here](https://docs.victoriametrics.com/#prometheus-querying-api-enhancements)\nDeprecated, use params instead"
                         type: "object"
                       headers:
                         description: "Headers contains optional HTTP headers added to each rule request\nMust be in form `header-name: value`\nFor example:\n headers:\n   - \"CustomHeader: foo\"\n   - \"CustomHeader2: bar\""
@@ -112,7 +141,7 @@ spec:
                           type: "object"
                         type: "array"
                       tenant:
-                        description: "Tenant id for group, can be used only with enterprise version of vmalert\nSee more details at https://docs.victoriametrics.com/vmalert.html#multitenancy"
+                        description: "Tenant id for group, can be used only with enterprise version of vmalert.\nSee more details [here](https://docs.victoriametrics.com/vmalert#multitenancy)."
                         type: "string"
                       type:
                         description: "Type defines datasource type for enterprise version of vmalert\npossible values - prometheus,graphite"
@@ -127,6 +156,13 @@ spec:
               type: "object"
             status:
               description: "VMRuleStatus defines the observed state of VMRule"
+              properties:
+                lastSyncError:
+                  description: "LastSyncError contains error message for unsuccessful config generation"
+                  type: "string"
+                status:
+                  description: "Status defines CRD processing status"
+                  type: "string"
               type: "object"
           required:
             - "spec"

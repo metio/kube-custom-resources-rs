@@ -5,6 +5,16 @@ metadata:
     controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "vmalertmanagers.operator.victoriametrics.com"
 spec:
+  conversion:
+    strategy: "Webhook"
+    webhook:
+      clientConfig:
+        service:
+          name: "webhook-service"
+          namespace: "vm"
+          path: "/convert"
+      conversionReviewVersions:
+        - "v1"
   group: "operator.victoriametrics.com"
   names:
     kind: "VMAlertmanager"
@@ -79,6 +89,7 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           dataSource:
                             description: "dataSource field can be used to specify either:\n* An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)\n* An existing PVC (PersistentVolumeClaim)\nIf the provisioner or an external controller can support the specified data source,\nit will create a new volume based on the contents of the specified data source.\nWhen the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,\nand dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.\nIf the namespace is specified, then dataSourceRef will not be copied to dataSource."
                             properties:
@@ -118,21 +129,6 @@ spec:
                           resources:
                             description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
                             properties:
-                              claims:
-                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
-                                items:
-                                  description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
-                                  properties:
-                                    name:
-                                      description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
-                                      type: "string"
-                                  required:
-                                    - "name"
-                                  type: "object"
-                                type: "array"
-                                x-kubernetes-list-map-keys:
-                                  - "name"
-                                x-kubernetes-list-type: "map"
                               limits:
                                 additionalProperties:
                                   anyOf:
@@ -171,11 +167,13 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                   required:
                                     - "key"
                                     - "operator"
                                   type: "object"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
@@ -185,6 +183,9 @@ spec:
                             x-kubernetes-map-type: "atomic"
                           storageClassName:
                             description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
+                            type: "string"
+                          volumeAttributesClassName:
+                            description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
                             type: "string"
                           volumeMode:
                             description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -201,6 +202,14 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
+                          allocatedResourceStatuses:
+                            additionalProperties:
+                              description: "When a controller receives persistentvolume claim update with ClaimResourceStatus for a resource\nthat it does not recognizes, then it should ignore that update and let other controllers\nhandle it."
+                              type: "string"
+                            description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                            type: "object"
+                            x-kubernetes-map-type: "granular"
                           allocatedResources:
                             additionalProperties:
                               anyOf:
@@ -208,7 +217,7 @@ spec:
                                 - type: "string"
                               pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                               x-kubernetes-int-or-string: true
-                            description: "allocatedResources is the storage resource within AllocatedResources tracks the capacity allocated to a PVC. It may\nbe larger than the actual capacity when a volume expansion operation is requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                            description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
                             type: "object"
                           capacity:
                             additionalProperties:
@@ -220,7 +229,7 @@ spec:
                             description: "capacity represents the actual resources of the underlying volume."
                             type: "object"
                           conditions:
-                            description: "conditions is the current Condition of persistent volume claim. If underlying persistent volume is being\nresized then the Condition will be set to 'ResizeStarted'."
+                            description: "conditions is the current Condition of persistent volume claim. If underlying persistent volume is being\nresized then the Condition will be set to 'Resizing'."
                             items:
                               description: "PersistentVolumeClaimCondition contains details about state of pvc"
                               properties:
@@ -236,7 +245,7 @@ spec:
                                   description: "message is the human-readable message indicating details about last transition."
                                   type: "string"
                                 reason:
-                                  description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"ResizeStarted\" that means the underlying\npersistent volume is being resized."
+                                  description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"Resizing\" that means the underlying\npersistent volume is being resized."
                                   type: "string"
                                 status:
                                   type: "string"
@@ -248,11 +257,26 @@ spec:
                                 - "type"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-map-keys:
+                              - "type"
+                            x-kubernetes-list-type: "map"
+                          currentVolumeAttributesClassName:
+                            description: "currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.\nWhen unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim\nThis is an alpha field and requires enabling VolumeAttributesClass feature."
+                            type: "string"
+                          modifyVolumeStatus:
+                            description: "ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.\nWhen this is unset, there is no ModifyVolume operation being attempted.\nThis is an alpha field and requires enabling VolumeAttributesClass feature."
+                            properties:
+                              status:
+                                description: "status is the status of the ControllerModifyVolume operation. It can be in any of following states:\n - Pending\n   Pending indicates that the PersistentVolumeClaim cannot be modified due to unmet requirements, such as\n   the specified VolumeAttributesClass not existing.\n - InProgress\n   InProgress indicates that the volume is being modified.\n - Infeasible\n  Infeasible indicates that the request has been rejected as invalid by the CSI driver. To\n\t  resolve the error, a valid VolumeAttributesClass needs to be specified.\nNote: New statuses can be added in the future. Consumers should check for unknown statuses and fail appropriately."
+                                type: "string"
+                              targetVolumeAttributesClassName:
+                                description: "targetVolumeAttributesClassName is the name of the VolumeAttributesClass the PVC currently being reconciled"
+                                type: "string"
+                            required:
+                              - "status"
+                            type: "object"
                           phase:
                             description: "phase represents the current phase of PersistentVolumeClaim."
-                            type: "string"
-                          resizeStatus:
-                            description: "resizeStatus stores status of resize operation.\nResizeStatus is not set by default but when expansion is complete resizeStatus is set to empty\nstring by resize controller or kubelet.\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
                             type: "string"
                         type: "object"
                     type: "object"
@@ -260,8 +284,11 @@ spec:
                 clusterAdvertiseAddress:
                   description: "ClusterAdvertiseAddress is the explicit address to advertise in cluster.\nNeeds to be provided for non RFC1918 [1] (public) addresses.\n[1] RFC1918: https://tools.ietf.org/html/rfc1918"
                   type: "string"
+                clusterDomainName:
+                  description: "ClusterDomainName defines domain name suffix for in-cluster dns addresses\naka .cluster.local\nused to build pod peer addresses for in-cluster communication"
+                  type: "string"
                 configMaps:
-                  description: "ConfigMaps is a list of ConfigMaps in the same namespace as the VMAlertmanager\nobject, which shall be mounted into the VMAlertmanager Pods.\nThe ConfigMaps are mounted into /etc/vm/configs/<configmap-name>."
+                  description: "ConfigMaps is a list of ConfigMaps in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/configs/CONFIGMAP_NAME folder"
                   items:
                     type: "string"
                   type: "array"
@@ -284,11 +311,13 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                         required:
                           - "key"
                           - "operator"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     matchLabels:
                       additionalProperties:
                         type: "string"
@@ -303,6 +332,46 @@ spec:
                   additionalProperties:
                     type: "string"
                   description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resyncInterval: \"30s\""
+                  type: "object"
+                configReloaderImageTag:
+                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container"
+                  type: "string"
+                configReloaderResources:
+                  description: "ConfigReloaderResources config-reloader container resource request and limits, https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/\nif not defined default resources from operator config will be used"
+                  properties:
+                    claims:
+                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                      items:
+                        description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                        properties:
+                          name:
+                            description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                            type: "string"
+                        required:
+                          - "name"
+                        type: "object"
+                      type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "name"
+                      x-kubernetes-list-type: "map"
+                    limits:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
+                      description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      type: "object"
+                    requests:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
+                      description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      type: "object"
                   type: "object"
                 configSecret:
                   description: "ConfigSecret is the name of a Kubernetes Secret in the same namespace as the\nVMAlertmanager object, which contains configuration for this VMAlertmanager,\nconfiguration must be inside secret key: alertmanager.yaml.\nIt must be created by user.\ninstance. Defaults to 'vmalertmanager-<alertmanager-name>'\nThe secret is mounted into /etc/alertmanager/config."
@@ -326,11 +395,13 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                         required:
                           - "key"
                           - "operator"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     matchLabels:
                       additionalProperties:
                         type: "string"
@@ -339,7 +410,7 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 containers:
-                  description: "Containers allows injecting additional containers or patching existing containers.\nThis is meant to allow adding an authentication proxy to an VMAlertmanager pod."
+                  description: "Containers property allows to inject additions sidecars or to patch existing containers.\nIt can be useful for proxies, backup, etc."
                   items:
                     description: "A single application container that you want to run within a pod."
                     required:
@@ -348,10 +419,13 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
                 disableNamespaceMatcher:
-                  description: "DisableNamespaceMatcher disables namespace label matcher for VMAlertmanagerConfig\nIt may be useful if alert doesn't have namespace label for some reason"
+                  description: "DisableNamespaceMatcher disables top route namespace label matcher for VMAlertmanagerConfig\nIt may be useful if alert doesn't have namespace label for some reason"
                   type: "boolean"
                 disableRouteContinueEnforce:
                   description: "DisableRouteContinueEnforce cancel the behavior for VMAlertmanagerConfig that always enforce first-level route continue to true"
+                  type: "boolean"
+                disableSelfServiceScrape:
+                  description: "DisableSelfServiceScrape controls creation of VMServiceScrape by operator\nfor the application.\nHas priority over `VM_DISABLESELFSERVICESCRAPECREATION` operator env variable"
                   type: "boolean"
                 dnsConfig:
                   description: "Specifies the DNS parameters of a pod.\nParameters specified here will be merged to the generated DNS\nconfiguration based on DNSPolicy."
@@ -363,6 +437,7 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     options:
                       description: "A list of DNS resolver options.\nThis will be merged with the base options generated from DNSPolicy.\nDuplicated entries will be removed. Resolution options given in Options\nwill override those that appear in the base DNSPolicy."
                       items:
@@ -375,25 +450,32 @@ spec:
                             type: "string"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     searches:
                       description: "A list of DNS search domains for host-name lookup.\nThis will be appended to the base search paths generated from DNSPolicy.\nDuplicated search paths will be removed."
                       items:
                         type: "string"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                   type: "object"
                 dnsPolicy:
                   description: "DNSPolicy sets DNS policy for the pod"
                   type: "string"
+                enforcedTopRouteMatchers:
+                  description: "EnforcedTopRouteMatchers defines label matchers to be added for the top route\nof VMAlertmanagerConfig\nIt allows to make some set of labels required for alerts.\nhttps://prometheus.io/docs/alerting/latest/configuration/#matcher"
+                  items:
+                    type: "string"
+                  type: "array"
                 externalURL:
                   description: "ExternalURL the VMAlertmanager instances will be available under. This is\nnecessary to generate correct URLs. This is necessary if VMAlertmanager is not\nserved from root of a DNS name."
                   type: "string"
                 extraArgs:
                   additionalProperties:
                     type: "string"
-                  description: "ExtraArgs that will be passed to  VMAlertmanager pod\nfor example log.level: debug"
+                  description: "ExtraArgs that will be passed to the application container\nfor example remoteWrite.tmpDataPath: /tmp"
                   type: "object"
                 extraEnvs:
-                  description: "ExtraEnvs that will be added to VMAlertmanager pod"
+                  description: "ExtraEnvs that will be passed to the application container"
                   items:
                     description: "EnvVar represents an environment variable present in a Container."
                     properties:
@@ -408,11 +490,220 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                gossipConfig:
+                  description: "GossipConfig defines gossip TLS configuration for Alertmanager cluster"
+                  properties:
+                    tls_client_config:
+                      description: "TLSClientConfig defines client TLS configuration for alertmanager"
+                      properties:
+                        ca_file:
+                          description: "CAFile defines path to the pre-mounted file with CA\nmutually exclusive with CASecretRef"
+                          type: "string"
+                        ca_secret_ref:
+                          description: "CA defines reference for secret with CA content under given key\nmutually exclusive with CAFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        cert_file:
+                          description: "CertFile defines path to the pre-mounted file with certificate\nmutually exclusive with CertSecretRef"
+                          type: "string"
+                        cert_secret_ref:
+                          description: "CertSecretRef defines reference for secret with certificate content under given key\nmutually exclusive with CertFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        insecure_skip_verify:
+                          description: "Cert defines reference for secret with CA content under given key\nmutually exclusive with CertFile"
+                          type: "boolean"
+                        key_file:
+                          description: "KeyFile defines path to the pre-mounted file with certificate key\nmutually exclusive with KeySecretRef"
+                          type: "string"
+                        key_secret_ref:
+                          description: "Key defines reference for secret with certificate key content under given key\nmutually exclusive with KeyFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        server_name:
+                          description: "ServerName indicates a name of a server"
+                          type: "string"
+                      type: "object"
+                    tls_server_config:
+                      description: "TLSServerConfig defines server TLS configuration for alertmanager"
+                      properties:
+                        cert_file:
+                          description: "CertFile defines path to the pre-mounted file with certificate\nmutually exclusive with CertSecretRef"
+                          type: "string"
+                        cert_secret_ref:
+                          description: "CertSecretRef defines reference for secret with certificate content under given key\nmutually exclusive with CertFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        cipher_suites:
+                          description: "CipherSuites defines list of supported cipher suites for TLS versions up to TLS 1.2\nhttps://golang.org/pkg/crypto/tls/#pkg-constants"
+                          items:
+                            type: "string"
+                          type: "array"
+                        client_auth_type:
+                          description: "Cert defines reference for secret with CA content under given key\nmutually exclusive with CertFile\nClientAuthType defines server policy for client authentication\nIf you want to enable client authentication (aka mTLS), you need to use RequireAndVerifyClientCert\nNote, mTLS is supported only at enterprise version of VictoriaMetrics components"
+                          enum:
+                            - "NoClientCert"
+                            - "RequireAndVerifyClientCert"
+                          type: "string"
+                        client_ca_file:
+                          description: "ClientCAFile defines path to the pre-mounted file with CA\nmutually exclusive with ClientCASecretRef"
+                          type: "string"
+                        client_ca_secret_ref:
+                          description: "ClientCASecretRef defines reference for secret with CA content under given key\nmutually exclusive with ClientCAFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        curve_preferences:
+                          description: "CurvePreferences defines elliptic curves that will be used in an ECDHE handshake, in preference order.\nhttps://golang.org/pkg/crypto/tls/#CurveID"
+                          items:
+                            type: "string"
+                          type: "array"
+                        key_file:
+                          description: "KeyFile defines path to the pre-mounted file with certificate key\nmutually exclusive with KeySecretRef"
+                          type: "string"
+                        key_secret_ref:
+                          description: "Key defines reference for secret with certificate key content under given key\nmutually exclusive with KeyFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        max_version:
+                          description: "MaxVersion maximum TLS version that is acceptable."
+                          enum:
+                            - "TLS10"
+                            - "TLS11"
+                            - "TLS12"
+                            - "TLS13"
+                          type: "string"
+                        min_version:
+                          description: "MinVersion minimum TLS version that is acceptable."
+                          enum:
+                            - "TLS10"
+                            - "TLS11"
+                            - "TLS12"
+                            - "TLS13"
+                          type: "string"
+                        prefer_server_cipher_suites:
+                          description: "PreferServerCipherSuites controls whether the server selects the\nclient's most preferred ciphersuite"
+                          type: "boolean"
+                      type: "object"
+                  type: "object"
+                hostAliases:
+                  description: "HostAliases provides mapping for ip and hostname,\nthat would be propagated to pod,\ncannot be used with HostNetwork."
+                  items:
+                    description: "HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the\npod's hosts file."
+                    properties:
+                      hostnames:
+                        description: "Hostnames for the above IP address."
+                        items:
+                          type: "string"
+                        type: "array"
+                        x-kubernetes-list-type: "atomic"
+                      ip:
+                        description: "IP address of the host file entry."
+                        type: "string"
+                    required:
+                      - "ip"
+                    type: "object"
+                  type: "array"
                 hostNetwork:
                   description: "HostNetwork controls whether the pod may use the node network namespace"
                   type: "boolean"
+                host_aliases:
+                  description: "HostAliasesUnderScore provides mapping for ip and hostname,\nthat would be propagated to pod,\ncannot be used with HostNetwork.\nHas Priority over hostAliases field"
+                  items:
+                    description: "HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the\npod's hosts file."
+                    properties:
+                      hostnames:
+                        description: "Hostnames for the above IP address."
+                        items:
+                          type: "string"
+                        type: "array"
+                        x-kubernetes-list-type: "atomic"
+                      ip:
+                        description: "IP address of the host file entry."
+                        type: "string"
+                    required:
+                      - "ip"
+                    type: "object"
+                  type: "array"
                 image:
-                  description: "Image - docker image settings for VMAlertmanager\nif no specified operator uses default config version"
+                  description: "Image - docker image settings\nif no specified operator uses default version from operator config"
                   properties:
                     pullPolicy:
                       description: "PullPolicy describes how to pull docker image"
@@ -430,13 +721,14 @@ spec:
                     description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                     properties:
                       name:
-                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                        default: ""
+                        description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                         type: "string"
                     type: "object"
                     x-kubernetes-map-type: "atomic"
                   type: "array"
                 initContainers:
-                  description: "InitContainers allows adding initContainers to the pod definition. Those can be used to e.g.\nfetch secrets for injection into the VMAlertmanager configuration from external sources. Any\nerrors during the execution of an initContainer will lead to a restart of the Pod. More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\nUsing initContainers for any use case other then secret fetching is entirely outside the scope\nof what the maintainers will support and by doing so, you accept that this behaviour may break\nat any time without notice."
+                  description: "InitContainers allows adding initContainers to the pod definition.\nAny errors during the execution of an initContainer will lead to a restart of the Pod.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/"
                   items:
                     description: "A single application container that you want to run within a pod."
                     required:
@@ -453,12 +745,24 @@ spec:
                   x-kubernetes-preserve-unknown-fields: true
                 logFormat:
                   description: "LogFormat for VMAlertmanager to be configured with."
+                  enum:
+                    - "logfmt"
+                    - "json"
                   type: "string"
                 logLevel:
                   description: "Log level for VMAlertmanager to be configured with."
+                  enum:
+                    - "debug"
+                    - "info"
+                    - "warn"
+                    - "error"
+                    - "DEBUG"
+                    - "INFO"
+                    - "WARN"
+                    - "ERROR"
                   type: "string"
                 minReadySeconds:
-                  description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state"
+                  description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state\nHas no effect for VLogs and VMSingle"
                   format: "int32"
                   type: "integer"
                 nodeSelector:
@@ -507,6 +811,9 @@ spec:
                       description: "Name must be unique within a namespace. Is required when creating resources, although\nsome resources may allow a client to request the generation of an appropriate name\nautomatically. Name is primarily intended for creation idempotence and configuration\ndefinition.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names"
                       type: "string"
                   type: "object"
+                port:
+                  description: "Port listen address"
+                  type: "string"
                 portName:
                   description: "PortName used for the pods and governing service.\nThis defaults to web"
                   type: "string"
@@ -530,12 +837,11 @@ spec:
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 replicaCount:
-                  description: "ReplicaCount Size is the expected size of the alertmanager cluster. The controller will\neventually make the size of the running cluster equal to the expected"
+                  description: "ReplicaCount is the expected size of the Application."
                   format: "int32"
-                  minimum: 0.0
                   type: "integer"
                 resources:
-                  description: "Resources container resource request and limits,\nhttps://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                  description: "Resources container resource request and limits, https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/\nif not defined default resources from operator config will be used"
                   properties:
                     claims:
                       description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
@@ -576,7 +882,7 @@ spec:
                   pattern: "[0-9]+(ms|s|m|h)"
                   type: "string"
                 revisionHistoryLimitCount:
-                  description: "The number of old ReplicaSets to retain to allow rollback in deployment or\nmaximum number of revisions that will be maintained in the StatefulSet's revision history.\nDefaults to 10."
+                  description: "The number of old ReplicaSets to retain to allow rollback in deployment or\nmaximum number of revisions that will be maintained in the Deployment revision history.\nHas no effect at StatefulSets\nDefaults to 10."
                   format: "int32"
                   type: "integer"
                 rollingUpdateStrategy:
@@ -592,7 +898,7 @@ spec:
                   description: "SchedulerName - defines kubernetes scheduler name"
                   type: "string"
                 secrets:
-                  description: "Secrets is a list of Secrets in the same namespace as the VMAlertmanager\nobject, which shall be mounted into the VMAlertmanager Pods.\nThe Secrets are mounted into /etc/vm/secrets/<secret-name>"
+                  description: "Secrets is a list of Secrets in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/secrets/SECRET_NAME folder"
                   items:
                     type: "string"
                   type: "array"
@@ -604,7 +910,7 @@ spec:
                   description: "SelectAllByDefault changes default behavior for empty CRD selectors, such ConfigSelector.\nwith selectAllByDefault: true and undefined ConfigSelector and ConfigNamespaceSelector\nOperator selects all exist alertManagerConfigs\nwith selectAllByDefault: false - selects nothing"
                   type: "boolean"
                 serviceAccountName:
-                  description: "ServiceAccountName is the name of the ServiceAccount to use"
+                  description: "ServiceAccountName is the name of the ServiceAccount to use to run the pods"
                   type: "string"
                 serviceScrapeSpec:
                   description: "ServiceScrapeSpec that will be added to vmalertmanager VMServiceScrape spec"
@@ -700,6 +1006,7 @@ spec:
                               items:
                                 type: "string"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                             dataSource:
                               description: "dataSource field can be used to specify either:\n* An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)\n* An existing PVC (PersistentVolumeClaim)\nIf the provisioner or an external controller can support the specified data source,\nit will create a new volume based on the contents of the specified data source.\nWhen the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,\nand dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.\nIf the namespace is specified, then dataSourceRef will not be copied to dataSource."
                               properties:
@@ -739,21 +1046,6 @@ spec:
                             resources:
                               description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
                               properties:
-                                claims:
-                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
-                                  items:
-                                    description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
-                                    properties:
-                                      name:
-                                        description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
-                                        type: "string"
-                                    required:
-                                      - "name"
-                                    type: "object"
-                                  type: "array"
-                                  x-kubernetes-list-map-keys:
-                                    - "name"
-                                  x-kubernetes-list-type: "map"
                                 limits:
                                   additionalProperties:
                                     anyOf:
@@ -792,11 +1084,13 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     required:
                                       - "key"
                                       - "operator"
                                     type: "object"
                                   type: "array"
+                                  x-kubernetes-list-type: "atomic"
                                 matchLabels:
                                   additionalProperties:
                                     type: "string"
@@ -806,6 +1100,9 @@ spec:
                               x-kubernetes-map-type: "atomic"
                             storageClassName:
                               description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
+                              type: "string"
+                            volumeAttributesClassName:
+                              description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
                               type: "string"
                             volumeMode:
                               description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -822,6 +1119,14 @@ spec:
                               items:
                                 type: "string"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
+                            allocatedResourceStatuses:
+                              additionalProperties:
+                                description: "When a controller receives persistentvolume claim update with ClaimResourceStatus for a resource\nthat it does not recognizes, then it should ignore that update and let other controllers\nhandle it."
+                                type: "string"
+                              description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                              type: "object"
+                              x-kubernetes-map-type: "granular"
                             allocatedResources:
                               additionalProperties:
                                 anyOf:
@@ -829,7 +1134,7 @@ spec:
                                   - type: "string"
                                 pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                 x-kubernetes-int-or-string: true
-                              description: "allocatedResources is the storage resource within AllocatedResources tracks the capacity allocated to a PVC. It may\nbe larger than the actual capacity when a volume expansion operation is requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                              description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
                               type: "object"
                             capacity:
                               additionalProperties:
@@ -841,7 +1146,7 @@ spec:
                               description: "capacity represents the actual resources of the underlying volume."
                               type: "object"
                             conditions:
-                              description: "conditions is the current Condition of persistent volume claim. If underlying persistent volume is being\nresized then the Condition will be set to 'ResizeStarted'."
+                              description: "conditions is the current Condition of persistent volume claim. If underlying persistent volume is being\nresized then the Condition will be set to 'Resizing'."
                               items:
                                 description: "PersistentVolumeClaimCondition contains details about state of pvc"
                                 properties:
@@ -857,7 +1162,7 @@ spec:
                                     description: "message is the human-readable message indicating details about last transition."
                                     type: "string"
                                   reason:
-                                    description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"ResizeStarted\" that means the underlying\npersistent volume is being resized."
+                                    description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"Resizing\" that means the underlying\npersistent volume is being resized."
                                     type: "string"
                                   status:
                                     type: "string"
@@ -869,11 +1174,26 @@ spec:
                                   - "type"
                                 type: "object"
                               type: "array"
+                              x-kubernetes-list-map-keys:
+                                - "type"
+                              x-kubernetes-list-type: "map"
+                            currentVolumeAttributesClassName:
+                              description: "currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.\nWhen unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim\nThis is an alpha field and requires enabling VolumeAttributesClass feature."
+                              type: "string"
+                            modifyVolumeStatus:
+                              description: "ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.\nWhen this is unset, there is no ModifyVolume operation being attempted.\nThis is an alpha field and requires enabling VolumeAttributesClass feature."
+                              properties:
+                                status:
+                                  description: "status is the status of the ControllerModifyVolume operation. It can be in any of following states:\n - Pending\n   Pending indicates that the PersistentVolumeClaim cannot be modified due to unmet requirements, such as\n   the specified VolumeAttributesClass not existing.\n - InProgress\n   InProgress indicates that the volume is being modified.\n - Infeasible\n  Infeasible indicates that the request has been rejected as invalid by the CSI driver. To\n\t  resolve the error, a valid VolumeAttributesClass needs to be specified.\nNote: New statuses can be added in the future. Consumers should check for unknown statuses and fail appropriately."
+                                  type: "string"
+                                targetVolumeAttributesClassName:
+                                  description: "targetVolumeAttributesClassName is the name of the VolumeAttributesClass the PVC currently being reconciled"
+                                  type: "string"
+                              required:
+                                - "status"
+                              type: "object"
                             phase:
                               description: "phase represents the current phase of PersistentVolumeClaim."
-                              type: "string"
-                            resizeStatus:
-                              description: "resizeStatus stores status of resize operation.\nResizeStatus is not set by default but when expansion is complete resizeStatus is set to empty\nstring by resize controller or kubelet.\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
                               type: "string"
                           type: "object"
                       type: "object"
@@ -887,7 +1207,8 @@ spec:
                         description: "The ConfigMap key to refer to."
                         type: "string"
                       name:
-                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                        default: ""
+                        description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                         type: "string"
                     required:
                       - "key"
@@ -932,11 +1253,17 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                useDefaultResources:
+                  description: "UseDefaultResources controls resource settings\nBy default, operator sets built-in resource requirements"
+                  type: "boolean"
                 useStrictSecurity:
                   description: "UseStrictSecurity enables strict security mode for component\nit restricts disk writes access\nuses non-root user out of the box\ndrops not needed security permissions"
                   type: "boolean"
+                useVMConfigReloader:
+                  description: "UseVMConfigReloader replaces prometheus-like config-reloader\nwith vm one. It uses secrets watch instead of file watch\nwhich greatly increases speed of config updates"
+                  type: "boolean"
                 volumeMounts:
-                  description: "VolumeMounts allows configuration of additional VolumeMounts on the output StatefulSet definition.\nVolumeMounts specified will be appended to other VolumeMounts in the alertmanager container,\nthat are generated as a result of StorageSpec objects."
+                  description: "VolumeMounts allows configuration of additional VolumeMounts on the output Deployment/StatefulSet definition.\nVolumeMounts specified will be appended to other VolumeMounts in the Application container"
                   items:
                     description: "VolumeMount describes a mounting of a Volume within a container."
                     properties:
@@ -944,7 +1271,7 @@ spec:
                         description: "Path within the container at which the volume should be mounted.  Must\nnot contain ':'."
                         type: "string"
                       mountPropagation:
-                        description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10."
+                        description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10.\nWhen RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified\n(which defaults to None)."
                         type: "string"
                       name:
                         description: "This must match the Name of a Volume."
@@ -952,6 +1279,9 @@ spec:
                       readOnly:
                         description: "Mounted read-only if true, read-write otherwise (false or unspecified).\nDefaults to false."
                         type: "boolean"
+                      recursiveReadOnly:
+                        description: "RecursiveReadOnly specifies whether read-only mounts should be handled\nrecursively.\n\n\nIf ReadOnly is false, this field has no meaning and must be unspecified.\n\n\nIf ReadOnly is true, and this field is set to Disabled, the mount is not made\nrecursively read-only.  If this field is set to IfPossible, the mount is made\nrecursively read-only, if it is supported by the container runtime.  If this\nfield is set to Enabled, the mount is made recursively read-only if it is\nsupported by the container runtime, otherwise the pod will not be started and\nan error will be generated to indicate the reason.\n\n\nIf this field is set to IfPossible or Enabled, MountPropagation must be set to\nNone (or be unspecified, which defaults to None).\n\n\nIf this field is not specified, it is treated as an equivalent of Disabled."
+                        type: "string"
                       subPath:
                         description: "Path within the volume from which the container's volume should be mounted.\nDefaults to \"\" (volume's root)."
                         type: "string"
@@ -964,7 +1294,7 @@ spec:
                     type: "object"
                   type: "array"
                 volumes:
-                  description: "Volumes allows configuration of additional volumes on the output StatefulSet definition.\nVolumes specified will be appended to other volumes that are generated as a result of\nStorageSpec objects."
+                  description: "Volumes allows configuration of additional volumes on the output Deployment/StatefulSet definition.\nVolumes specified will be appended to other volumes that are generated.\n/ +optional"
                   items:
                     description: "Volume represents a named volume in a pod that may be accessed by any container in the pod."
                     required:
@@ -972,6 +1302,126 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                webConfig:
+                  description: "WebConfig defines configuration for webserver\nhttps://github.com/prometheus/alertmanager/blob/main/docs/https.md"
+                  properties:
+                    basic_auth_users:
+                      additionalProperties:
+                        type: "string"
+                      description: "BasicAuthUsers Usernames and hashed passwords that have full access to the web server\nPasswords must be hashed with bcrypt"
+                      type: "object"
+                    http_server_config:
+                      description: "HTTPServerConfig defines http server configuration for alertmanager web server"
+                      properties:
+                        headers:
+                          additionalProperties:
+                            type: "string"
+                          description: "Headers defines list of headers that can be added to HTTP responses."
+                          type: "object"
+                        http2:
+                          description: "HTTP2 enables HTTP/2 support. Note that HTTP/2 is only supported with TLS.\nThis can not be changed on the fly."
+                          type: "boolean"
+                      type: "object"
+                    tls_server_config:
+                      description: "TLSServerConfig defines server TLS configuration for alertmanager"
+                      properties:
+                        cert_file:
+                          description: "CertFile defines path to the pre-mounted file with certificate\nmutually exclusive with CertSecretRef"
+                          type: "string"
+                        cert_secret_ref:
+                          description: "CertSecretRef defines reference for secret with certificate content under given key\nmutually exclusive with CertFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        cipher_suites:
+                          description: "CipherSuites defines list of supported cipher suites for TLS versions up to TLS 1.2\nhttps://golang.org/pkg/crypto/tls/#pkg-constants"
+                          items:
+                            type: "string"
+                          type: "array"
+                        client_auth_type:
+                          description: "Cert defines reference for secret with CA content under given key\nmutually exclusive with CertFile\nClientAuthType defines server policy for client authentication\nIf you want to enable client authentication (aka mTLS), you need to use RequireAndVerifyClientCert\nNote, mTLS is supported only at enterprise version of VictoriaMetrics components"
+                          enum:
+                            - "NoClientCert"
+                            - "RequireAndVerifyClientCert"
+                          type: "string"
+                        client_ca_file:
+                          description: "ClientCAFile defines path to the pre-mounted file with CA\nmutually exclusive with ClientCASecretRef"
+                          type: "string"
+                        client_ca_secret_ref:
+                          description: "ClientCASecretRef defines reference for secret with CA content under given key\nmutually exclusive with ClientCAFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        curve_preferences:
+                          description: "CurvePreferences defines elliptic curves that will be used in an ECDHE handshake, in preference order.\nhttps://golang.org/pkg/crypto/tls/#CurveID"
+                          items:
+                            type: "string"
+                          type: "array"
+                        key_file:
+                          description: "KeyFile defines path to the pre-mounted file with certificate key\nmutually exclusive with KeySecretRef"
+                          type: "string"
+                        key_secret_ref:
+                          description: "Key defines reference for secret with certificate key content under given key\nmutually exclusive with KeyFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        max_version:
+                          description: "MaxVersion maximum TLS version that is acceptable."
+                          enum:
+                            - "TLS10"
+                            - "TLS11"
+                            - "TLS12"
+                            - "TLS13"
+                          type: "string"
+                        min_version:
+                          description: "MinVersion minimum TLS version that is acceptable."
+                          enum:
+                            - "TLS10"
+                            - "TLS11"
+                            - "TLS12"
+                            - "TLS13"
+                          type: "string"
+                        prefer_server_cipher_suites:
+                          description: "PreferServerCipherSuites controls whether the server selects the\nclient's most preferred ciphersuite"
+                          type: "boolean"
+                      type: "object"
+                  type: "object"
               type: "object"
             status:
               description: "Most recent observed status of the VMAlertmanager cluster.\nOperator API itself. More info:\nhttps://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"

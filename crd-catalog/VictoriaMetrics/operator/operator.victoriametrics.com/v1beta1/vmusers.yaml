@@ -5,6 +5,16 @@ metadata:
     controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "vmusers.operator.victoriametrics.com"
 spec:
+  conversion:
+    strategy: "Webhook"
+    webhook:
+      clientConfig:
+        service:
+          name: "webhook-service"
+          namespace: "vm"
+          path: "/convert"
+      conversionReviewVersions:
+        - "v1"
   group: "operator.victoriametrics.com"
   names:
     kind: "VMUser"
@@ -13,7 +23,17 @@ spec:
     singular: "vmuser"
   scope: "Namespaced"
   versions:
-    - name: "v1beta1"
+    - additionalPrinterColumns:
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+        - jsonPath: ".status.status"
+          name: "Status"
+          type: "string"
+        - jsonPath: ".status.lastSyncError"
+          name: "Sync Error"
+          type: "string"
+      name: "v1beta1"
       schema:
         openAPIV3Schema:
           description: "VMUser is the Schema for the vmusers API"
@@ -44,7 +64,7 @@ spec:
                   description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
                   type: "boolean"
                 drop_src_path_prefix_parts:
-                  description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details."
+                  description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
                   type: "integer"
                 generatePassword:
                   description: "GeneratePassword instructs operator to generate password for user\nif spec.password if empty."
@@ -55,7 +75,7 @@ spec:
                     type: "string"
                   type: "array"
                 ip_filters:
-                  description: "IPFilters defines per target src ip filters\nsupported only with enterprise version of vmauth\nhttps://docs.victoriametrics.com/vmauth.html#ip-filters"
+                  description: "IPFilters defines per target src ip filters\nsupported only with enterprise version of [vmauth](https://docs.victoriametrics.com/vmauth/#ip-filters)"
                   properties:
                     allow_list:
                       items:
@@ -67,7 +87,7 @@ spec:
                       type: "array"
                   type: "object"
                 load_balancing_policy:
-                  description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default \"least_loaded\")"
+                  description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
                   enum:
                     - "least_loaded"
                     - "first_available"
@@ -93,7 +113,8 @@ spec:
                       description: "The key of the secret to select from.  Must be a valid secret key."
                       type: "string"
                     name:
-                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                      default: ""
+                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                       type: "string"
                     optional:
                       description: "Specify whether the Secret or its key must be defined"
@@ -121,7 +142,16 @@ spec:
                         description: "CRD describes exist operator's CRD object,\noperator generates access url based on CRD params."
                         properties:
                           kind:
-                            description: "Kind one of:\nVMAgent VMAlert VMCluster VMSingle or VMAlertManager"
+                            description: "Kind one of:\nVMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert  or VMAlertManager"
+                            enum:
+                              - "VMAgent"
+                              - "VMAlert"
+                              - "VMSingle"
+                              - "VMAlertManager"
+                              - "VMAlertmanager"
+                              - "VMCluster/vmselect"
+                              - "VMCluster/vmstorage"
+                              - "VMCluster/vminsert"
                             type: "string"
                           name:
                             description: "Name target CRD object name"
@@ -138,7 +168,7 @@ spec:
                         description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
                         type: "boolean"
                       drop_src_path_prefix_parts:
-                        description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details."
+                        description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
                         type: "integer"
                       headers:
                         description: "RequestHeaders represent additional http headers, that vmauth uses\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.68.0 version of vmauth"
@@ -150,7 +180,7 @@ spec:
                           type: "string"
                         type: "array"
                       load_balancing_policy:
-                        description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default \"least_loaded\")"
+                        description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
                         enum:
                           - "least_loaded"
                           - "first_available"
@@ -202,7 +232,8 @@ spec:
                                 description: "The key of the secret to select from.  Must be a valid secret key."
                                 type: "string"
                               name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                 type: "string"
                               optional:
                                 description: "Specify whether the Secret or its key must be defined"
@@ -218,7 +249,8 @@ spec:
                                 description: "The key of the secret to select from.  Must be a valid secret key."
                                 type: "string"
                               name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                 type: "string"
                               optional:
                                 description: "Specify whether the Secret or its key must be defined"
@@ -249,7 +281,8 @@ spec:
                               description: "The key to select."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the ConfigMap or its key must be defined"
@@ -265,7 +298,8 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -288,7 +322,8 @@ spec:
                               description: "The key to select."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the ConfigMap or its key must be defined"
@@ -304,7 +339,8 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -330,7 +366,8 @@ spec:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
-                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          default: ""
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                           type: "string"
                         optional:
                           description: "Specify whether the Secret or its key must be defined"
@@ -350,7 +387,8 @@ spec:
                       description: "The key of the secret to select from.  Must be a valid secret key."
                       type: "string"
                     name:
-                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                      default: ""
+                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                       type: "string"
                     optional:
                       description: "Specify whether the Secret or its key must be defined"
@@ -367,6 +405,13 @@ spec:
               type: "object"
             status:
               description: "VMUserStatus defines the observed state of VMUser"
+              properties:
+                lastSyncError:
+                  description: "LastSyncError contains error message for unsuccessful config generation\nfor given user"
+                  type: "string"
+                status:
+                  description: "Status defines update status of resource"
+                  type: "string"
               type: "object"
           type: "object"
       served: true

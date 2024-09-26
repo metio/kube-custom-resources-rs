@@ -14,6 +14,7 @@ use self::prelude::*;
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMRule", plural = "vmrules")]
 #[kube(namespaced)]
+#[kube(status = "VMRuleStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -28,9 +29,24 @@ pub struct VMRuleGroups {
     /// Concurrency defines how many rules execute at once.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub concurrency: Option<i64>,
+    /// Optional
+    /// The evaluation timestamp will be aligned with group's interval,
+    /// instead of using the actual timestamp that evaluation happens at.
+    /// It is enabled by default to get more predictable results
+    /// and to visually align with graphs plotted via Grafana or vmui.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub eval_alignment: Option<bool>,
+    /// Optional
+    /// Adjust the `time` parameter of group evaluation requests to compensate intentional query delay from the datasource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub eval_delay: Option<String>,
+    /// Optional
+    /// Group will be evaluated at the exact offset in the range of [0...interval].
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub eval_offset: Option<String>,
     /// ExtraFilterLabels optional list of label filters applied to every rule's
-    /// request withing a group. Is compatible only with VM datasource.
-    /// See more details at https://docs.victoriametrics.com#prometheus-querying-api-enhancements
+    /// request within a group. Is compatible only with VM datasource.
+    /// See more details [here](https://docs.victoriametrics.com/#prometheus-querying-api-enhancements)
     /// Deprecated, use params instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extra_filter_labels: Option<BTreeMap<String, String>>,
@@ -70,8 +86,8 @@ pub struct VMRuleGroups {
     pub params: Option<BTreeMap<String, String>>,
     /// Rules list of alert rules
     pub rules: Vec<VMRuleGroupsRules>,
-    /// Tenant id for group, can be used only with enterprise version of vmalert
-    /// See more details at https://docs.victoriametrics.com/vmalert.html#multitenancy
+    /// Tenant id for group, can be used only with enterprise version of vmalert.
+    /// See more details [here](https://docs.victoriametrics.com/vmalert#multitenancy).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
     /// Type defines datasource type for enterprise version of vmalert
@@ -120,5 +136,11 @@ pub struct VMRuleGroupsRules {
 /// VMRuleStatus defines the observed state of VMRule
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMRuleStatus {
+    /// LastSyncError contains error message for unsuccessful config generation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
+    pub last_sync_error: Option<String>,
+    /// Status defines CRD processing status
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
 }
 

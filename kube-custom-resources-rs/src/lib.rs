@@ -2500,6 +2500,7 @@ apiVersion `operator.victoriametrics.com/v1beta1`:
 - `VMPodScrape`
 - `VMProbe`
 - `VMRule`
+- `VMScrapeConfig`
 - `VMServiceScrape`
 - `VMStaticScrape`
 - `VMUser`

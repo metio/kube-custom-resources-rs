@@ -5,6 +5,16 @@ metadata:
     controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "vmauths.operator.victoriametrics.com"
 spec:
+  conversion:
+    strategy: "Webhook"
+    webhook:
+      clientConfig:
+        service:
+          name: "webhook-service"
+          namespace: "system"
+          path: "/convert"
+      conversionReviewVersions:
+        - "v1"
   group: "operator.victoriametrics.com"
   names:
     kind: "VMAuth"
@@ -39,7 +49,7 @@ spec:
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 configMaps:
-                  description: "ConfigMaps is a list of ConfigMaps in the same namespace as the VMAuth\nobject, which shall be mounted into the VMAuth Pods."
+                  description: "ConfigMaps is a list of ConfigMaps in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/configs/CONFIGMAP_NAME folder"
                   items:
                     type: "string"
                   type: "array"
@@ -47,6 +57,46 @@ spec:
                   additionalProperties:
                     type: "string"
                   description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resyncInterval: \"30s\""
+                  type: "object"
+                configReloaderImageTag:
+                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container"
+                  type: "string"
+                configReloaderResources:
+                  description: "ConfigReloaderResources config-reloader container resource request and limits, https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/\nif not defined default resources from operator config will be used"
+                  properties:
+                    claims:
+                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                      items:
+                        description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                        properties:
+                          name:
+                            description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                            type: "string"
+                        required:
+                          - "name"
+                        type: "object"
+                      type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "name"
+                      x-kubernetes-list-type: "map"
+                    limits:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
+                      description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      type: "object"
+                    requests:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
+                      description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      type: "object"
                   type: "object"
                 configSecret:
                   description: "ConfigSecret is the name of a Kubernetes Secret in the same namespace as the\nVMAuth object, which contains auth configuration for vmauth,\nconfiguration must be inside secret key: config.yaml.\nIt must be created and managed manually.\nIf it's defined, configuration for vmauth becomes unmanaged and operator'll not create any related secrets/config-reloaders"
@@ -65,6 +115,9 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                disableSelfServiceScrape:
+                  description: "DisableSelfServiceScrape controls creation of VMServiceScrape by operator\nfor the application.\nHas priority over `VM_DISABLESELFSERVICESCRAPECREATION` operator env variable"
+                  type: "boolean"
                 discover_backend_ips:
                   description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
                   type: "boolean"
@@ -78,6 +131,7 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     options:
                       description: "A list of DNS resolver options.\nThis will be merged with the base options generated from DNSPolicy.\nDuplicated entries will be removed. Resolution options given in Options\nwill override those that appear in the base DNSPolicy."
                       items:
@@ -90,25 +144,27 @@ spec:
                             type: "string"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     searches:
                       description: "A list of DNS search domains for host-name lookup.\nThis will be appended to the base search paths generated from DNSPolicy.\nDuplicated search paths will be removed."
                       items:
                         type: "string"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                   type: "object"
                 dnsPolicy:
                   description: "DNSPolicy sets DNS policy for the pod"
                   type: "string"
                 drop_src_path_prefix_parts:
-                  description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details."
+                  description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
                   type: "integer"
                 extraArgs:
                   additionalProperties:
                     type: "string"
-                  description: "ExtraArgs that will be passed to  VMAuth pod\nfor example remoteWrite.tmpDataPath: /tmp"
+                  description: "ExtraArgs that will be passed to the application container\nfor example remoteWrite.tmpDataPath: /tmp"
                   type: "object"
                 extraEnvs:
-                  description: "ExtraEnvs that will be added to VMAuth pod"
+                  description: "ExtraEnvs that will be passed to the application container"
                   items:
                     description: "EnvVar represents an environment variable present in a Container."
                     properties:
@@ -138,16 +194,37 @@ spec:
                         items:
                           type: "string"
                         type: "array"
+                        x-kubernetes-list-type: "atomic"
                       ip:
                         description: "IP address of the host file entry."
                         type: "string"
+                    required:
+                      - "ip"
                     type: "object"
                   type: "array"
                 hostNetwork:
                   description: "HostNetwork controls whether the pod may use the node network namespace"
                   type: "boolean"
+                host_aliases:
+                  description: "HostAliasesUnderScore provides mapping for ip and hostname,\nthat would be propagated to pod,\ncannot be used with HostNetwork.\nHas Priority over hostAliases field"
+                  items:
+                    description: "HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the\npod's hosts file."
+                    properties:
+                      hostnames:
+                        description: "Hostnames for the above IP address."
+                        items:
+                          type: "string"
+                        type: "array"
+                        x-kubernetes-list-type: "atomic"
+                      ip:
+                        description: "IP address of the host file entry."
+                        type: "string"
+                    required:
+                      - "ip"
+                    type: "object"
+                  type: "array"
                 image:
-                  description: "Image - docker image settings for VMAuth\nif no specified operator uses default config version"
+                  description: "Image - docker image settings\nif no specified operator uses default version from operator config"
                   properties:
                     pullPolicy:
                       description: "PullPolicy describes how to pull docker image"
@@ -165,7 +242,8 @@ spec:
                     description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                     properties:
                       name:
-                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                        default: ""
+                        description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                         type: "string"
                     type: "object"
                     x-kubernetes-map-type: "atomic"
@@ -292,7 +370,7 @@ spec:
                       type: "string"
                   type: "object"
                 initContainers:
-                  description: "InitContainers allows adding initContainers to the pod definition. Those can be used to e.g.\nfetch secrets for injection into the vmSingle configuration from external sources. Any\nerrors during the execution of an initContainer will lead to a restart of the Pod. More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\nUsing initContainers for any use case other then secret fetching is entirely outside the scope\nof what the maintainers will support and by doing so, you accept that this behaviour may break\nat any time without notice."
+                  description: "InitContainers allows adding initContainers to the pod definition.\nAny errors during the execution of an initContainer will lead to a restart of the Pod.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/"
                   items:
                     description: "A single application container that you want to run within a pod."
                     required:
@@ -301,7 +379,7 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
                 ip_filters:
-                  description: "IPFilters defines per target src ip filters\nsupported only with enterprise version of vmauth\nhttps://docs.victoriametrics.com/vmauth.html#ip-filters"
+                  description: "IPFilters defines per target src ip filters\nsupported only with enterprise version of [vmauth](https://docs.victoriametrics.com/vmauth/#ip-filters)"
                   properties:
                     allow_list:
                       items:
@@ -313,10 +391,10 @@ spec:
                       type: "array"
                   type: "object"
                 license:
-                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee: https://docs.victoriametrics.com/enterprise.html"
+                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/enterprise)"
                   properties:
                     key:
-                      description: "Enterprise license key. This flag is available only in VictoriaMetrics enterprise.\nDocumentation - https://docs.victoriametrics.com/enterprise.html\nfor more information, visit https://victoriametrics.com/products/enterprise/ .\nTo request a trial license, go to https://victoriametrics.com/products/enterprise/trial/"
+                      description: "Enterprise license key. This flag is available only in [VictoriaMetrics enterprise](https://docs.victoriametrics.com/enterprise).\nTo request a trial license, [go to](https://victoriametrics.com/products/enterprise/trial)"
                       type: "string"
                     keyRef:
                       description: "KeyRef is reference to secret with license key for enterprise features."
@@ -325,7 +403,8 @@ spec:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
-                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          default: ""
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                           type: "string"
                         optional:
                           description: "Specify whether the Secret or its key must be defined"
@@ -340,7 +419,7 @@ spec:
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 load_balancing_policy:
-                  description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default \"least_loaded\")"
+                  description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
                   enum:
                     - "least_loaded"
                     - "first_available"
@@ -364,7 +443,7 @@ spec:
                   description: "MaxConcurrentRequests defines max concurrent requests per user\n300 is default value for vmauth"
                   type: "integer"
                 minReadySeconds:
-                  description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state"
+                  description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state\nHas no effect for VLogs and VMSingle"
                   format: "int32"
                   type: "integer"
                 nodeSelector:
@@ -414,10 +493,10 @@ spec:
                       type: "string"
                   type: "object"
                 port:
-                  description: "Port listen port"
+                  description: "Port listen address"
                   type: "string"
                 priorityClassName:
-                  description: "PriorityClassName assigned to the Pods"
+                  description: "PriorityClassName class assigned to the Pods"
                   type: "string"
                 readinessGates:
                   description: "ReadinessGates defines pod readiness gates"
@@ -436,7 +515,7 @@ spec:
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 replicaCount:
-                  description: "ReplicaCount is the expected size of the VMAuth"
+                  description: "ReplicaCount is the expected size of the Application."
                   format: "int32"
                   type: "integer"
                 resources:
@@ -487,7 +566,7 @@ spec:
                     type: "integer"
                   type: "array"
                 revisionHistoryLimitCount:
-                  description: "The number of old ReplicaSets to retain to allow rollback in deployment or\nmaximum number of revisions that will be maintained in the StatefulSet's revision history.\nDefaults to 10."
+                  description: "The number of old ReplicaSets to retain to allow rollback in deployment or\nmaximum number of revisions that will be maintained in the Deployment revision history.\nHas no effect at StatefulSets\nDefaults to 10."
                   format: "int32"
                   type: "integer"
                 runtimeClassName:
@@ -497,7 +576,7 @@ spec:
                   description: "SchedulerName - defines kubernetes scheduler name"
                   type: "string"
                 secrets:
-                  description: "Secrets is a list of Secrets in the same namespace as the VMAuth\nobject, which shall be mounted into the VMAuth Pods."
+                  description: "Secrets is a list of Secrets in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/secrets/SECRET_NAME folder"
                   items:
                     type: "string"
                   type: "array"
@@ -509,7 +588,7 @@ spec:
                   description: "SelectAllByDefault changes default behavior for empty CRD selectors, such userSelector.\nwith selectAllByDefault: true and empty userSelector and userNamespaceSelector\nOperator selects all exist users\nwith selectAllByDefault: false - selects nothing"
                   type: "boolean"
                 serviceAccountName:
-                  description: "ServiceAccountName is the name of the ServiceAccount to use to run the\nVMAuth Pods."
+                  description: "ServiceAccountName is the name of the ServiceAccount to use to run the pods"
                   type: "string"
                 serviceScrapeSpec:
                   description: "ServiceScrapeSpec that will be added to vmauth VMServiceScrape spec"
@@ -568,7 +647,8 @@ spec:
                               description: "The key to select."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the ConfigMap or its key must be defined"
@@ -584,7 +664,8 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -607,7 +688,8 @@ spec:
                               description: "The key to select."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the ConfigMap or its key must be defined"
@@ -623,7 +705,8 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -649,7 +732,8 @@ spec:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
-                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          default: ""
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                           type: "string"
                         optional:
                           description: "Specify whether the Secret or its key must be defined"
@@ -704,7 +788,7 @@ spec:
                         description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
                         type: "boolean"
                       drop_src_path_prefix_parts:
-                        description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details."
+                        description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
                         type: "integer"
                       headers:
                         description: "RequestHeaders represent additional http headers, that vmauth uses\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.68.0 version of vmauth"
@@ -712,7 +796,7 @@ spec:
                           type: "string"
                         type: "array"
                       load_balancing_policy:
-                        description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default \"least_loaded\")"
+                        description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
                         enum:
                           - "least_loaded"
                           - "first_available"
@@ -754,8 +838,14 @@ spec:
                         type: "array"
                     type: "object"
                   type: "array"
+                useDefaultResources:
+                  description: "UseDefaultResources controls resource settings\nBy default, operator sets built-in resource requirements"
+                  type: "boolean"
                 useStrictSecurity:
                   description: "UseStrictSecurity enables strict security mode for component\nit restricts disk writes access\nuses non-root user out of the box\ndrops not needed security permissions"
+                  type: "boolean"
+                useVMConfigReloader:
+                  description: "UseVMConfigReloader replaces prometheus-like config-reloader\nwith vm one. It uses secrets watch instead of file watch\nwhich greatly increases speed of config updates"
                   type: "boolean"
                 userNamespaceSelector:
                   description: "UserNamespaceSelector Namespaces to be selected for  VMAuth discovery.\nWorks in combination with Selector.\nNamespaceSelector nil - only objects at VMAuth namespace.\nSelector nil - only objects at NamespaceSelector namespaces.\nIf both nil - behaviour controlled by selectAllByDefault"
@@ -776,11 +866,13 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                         required:
                           - "key"
                           - "operator"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     matchLabels:
                       additionalProperties:
                         type: "string"
@@ -807,11 +899,13 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                         required:
                           - "key"
                           - "operator"
                         type: "object"
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     matchLabels:
                       additionalProperties:
                         type: "string"
@@ -820,7 +914,7 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 volumeMounts:
-                  description: "VolumeMounts allows configuration of additional VolumeMounts on the output Deployment definition.\nVolumeMounts specified will be appended to other VolumeMounts in the VMAuth container,\nthat are generated as a result of StorageSpec objects."
+                  description: "VolumeMounts allows configuration of additional VolumeMounts on the output Deployment/StatefulSet definition.\nVolumeMounts specified will be appended to other VolumeMounts in the Application container"
                   items:
                     description: "VolumeMount describes a mounting of a Volume within a container."
                     properties:
@@ -828,7 +922,7 @@ spec:
                         description: "Path within the container at which the volume should be mounted.  Must\nnot contain ':'."
                         type: "string"
                       mountPropagation:
-                        description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10."
+                        description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10.\nWhen RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified\n(which defaults to None)."
                         type: "string"
                       name:
                         description: "This must match the Name of a Volume."
@@ -836,6 +930,9 @@ spec:
                       readOnly:
                         description: "Mounted read-only if true, read-write otherwise (false or unspecified).\nDefaults to false."
                         type: "boolean"
+                      recursiveReadOnly:
+                        description: "RecursiveReadOnly specifies whether read-only mounts should be handled\nrecursively.\n\n\nIf ReadOnly is false, this field has no meaning and must be unspecified.\n\n\nIf ReadOnly is true, and this field is set to Disabled, the mount is not made\nrecursively read-only.  If this field is set to IfPossible, the mount is made\nrecursively read-only, if it is supported by the container runtime.  If this\nfield is set to Enabled, the mount is made recursively read-only if it is\nsupported by the container runtime, otherwise the pod will not be started and\nan error will be generated to indicate the reason.\n\n\nIf this field is set to IfPossible or Enabled, MountPropagation must be set to\nNone (or be unspecified, which defaults to None).\n\n\nIf this field is not specified, it is treated as an equivalent of Disabled."
+                        type: "string"
                       subPath:
                         description: "Path within the volume from which the container's volume should be mounted.\nDefaults to \"\" (volume's root)."
                         type: "string"
@@ -848,7 +945,7 @@ spec:
                     type: "object"
                   type: "array"
                 volumes:
-                  description: "Volumes allows configuration of additional volumes on the output deploy definition.\nVolumes specified will be appended to other volumes that are generated as a result of\nStorageSpec objects."
+                  description: "Volumes allows configuration of additional volumes on the output Deployment/StatefulSet definition.\nVolumes specified will be appended to other volumes that are generated.\n/ +optional"
                   items:
                     description: "Volume represents a named volume in a pod that may be accessed by any container in the pod."
                     required:

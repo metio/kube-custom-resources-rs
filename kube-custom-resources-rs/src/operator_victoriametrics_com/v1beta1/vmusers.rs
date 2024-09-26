@@ -14,6 +14,7 @@ use self::prelude::*;
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMUser", plural = "vmusers")]
 #[kube(namespaced)]
+#[kube(status = "VMUserStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -32,7 +33,7 @@ pub struct VMUserSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discover_backend_ips: Option<bool>,
     /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.
-    /// See https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details.
+    /// See [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop_src_path_prefix_parts: Option<i64>,
     /// GeneratePassword instructs operator to generate password for user
@@ -47,13 +48,12 @@ pub struct VMUserSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
     /// IPFilters defines per target src ip filters
-    /// supported only with enterprise version of vmauth
-    /// https://docs.victoriametrics.com/vmauth.html#ip-filters
+    /// supported only with enterprise version of [vmauth](https://docs.victoriametrics.com/vmauth/#ip-filters)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip_filters: Option<VMUserIpFilters>,
     /// LoadBalancingPolicy defines load balancing policy to use for backend urls.
     /// Supported policies: least_loaded, first_available.
-    /// See https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default "least_loaded")
+    /// See [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default "least_loaded")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub load_balancing_policy: Option<VMUserLoadBalancingPolicy>,
     /// MaxConcurrentRequests defines max concurrent requests per user
@@ -99,8 +99,7 @@ pub struct VMUserSpec {
 }
 
 /// IPFilters defines per target src ip filters
-/// supported only with enterprise version of vmauth
-/// https://docs.victoriametrics.com/vmauth.html#ip-filters
+/// supported only with enterprise version of [vmauth](https://docs.victoriametrics.com/vmauth/#ip-filters)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserIpFilters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -124,8 +123,12 @@ pub struct VMUserPasswordRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -147,7 +150,7 @@ pub struct VMUserTargetRefs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discover_backend_ips: Option<bool>,
     /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.
-    /// See https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details.
+    /// See [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop_src_path_prefix_parts: Option<i64>,
     /// RequestHeaders represent additional http headers, that vmauth uses
@@ -161,7 +164,7 @@ pub struct VMUserTargetRefs {
     pub hosts: Option<Vec<String>>,
     /// LoadBalancingPolicy defines load balancing policy to use for backend urls.
     /// Supported policies: least_loaded, first_available.
-    /// See https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default "least_loaded")
+    /// See [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default "least_loaded")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub load_balancing_policy: Option<VMUserTargetRefsLoadBalancingPolicy>,
     /// Paths - matched path to route.
@@ -201,15 +204,37 @@ pub struct VMUserTargetRefs {
 
 /// CRD describes exist operator's CRD object,
 /// operator generates access url based on CRD params.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VMUserTargetRefsCrd {
     /// Kind one of:
-    /// VMAgent VMAlert VMCluster VMSingle or VMAlertManager
-    pub kind: String,
+    /// VMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert  or VMAlertManager
+    pub kind: VMUserTargetRefsCrdKind,
     /// Name target CRD object name
     pub name: String,
     /// Namespace target CRD object namespace.
     pub namespace: String,
+}
+
+/// CRD describes exist operator's CRD object,
+/// operator generates access url based on CRD params.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VMUserTargetRefsCrdKind {
+    #[serde(rename = "VMAgent")]
+    VmAgent,
+    #[serde(rename = "VMAlert")]
+    VmAlert,
+    #[serde(rename = "VMSingle")]
+    VmSingle,
+    #[serde(rename = "VMAlertManager")]
+    VmAlertManager,
+    #[serde(rename = "VMAlertmanager")]
+    VmAlertmanager,
+    #[serde(rename = "VMCluster/vmselect")]
+    VmClusterVmselect,
+    #[serde(rename = "VMCluster/vmstorage")]
+    VmClusterVmstorage,
+    #[serde(rename = "VMCluster/vminsert")]
+    VmClusterVminsert,
 }
 
 /// TargetRef describes target for user traffic forwarding.
@@ -257,8 +282,12 @@ pub struct VMUserTargetRefsTargetRefBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -274,8 +303,12 @@ pub struct VMUserTargetRefsTargetRefBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -329,8 +362,12 @@ pub struct VMUserTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -344,8 +381,12 @@ pub struct VMUserTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -370,8 +411,12 @@ pub struct VMUserTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -385,8 +430,12 @@ pub struct VMUserTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -400,8 +449,12 @@ pub struct VMUserTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -415,8 +468,12 @@ pub struct VMUserTokenRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -427,5 +484,12 @@ pub struct VMUserTokenRef {
 /// VMUserStatus defines the observed state of VMUser
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserStatus {
+    /// LastSyncError contains error message for unsuccessful config generation
+    /// for given user
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
+    pub last_sync_error: Option<String>,
+    /// Status defines update status of resource
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
 }
 
