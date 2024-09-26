@@ -18,7 +18,7 @@ In order to run all the commands mentioned below, you will need the following in
 - `rust`/`cargo`: https://www.rust-lang.org/tools/install
 - `kopium`: https://github.com/kube-rs/kopium
 - `yq`: https://github.com/mikefarah/yq
-- `bash`: https://www.gnu.org/software/bash/
+- Some POSIX compliant shell like [bash](https://www.gnu.org/software/bash/) or [zsh](https://www.zsh.org/).
 
 ### 1. Add CRD to catalog
 
@@ -30,7 +30,7 @@ All CRDs of this project are managed in the [catalog](https://github.com/metio/k
 
 ### 2. Generate Custom Resources
 
-Once you have added all CRDs to the catalog, call the following bash script from the root of this project:
+Once you have added all CRDs to the catalog, call the following shell script from the root of this project:
 
 ```console
 $ ./code-generator/generate.sh <project_name>

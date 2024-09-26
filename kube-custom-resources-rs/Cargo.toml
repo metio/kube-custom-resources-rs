@@ -1,28 +1,36 @@
-# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
-# SPDX-License-Identifier: 0BSD
-
 [package]
 name = "kube-custom-resources-rs"
 version = "9999.99.99"
-description = "Kubernetes Custom Resource Bindings"
-authors = ["Sebastian Hoß <seb@hoß.de>"]
 edition = "2021"
-license = "0BSD"
+authors = ["Sebastian Hoß <seb@hoß.de>"]
+description = "Kubernetes Custom Resource Bindings"
+homepage = "https://github.com/metio/kube-custom-resources-rs/"
+readme = "../README.md"
 keywords = ["kubernetes", "custom-resources"]
 categories = ["api-bindings"]
-homepage = "https://github.com/metio/kube-custom-resources-rs/"
+license = "0BSD"
 repository = "https://github.com/metio/kube-custom-resources-rs"
-readme = "../README.md"
 
-[dependencies]
-kube = { version = "~0", features = ["derive"] }
-k8s-openapi = { version = "~0" }
-schemars = { version = "~0" }
-serde = { version = "~1", features = ["derive"] }
-serde_json = { version = "~1" }
+[dependencies.k8s-openapi]
+version = "~0"
 
-[dev-dependencies]
-k8s-openapi = { version = "~0", features = ["v1_30"] }
+[dependencies.kube]
+version = "~0"
+features = ["derive"]
+
+[dependencies.schemars]
+version = "~0"
+
+[dependencies.serde]
+version = "~1"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "~1"
+
+[dev-dependencies.k8s-openapi]
+version = "~0"
+features = ["v1_31"]
 
 [features]
 about_k8s_io = []
@@ -425,3 +433,10 @@ workloads_kubeblocks_io = []
 zonecontrol_k8s_aws = []
 zookeeper_pravega_io = []
 zookeeper_stackable_tech = []
+
+[lib]
+path = "src/lib.rs"
+name = "kube_custom_resources_rs"
+edition = "2021"
+crate-type = ["lib"]
+required-features = []
