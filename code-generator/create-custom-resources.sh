@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 # SPDX-License-Identifier: 0BSD
@@ -6,12 +6,17 @@
 FILTER="${1:-}"
 
 ### Generate custom resources with kopium
-shopt -s globstar nullglob
-for file in ./crd-catalog/**/*.yaml; do
+# read all yaml files
+yaml_files="$(mktemp)"
+find ./crd-catalog -type f -name '*.yaml' > "${yaml_files}"
+
+# for each file do..
+while IFS= read -r file; do
   if [ -n "${FILTER}" ]; then
-    if ! echo -n "${file}" | grep --quiet "${FILTER}"; then
+    if ! printf '%s' "${file}" | grep --quiet "${FILTER}"; then
       continue
     fi
+    filter_matched='yes'
   fi
 
   path="${file%.*}"
@@ -31,7 +36,7 @@ for file in ./crd-catalog/**/*.yaml; do
   if [ -f "${ignore_file}" ]; then
     rm --force "${version_directory}/${resource_filename}.rs"
   else
-    mkdir --parents "${version_directory}"
+    mkdir -p "${version_directory}"
 
     if [ -f "${fixup_file}" ]; then
       "${fixup_file}" > "${fixed_file}"
@@ -42,4 +47,10 @@ for file in ./crd-catalog/**/*.yaml; do
       echo "  error in ${file_to_read}"
     fi
   fi
-done
+done < "${yaml_files}"
+rm "${yaml_files}"
+
+if [ -n "${FILTER}" ] && [ "${filter_matched}" != yes ]; then
+  echo "filter [${FILTER}] does no match any resource"
+  exit 2
+fi

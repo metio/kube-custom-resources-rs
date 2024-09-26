@@ -9,8 +9,10 @@ edition = "2021"
 publish = false
 
 [dependencies]
-reqwest = { version = "0.12.4", default-features = false, features = ["blocking", "rustls-tls"] }
-k8s-openapi = { version = "0.23.0", features = ["latest"] }
+reqwest = { version = "0.12.7", default-features = false, features = ["blocking", "rustls-tls"] }
+k8s-openapi = { version = "~0", features = ["latest"] }
 serde_yaml = { version = "0.9.34" }
 glob = { version = "0.3.1" }
 itertools = { version = "0.13.0" }
+cargo_toml = { version = "0.20.5", features = ["features"] }
+toml = {version = "0.8.14"}

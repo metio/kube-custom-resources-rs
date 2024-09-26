@@ -14,6 +14,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let root = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
     let client = Client::new();
+    let mut number_of_matched_crds: i64 = 0;
 
     for source in catalog::CRD_V1_SOURCES {
         for url in source.urls {
@@ -28,6 +29,7 @@ fn main() {
                                     println!("  Ignoring {}/{}", crd.spec.group, crd.spec.versions[0].name);
                                     continue
                                 }
+                                number_of_matched_crds += 1;
                                 let directory = format!(
                                     "{}/crd-catalog/{}/{}/{}",
                                     root,
@@ -54,6 +56,9 @@ fn main() {
                 }
             }
         }
+    }
+    if args.len() == 2 && number_of_matched_crds == 0 {
+        std::process::exit(2);
     }
 }
 
