@@ -13,7 +13,17 @@ spec:
     singular: "vmprobe"
   scope: "Namespaced"
   versions:
-    - name: "v1beta1"
+    - additionalPrinterColumns:
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+        - jsonPath: ".status.status"
+          name: "Status"
+          type: "string"
+        - jsonPath: ".status.lastSyncError"
+          name: "Sync Error"
+          type: "string"
+      name: "v1beta1"
       schema:
         openAPIV3Schema:
           description: "VMProbe defines a probe for targets, that will be executed with prober,\nlike blackbox exporter.\nIt helps to monitor reachability of target with various checks."
@@ -39,7 +49,8 @@ spec:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
-                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          default: ""
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                           type: "string"
                         optional:
                           description: "Specify whether the Secret or its key must be defined"
@@ -56,16 +67,17 @@ spec:
                       type: "string"
                   type: "object"
                 basicAuth:
-                  description: "BasicAuth allow an endpoint to authenticate over basic authentication\nMore info: https://prometheus.io/docs/operating/configuration/#endpoints"
+                  description: "BasicAuth allow an endpoint to authenticate over basic authentication"
                   properties:
                     password:
-                      description: "The secret in the service scrape namespace that contains the password\nfor authentication.\nIt must be at them same namespace as CRD"
+                      description: "Password defines reference for secret with password value\nThe secret needs to be in the same namespace as scrape object"
                       properties:
                         key:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
-                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          default: ""
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                           type: "string"
                         optional:
                           description: "Specify whether the Secret or its key must be defined"
@@ -75,16 +87,17 @@ spec:
                       type: "object"
                       x-kubernetes-map-type: "atomic"
                     password_file:
-                      description: "PasswordFile defines path to password file at disk"
+                      description: "PasswordFile defines path to password file at disk\nmust be pre-mounted"
                       type: "string"
                     username:
-                      description: "The secret in the service scrape namespace that contains the username\nfor authentication.\nIt must be at them same namespace as CRD"
+                      description: "Username defines reference for secret with username value\nThe secret needs to be in the same namespace as scrape object"
                       properties:
                         key:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
-                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          default: ""
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                           type: "string"
                         optional:
                           description: "Specify whether the Secret or its key must be defined"
@@ -98,14 +111,15 @@ spec:
                   description: "File to read bearer token for scraping targets."
                   type: "string"
                 bearerTokenSecret:
-                  description: "Secret to mount to read bearer token for scraping targets. The secret\nneeds to be in the same namespace as the service scrape and accessible by\nthe victoria-metrics operator."
+                  description: "Secret to mount to read bearer token for scraping targets. The secret\nneeds to be in the same namespace as the scrape object and accessible by\nthe victoria-metrics operator."
                   nullable: true
                   properties:
                     key:
                       description: "The key of the secret to select from.  Must be a valid secret key."
                       type: "string"
                     name:
-                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                      default: ""
+                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                       type: "string"
                     optional:
                       description: "Specify whether the Secret or its key must be defined"
@@ -117,12 +131,71 @@ spec:
                 follow_redirects:
                   description: "FollowRedirects controls redirects for scraping."
                   type: "boolean"
+                honorLabels:
+                  description: "HonorLabels chooses the metric's labels on collisions with target labels."
+                  type: "boolean"
+                honorTimestamps:
+                  description: "HonorTimestamps controls whether vmagent respects the timestamps present in scraped data."
+                  type: "boolean"
                 interval:
-                  description: "Interval at which targets are probed using the configured prober.\nIf not specified Prometheus' global scrape interval is used."
+                  description: "Interval at which metrics should be scraped"
                   type: "string"
                 jobName:
                   description: "The job name assigned to scraped metrics by default."
                   type: "string"
+                max_scrape_size:
+                  description: "MaxScrapeSize defines a maximum size of scraped data for a job"
+                  type: "string"
+                metricRelabelConfigs:
+                  description: "MetricRelabelConfigs to apply to samples after scrapping."
+                  items:
+                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                    properties:
+                      action:
+                        description: "Action to perform based on regex matching. Default is 'replace'"
+                        type: "string"
+                      if:
+                        description: "If represents metricsQL match expression (or list of expressions): '{__name__=~\"foo_.*\"}'"
+                        x-kubernetes-preserve-unknown-fields: true
+                      labels:
+                        additionalProperties:
+                          type: "string"
+                        description: "Labels is used together with Match for `action: graphite`"
+                        type: "object"
+                      match:
+                        description: "Match is used together with Labels for `action: graphite`"
+                        type: "string"
+                      modulus:
+                        description: "Modulus to take of the hash of the source label values."
+                        format: "int64"
+                        type: "integer"
+                      regex:
+                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                        x-kubernetes-preserve-unknown-fields: true
+                      replacement:
+                        description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
+                        type: "string"
+                      separator:
+                        description: "Separator placed between concatenated source label values. default is ';'."
+                        type: "string"
+                      sourceLabels:
+                        description: "The source labels select values from existing labels. Their content is concatenated\nusing the configured separator and matched against the configured regular expression\nfor the replace, keep, and drop actions."
+                        items:
+                          type: "string"
+                        type: "array"
+                      source_labels:
+                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        items:
+                          type: "string"
+                        type: "array"
+                      targetLabel:
+                        description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
+                        type: "string"
+                      target_label:
+                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 module:
                   description: "The module to use for probing specifying how to probe the target.\nExample module configuring in the blackbox exporter:\nhttps://github.com/prometheus/blackbox_exporter/blob/master/example.yml"
                   type: "string"
@@ -139,7 +212,8 @@ spec:
                               description: "The key to select."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the ConfigMap or its key must be defined"
@@ -155,7 +229,8 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -172,7 +247,8 @@ spec:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
-                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          default: ""
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                           type: "string"
                         optional:
                           description: "Specify whether the Secret or its key must be defined"
@@ -209,6 +285,9 @@ spec:
                     type: "array"
                   description: "Optional HTTP URL parameters"
                   type: "object"
+                path:
+                  description: "HTTP path to scrape for metrics."
+                  type: "string"
                 proxyURL:
                   description: "ProxyURL eg http://proxyserver:2195 Directs scrapes to proxy through this endpoint."
                   type: "string"
@@ -216,8 +295,14 @@ spec:
                   description: "SampleLimit defines per-scrape limit on number of scraped samples that will be accepted."
                   format: "int64"
                   type: "integer"
+                scheme:
+                  description: "HTTP scheme to use for scraping."
+                  enum:
+                    - "http"
+                    - "https"
+                  type: "string"
                 scrapeTimeout:
-                  description: "Timeout for scraping metrics from the Prometheus exporter."
+                  description: "Timeout after which the scrape is ended"
                   type: "string"
                 scrape_interval:
                   description: "ScrapeInterval is the same as Interval and has priority over it.\none of scrape_interval or interval can be used"
@@ -245,9 +330,9 @@ spec:
                               type: "array"
                           type: "object"
                         relabelingConfigs:
-                          description: "RelabelConfigs to apply to samples before ingestion.\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config"
+                          description: "RelabelConfigs to apply to samples during service discovery."
                           items:
-                            description: "RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.\nIt defines `<metric_relabel_configs>`-section of configuration.\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs"
+                            description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
                             properties:
                               action:
                                 description: "Action to perform based on regex matching. Default is 'replace'"
@@ -313,11 +398,13 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 required:
                                   - "key"
                                   - "operator"
                                 type: "object"
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                             matchLabels:
                               additionalProperties:
                                 type: "string"
@@ -327,7 +414,7 @@ spec:
                           x-kubernetes-map-type: "atomic"
                       type: "object"
                     staticConfig:
-                      description: "StaticConfig defines static targets which are considers for probing.\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#static_config."
+                      description: "StaticConfig defines static targets which are considers for probing."
                       properties:
                         labels:
                           additionalProperties:
@@ -335,9 +422,9 @@ spec:
                           description: "Labels assigned to all metrics scraped from the targets."
                           type: "object"
                         relabelingConfigs:
-                          description: "More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config"
+                          description: "RelabelConfigs to apply to samples during service discovery."
                           items:
-                            description: "RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.\nIt defines `<metric_relabel_configs>`-section of configuration.\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs"
+                            description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
                             properties:
                               action:
                                 description: "Action to perform based on regex matching. Default is 'replace'"
@@ -406,7 +493,8 @@ spec:
                               description: "The key to select."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the ConfigMap or its key must be defined"
@@ -422,7 +510,8 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -445,7 +534,8 @@ spec:
                               description: "The key to select."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the ConfigMap or its key must be defined"
@@ -461,7 +551,8 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -487,7 +578,8 @@ spec:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
-                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          default: ""
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                           type: "string"
                         optional:
                           description: "Specify whether the Secret or its key must be defined"
@@ -522,34 +614,33 @@ spec:
                   description: "VMScrapeParams defines VictoriaMetrics specific scrape parameters"
                   properties:
                     disable_compression:
+                      description: "DisableCompression"
                       type: "boolean"
                     disable_keep_alive:
-                      description: "disable_keepalive allows disabling HTTP keep-alive when scraping targets.\nBy default, HTTP keep-alive is enabled, so TCP connections to scrape targets\ncould be re-used.\nSee https://docs.victoriametrics.com/vmagent.html#scrape_config-enhancements"
+                      description: "disable_keepalive allows disabling HTTP keep-alive when scraping targets.\nBy default, HTTP keep-alive is enabled, so TCP connections to scrape targets\ncould be re-used.\nSee https://docs.victoriametrics.com/vmagent#scrape_config-enhancements"
                       type: "boolean"
                     headers:
                       description: "Headers allows sending custom headers to scrape targets\nmust be in of semicolon separated header with it's value\neg:\nheaderName: headerValue\nvmagent supports since 1.79.0 version"
                       items:
                         type: "string"
                       type: "array"
-                    metric_relabel_debug:
-                      description: "deprecated since [v1.85](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.85.0), will be removed in next release"
-                      type: "boolean"
                     no_stale_markers:
                       type: "boolean"
                     proxy_client_config:
-                      description: "ProxyClientConfig configures proxy auth settings for scraping\nSee feature description https://docs.victoriametrics.com/vmagent.html#scraping-targets-via-a-proxy"
+                      description: "ProxyClientConfig configures proxy auth settings for scraping\nSee feature description https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy"
                       properties:
                         basic_auth:
                           description: "BasicAuth allow an endpoint to authenticate over basic authentication"
                           properties:
                             password:
-                              description: "The secret in the service scrape namespace that contains the password\nfor authentication.\nIt must be at them same namespace as CRD"
+                              description: "Password defines reference for secret with password value\nThe secret needs to be in the same namespace as scrape object"
                               properties:
                                 key:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -559,16 +650,17 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             password_file:
-                              description: "PasswordFile defines path to password file at disk"
+                              description: "PasswordFile defines path to password file at disk\nmust be pre-mounted"
                               type: "string"
                             username:
-                              description: "The secret in the service scrape namespace that contains the username\nfor authentication.\nIt must be at them same namespace as CRD"
+                              description: "Username defines reference for secret with username value\nThe secret needs to be in the same namespace as scrape object"
                               properties:
                                 key:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -585,7 +677,8 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -609,7 +702,8 @@ spec:
                                       description: "The key to select."
                                       type: "string"
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      default: ""
+                                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                       type: "string"
                                     optional:
                                       description: "Specify whether the ConfigMap or its key must be defined"
@@ -625,7 +719,8 @@ spec:
                                       description: "The key of the secret to select from.  Must be a valid secret key."
                                       type: "string"
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      default: ""
+                                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                       type: "string"
                                     optional:
                                       description: "Specify whether the Secret or its key must be defined"
@@ -648,7 +743,8 @@ spec:
                                       description: "The key to select."
                                       type: "string"
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      default: ""
+                                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                       type: "string"
                                     optional:
                                       description: "Specify whether the ConfigMap or its key must be defined"
@@ -664,7 +760,8 @@ spec:
                                       description: "The key of the secret to select from.  Must be a valid secret key."
                                       type: "string"
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      default: ""
+                                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                       type: "string"
                                     optional:
                                       description: "Specify whether the Secret or its key must be defined"
@@ -690,7 +787,8 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -704,9 +802,6 @@ spec:
                               type: "string"
                           type: "object"
                       type: "object"
-                    relabel_debug:
-                      description: "deprecated since [v1.85](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.85.0), will be removed in next release"
-                      type: "boolean"
                     scrape_align_interval:
                       type: "string"
                     scrape_offset:
@@ -718,7 +813,14 @@ spec:
                 - "vmProberSpec"
               type: "object"
             status:
-              description: "VMProbeStatus defines the observed state of VMProbe"
+              description: "ScrapeObjectStatus defines the observed state of ScrapeObjects"
+              properties:
+                lastSyncError:
+                  description: "LastSyncError contains error message for unsuccessful config generation"
+                  type: "string"
+                status:
+                  description: "Status defines update status of resource"
+                  type: "string"
               type: "object"
           required:
             - "spec"

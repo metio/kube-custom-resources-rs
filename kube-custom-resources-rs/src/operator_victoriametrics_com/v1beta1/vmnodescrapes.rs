@@ -14,6 +14,7 @@ use self::prelude::*;
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMNodeScrape", plural = "vmnodescrapes")]
 #[kube(namespaced)]
+#[kube(status = "VMNodeScrapeStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -22,14 +23,13 @@ pub struct VMNodeScrapeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VMNodeScrapeAuthorization>,
     /// BasicAuth allow an endpoint to authenticate over basic authentication
-    /// More info: https://prometheus.io/docs/operating/configuration/#endpoints
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<VMNodeScrapeBasicAuth>,
     /// File to read bearer token for scraping targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Secret to mount to read bearer token for scraping targets. The secret
-    /// needs to be  accessible by
+    /// needs to be in the same namespace as the scrape object and accessible by
     /// the victoria-metrics operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<VMNodeScrapeBearerTokenSecret>,
@@ -48,7 +48,10 @@ pub struct VMNodeScrapeSpec {
     /// The label to use to retrieve the job name from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobLabel")]
     pub job_label: Option<String>,
-    /// MetricRelabelConfigs to apply to samples before ingestion.
+    /// MaxScrapeSize defines a maximum size of scraped data for a job
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_scrape_size: Option<String>,
+    /// MetricRelabelConfigs to apply to samples after scrapping.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelConfigs")]
     pub metric_relabel_configs: Option<Vec<VMNodeScrapeMetricRelabelConfigs>>,
     /// OAuth2 defines auth configuration
@@ -66,8 +69,7 @@ pub struct VMNodeScrapeSpec {
     /// ProxyURL eg http://proxyserver:2195 Directs scrapes to proxy through this endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// RelabelConfigs to apply to samples before scraping.
-    /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+    /// RelabelConfigs to apply to samples during service discovery.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelConfigs")]
     pub relabel_configs: Option<Vec<VMNodeScrapeRelabelConfigs>>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
@@ -93,7 +95,7 @@ pub struct VMNodeScrapeSpec {
     /// TargetLabels transfers labels on the Kubernetes Node onto the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabels")]
     pub target_labels: Option<Vec<String>>,
-    /// TLSConfig specifies TLSConfig configuration parameters.
+    /// TLSConfig configuration to use when scraping the endpoint
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VMNodeScrapeTlsConfig>,
     /// VMScrapeParams defines VictoriaMetrics specific scrape parameters
@@ -121,8 +123,12 @@ pub struct VMNodeScrapeAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -131,34 +137,35 @@ pub struct VMNodeScrapeAuthorizationCredentials {
 }
 
 /// BasicAuth allow an endpoint to authenticate over basic authentication
-/// More info: https://prometheus.io/docs/operating/configuration/#endpoints
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeBasicAuth {
-    /// The secret in the service scrape namespace that contains the password
-    /// for authentication.
-    /// It must be at them same namespace as CRD
+    /// Password defines reference for secret with password value
+    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VMNodeScrapeBasicAuthPassword>,
     /// PasswordFile defines path to password file at disk
+    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// The secret in the service scrape namespace that contains the username
-    /// for authentication.
-    /// It must be at them same namespace as CRD
+    /// Username defines reference for secret with username value
+    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VMNodeScrapeBasicAuthUsername>,
 }
 
-/// The secret in the service scrape namespace that contains the password
-/// for authentication.
-/// It must be at them same namespace as CRD
+/// Password defines reference for secret with password value
+/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -166,16 +173,19 @@ pub struct VMNodeScrapeBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service scrape namespace that contains the username
-/// for authentication.
-/// It must be at them same namespace as CRD
+/// Username defines reference for secret with username value
+/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -184,15 +194,19 @@ pub struct VMNodeScrapeBasicAuthUsername {
 }
 
 /// Secret to mount to read bearer token for scraping targets. The secret
-/// needs to be  accessible by
+/// needs to be in the same namespace as the scrape object and accessible by
 /// the victoria-metrics operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -200,9 +214,8 @@ pub struct VMNodeScrapeBearerTokenSecret {
     pub optional: Option<bool>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
-/// It defines `<metric_relabel_configs>`-section of configuration.
-/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set
+/// More info: https://docs.victoriametrics.com/#relabeling
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeMetricRelabelConfigs {
     /// Action to perform based on regex matching. Default is 'replace'
@@ -293,8 +306,12 @@ pub struct VMNodeScrapeOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -308,8 +325,12 @@ pub struct VMNodeScrapeOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -323,8 +344,12 @@ pub struct VMNodeScrapeOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -332,9 +357,8 @@ pub struct VMNodeScrapeOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
-/// It defines `<metric_relabel_configs>`-section of configuration.
-/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set
+/// More info: https://docs.victoriametrics.com/#relabeling
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeRelabelConfigs {
     /// Action to perform based on regex matching. Default is 'replace'
@@ -426,7 +450,7 @@ pub struct VMNodeScrapeSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// TLSConfig specifies TLSConfig configuration parameters.
+/// TLSConfig configuration to use when scraping the endpoint
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeTlsConfig {
     /// Stuct containing the CA cert to use for the targets.
@@ -472,8 +496,12 @@ pub struct VMNodeScrapeTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -487,8 +515,12 @@ pub struct VMNodeScrapeTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -513,8 +545,12 @@ pub struct VMNodeScrapeTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -528,8 +564,12 @@ pub struct VMNodeScrapeTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -543,8 +583,12 @@ pub struct VMNodeScrapeTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -555,12 +599,13 @@ pub struct VMNodeScrapeTlsConfigKeySecret {
 /// VMScrapeParams defines VictoriaMetrics specific scrape parameters
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeVmScrapeParams {
+    /// DisableCompression
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_compression: Option<bool>,
     /// disable_keepalive allows disabling HTTP keep-alive when scraping targets.
     /// By default, HTTP keep-alive is enabled, so TCP connections to scrape targets
     /// could be re-used.
-    /// See https://docs.victoriametrics.com/vmagent.html#scrape_config-enhancements
+    /// See https://docs.victoriametrics.com/vmagent#scrape_config-enhancements
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_keep_alive: Option<bool>,
     /// Headers allows sending custom headers to scrape targets
@@ -570,18 +615,12 @@ pub struct VMNodeScrapeVmScrapeParams {
     /// vmagent supports since 1.79.0 version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
-    /// deprecated since [v1.85](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.85.0), will be removed in next release
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metric_relabel_debug: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub no_stale_markers: Option<bool>,
     /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See feature description https://docs.victoriametrics.com/vmagent.html#scraping-targets-via-a-proxy
+    /// See feature description https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VMNodeScrapeVmScrapeParamsProxyClientConfig>,
-    /// deprecated since [v1.85](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.85.0), will be removed in next release
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub relabel_debug: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scrape_align_interval: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -591,7 +630,7 @@ pub struct VMNodeScrapeVmScrapeParams {
 }
 
 /// ProxyClientConfig configures proxy auth settings for scraping
-/// See feature description https://docs.victoriametrics.com/vmagent.html#scraping-targets-via-a-proxy
+/// See feature description https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeVmScrapeParamsProxyClientConfig {
     /// BasicAuth allow an endpoint to authenticate over basic authentication
@@ -610,31 +649,33 @@ pub struct VMNodeScrapeVmScrapeParamsProxyClientConfig {
 /// BasicAuth allow an endpoint to authenticate over basic authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigBasicAuth {
-    /// The secret in the service scrape namespace that contains the password
-    /// for authentication.
-    /// It must be at them same namespace as CRD
+    /// Password defines reference for secret with password value
+    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VMNodeScrapeVmScrapeParamsProxyClientConfigBasicAuthPassword>,
     /// PasswordFile defines path to password file at disk
+    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// The secret in the service scrape namespace that contains the username
-    /// for authentication.
-    /// It must be at them same namespace as CRD
+    /// Username defines reference for secret with username value
+    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VMNodeScrapeVmScrapeParamsProxyClientConfigBasicAuthUsername>,
 }
 
-/// The secret in the service scrape namespace that contains the password
-/// for authentication.
-/// It must be at them same namespace as CRD
+/// Password defines reference for secret with password value
+/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -642,16 +683,19 @@ pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service scrape namespace that contains the username
-/// for authentication.
-/// It must be at them same namespace as CRD
+/// Username defines reference for secret with username value
+/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -665,8 +709,12 @@ pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigBearerToken {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -720,8 +768,12 @@ pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -735,8 +787,12 @@ pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -761,8 +817,12 @@ pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -776,8 +836,12 @@ pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -791,8 +855,12 @@ pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -800,8 +868,14 @@ pub struct VMNodeScrapeVmScrapeParamsProxyClientConfigTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// VMNodeScrapeStatus defines the observed state of VMNodeScrape
+/// ScrapeObjectStatus defines the observed state of ScrapeObjects
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeStatus {
+    /// LastSyncError contains error message for unsuccessful config generation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
+    pub last_sync_error: Option<String>,
+    /// Status defines update status of resource
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
 }
 
