@@ -1339,6 +1339,12 @@ spec:
                               nullable: true
                               type: "integer"
                           type: "object"
+                        retriableStatusCodes:
+                          items:
+                            maximum: 4294967295.0
+                            minimum: 0.0
+                            type: "integer"
+                          type: "array"
                         retryBackOff:
                           properties:
                             baseInterval:

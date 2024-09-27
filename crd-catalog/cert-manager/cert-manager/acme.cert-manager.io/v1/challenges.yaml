@@ -350,10 +350,10 @@ spec:
                                 - "kubernetes"
                               type: "object"
                             hostedZoneID:
-                              description: "If set, the provider will manage only this zone in Route53 and will not do an lookup using the route53:ListHostedZonesByName api call."
+                              description: "If set, the provider will manage only this zone in Route53 and will not do a lookup using the route53:ListHostedZonesByName api call."
                               type: "string"
                             region:
-                              description: "Always set the region when using AccessKeyID and SecretAccessKey"
+                              description: "Override the AWS region.\n\nRoute53 is a global service and does not have regional endpoints but the\nregion specified here (or via environment variables) is used as a hint to\nhelp compute the correct AWS credential scope and partition when it\nconnects to Route53. See:\n- [Amazon Route 53 endpoints and quotas](https://docs.aws.amazon.com/general/latest/gr/r53.html)\n- [Global services](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html)\n\nIf you omit this region field, cert-manager will use the region from\nAWS_REGION and AWS_DEFAULT_REGION environment variables, if they are set\nin the cert-manager controller Pod.\n\nThe `region` field is not needed if you use [IAM Roles for Service Accounts (IRSA)](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).\nInstead an AWS_REGION environment variable is added to the cert-manager controller Pod by:\n[Amazon EKS Pod Identity Webhook](https://github.com/aws/amazon-eks-pod-identity-webhook).\nIn this case this `region` field value is ignored.\n\nThe `region` field is not needed if you use [EKS Pod Identities](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html).\nInstead an AWS_REGION environment variable is added to the cert-manager controller Pod by:\n[Amazon EKS Pod Identity Agent](https://github.com/aws/eks-pod-identity-agent),\nIn this case this `region` field value is ignored."
                               type: "string"
                             role:
                               description: "Role is a Role ARN which the Route53 provider will assume using either the explicit credentials AccessKeyID/SecretAccessKey\nor the inferred credentials from environment variables, shared credentials file or AWS Instance metadata"
@@ -370,8 +370,6 @@ spec:
                               required:
                                 - "name"
                               type: "object"
-                          required:
-                            - "region"
                           type: "object"
                         webhook:
                           description: "Configure an external webhook based DNS01 challenge solver to manage\nDNS01 challenge records."
@@ -455,7 +453,7 @@ spec:
                                     annotations:
                                       additionalProperties:
                                         type: "string"
-                                      description: "Annotations that should be added to the create ACME HTTP01 solver pods."
+                                      description: "Annotations that should be added to the created ACME HTTP01 solver pods."
                                       type: "object"
                                     labels:
                                       additionalProperties:
@@ -1183,7 +1181,7 @@ spec:
                                     annotations:
                                       additionalProperties:
                                         type: "string"
-                                      description: "Annotations that should be added to the create ACME HTTP01 solver pods."
+                                      description: "Annotations that should be added to the created ACME HTTP01 solver pods."
                                       type: "object"
                                     labels:
                                       additionalProperties:

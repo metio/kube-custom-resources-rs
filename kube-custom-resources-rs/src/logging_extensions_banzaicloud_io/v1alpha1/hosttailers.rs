@@ -26,8 +26,8 @@ pub struct HostTailerSpec {
     pub image: Option<HostTailerImage>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemdTailers")]
     pub systemd_tailers: Option<Vec<HostTailerSystemdTailers>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadMetaOverrides")]
-    pub workload_meta_overrides: Option<HostTailerWorkloadMetaOverrides>,
+    #[serde(rename = "workloadMetaOverrides")]
+    pub workload_meta_overrides: HostTailerWorkloadMetaOverrides,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadOverrides")]
     pub workload_overrides: Option<HostTailerWorkloadOverrides>,
 }
@@ -214,6 +214,8 @@ pub struct HostTailerFileTailersContainerOverridesResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HostTailerFileTailersContainerOverridesResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -523,6 +525,8 @@ pub struct HostTailerSystemdTailersContainerOverridesResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HostTailerSystemdTailersContainerOverridesResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1129,6 +1133,8 @@ pub struct HostTailerWorkloadOverridesContainersResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HostTailerWorkloadOverridesContainersResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1391,6 +1397,8 @@ pub struct HostTailerWorkloadOverridesInitContainersResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HostTailerWorkloadOverridesInitContainersResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1506,6 +1514,8 @@ pub struct HostTailerWorkloadOverridesSecurityContext {
     pub seccomp_profile: Option<HostTailerWorkloadOverridesSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<HostTailerWorkloadOverridesSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -1608,6 +1618,8 @@ pub struct HostTailerWorkloadOverridesVolumes {
     pub glusterfs: Option<HostTailerWorkloadOverridesVolumesGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<HostTailerWorkloadOverridesVolumesHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<HostTailerWorkloadOverridesVolumesImage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<HostTailerWorkloadOverridesVolumesIscsi>,
     pub name: String,
@@ -1951,6 +1963,14 @@ pub struct HostTailerWorkloadOverridesVolumesHostPath {
     pub path: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HostTailerWorkloadOverridesVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

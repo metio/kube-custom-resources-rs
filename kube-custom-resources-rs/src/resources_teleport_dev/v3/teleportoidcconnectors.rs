@@ -34,7 +34,7 @@ pub struct TeleportOIDCConnectorSpec {
     /// ClientRedirectSettings defines which client redirect URLs are allowed for non-browser SSO logins other than the standard localhost ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_redirect_settings: Option<TeleportOIDCConnectorClientRedirectSettings>,
-    /// ClientSecret is used to authenticate the client.
+    /// ClientSecret is used to authenticate the client. This field supports secret lookup. See the operator documentation for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<String>,
     /// Display is the friendly name for this provider.

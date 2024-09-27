@@ -54,6 +54,13 @@ pub struct ClusterResourceBindingSpec {
     /// Placement represents the rule for select clusters to propagate resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placement: Option<ClusterResourceBindingPlacement>,
+    /// PreserveResourcesOnDeletion controls whether resources should be preserved on the
+    /// member clusters when the binding object is deleted.
+    /// If set to true, resources will be preserved on the member clusters.
+    /// Default is false, which means resources will be deleted along with the binding object.
+    /// This setting applies to all Work objects created under this binding object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveResourcesOnDeletion")]
+    pub preserve_resources_on_deletion: Option<bool>,
     /// PropagateDeps tells if relevant resources should be propagated automatically.
     /// It is inherited from PropagationPolicy or ClusterPropagationPolicy.
     /// default false.

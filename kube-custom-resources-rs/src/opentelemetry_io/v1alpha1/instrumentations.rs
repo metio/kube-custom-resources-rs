@@ -21,6 +21,8 @@ pub struct InstrumentationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apacheHttpd")]
     pub apache_httpd: Option<InstrumentationApacheHttpd>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub defaults: Option<InstrumentationDefaults>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dotnet: Option<InstrumentationDotnet>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<InstrumentationEnv>>,
@@ -189,6 +191,12 @@ pub struct InstrumentationApacheHttpdResourceRequirementsClaims {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstrumentationDefaults {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useLabelsForResourceAttributes")]
+    pub use_labels_for_resource_attributes: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

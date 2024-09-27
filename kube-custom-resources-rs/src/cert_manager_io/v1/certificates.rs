@@ -433,7 +433,7 @@ pub struct CertificatePrivateKey {
     /// re-issuance is being processed.
     /// 
     /// If set to `Never`, a private key will only be generated if one does not
-    /// already exist in the target `spec.secretName`. If one does exists but it
+    /// already exist in the target `spec.secretName`. If one does exist but it
     /// does not have the correct algorithm or size, a warning will be raised
     /// to await user intervention.
     /// If set to `Always`, a private key matching the specified requirements
@@ -547,7 +547,7 @@ pub struct CertificateStatus {
     /// time.Hour * 2 ^ (failedIssuanceAttempts - 1).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedIssuanceAttempts")]
     pub failed_issuance_attempts: Option<i64>,
-    /// LastFailureTime is set only if the lastest issuance for this
+    /// LastFailureTime is set only if the latest issuance for this
     /// Certificate failed and contains the time of the failure. If an
     /// issuance has failed, the delay till the next issuance will be
     /// calculated using formula time.Hour * 2 ^ (failedIssuanceAttempts -

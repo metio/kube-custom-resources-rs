@@ -8,7 +8,6 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
@@ -35,7 +34,7 @@ pub struct ConnectionSpec {
     pub maria_db_ref: Option<ConnectionMariaDbRef>,
     /// MaxScaleRef is a reference to the MaxScale to connect to. Either MariaDBRef or MaxScaleRef must be provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxScaleRef")]
-    pub max_scale_ref: Option<ObjectReference>,
+    pub max_scale_ref: Option<ConnectionMaxScaleRef>,
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
@@ -73,38 +72,10 @@ pub struct ConnectionHealthCheck {
 /// MariaDBRef is a reference to the MariaDB to connect to. Either MariaDBRef or MaxScaleRef must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConnectionMariaDbRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
     /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,
@@ -113,56 +84,19 @@ pub struct ConnectionMariaDbRef {
 /// MaxScaleRef is a reference to the MaxScale to connect to. Either MariaDBRef or MaxScaleRef must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConnectionMaxScaleRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
 }
 
 /// PasswordSecretKeyRef is a reference to the password to use for configuring the Connection.
 /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConnectionPasswordSecretKeyRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
 }
 
 /// SecretTemplate to be used in the Connection.

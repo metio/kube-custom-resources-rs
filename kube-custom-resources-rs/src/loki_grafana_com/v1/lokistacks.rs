@@ -180,11 +180,11 @@ pub struct LokiStackLimitsGlobalIngestion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsGlobalOtlp {
     /// IndexedResourceAttributes contains the global configuration for resource attributes
-    /// to store them as index labels or structured metadata or drop them altogether.
+    /// to store them as index labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexedResourceAttributes")]
     pub indexed_resource_attributes: Option<Vec<String>>,
     /// LogAttributes contains the configuration for log attributes
-    /// to store them as index labels or structured metadata or drop them altogether.
+    /// to store them as structured metadata or drop them altogether.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logAttributes")]
     pub log_attributes: Option<Vec<LokiStackLimitsGlobalOtlpLogAttributes>>,
     /// ResourceAttributes contains the configuration for resource attributes
@@ -192,7 +192,7 @@ pub struct LokiStackLimitsGlobalOtlp {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
     pub resource_attributes: Option<LokiStackLimitsGlobalOtlpResourceAttributes>,
     /// ScopeAttributes contains the configuration for scope attributes
-    /// to store them as index labels or structured metadata or drop them altogether.
+    /// to store them as structured metadata or drop them altogether.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeAttributes")]
     pub scope_attributes: Option<Vec<LokiStackLimitsGlobalOtlpScopeAttributes>>,
 }
@@ -408,7 +408,7 @@ pub struct LokiStackLimitsTenantsIngestion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsTenantsOtlp {
     /// LogAttributes contains the configuration for log attributes
-    /// to store them as index labels or structured metadata or drop them altogether.
+    /// to store them as structured metadata or drop them altogether.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logAttributes")]
     pub log_attributes: Option<Vec<LokiStackLimitsTenantsOtlpLogAttributes>>,
     /// ResourceAttributes contains the configuration for resource attributes
@@ -416,7 +416,7 @@ pub struct LokiStackLimitsTenantsOtlp {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
     pub resource_attributes: Option<LokiStackLimitsTenantsOtlpResourceAttributes>,
     /// ScopeAttributes contains the configuration for scope attributes
-    /// to store them as index labels or structured metadata or drop them altogether.
+    /// to store them as structured metadata or drop them altogether.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeAttributes")]
     pub scope_attributes: Option<Vec<LokiStackLimitsTenantsOtlpScopeAttributes>>,
 }

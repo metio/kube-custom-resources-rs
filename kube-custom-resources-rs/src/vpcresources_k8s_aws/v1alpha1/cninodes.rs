@@ -6,7 +6,6 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
-    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
@@ -20,9 +19,6 @@ use self::prelude::*;
 pub struct CNINodeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<CNINodeFeatures>>,
-    /// Additional tag key/value added to all network interfaces provisioned by the vpc-resource-controller and VPC-CNI
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tags: Option<BTreeMap<String, String>>,
 }
 
 /// Feature is a type of feature being supported by VPC resource controller and other AWS Services

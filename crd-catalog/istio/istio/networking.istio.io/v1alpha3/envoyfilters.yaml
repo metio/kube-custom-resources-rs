@@ -264,6 +264,7 @@ spec:
                     x-kubernetes-validations:
                       - message: "Support kinds are core/Service, networking.istio.io/ServiceEntry, gateway.networking.k8s.io/Gateway"
                         rule: "[self.group, self.kind] in [['core','Service'], ['','Service'], ['gateway.networking.k8s.io','Gateway'], ['networking.istio.io','ServiceEntry']]"
+                  maxItems: 16
                   type: "array"
                 workloadSelector:
                   description: "Criteria used to select the specific set of pods/VMs on which this patch configuration should be applied."
@@ -275,6 +276,9 @@ spec:
                       type: "object"
                   type: "object"
               type: "object"
+              x-kubernetes-validations:
+                - message: "only one of targetRefs or workloadSelector can be set"
+                  rule: "(has(self.workloadSelector)?1:0)+(has(self.targetRefs)?1:0)<=1"
             status:
               properties:
                 conditions:

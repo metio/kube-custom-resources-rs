@@ -32,6 +32,9 @@ pub struct HiveConfigSpec {
     /// Backup specifies configuration for backup integration. If absent, backup integration will be disabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<HiveConfigBackup>,
+    /// ClusterVersionPollInterval is a string duration indicating how much time must pass before checking whether we need to update the hive.openshift.io/version* labels on ClusterDeployment. If zero or unset, we'll only reconcile when the ClusterDeployment changes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersionPollInterval")]
+    pub cluster_version_poll_interval: Option<String>,
     /// ControllersConfig is used to configure different hive controllers
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllersConfig")]
     pub controllers_config: Option<HiveConfigControllersConfig>,

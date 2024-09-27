@@ -60,33 +60,15 @@ spec:
                 mariaDbRef:
                   description: "MariaDBRef is a reference to a MariaDB object."
                   properties:
-                    apiVersion:
-                      description: "API version of the referent."
-                      type: "string"
-                    fieldPath:
-                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
-                      type: "string"
-                    kind:
-                      description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
-                      type: "string"
                     name:
-                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                       type: "string"
                     namespace:
-                      description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
-                      type: "string"
-                    resourceVersion:
-                      description: "Specific resourceVersion to which this reference is made, if any.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency"
-                      type: "string"
-                    uid:
-                      description: "UID of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
                       type: "string"
                     waitForIt:
                       default: true
                       description: "WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready."
                       type: "boolean"
                   type: "object"
-                  x-kubernetes-map-type: "atomic"
                 maxUserConnections:
                   default: 10
                   description: "MaxUserConnections defines the maximum number of connections that the User can establish."
@@ -100,15 +82,10 @@ spec:
                   description: "PasswordHashSecretKeyRef is a reference to the password hash to be used by the User.\nIf the referred Secret is labeled with \"k8s.mariadb.com/watch\", updates may be performed to the Secret in order to update the password hash."
                   properties:
                     key:
-                      description: "The key of the secret to select from.  Must be a valid secret key."
                       type: "string"
                     name:
                       default: ""
-                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                       type: "string"
-                    optional:
-                      description: "Specify whether the Secret or its key must be defined"
-                      type: "boolean"
                   required:
                     - "key"
                   type: "object"
@@ -120,15 +97,10 @@ spec:
                       description: "PluginArgSecretKeyRef is a reference to the arguments to be provided to the authentication plugin for the User.\nIf the referred Secret is labeled with \"k8s.mariadb.com/watch\", updates may be performed to the Secret in order to update the authentication plugin arguments."
                       properties:
                         key:
-                          description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
                           default: ""
-                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                           type: "string"
-                        optional:
-                          description: "Specify whether the Secret or its key must be defined"
-                          type: "boolean"
                       required:
                         - "key"
                       type: "object"
@@ -137,15 +109,10 @@ spec:
                       description: "PluginNameSecretKeyRef is a reference to the authentication plugin to be used by the User.\nIf the referred Secret is labeled with \"k8s.mariadb.com/watch\", updates may be performed to the Secret in order to update the authentication plugin."
                       properties:
                         key:
-                          description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
                           default: ""
-                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                           type: "string"
-                        optional:
-                          description: "Specify whether the Secret or its key must be defined"
-                          type: "boolean"
                       required:
                         - "key"
                       type: "object"
@@ -155,15 +122,10 @@ spec:
                   description: "PasswordSecretKeyRef is a reference to the password to be used by the User.\nIf not provided, the account will be locked and the password will expire.\nIf the referred Secret is labeled with \"k8s.mariadb.com/watch\", updates may be performed to the Secret in order to update the password."
                   properties:
                     key:
-                      description: "The key of the secret to select from.  Must be a valid secret key."
                       type: "string"
                     name:
                       default: ""
-                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                       type: "string"
-                    optional:
-                      description: "Specify whether the Secret or its key must be defined"
-                      type: "boolean"
                   required:
                     - "key"
                   type: "object"

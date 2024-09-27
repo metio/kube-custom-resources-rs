@@ -54,7 +54,7 @@ spec:
                 annotations:
                   additionalProperties:
                     type: "string"
-                  description: "Specifies Annotations to override or add for underlying Pods."
+                  description: "Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                   type: "object"
                 compDef:
                   description: "Specifies the name of the referenced ComponentDefinition."
@@ -2059,7 +2059,7 @@ spec:
                 labels:
                   additionalProperties:
                     type: "string"
-                  description: "Specifies Labels to override or add for underlying Pods."
+                  description: "Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                   type: "object"
                 offlineInstances:
                   description: "Specifies the names of instances to be transitioned to offline status.\n\n\nMarking an instance as offline results in the following:\n\n\n1. The associated Pod is stopped, and its PersistentVolumeClaim (PVC) is retained for potential\n   future reuse or data recovery, but it is no longer actively used.\n2. The ordinal number assigned to this instance is preserved, ensuring it remains unique\n   and avoiding conflicts with new instances.\n\n\nSetting instances to offline allows for a controlled scale-in process, preserving their data and maintaining\nordinal consistency within the Cluster.\nNote that offline instances and their associated resources, such as PVCs, are not automatically deleted.\nThe administrator must manually manage the cleanup and removal of these resources when they are no longer needed."

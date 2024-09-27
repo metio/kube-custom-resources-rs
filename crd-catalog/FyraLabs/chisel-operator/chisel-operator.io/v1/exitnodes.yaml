@@ -65,17 +65,6 @@ spec:
                   type: "string"
                 provider:
                   type: "string"
-                service_binding:
-                  nullable: true
-                  properties:
-                    name:
-                      type: "string"
-                    namespace:
-                      type: "string"
-                  required:
-                    - "name"
-                    - "namespace"
-                  type: "object"
               required:
                 - "ip"
                 - "name"

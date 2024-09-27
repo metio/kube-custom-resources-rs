@@ -77,6 +77,26 @@ pub struct ClusterPropagationPolicySpec {
     /// Valid options are "Always" and "Never".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preemption: Option<ClusterPropagationPolicyPreemption>,
+    /// PreserveResourcesOnDeletion controls whether resources should be preserved on the
+    /// member clusters when the resource template is deleted.
+    /// If set to true, resources will be preserved on the member clusters.
+    /// Default is false, which means resources will be deleted along with the resource template.
+    /// 
+    /// 
+    /// This setting is particularly useful during workload migration scenarios to ensure
+    /// that rollback can occur quickly without affecting the workloads running on the
+    /// member clusters.
+    /// 
+    /// 
+    /// Additionally, this setting applies uniformly across all member clusters and will not
+    /// selectively control preservation on only some clusters.
+    /// 
+    /// 
+    /// Note: This setting does not apply to the deletion of the policy itself.
+    /// When the policy is deleted, the resource templates and their corresponding
+    /// propagated resources in member clusters will remain unchanged unless explicitly deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveResourcesOnDeletion")]
+    pub preserve_resources_on_deletion: Option<bool>,
     /// Priority indicates the importance of a policy(PropagationPolicy or ClusterPropagationPolicy).
     /// A policy will be applied for the matched resource templates if there is
     /// no other policies with higher priority at the point of the resource

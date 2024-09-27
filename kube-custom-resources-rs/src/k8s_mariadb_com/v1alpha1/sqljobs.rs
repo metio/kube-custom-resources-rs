@@ -105,520 +105,44 @@ pub struct SqlJobAffinity {
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
-    /// Describes node affinity scheduling rules for the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
-    pub node_affinity: Option<SqlJobAffinityNodeAffinity>,
-    /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
-    pub pod_affinity: Option<SqlJobAffinityPodAffinity>,
-    /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<SqlJobAffinityPodAntiAffinity>,
 }
 
-/// Describes node affinity scheduling rules for the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy
-    /// the affinity expressions specified by this field, but it may choose
-    /// a node that violates one or more of the expressions. The node that is
-    /// most preferred is the one with the greatest sum of weights, i.e.
-    /// for each node that meets all of the scheduling requirements (resource
-    /// request, requiredDuringScheduling affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
-    /// node(s) with the highest sum are the most preferred.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at
-    /// scheduling time, the pod will not be scheduled onto the node.
-    /// If the affinity requirements specified by this field cease to be met
-    /// at some point during pod execution (e.g. due to an update), the system
-    /// may or may not try to eventually evict the pod from its node.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-}
-
-/// An empty preferred scheduling term matches all objects with implicit weight 0
-/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// A node selector term, associated with the corresponding weight.
-    pub preference: SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
-    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
-    pub weight: i32,
-}
-
-/// A node selector term, associated with the corresponding weight.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
-    /// A list of node selector requirements by node's labels.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
-    /// A list of node selector requirements by node's fields.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
-}
-
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
-    /// The label key that the selector applies to.
-    pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
-    pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. If the operator is Gt or Lt, the values
-    /// array must have a single element, which will be interpreted as an integer.
-    /// This array is replaced during a strategic merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
-    /// The label key that the selector applies to.
-    pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
-    pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. If the operator is Gt or Lt, the values
-    /// array must have a single element, which will be interpreted as an integer.
-    /// This array is replaced during a strategic merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// If the affinity requirements specified by this field are not met at
-/// scheduling time, the pod will not be scheduled onto the node.
-/// If the affinity requirements specified by this field cease to be met
-/// at some point during pod execution (e.g. due to an update), the system
-/// may or may not try to eventually evict the pod from its node.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A list of node selector terms. The terms are ORed.
-    #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
-}
-
-/// A null or empty node selector term matches no objects. The requirements of
-/// them are ANDed.
-/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
-    /// A list of node selector requirements by node's labels.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
-    /// A list of node selector requirements by node's fields.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
-}
-
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
-    /// The label key that the selector applies to.
-    pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
-    pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. If the operator is Gt or Lt, the values
-    /// array must have a single element, which will be interpreted as an integer.
-    /// This array is replaced during a strategic merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
-    /// The label key that the selector applies to.
-    pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
-    pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. If the operator is Gt or Lt, the values
-    /// array must have a single element, which will be interpreted as an integer.
-    /// This array is replaced during a strategic merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy
-    /// the affinity expressions specified by this field, but it may choose
-    /// a node that violates one or more of the expressions. The node that is
-    /// most preferred is the one with the greatest sum of weights, i.e.
-    /// for each node that meets all of the scheduling requirements (resource
-    /// request, requiredDuringScheduling affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
-    /// node(s) with the highest sum are the most preferred.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at
-    /// scheduling time, the pod will not be scheduled onto the node.
-    /// If the affinity requirements specified by this field cease to be met
-    /// at some point during pod execution (e.g. due to a pod label update), the
-    /// system may or may not try to eventually evict the pod from its node.
-    /// When there are multiple elements, the lists of nodes corresponding to each
-    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<SqlJobAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
-}
-
-/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A pod affinity term, associated with the corresponding weight.
-    #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm,
-    /// in the range 1-100.
-    pub weight: i32,
-}
-
-/// Required. A pod affinity term, associated with the corresponding weight.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
-    pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
-    pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
-    /// null selector and null or empty namespaces list means "this pod's namespace".
-    /// An empty selector ({}) matches all namespaces.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
-    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose value of the label with key topologyKey matches that of any node on which any of the
-    /// selected pods is running.
-    /// Empty topologyKey is not allowed.
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-}
-
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
-/// null selector and null or empty namespaces list means "this pod's namespace".
-/// An empty selector ({}) matches all namespaces.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// Defines a set of pods (namely those matching the labelSelector
-/// relative to the given namespace(s)) that this pod should be
-/// co-located (affinity) or not co-located (anti-affinity) with,
-/// where co-located is defined as running on a node whose value of
-/// the label with key <topologyKey> matches that of any node on which
-/// a pod of the set of pods is running
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<SqlJobAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
-    pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
-    pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
-    /// null selector and null or empty namespaces list means "this pod's namespace".
-    /// An empty selector ({}) matches all namespaces.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<SqlJobAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
-    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose value of the label with key topologyKey matches that of any node on which any of the
-    /// selected pods is running.
-    /// Empty topologyKey is not allowed.
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-}
-
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<SqlJobAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
-/// null selector and null or empty namespaces list means "this pod's namespace".
-/// An empty selector ({}) matches all namespaces.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<SqlJobAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityPodAntiAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy
-    /// the anti-affinity expressions specified by this field, but it may choose
-    /// a node that violates one or more of the expressions. The node that is
-    /// most preferred is the one with the greatest sum of weights, i.e.
-    /// for each node that meets all of the scheduling requirements (resource
-    /// request, requiredDuringScheduling anti-affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
-    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the anti-affinity requirements specified by this field are not met at
-    /// scheduling time, the pod will not be scheduled onto the node.
-    /// If the anti-affinity requirements specified by this field cease to be met
-    /// at some point during pod execution (e.g. due to a pod label update), the
-    /// system may or may not try to eventually evict the pod from its node.
-    /// When there are multiple elements, the lists of nodes corresponding to each
-    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#weightedpodaffinityterm-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A pod affinity term, associated with the corresponding weight.
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podaffinityterm-v1-core.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm,
-    /// in the range 1-100.
     pub weight: i32,
 }
 
-/// Required. A pod affinity term, associated with the corresponding weight.
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podaffinityterm-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
+    /// A label selector is a label query over a set of resources. The result of matchLabels and
+    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
+    /// label selector matches no objects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
-    pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
-    pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
-    /// null selector and null or empty namespaces list means "this pod's namespace".
-    /// An empty selector ({}) matches all namespaces.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
-    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose value of the label with key topologyKey matches that of any node on which any of the
-    /// selected pods is running.
-    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -648,98 +172,21 @@ pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringEx
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
-/// null selector and null or empty namespaces list means "this pod's namespace".
-/// An empty selector ({}) matches all namespaces.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// Defines a set of pods (namely those matching the labelSelector
-/// relative to the given namespace(s)) that this pod should be
-/// co-located (affinity) or not co-located (anti-affinity) with,
-/// where co-located is defined as running on a node whose value of
-/// the label with key <topologyKey> matches that of any node on which
-/// a pod of the set of pods is running
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podaffinityterm-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
+    /// A label selector is a label query over a set of resources. The result of matchLabels and
+    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
+    /// label selector matches no objects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
-    pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
-    pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
-    /// null selector and null or empty namespaces list means "this pod's namespace".
-    /// An empty selector ({}) matches all namespaces.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
-    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose value of the label with key topologyKey matches that of any node on which any of the
-    /// selected pods is running.
-    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -769,62 +216,16 @@ pub struct SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExe
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
-/// null selector and null or empty namespaces list means "this pod's namespace".
-/// An empty selector ({}) matches all namespaces.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// LocalObjectReference contains enough information to let you locate the
-/// referenced object inside the same namespace.
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobDependsOn {
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// LocalObjectReference contains enough information to let you locate the
-/// referenced object inside the same namespace.
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobImagePullSecrets {
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -843,38 +244,10 @@ pub struct SqlJobInheritMetadata {
 /// MariaDBRef is a reference to a MariaDB object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobMariaDbRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
     /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,
@@ -883,18 +256,9 @@ pub struct SqlJobMariaDbRef {
 /// UserPasswordSecretKeyRef is a reference to the impersonated user's password to be used when executing the SqlJob.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobPasswordSecretKeyRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
 }
 
 /// PodMetadata defines extra metadata for the Pod.
@@ -1104,39 +468,12 @@ pub struct SqlJobPodSecurityContextWindowsOptions {
 /// Resouces describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<SqlJobResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// ResourceList is a set of (resource name, quantity) pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
-    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// ResourceList is a set of (resource name, quantity) pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
-    /// Request is the name chosen for a request in the referenced claim.
-    /// If empty, everything from the claim is made available, otherwise
-    /// only the result of this request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub request: Option<String>,
 }
 
 /// SqlJobSpec defines the desired state of SqlJob
@@ -1160,109 +497,24 @@ pub struct SqlJobSchedule {
 /// SecurityContext holds security configuration that will be applied to a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobSecurityContext {
-    /// AllowPrivilegeEscalation controls whether a process can gain more
-    /// privileges than its parent process. This bool directly controls if
-    /// the no_new_privs flag will be set on the container process.
-    /// AllowPrivilegeEscalation is true always when the container is:
-    /// 1) run as Privileged
-    /// 2) has CAP_SYS_ADMIN
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
-    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
-    /// overrides the pod's appArmorProfile.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
-    pub app_armor_profile: Option<SqlJobSecurityContextAppArmorProfile>,
-    /// The capabilities to add/drop when running containers.
-    /// Defaults to the default set of capabilities granted by the container runtime.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// Adds and removes POSIX capabilities from running containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<SqlJobSecurityContextCapabilities>,
-    /// Run container in privileged mode.
-    /// Processes in privileged containers are essentially equivalent to root on the host.
-    /// Defaults to false.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    /// procMount denotes the type of proc mount to use for the containers.
-    /// The default value is Default which uses the container runtime defaults for
-    /// readonly paths and masked paths.
-    /// This requires the ProcMountType feature flag to be enabled.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
-    pub proc_mount: Option<String>,
-    /// Whether this container has a read-only root filesystem.
-    /// Default is false.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    /// The GID to run the entrypoint of the container process.
-    /// Uses runtime default if unset.
-    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user.
-    /// If true, the Kubelet will validate the image at runtime to ensure that it
-    /// does not run as UID 0 (root) and fail to start the container if it does.
-    /// If unset or false, no such validation will be performed.
-    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process.
-    /// Defaults to user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to the container.
-    /// If unspecified, the container runtime will allocate a random SELinux context for each
-    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
-    pub se_linux_options: Option<SqlJobSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by this container. If seccomp options are
-    /// provided at both the pod & container level, the container options
-    /// override the pod options.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
-    pub seccomp_profile: Option<SqlJobSecurityContextSeccompProfile>,
-    /// The Windows specific settings applied to all containers.
-    /// If unspecified, the options from the PodSecurityContext will be used.
-    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
-    pub windows_options: Option<SqlJobSecurityContextWindowsOptions>,
 }
 
-/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
-/// overrides the pod's appArmorProfile.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobSecurityContextAppArmorProfile {
-    /// localhostProfile indicates a profile loaded on the node that should be used.
-    /// The profile must be preconfigured on the node to work.
-    /// Must match the loaded name of the profile.
-    /// Must be set if and only if type is "Localhost".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
-    pub localhost_profile: Option<String>,
-    /// type indicates which kind of AppArmor profile will be applied.
-    /// Valid options are:
-    ///   Localhost - a profile pre-loaded on the node.
-    ///   RuntimeDefault - the container runtime's default profile.
-    ///   Unconfined - no AppArmor enforcement.
-    #[serde(rename = "type")]
-    pub r#type: String,
-}
-
-/// The capabilities to add/drop when running containers.
-/// Defaults to the default set of capabilities granted by the container runtime.
-/// Note that this field cannot be set when spec.os.name is windows.
+/// Adds and removes POSIX capabilities from running containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobSecurityContextCapabilities {
     /// Added capabilities
@@ -1273,93 +525,13 @@ pub struct SqlJobSecurityContextCapabilities {
     pub drop: Option<Vec<String>>,
 }
 
-/// The SELinux context to be applied to the container.
-/// If unspecified, the container runtime will allocate a random SELinux context for each
-/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
-/// PodSecurityContext, the value specified in SecurityContext takes precedence.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobSecurityContextSeLinuxOptions {
-    /// Level is SELinux level label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub level: Option<String>,
-    /// Role is a SELinux role label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
-    /// Type is a SELinux type label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-    /// User is a SELinux user label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-/// The seccomp options to use by this container. If seccomp options are
-/// provided at both the pod & container level, the container options
-/// override the pod options.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used.
-    /// The profile must be preconfigured on the node to work.
-    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
-    /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
-    pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied.
-    /// Valid options are:
-    /// 
-    /// Localhost - a profile defined in a file on the node should be used.
-    /// RuntimeDefault - the container runtime default profile should be used.
-    /// Unconfined - no profile should be applied.
-    #[serde(rename = "type")]
-    pub r#type: String,
-}
-
-/// The Windows specific settings applied to all containers.
-/// If unspecified, the options from the PodSecurityContext will be used.
-/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-/// Note that this field cannot be set when spec.os.name is linux.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook
-    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
-    /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
-    pub gmsa_credential_spec: Option<String>,
-    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
-    pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// All of a Pod's containers must have the same effective HostProcess value
-    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
-    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
-    pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process.
-    /// Defaults to the user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext. If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
-    pub run_as_user_name: Option<String>,
-}
-
 /// SqlConfigMapKeyRef is a reference to a ConfigMap containing the Sql script.
 /// It is defaulted to a ConfigMap with the contents of the Sql field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobSqlConfigMapKeyRef {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches

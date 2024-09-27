@@ -54,6 +54,8 @@ spec:
                                   type: "boolean"
                                 labelSelector:
                                   type: "string"
+                                limit:
+                                  type: "integer"
                                 name:
                                   type: "string"
                                 namespace:
@@ -64,12 +66,14 @@ spec:
                                   description: "Search query that applies to the resource name, tag & labels."
                                   type: "string"
                                 statuses:
+                                  description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                                   items:
                                     type: "string"
                                   type: "array"
                                 tagSelector:
                                   type: "string"
                                 types:
+                                  description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                                   items:
                                     type: "string"
                                   type: "array"
@@ -82,6 +86,8 @@ spec:
                           type: "object"
                         type: "array"
                         x-kubernetes-preserve-unknown-fields: true
+                      configID:
+                        type: "string"
                       configs:
                         description: "Lookup and associate config items with this component"
                         items:
@@ -107,6 +113,8 @@ spec:
                               type: "boolean"
                             labelSelector:
                               type: "string"
+                            limit:
+                              type: "integer"
                             name:
                               type: "string"
                             namespace:
@@ -117,6 +125,7 @@ spec:
                               description: "Search query that applies to the resource name, tag & labels."
                               type: "string"
                             statuses:
+                              description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                               items:
                                 type: "string"
                               type: "array"
@@ -131,6 +140,7 @@ spec:
                               description: "Deprecated. Use `types`"
                               type: "string"
                             types:
+                              description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                               items:
                                 type: "string"
                               type: "array"
@@ -238,6 +248,8 @@ spec:
                                       type: "boolean"
                                     labelSelector:
                                       type: "string"
+                                    limit:
+                                      type: "integer"
                                     name:
                                       type: "string"
                                     namespace:
@@ -248,6 +260,7 @@ spec:
                                       description: "Search query that applies to the resource name, tag & labels."
                                       type: "string"
                                     statuses:
+                                      description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -262,6 +275,7 @@ spec:
                                       description: "Deprecated. Use `types`"
                                       type: "string"
                                     types:
+                                      description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -380,6 +394,8 @@ spec:
                               type: "boolean"
                             labelSelector:
                               type: "string"
+                            limit:
+                              type: "integer"
                             name:
                               type: "string"
                             namespace:
@@ -390,12 +406,14 @@ spec:
                               description: "Search query that applies to the resource name, tag & labels."
                               type: "string"
                             statuses:
+                              description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                               items:
                                 type: "string"
                               type: "array"
                             tagSelector:
                               type: "string"
                             types:
+                              description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                               items:
                                 type: "string"
                               type: "array"
@@ -464,6 +482,8 @@ spec:
                         type: "boolean"
                       labelSelector:
                         type: "string"
+                      limit:
+                        type: "integer"
                       name:
                         type: "string"
                       namespace:
@@ -474,6 +494,7 @@ spec:
                         description: "Search query that applies to the resource name, tag & labels."
                         type: "string"
                       statuses:
+                        description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                         items:
                           type: "string"
                         type: "array"
@@ -488,6 +509,7 @@ spec:
                         description: "Deprecated. Use `types`"
                         type: "string"
                       types:
+                        description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                         items:
                           type: "string"
                         type: "array"
@@ -512,6 +534,8 @@ spec:
                           type: "boolean"
                         labelSelector:
                           type: "string"
+                        limit:
+                          type: "integer"
                         name:
                           type: "string"
                         namespace:
@@ -522,12 +546,14 @@ spec:
                           description: "Search query that applies to the resource name, tag & labels."
                           type: "string"
                         statuses:
+                          description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                           items:
                             type: "string"
                           type: "array"
                         tagSelector:
                           type: "string"
                         types:
+                          description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                           items:
                             type: "string"
                           type: "array"
@@ -588,6 +614,8 @@ spec:
                                 type: "boolean"
                               labelSelector:
                                 type: "string"
+                              limit:
+                                type: "integer"
                               name:
                                 type: "string"
                               namespace:
@@ -598,6 +626,7 @@ spec:
                                 description: "Search query that applies to the resource name, tag & labels."
                                 type: "string"
                               statuses:
+                                description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                                 items:
                                   type: "string"
                                 type: "array"
@@ -612,6 +641,7 @@ spec:
                                 description: "Deprecated. Use `types`"
                                 type: "string"
                               types:
+                                description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
                                 items:
                                   type: "string"
                                 type: "array"

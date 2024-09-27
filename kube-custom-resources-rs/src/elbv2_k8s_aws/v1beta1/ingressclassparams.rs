@@ -29,6 +29,9 @@ pub struct IngressClassParamsSpec {
     /// IPAddressType defines the ip address type for all Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressType")]
     pub ip_address_type: Option<IngressClassParamsIpAddressType>,
+    /// Listeners define a list of listeners with their protocol, port and attributes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub listeners: Option<Vec<IngressClassParamsListeners>>,
     /// LoadBalancerAttributes define the custom attributes to LoadBalancers for all Ingress that that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerAttributes")]
     pub load_balancer_attributes: Option<Vec<IngressClassParamsLoadBalancerAttributes>>,
@@ -66,6 +69,28 @@ pub enum IngressClassParamsIpAddressType {
     Dualstack,
     #[serde(rename = "dualstack-without-public-ipv4")]
     DualstackWithoutPublicIpv4,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IngressClassParamsListeners {
+    /// The attributes of the listener
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerAttributes")]
+    pub listener_attributes: Option<Vec<IngressClassParamsListenersListenerAttributes>>,
+    /// The port of the listener
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// The protocol of the listener
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+}
+
+/// Attributes defines custom attributes on resources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IngressClassParamsListenersListenerAttributes {
+    /// The key of the attribute.
+    pub key: String,
+    /// The value of the attribute.
+    pub value: String,
 }
 
 /// Attributes defines custom attributes on resources.

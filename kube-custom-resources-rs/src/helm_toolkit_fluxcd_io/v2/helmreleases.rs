@@ -408,6 +408,10 @@ pub struct HelmReleaseInstall {
     /// rendered templates against the Kubernetes OpenAPI Schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableOpenAPIValidation")]
     pub disable_open_api_validation: Option<bool>,
+    /// DisableSchemaValidation prevents the Helm install action from validating
+    /// the values against the JSON Schema.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSchemaValidation")]
+    pub disable_schema_validation: Option<bool>,
     /// DisableWait disables the waiting for resources to be ready after a Helm
     /// install has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWait")]
@@ -720,6 +724,10 @@ pub struct HelmReleaseUpgrade {
     /// rendered templates against the Kubernetes OpenAPI Schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableOpenAPIValidation")]
     pub disable_open_api_validation: Option<bool>,
+    /// DisableSchemaValidation prevents the Helm upgrade action from validating
+    /// the values against the JSON Schema.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSchemaValidation")]
+    pub disable_schema_validation: Option<bool>,
     /// DisableWait disables the waiting for resources to be ready after a Helm
     /// upgrade has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWait")]

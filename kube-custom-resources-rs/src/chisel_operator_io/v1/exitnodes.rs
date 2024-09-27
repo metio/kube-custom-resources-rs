@@ -46,13 +46,5 @@ pub struct ExitNodeStatus {
     pub ip: String,
     pub name: String,
     pub provider: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service_binding: Option<ExitNodeStatusServiceBinding>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ExitNodeStatusServiceBinding {
-    pub name: String,
-    pub namespace: String,
 }
 

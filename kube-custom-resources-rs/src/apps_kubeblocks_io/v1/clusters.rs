@@ -87,10 +87,7 @@ pub struct ClusterSpec {
     /// 
     /// 
     /// - `DoNotTerminate`: Prevents deletion of the Cluster. This policy ensures that all resources remain intact.
-    /// - `Halt`: Deletes Cluster resources like Pods and Services but retains Persistent Volume Claims (PVCs),
-    ///   allowing for data preservation while stopping other operations.
-    /// - `Delete`: Extends the `Halt` policy by also removing PVCs, leading to a thorough cleanup while
-    ///   removing all persistent data.
+    /// - `Delete`: Deletes all runtime resources belong to the Cluster.
     /// - `WipeOut`: An aggressive policy that deletes all Cluster resources, including volume snapshots and
     ///   backups in external storage.
     ///   This results in complete data removal and should be used cautiously, primarily in non-production environments
@@ -164,7 +161,7 @@ pub struct ClusterBackup {
 /// ClusterComponentSpec defines the specification of a Component within a Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecs {
-    /// Specifies Annotations to override or add for underlying Pods.
+    /// Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Specifies the ComponentDefinition custom resource (CR) that defines the Component's characteristics and behavior.
@@ -228,7 +225,7 @@ pub struct ClusterComponentSpecs {
     /// Required when TLS is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<ClusterComponentSpecsIssuer>,
-    /// Specifies Labels to override or add for underlying Pods.
+    /// Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Specifies the Component's name.
@@ -7149,8 +7146,10 @@ pub struct ClusterServices {
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Extends the ServiceSpec.Selector by allowing the specification of a component, to be used as a selector for the service.
-    /// Note that this and the `shardingSelector` are mutually exclusive and cannot be set simultaneously.
+    /// Extends the ServiceSpec.Selector by allowing the specification of components, to be used as a selector for the service.
+    /// 
+    /// 
+    /// If the `componentSelector` is set as the name of a sharding, the service will be exposed to all components in the sharding.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentSelector")]
     pub component_selector: Option<String>,
     /// Name defines the name of the service.
@@ -7189,11 +7188,6 @@ pub struct ClusterServices {
     /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
-    /// Extends the ServiceSpec.Selector by allowing the specification of a sharding name, which is defined in
-    /// `cluster.spec.shardingSpecs[*].name`, to be used as a selector for the service.
-    /// Note that this and the `componentSelector` are mutually exclusive and cannot be set simultaneously.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingSelector")]
-    pub sharding_selector: Option<String>,
     /// Spec defines the behavior of a service.
     /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7545,7 +7539,7 @@ pub struct ClusterShardingSpecs {
 /// enabling sharding and distribution of workloads across Components.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingSpecsTemplate {
-    /// Specifies Annotations to override or add for underlying Pods.
+    /// Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Specifies the ComponentDefinition custom resource (CR) that defines the Component's characteristics and behavior.
@@ -7609,7 +7603,7 @@ pub struct ClusterShardingSpecsTemplate {
     /// Required when TLS is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<ClusterShardingSpecsTemplateIssuer>,
-    /// Specifies Labels to override or add for underlying Pods.
+    /// Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Specifies the Component's name.
@@ -13605,7 +13599,6 @@ pub struct ClusterShardingSpecsTemplateVolumesVsphereVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTerminationPolicy {
     DoNotTerminate,
-    Halt,
     Delete,
     WipeOut,
 }
