@@ -249,6 +249,8 @@ pub struct PerconaXtraDBClusterRestoreResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaXtraDBClusterRestoreResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

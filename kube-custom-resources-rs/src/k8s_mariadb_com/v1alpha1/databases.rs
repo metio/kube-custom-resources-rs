@@ -52,38 +52,10 @@ pub enum DatabaseCleanupPolicy {
 /// MariaDBRef is a reference to a MariaDB object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseMariaDbRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
     /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,

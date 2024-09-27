@@ -259,7 +259,7 @@ spec:
                         - "PKCS8"
                       type: "string"
                     rotationPolicy:
-                      description: "RotationPolicy controls how private keys should be regenerated when a\nre-issuance is being processed.\n\nIf set to `Never`, a private key will only be generated if one does not\nalready exist in the target `spec.secretName`. If one does exists but it\ndoes not have the correct algorithm or size, a warning will be raised\nto await user intervention.\nIf set to `Always`, a private key matching the specified requirements\nwill be generated whenever a re-issuance occurs.\nDefault is `Never` for backward compatibility."
+                      description: "RotationPolicy controls how private keys should be regenerated when a\nre-issuance is being processed.\n\nIf set to `Never`, a private key will only be generated if one does not\nalready exist in the target `spec.secretName`. If one does exist but it\ndoes not have the correct algorithm or size, a warning will be raised\nto await user intervention.\nIf set to `Always`, a private key matching the specified requirements\nwill be generated whenever a re-issuance occurs.\nDefault is `Never` for backward compatibility."
                       enum:
                         - "Never"
                         - "Always"
@@ -383,7 +383,7 @@ spec:
                 conditions:
                   description: "List of status conditions to indicate the status of certificates.\nKnown condition types are `Ready` and `Issuing`."
                   items:
-                    description: "CertificateCondition contains condition information for an Certificate."
+                    description: "CertificateCondition contains condition information for a Certificate."
                     properties:
                       lastTransitionTime:
                         description: "LastTransitionTime is the timestamp corresponding to the last status\nchange of this condition."
@@ -421,7 +421,7 @@ spec:
                   description: "The number of continuous failed issuance attempts up till now. This\nfield gets removed (if set) on a successful issuance and gets set to\n1 if unset and an issuance has failed. If an issuance has failed, the\ndelay till the next issuance will be calculated using formula\ntime.Hour * 2 ^ (failedIssuanceAttempts - 1)."
                   type: "integer"
                 lastFailureTime:
-                  description: "LastFailureTime is set only if the lastest issuance for this\nCertificate failed and contains the time of the failure. If an\nissuance has failed, the delay till the next issuance will be\ncalculated using formula time.Hour * 2 ^ (failedIssuanceAttempts -\n1). If the latest issuance has succeeded this field will be unset."
+                  description: "LastFailureTime is set only if the latest issuance for this\nCertificate failed and contains the time of the failure. If an\nissuance has failed, the delay till the next issuance will be\ncalculated using formula time.Hour * 2 ^ (failedIssuanceAttempts -\n1). If the latest issuance has succeeded this field will be unset."
                   format: "date-time"
                   type: "string"
                 nextPrivateKeySecretName:

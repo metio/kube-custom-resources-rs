@@ -138,8 +138,8 @@ pub struct MeshTraceDefaultSampling {
     /// Target percentage of requests will be traced
     /// after all other sampling checks have been applied (client, force tracing,
     /// random sampling). This field functions as an upper limit on the total
-    /// configured sampling rate. For instance, setting client_sampling to 100%
-    /// but overall_sampling to 1% will result in only 1% of client requests with
+    /// configured sampling rate. For instance, setting client to 100
+    /// but overall to 1 will result in only 1% of client requests with
     /// the appropriate headers to be force traced. Mirror of
     /// overall_sampling in Envoy
     /// https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L142-L150

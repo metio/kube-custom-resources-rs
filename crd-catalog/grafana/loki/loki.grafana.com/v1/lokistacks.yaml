@@ -110,12 +110,12 @@ spec:
                           description: "OTLP to configure which resource, scope and log attributes\nto store as labels or structured metadata or drop them altogether\nfor all tenants."
                           properties:
                             indexedResourceAttributes:
-                              description: "IndexedResourceAttributes contains the global configuration for resource attributes\nto store them as index labels or structured metadata or drop them altogether."
+                              description: "IndexedResourceAttributes contains the global configuration for resource attributes\nto store them as index labels."
                               items:
                                 type: "string"
                               type: "array"
                             logAttributes:
-                              description: "LogAttributes contains the configuration for log attributes\nto store them as index labels or structured metadata or drop them altogether."
+                              description: "LogAttributes contains the configuration for log attributes\nto store them as structured metadata or drop them altogether."
                               items:
                                 description: "OTLPAttributesSpec contains the configuration for a set of attributes\nto store them as index labels or structured metadata or drop them altogether."
                                 properties:
@@ -167,7 +167,7 @@ spec:
                                   type: "boolean"
                               type: "object"
                             scopeAttributes:
-                              description: "ScopeAttributes contains the configuration for scope attributes\nto store them as index labels or structured metadata or drop them altogether."
+                              description: "ScopeAttributes contains the configuration for scope attributes\nto store them as structured metadata or drop them altogether."
                               items:
                                 description: "OTLPAttributesSpec contains the configuration for a set of attributes\nto store them as index labels or structured metadata or drop them altogether."
                                 properties:
@@ -303,7 +303,7 @@ spec:
                             description: "OTLP to configure which resource, scope and log attributes\nto store as labels or structured metadata or drop them altogether\nfor a single tenants."
                             properties:
                               logAttributes:
-                                description: "LogAttributes contains the configuration for log attributes\nto store them as index labels or structured metadata or drop them altogether."
+                                description: "LogAttributes contains the configuration for log attributes\nto store them as structured metadata or drop them altogether."
                                 items:
                                   description: "OTLPAttributesSpec contains the configuration for a set of attributes\nto store them as index labels or structured metadata or drop them altogether."
                                   properties:
@@ -355,7 +355,7 @@ spec:
                                     type: "boolean"
                                 type: "object"
                               scopeAttributes:
-                                description: "ScopeAttributes contains the configuration for scope attributes\nto store them as index labels or structured metadata or drop them altogether."
+                                description: "ScopeAttributes contains the configuration for scope attributes\nto store them as structured metadata or drop them altogether."
                                 items:
                                   description: "OTLPAttributesSpec contains the configuration for a set of attributes\nto store them as index labels or structured metadata or drop them altogether."
                                   properties:

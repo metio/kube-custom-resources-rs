@@ -369,7 +369,7 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAffinityPreferredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -380,7 +380,7 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAffinityPreferredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -490,7 +490,7 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAffinityRequiredDuringSch
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -501,7 +501,7 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAffinityRequiredDuringSch
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -642,7 +642,7 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAntiAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -653,7 +653,7 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAntiAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -763,7 +763,7 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAntiAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -774,7 +774,7 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAntiAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -874,10 +874,8 @@ pub struct ReplicationDestinationRcloneMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -901,6 +899,11 @@ pub struct ReplicationDestinationRcloneMoverResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// MoverSecurityContext allows specifying the PodSecurityContext that will
@@ -915,11 +918,9 @@ pub struct ReplicationDestinationRcloneMoverSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -970,15 +971,24 @@ pub struct ReplicationDestinationRcloneMoverSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ReplicationDestinationRcloneMoverSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -1045,7 +1055,6 @@ pub struct ReplicationDestinationRcloneMoverSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -1420,7 +1429,7 @@ pub struct ReplicationDestinationResticMoverAffinityPodAffinityPreferredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1431,7 +1440,7 @@ pub struct ReplicationDestinationResticMoverAffinityPodAffinityPreferredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1541,7 +1550,7 @@ pub struct ReplicationDestinationResticMoverAffinityPodAffinityRequiredDuringSch
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1552,7 +1561,7 @@ pub struct ReplicationDestinationResticMoverAffinityPodAffinityRequiredDuringSch
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1693,7 +1702,7 @@ pub struct ReplicationDestinationResticMoverAffinityPodAntiAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1704,7 +1713,7 @@ pub struct ReplicationDestinationResticMoverAffinityPodAntiAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1814,7 +1823,7 @@ pub struct ReplicationDestinationResticMoverAffinityPodAntiAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1825,7 +1834,7 @@ pub struct ReplicationDestinationResticMoverAffinityPodAntiAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1925,10 +1934,8 @@ pub struct ReplicationDestinationResticMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1952,6 +1959,11 @@ pub struct ReplicationDestinationResticMoverResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// MoverSecurityContext allows specifying the PodSecurityContext that will
@@ -1966,11 +1978,9 @@ pub struct ReplicationDestinationResticMoverSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2021,15 +2031,24 @@ pub struct ReplicationDestinationResticMoverSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ReplicationDestinationResticMoverSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2096,7 +2115,6 @@ pub struct ReplicationDestinationResticMoverSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -2218,6 +2236,10 @@ pub struct ReplicationDestinationRsync {
     /// destination volume. If not set, the default StorageClass will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// Will be used for the dynamic destination PVC created by VolSync.
+    /// Defaults to "Filesystem"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
     /// volumeSnapshotClassName can be used to specify the VSC to be used if
     /// copyMethod is Snapshot. If not set, the default VSC is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClassName")]
@@ -2243,10 +2265,8 @@ pub struct ReplicationDestinationRsyncMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2270,6 +2290,11 @@ pub struct ReplicationDestinationRsyncMoverResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// rsyncTLS defines the configuration when using Rsync-based replication over TLS.
@@ -2343,6 +2368,10 @@ pub struct ReplicationDestinationRsyncTls {
     /// destination volume. If not set, the default StorageClass will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// Will be used for the dynamic destination PVC created by VolSync.
+    /// Defaults to "Filesystem"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
     /// volumeSnapshotClassName can be used to specify the VSC to be used if
     /// copyMethod is Snapshot. If not set, the default VSC is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClassName")]
@@ -2564,7 +2593,7 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAffinityPreferredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2575,7 +2604,7 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAffinityPreferredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2685,7 +2714,7 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAffinityRequiredDuringS
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2696,7 +2725,7 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAffinityRequiredDuringS
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2837,7 +2866,7 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAntiAffinityPreferredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2848,7 +2877,7 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAntiAffinityPreferredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2958,7 +2987,7 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAntiAffinityRequiredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2969,7 +2998,7 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAntiAffinityRequiredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3069,10 +3098,8 @@ pub struct ReplicationDestinationRsyncTlsMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3096,6 +3123,11 @@ pub struct ReplicationDestinationRsyncTlsMoverResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// MoverSecurityContext allows specifying the PodSecurityContext that will
@@ -3110,11 +3142,9 @@ pub struct ReplicationDestinationRsyncTlsMoverSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -3165,15 +3195,24 @@ pub struct ReplicationDestinationRsyncTlsMoverSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ReplicationDestinationRsyncTlsMoverSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -3240,7 +3279,6 @@ pub struct ReplicationDestinationRsyncTlsMoverSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.

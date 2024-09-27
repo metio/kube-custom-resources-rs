@@ -103,7 +103,7 @@ spec:
                       annotations:
                         additionalProperties:
                           type: "string"
-                        description: "Specifies Annotations to override or add for underlying Pods."
+                        description: "Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                         type: "object"
                       componentDef:
                         description: "Specifies the ComponentDefinition custom resource (CR) that defines the Component's characteristics and behavior.\n\n\nSupports three different ways to specify the ComponentDefinition:\n\n\n- the regular expression - recommended\n- the full name - recommended\n- the name prefix"
@@ -2150,7 +2150,7 @@ spec:
                       labels:
                         additionalProperties:
                           type: "string"
-                        description: "Specifies Labels to override or add for underlying Pods."
+                        description: "Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                         type: "object"
                       name:
                         description: "Specifies the Component's name.\nIt's part of the Service DNS name and must comply with the IANA service naming rule.\nThe name is optional when ClusterComponentSpec is used as a template (e.g., in `shardingSpec`),\nbut required otherwise."
@@ -4722,7 +4722,7 @@ spec:
                         description: "If ServiceType is LoadBalancer, cloud provider related parameters can be put here\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer."
                         type: "object"
                       componentSelector:
-                        description: "Extends the ServiceSpec.Selector by allowing the specification of a component, to be used as a selector for the service.\nNote that this and the `shardingSelector` are mutually exclusive and cannot be set simultaneously."
+                        description: "Extends the ServiceSpec.Selector by allowing the specification of components, to be used as a selector for the service.\n\n\nIf the `componentSelector` is set as the name of a sharding, the service will be exposed to all components in the sharding."
                         type: "string"
                       name:
                         description: "Name defines the name of the service.\notherwise, it indicates the name of the service.\nOthers can refer to this service by its name. (e.g., connection credential)\nCannot be updated."
@@ -4735,9 +4735,6 @@ spec:
                         description: "ServiceName defines the name of the underlying service object.\nIf not specified, the default service name with different patterns will be used:\n\n\n- CLUSTER_NAME: for cluster-level services\n- CLUSTER_NAME-COMPONENT_NAME: for component-level services\n\n\nOnly one default service name is allowed.\nCannot be updated."
                         maxLength: 25
                         pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
-                        type: "string"
-                      shardingSelector:
-                        description: "Extends the ServiceSpec.Selector by allowing the specification of a sharding name, which is defined in\n`cluster.spec.shardingSpecs[*].name`, to be used as a selector for the service.\nNote that this and the `componentSelector` are mutually exclusive and cannot be set simultaneously."
                         type: "string"
                       spec:
                         description: "Spec defines the behavior of a service.\nhttps://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"
@@ -4888,7 +4885,7 @@ spec:
                           annotations:
                             additionalProperties:
                               type: "string"
-                            description: "Specifies Annotations to override or add for underlying Pods."
+                            description: "Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                             type: "object"
                           componentDef:
                             description: "Specifies the ComponentDefinition custom resource (CR) that defines the Component's characteristics and behavior.\n\n\nSupports three different ways to specify the ComponentDefinition:\n\n\n- the regular expression - recommended\n- the full name - recommended\n- the name prefix"
@@ -6935,7 +6932,7 @@ spec:
                           labels:
                             additionalProperties:
                               type: "string"
-                            description: "Specifies Labels to override or add for underlying Pods."
+                            description: "Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                             type: "object"
                           name:
                             description: "Specifies the Component's name.\nIt's part of the Service DNS name and must comply with the IANA service naming rule.\nThe name is optional when ClusterComponentSpec is used as a template (e.g., in `shardingSpec`),\nbut required otherwise."
@@ -8869,10 +8866,9 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
                 terminationPolicy:
-                  description: "Specifies the behavior when a Cluster is deleted.\nIt defines how resources, data, and backups associated with a Cluster are managed during termination.\nChoose a policy based on the desired level of resource cleanup and data preservation:\n\n\n- `DoNotTerminate`: Prevents deletion of the Cluster. This policy ensures that all resources remain intact.\n- `Halt`: Deletes Cluster resources like Pods and Services but retains Persistent Volume Claims (PVCs),\n  allowing for data preservation while stopping other operations.\n- `Delete`: Extends the `Halt` policy by also removing PVCs, leading to a thorough cleanup while\n  removing all persistent data.\n- `WipeOut`: An aggressive policy that deletes all Cluster resources, including volume snapshots and\n  backups in external storage.\n  This results in complete data removal and should be used cautiously, primarily in non-production environments\n  to avoid irreversible data loss.\n\n\nWarning: Choosing an inappropriate termination policy can result in data loss.\nThe `WipeOut` policy is particularly risky in production environments due to its irreversible nature."
+                  description: "Specifies the behavior when a Cluster is deleted.\nIt defines how resources, data, and backups associated with a Cluster are managed during termination.\nChoose a policy based on the desired level of resource cleanup and data preservation:\n\n\n- `DoNotTerminate`: Prevents deletion of the Cluster. This policy ensures that all resources remain intact.\n- `Delete`: Deletes all runtime resources belong to the Cluster.\n- `WipeOut`: An aggressive policy that deletes all Cluster resources, including volume snapshots and\n  backups in external storage.\n  This results in complete data removal and should be used cautiously, primarily in non-production environments\n  to avoid irreversible data loss.\n\n\nWarning: Choosing an inappropriate termination policy can result in data loss.\nThe `WipeOut` policy is particularly risky in production environments due to its irreversible nature."
                   enum:
                     - "DoNotTerminate"
-                    - "Halt"
                     - "Delete"
                     - "WipeOut"
                   type: "string"

@@ -28,7 +28,7 @@ pub struct TeleportGithubConnectorSpec {
     /// ClientRedirectSettings defines which client redirect URLs are allowed for non-browser SSO logins other than the standard localhost ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_redirect_settings: Option<TeleportGithubConnectorClientRedirectSettings>,
-    /// ClientSecret is the Github OAuth app client secret.
+    /// ClientSecret is the Github OAuth app client secret. This field supports secret lookup. See the operator documentation for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<String>,
     /// Display is the connector display name.

@@ -248,6 +248,16 @@ spec:
                         allowPrivilegeEscalation:
                           nullable: true
                           type: "boolean"
+                        appArmorProfile:
+                          nullable: true
+                          properties:
+                            localhostProfile:
+                              nullable: true
+                              type: "string"
+                            type:
+                              nullable: true
+                              type: "string"
+                          type: "object"
                         capabilities:
                           nullable: true
                           properties:
@@ -497,6 +507,16 @@ spec:
                         allowPrivilegeEscalation:
                           nullable: true
                           type: "boolean"
+                        appArmorProfile:
+                          nullable: true
+                          properties:
+                            localhostProfile:
+                              nullable: true
+                              type: "string"
+                            type:
+                              nullable: true
+                              type: "string"
+                          type: "object"
                         capabilities:
                           nullable: true
                           properties:

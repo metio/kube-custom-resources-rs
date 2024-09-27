@@ -501,6 +501,9 @@ spec:
                               items:
                                 type: "string"
                               type: "array"
+                            ipv6Subnet:
+                              description: "IPv6Subnet configures Traefik to consider all IPv6 addresses from the defined subnet as originating from the same IP. Applies to RemoteAddrStrategy and DepthStrategy."
+                              type: "integer"
                           type: "object"
                         requestHeaderName:
                           description: "RequestHeaderName defines the name of the header used to group incoming requests."
@@ -524,6 +527,9 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        ipv6Subnet:
+                          description: "IPv6Subnet configures Traefik to consider all IPv6 addresses from the defined subnet as originating from the same IP. Applies to RemoteAddrStrategy and DepthStrategy."
+                          type: "integer"
                       type: "object"
                     rejectStatusCode:
                       description: "RejectStatusCode defines the HTTP status code used for refused requests.\nIf not set, the default is 403 (Forbidden)."
@@ -548,6 +554,9 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        ipv6Subnet:
+                          description: "IPv6Subnet configures Traefik to consider all IPv6 addresses from the defined subnet as originating from the same IP. Applies to RemoteAddrStrategy and DepthStrategy."
+                          type: "integer"
                       type: "object"
                     sourceRange:
                       description: "SourceRange defines the set of allowed IPs (or ranges of allowed IPs by using CIDR notation). Required."
@@ -667,6 +676,9 @@ spec:
                               items:
                                 type: "string"
                               type: "array"
+                            ipv6Subnet:
+                              description: "IPv6Subnet configures Traefik to consider all IPv6 addresses from the defined subnet as originating from the same IP. Applies to RemoteAddrStrategy and DepthStrategy."
+                              type: "integer"
                           type: "object"
                         requestHeaderName:
                           description: "RequestHeaderName defines the name of the header used to group incoming requests."

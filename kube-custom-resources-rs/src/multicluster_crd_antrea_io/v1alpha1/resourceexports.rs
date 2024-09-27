@@ -2046,15 +2046,12 @@ pub struct ResourceExportEndpoints {
 /// expanded set of endpoints is the Cartesian product of Addresses x Ports.
 /// For example, given:
 /// 
-/// 
 /// 	{
 /// 	  Addresses: [{"ip": "10.10.1.1"}, {"ip": "10.10.2.2"}],
 /// 	  Ports:     [{"name": "a", "port": 8675}, {"name": "b", "port": 309}]
 /// 	}
 /// 
-/// 
 /// The resulting set of endpoints can be viewed as:
-/// 
 /// 
 /// 	a: [ 10.10.1.1:8675, 10.10.2.2:8675 ],
 /// 	b: [ 10.10.1.1:309, 10.10.2.2:309 ]
@@ -2105,7 +2102,6 @@ pub struct ResourceExportEndpointsSubsetsAddressesTargetRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -2161,7 +2157,6 @@ pub struct ResourceExportEndpointsSubsetsNotReadyAddressesTargetRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -2194,16 +2189,13 @@ pub struct ResourceExportEndpointsSubsetsPorts {
     /// This field follows standard Kubernetes label syntax.
     /// Valid values are either:
     /// 
-    /// 
     /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
     /// RFC-6335 and https://www.iana.org/assignments/service-names).
-    /// 
     /// 
     /// * Kubernetes-defined prefixed names:
     ///   * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
     ///   * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
     ///   * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-    /// 
     /// 
     /// * Other protocols should use implementation-defined prefixed names such as
     /// mycompany.com/my-custom-protocol.
@@ -2343,7 +2335,6 @@ pub struct ResourceExportServiceServiceSpec {
     /// clients must ensure that clusterIPs[0] and clusterIP have the same
     /// value.
     /// 
-    /// 
     /// This field may hold a maximum of two entries (dual-stack IPs, in either order).
     /// These IPs must correspond to the values of the ipFamilies field. Both
     /// clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -2409,7 +2400,6 @@ pub struct ResourceExportServiceServiceSpec {
     /// and "IPv6".  This field only applies to Services of types ClusterIP,
     /// NodePort, and LoadBalancer, and does apply to "headless" services.
     /// This field will be wiped when updating a Service to type ExternalName.
-    /// 
     /// 
     /// This field may hold a maximum of two entries (dual-stack families, in
     /// either order).  These families must correspond to the values of the
@@ -2486,6 +2476,15 @@ pub struct ResourceExportServiceServiceSpec {
     /// sessionAffinityConfig contains the configurations of session affinity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<ResourceExportServiceServiceSpecSessionAffinityConfig>,
+    /// TrafficDistribution offers a way to express preferences for how traffic is
+    /// distributed to Service endpoints. Implementations can use this field as a
+    /// hint, but are not required to guarantee strict adherence. If the field is
+    /// not set, the implementation will apply its default routing strategy. If set
+    /// to "PreferClose", implementations should prioritize endpoints that are
+    /// topologically close (e.g., same zone).
+    /// This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
+    pub traffic_distribution: Option<String>,
     /// type determines how the Service is exposed. Defaults to ClusterIP. Valid
     /// options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
     /// "ClusterIP" allocates a cluster-internal IP address for load-balancing
@@ -2514,16 +2513,13 @@ pub struct ResourceExportServiceServiceSpecPorts {
     /// This field follows standard Kubernetes label syntax.
     /// Valid values are either:
     /// 
-    /// 
     /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
     /// RFC-6335 and https://www.iana.org/assignments/service-names).
-    /// 
     /// 
     /// * Kubernetes-defined prefixed names:
     ///   * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
     ///   * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
     ///   * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-    /// 
     /// 
     /// * Other protocols should use implementation-defined prefixed names such as
     /// mycompany.com/my-custom-protocol.

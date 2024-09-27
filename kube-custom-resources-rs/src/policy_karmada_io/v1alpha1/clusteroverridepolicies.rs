@@ -64,6 +64,12 @@ pub struct ClusterOverridePolicyOverrideRulesOverriders {
     /// CommandOverrider represents the rules dedicated to handling container command
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commandOverrider")]
     pub command_overrider: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersCommandOverrider>>,
+    /// FieldOverrider represents the rules dedicated to modifying a specific field in any Kubernetes resource.
+    /// This allows changing a single field within the resource with multiple operations.
+    /// It is designed to handle structured field values such as those found in ConfigMaps or Secrets.
+    /// The current implementation supports JSON and YAML formats, but can easily be extended to support XML in the future.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldOverrider")]
+    pub field_overrider: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersFieldOverrider>>,
     /// ImageOverrider represents the rules dedicated to handling image overrides.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageOverrider")]
     pub image_overrider: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersImageOverrider>>,
@@ -147,6 +153,80 @@ pub enum ClusterOverridePolicyOverrideRulesOverridersCommandOverriderOperator {
     Add,
     #[serde(rename = "remove")]
     Remove,
+}
+
+/// FieldOverrider represents the rules dedicated to modifying a specific field in any Kubernetes resource.
+/// This allows changing a single field within the resource with multiple operations.
+/// It is designed to handle structured field values such as those found in ConfigMaps or Secrets.
+/// The current implementation supports JSON and YAML formats, but can easily be extended to support XML in the future.
+/// Note: In any given instance, FieldOverrider processes either JSON or YAML fields, but not both simultaneously.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterOverridePolicyOverrideRulesOverridersFieldOverrider {
+    /// FieldPath specifies the initial location in the instance document where the operation should take place.
+    /// The path uses RFC 6901 for navigating into nested structures. For example, the path "/data/db-config.yaml"
+    /// specifies the configuration data key named "db-config.yaml" in a ConfigMap: "/data/db-config.yaml".
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+    /// JSON represents the operations performed on the JSON document specified by the FieldPath.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub json: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersFieldOverriderJson>>,
+    /// YAML represents the operations performed on the YAML document specified by the FieldPath.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub yaml: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersFieldOverriderYaml>>,
+}
+
+/// JSONPatchOperation represents a single field modification operation for JSON format.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterOverridePolicyOverrideRulesOverridersFieldOverriderJson {
+    /// Operator indicates the operation on target field.
+    /// Available operators are: "add", "remove", and "replace".
+    pub operator: ClusterOverridePolicyOverrideRulesOverridersFieldOverriderJsonOperator,
+    /// SubPath specifies the relative location within the initial FieldPath where the operation should take place.
+    /// The path uses RFC 6901 for navigating into nested structures.
+    #[serde(rename = "subPath")]
+    pub sub_path: String,
+    /// Value is the new value to set for the specified field if the operation is "add" or "replace".
+    /// For "remove" operation, this field is ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// JSONPatchOperation represents a single field modification operation for JSON format.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterOverridePolicyOverrideRulesOverridersFieldOverriderJsonOperator {
+    #[serde(rename = "add")]
+    Add,
+    #[serde(rename = "remove")]
+    Remove,
+    #[serde(rename = "replace")]
+    Replace,
+}
+
+/// YAMLPatchOperation represents a single field modification operation for YAML format.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterOverridePolicyOverrideRulesOverridersFieldOverriderYaml {
+    /// Operator indicates the operation on target field.
+    /// Available operators are: "add", "remove", and "replace".
+    pub operator: ClusterOverridePolicyOverrideRulesOverridersFieldOverriderYamlOperator,
+    /// SubPath specifies the relative location within the initial FieldPath where the operation should take place.
+    /// The path uses RFC 6901 for navigating into nested structures.
+    #[serde(rename = "subPath")]
+    pub sub_path: String,
+    /// Value is the new value to set for the specified field if the operation is "add" or "replace".
+    /// For "remove" operation, this field is ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// YAMLPatchOperation represents a single field modification operation for YAML format.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterOverridePolicyOverrideRulesOverridersFieldOverriderYamlOperator {
+    #[serde(rename = "add")]
+    Add,
+    #[serde(rename = "remove")]
+    Remove,
+    #[serde(rename = "replace")]
+    Replace,
 }
 
 /// ImageOverrider represents the rules dedicated to handling image overrides.
@@ -380,6 +460,12 @@ pub struct ClusterOverridePolicyOverriders {
     /// CommandOverrider represents the rules dedicated to handling container command
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commandOverrider")]
     pub command_overrider: Option<Vec<ClusterOverridePolicyOverridersCommandOverrider>>,
+    /// FieldOverrider represents the rules dedicated to modifying a specific field in any Kubernetes resource.
+    /// This allows changing a single field within the resource with multiple operations.
+    /// It is designed to handle structured field values such as those found in ConfigMaps or Secrets.
+    /// The current implementation supports JSON and YAML formats, but can easily be extended to support XML in the future.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldOverrider")]
+    pub field_overrider: Option<Vec<ClusterOverridePolicyOverridersFieldOverrider>>,
     /// ImageOverrider represents the rules dedicated to handling image overrides.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageOverrider")]
     pub image_overrider: Option<Vec<ClusterOverridePolicyOverridersImageOverrider>>,
@@ -463,6 +549,80 @@ pub enum ClusterOverridePolicyOverridersCommandOverriderOperator {
     Add,
     #[serde(rename = "remove")]
     Remove,
+}
+
+/// FieldOverrider represents the rules dedicated to modifying a specific field in any Kubernetes resource.
+/// This allows changing a single field within the resource with multiple operations.
+/// It is designed to handle structured field values such as those found in ConfigMaps or Secrets.
+/// The current implementation supports JSON and YAML formats, but can easily be extended to support XML in the future.
+/// Note: In any given instance, FieldOverrider processes either JSON or YAML fields, but not both simultaneously.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterOverridePolicyOverridersFieldOverrider {
+    /// FieldPath specifies the initial location in the instance document where the operation should take place.
+    /// The path uses RFC 6901 for navigating into nested structures. For example, the path "/data/db-config.yaml"
+    /// specifies the configuration data key named "db-config.yaml" in a ConfigMap: "/data/db-config.yaml".
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+    /// JSON represents the operations performed on the JSON document specified by the FieldPath.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub json: Option<Vec<ClusterOverridePolicyOverridersFieldOverriderJson>>,
+    /// YAML represents the operations performed on the YAML document specified by the FieldPath.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub yaml: Option<Vec<ClusterOverridePolicyOverridersFieldOverriderYaml>>,
+}
+
+/// JSONPatchOperation represents a single field modification operation for JSON format.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterOverridePolicyOverridersFieldOverriderJson {
+    /// Operator indicates the operation on target field.
+    /// Available operators are: "add", "remove", and "replace".
+    pub operator: ClusterOverridePolicyOverridersFieldOverriderJsonOperator,
+    /// SubPath specifies the relative location within the initial FieldPath where the operation should take place.
+    /// The path uses RFC 6901 for navigating into nested structures.
+    #[serde(rename = "subPath")]
+    pub sub_path: String,
+    /// Value is the new value to set for the specified field if the operation is "add" or "replace".
+    /// For "remove" operation, this field is ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// JSONPatchOperation represents a single field modification operation for JSON format.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterOverridePolicyOverridersFieldOverriderJsonOperator {
+    #[serde(rename = "add")]
+    Add,
+    #[serde(rename = "remove")]
+    Remove,
+    #[serde(rename = "replace")]
+    Replace,
+}
+
+/// YAMLPatchOperation represents a single field modification operation for YAML format.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterOverridePolicyOverridersFieldOverriderYaml {
+    /// Operator indicates the operation on target field.
+    /// Available operators are: "add", "remove", and "replace".
+    pub operator: ClusterOverridePolicyOverridersFieldOverriderYamlOperator,
+    /// SubPath specifies the relative location within the initial FieldPath where the operation should take place.
+    /// The path uses RFC 6901 for navigating into nested structures.
+    #[serde(rename = "subPath")]
+    pub sub_path: String,
+    /// Value is the new value to set for the specified field if the operation is "add" or "replace".
+    /// For "remove" operation, this field is ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// YAMLPatchOperation represents a single field modification operation for YAML format.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterOverridePolicyOverridersFieldOverriderYamlOperator {
+    #[serde(rename = "add")]
+    Add,
+    #[serde(rename = "remove")]
+    Remove,
+    #[serde(rename = "replace")]
+    Replace,
 }
 
 /// ImageOverrider represents the rules dedicated to handling image overrides.

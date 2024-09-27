@@ -460,6 +460,9 @@ spec:
                         type: "object"
                       type: "array"
                   type: "object"
+                preserveResourcesOnDeletion:
+                  description: "PreserveResourcesOnDeletion controls whether resources should be preserved on the\nmember clusters when the binding object is deleted.\nIf set to true, resources will be preserved on the member clusters.\nDefault is false, which means resources will be deleted along with the binding object.\nThis setting applies to all Work objects created under this binding object."
+                  type: "boolean"
                 propagateDeps:
                   description: "PropagateDeps tells if relevant resources should be propagated automatically.\nIt is inherited from PropagationPolicy or ClusterPropagationPolicy.\ndefault false."
                   type: "boolean"

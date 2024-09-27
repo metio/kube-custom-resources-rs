@@ -21,7 +21,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ComponentSpec {
-    /// Specifies Annotations to override or add for underlying Pods.
+    /// Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Specifies the name of the referenced ComponentDefinition.
@@ -70,7 +70,7 @@ pub struct ComponentSpec {
     /// Any remaining replicas will be generated using the default template and will follow the default naming rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<ComponentInstances>>,
-    /// Specifies Labels to override or add for underlying Pods.
+    /// Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Specifies the names of instances to be transitioned to offline status.

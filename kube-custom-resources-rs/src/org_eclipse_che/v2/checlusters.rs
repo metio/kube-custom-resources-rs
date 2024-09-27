@@ -103,9 +103,15 @@ pub struct CheClusterComponentsCheServerDeployment {
     /// List of containers belonging to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<CheClusterComponentsCheServerDeploymentContainers>>,
+    /// The node selector limits the nodes that can run the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// Security options the pod should run with.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<CheClusterComponentsCheServerDeploymentSecurityContext>,
+    /// The pod tolerations of the component pod limit where the pod can run.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<CheClusterComponentsCheServerDeploymentTolerations>>,
 }
 
 /// Container custom settings.
@@ -284,6 +290,36 @@ pub struct CheClusterComponentsCheServerDeploymentSecurityContext {
     pub run_as_user: Option<i64>,
 }
 
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterComponentsCheServerDeploymentTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
 /// Proxy server settings for Kubernetes cluster. No additional configuration is required for OpenShift cluster.
 /// By specifying these settings for the OpenShift cluster, you override the OpenShift proxy configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -351,9 +387,15 @@ pub struct CheClusterComponentsDashboardDeployment {
     /// List of containers belonging to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<CheClusterComponentsDashboardDeploymentContainers>>,
+    /// The node selector limits the nodes that can run the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// Security options the pod should run with.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<CheClusterComponentsDashboardDeploymentSecurityContext>,
+    /// The pod tolerations of the component pod limit where the pod can run.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<CheClusterComponentsDashboardDeploymentTolerations>>,
 }
 
 /// Container custom settings.
@@ -532,6 +574,36 @@ pub struct CheClusterComponentsDashboardDeploymentSecurityContext {
     pub run_as_user: Option<i64>,
 }
 
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterComponentsDashboardDeploymentTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
 /// Dashboard header message.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDashboardHeaderMessage {
@@ -591,9 +663,15 @@ pub struct CheClusterComponentsDevfileRegistryDeployment {
     /// List of containers belonging to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<CheClusterComponentsDevfileRegistryDeploymentContainers>>,
+    /// The node selector limits the nodes that can run the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// Security options the pod should run with.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<CheClusterComponentsDevfileRegistryDeploymentSecurityContext>,
+    /// The pod tolerations of the component pod limit where the pod can run.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<CheClusterComponentsDevfileRegistryDeploymentTolerations>>,
 }
 
 /// Container custom settings.
@@ -772,6 +850,36 @@ pub struct CheClusterComponentsDevfileRegistryDeploymentSecurityContext {
     pub run_as_user: Option<i64>,
 }
 
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterComponentsDevfileRegistryDeploymentTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
 /// External devfile registries configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDevfileRegistryExternalDevfileRegistries {
@@ -860,9 +968,15 @@ pub struct CheClusterComponentsPluginRegistryDeployment {
     /// List of containers belonging to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<CheClusterComponentsPluginRegistryDeploymentContainers>>,
+    /// The node selector limits the nodes that can run the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// Security options the pod should run with.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<CheClusterComponentsPluginRegistryDeploymentSecurityContext>,
+    /// The pod tolerations of the component pod limit where the pod can run.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<CheClusterComponentsPluginRegistryDeploymentTolerations>>,
 }
 
 /// Container custom settings.
@@ -1039,6 +1153,36 @@ pub struct CheClusterComponentsPluginRegistryDeploymentSecurityContext {
     /// The UID to run the entrypoint of the container process. The default value is `1724`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterComponentsPluginRegistryDeploymentTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// External plug-in registries configuration.
@@ -3876,9 +4020,15 @@ pub struct CheClusterNetworkingAuthGatewayDeployment {
     /// List of containers belonging to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<CheClusterNetworkingAuthGatewayDeploymentContainers>>,
+    /// The node selector limits the nodes that can run the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// Security options the pod should run with.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<CheClusterNetworkingAuthGatewayDeploymentSecurityContext>,
+    /// The pod tolerations of the component pod limit where the pod can run.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<CheClusterNetworkingAuthGatewayDeploymentTolerations>>,
 }
 
 /// Container custom settings.
@@ -4055,6 +4205,36 @@ pub struct CheClusterNetworkingAuthGatewayDeploymentSecurityContext {
     /// The UID to run the entrypoint of the container process. The default value is `1724`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterNetworkingAuthGatewayDeploymentTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// Configuration for kube-rbac-proxy within the Che gateway pod.

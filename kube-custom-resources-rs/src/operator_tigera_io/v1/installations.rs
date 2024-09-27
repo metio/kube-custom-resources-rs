@@ -456,8 +456,31 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -481,6 +504,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -553,8 +577,31 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -578,6 +625,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -681,8 +729,31 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -706,6 +777,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -778,8 +850,31 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -803,6 +898,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1509,8 +1605,31 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPre
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -1534,6 +1653,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPre
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1606,8 +1726,31 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPre
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -1631,6 +1774,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityReq
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1734,8 +1878,31 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinit
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -1759,6 +1926,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinit
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1831,8 +1999,31 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinit
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -1856,6 +2047,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinit
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -2369,8 +2561,31 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -2394,6 +2609,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffi
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -2466,8 +2682,31 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -2491,6 +2730,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffi
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -2594,8 +2834,31 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAnti
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -2619,6 +2882,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAnti
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -2691,8 +2955,31 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAnti
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -2716,6 +3003,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAnti
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3225,8 +3513,31 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -3250,6 +3561,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3322,8 +3634,31 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -3347,6 +3682,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3450,8 +3786,31 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -3475,6 +3834,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3547,8 +3907,31 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -3572,6 +3955,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -4221,8 +4605,31 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -4246,6 +4653,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -4318,8 +4726,31 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -4343,6 +4774,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -4446,8 +4878,31 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -4471,6 +4926,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffi
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -4543,8 +4999,31 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -4568,6 +5047,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffi
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -5371,8 +5851,31 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferr
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -5396,6 +5899,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferr
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -5468,8 +5972,31 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferr
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -5493,6 +6020,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequire
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -5596,8 +6124,31 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPre
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -5621,6 +6172,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPre
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -5693,8 +6245,31 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPre
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -5718,6 +6293,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityReq
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -6565,8 +7141,31 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -6590,6 +7189,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -6662,8 +7262,31 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -6687,6 +7310,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -6790,8 +7414,31 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -6815,6 +7462,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -6887,8 +7535,31 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -6912,6 +7583,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -7618,8 +8290,31 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -7643,6 +8338,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -7715,8 +8411,31 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -7740,6 +8459,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -7843,8 +8563,31 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -7868,6 +8611,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -7940,8 +8684,31 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -7965,6 +8732,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -8478,8 +9246,31 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -8503,6 +9294,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -8575,8 +9367,31 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -8600,6 +9415,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -8703,8 +9519,31 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -8728,6 +9567,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -8800,8 +9640,31 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -8825,6 +9688,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -9334,8 +10198,31 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -9359,6 +10246,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -9431,8 +10319,31 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -9456,6 +10367,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -9559,8 +10471,31 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -9584,6 +10519,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -9656,8 +10592,31 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -9681,6 +10640,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -10330,8 +11290,31 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -10355,6 +11338,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -10427,8 +11411,31 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -10452,6 +11459,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -10555,8 +11563,31 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -10580,6 +11611,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -10652,8 +11684,31 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -10677,6 +11732,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -11480,8 +12536,31 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -11505,6 +12584,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -11577,8 +12657,31 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -11602,6 +12705,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -11705,8 +12809,31 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -11730,6 +12857,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -11802,8 +12930,31 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
@@ -11827,6 +12978,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 }
 
 /// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

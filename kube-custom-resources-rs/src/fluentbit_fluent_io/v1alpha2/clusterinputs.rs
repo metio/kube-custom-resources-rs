@@ -751,6 +751,9 @@ pub struct ClusterInputTail {
     /// Specify the number of extra time in seconds to monitor a file once is rotated in case some pending data is flushed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotateWaitSeconds")]
     pub rotate_wait_seconds: Option<i64>,
+    /// Skips empty lines in the log file from any further processing or output.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipEmptyLines")]
+    pub skip_empty_lines: Option<bool>,
     /// When a monitored file reach it buffer capacity due to a very long line (Buffer_Max_Size),
     /// the default behavior is to stop monitoring that file.
     /// Skip_Long_Lines alter that behavior and instruct Fluent Bit to skip long lines

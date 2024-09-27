@@ -2890,6 +2890,8 @@ pub struct OutputGelf {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buffer: Option<OutputGelfBuffer>,
     pub host: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_bytes: Option<i64>,
     pub port: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,

@@ -111,21 +111,21 @@ spec:
                           anyOf:
                             - type: "integer"
                             - type: "string"
-                          default: "100%"
+                          default: 100
                           description: "Target percentage of requests that will be force traced if the\n'x-client-trace-id' header is set. Mirror of client_sampling in Envoy\nhttps://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L127-L133\nEither int or decimal represented as string."
                           x-kubernetes-int-or-string: true
                         overall:
                           anyOf:
                             - type: "integer"
                             - type: "string"
-                          default: "100%"
-                          description: "Target percentage of requests will be traced\nafter all other sampling checks have been applied (client, force tracing,\nrandom sampling). This field functions as an upper limit on the total\nconfigured sampling rate. For instance, setting client_sampling to 100%\nbut overall_sampling to 1% will result in only 1% of client requests with\nthe appropriate headers to be force traced. Mirror of\noverall_sampling in Envoy\nhttps://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L142-L150\nEither int or decimal represented as string."
+                          default: 100
+                          description: "Target percentage of requests will be traced\nafter all other sampling checks have been applied (client, force tracing,\nrandom sampling). This field functions as an upper limit on the total\nconfigured sampling rate. For instance, setting client to 100\nbut overall to 1 will result in only 1% of client requests with\nthe appropriate headers to be force traced. Mirror of\noverall_sampling in Envoy\nhttps://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L142-L150\nEither int or decimal represented as string."
                           x-kubernetes-int-or-string: true
                         random:
                           anyOf:
                             - type: "integer"
                             - type: "string"
-                          default: "100%"
+                          default: 100
                           description: "Target percentage of requests that will be randomly selected for trace\ngeneration, if not requested by the client or not forced.\nMirror of random_sampling in Envoy\nhttps://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L135-L140\nEither int or decimal represented as string."
                           x-kubernetes-int-or-string: true
                       type: "object"

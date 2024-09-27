@@ -382,8 +382,11 @@ pub struct BundlesVersionsBundlesCertManager {
     pub acmesolver: BundlesVersionsBundlesCertManagerAcmesolver,
     pub cainjector: BundlesVersionsBundlesCertManagerCainjector,
     pub controller: BundlesVersionsBundlesCertManagerController,
-    pub ctl: BundlesVersionsBundlesCertManagerCtl,
+    /// This field has been deprecated
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ctl: Option<BundlesVersionsBundlesCertManagerCtl>,
     pub manifest: BundlesVersionsBundlesCertManagerManifest,
+    pub startupapicheck: BundlesVersionsBundlesCertManagerStartupapicheck,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
     pub webhook: BundlesVersionsBundlesCertManagerWebhook,
@@ -491,6 +494,7 @@ pub enum BundlesVersionsBundlesCertManagerControllerOs {
     Windows,
 }
 
+/// This field has been deprecated
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundlesVersionsBundlesCertManagerCtl {
     /// Architectures of the asset
@@ -515,6 +519,7 @@ pub struct BundlesVersionsBundlesCertManagerCtl {
     pub uri: Option<String>,
 }
 
+/// This field has been deprecated
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BundlesVersionsBundlesCertManagerCtlOs {
     #[serde(rename = "linux")]
@@ -530,6 +535,40 @@ pub struct BundlesVersionsBundlesCertManagerManifest {
     /// URI points to the manifest yaml file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BundlesVersionsBundlesCertManagerStartupapicheck {
+    /// Architectures of the asset
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub arch: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The SHA256 digest of the image manifest
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
+    pub image_digest: Option<String>,
+    /// The asset name
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Operating system of the asset
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub os: Option<BundlesVersionsBundlesCertManagerStartupapicheckOs>,
+    /// Name of the OS like ubuntu, bottlerocket
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "osName")]
+    pub os_name: Option<String>,
+    /// The image repository, name, and tag
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uri: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BundlesVersionsBundlesCertManagerStartupapicheckOs {
+    #[serde(rename = "linux")]
+    Linux,
+    #[serde(rename = "darwin")]
+    Darwin,
+    #[serde(rename = "windows")]
+    Windows,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

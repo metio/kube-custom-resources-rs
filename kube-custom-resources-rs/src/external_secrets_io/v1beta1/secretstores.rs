@@ -157,6 +157,9 @@ pub struct SecretStoreProvider {
     /// Configures a store to sync secrets with a Password Depot instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub passworddepot: Option<SecretStoreProviderPassworddepot>,
+    /// Previder configures this store to sync secrets using the Previder provider
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub previder: Option<SecretStoreProviderPrevider>,
     /// Pulumi configures this store to sync secrets using the Pulumi provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pulumi: Option<SecretStoreProviderPulumi>,
@@ -2214,6 +2217,47 @@ pub struct SecretStoreProviderPassworddepotAuthSecretRefCredentials {
     pub namespace: Option<String>,
 }
 
+/// Previder configures this store to sync secrets using the Previder provider
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderPrevider {
+    /// PreviderAuth contains a secretRef for credentials.
+    pub auth: SecretStoreProviderPreviderAuth,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseUri")]
+    pub base_uri: Option<String>,
+}
+
+/// PreviderAuth contains a secretRef for credentials.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderPreviderAuth {
+    /// PreviderAuthSecretRef holds secret references for Previder Vault credentials.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<SecretStoreProviderPreviderAuthSecretRef>,
+}
+
+/// PreviderAuthSecretRef holds secret references for Previder Vault credentials.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderPreviderAuthSecretRef {
+    /// The AccessToken is used for authentication
+    #[serde(rename = "accessToken")]
+    pub access_token: SecretStoreProviderPreviderAuthSecretRefAccessToken,
+}
+
+/// The AccessToken is used for authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderPreviderAuthSecretRefAccessToken {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// Pulumi configures this store to sync secrets using the Pulumi provider
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderPulumi {
@@ -2231,6 +2275,8 @@ pub struct SecretStoreProviderPulumi {
     /// Organization are a space to collaborate on shared projects and stacks.
     /// To create a new organization, visit https://app.pulumi.com/ and click "New Organization".
     pub organization: String,
+    /// Project is the name of the Pulumi ESC project the environment belongs to.
+    pub project: String,
 }
 
 /// AccessToken is the access tokens to sign in to the Pulumi Cloud Console.

@@ -43,8 +43,11 @@ spec:
             spec:
               description: "Spec represents the desired behavior of Work."
               properties:
+                preserveResourcesOnDeletion:
+                  description: "PreserveResourcesOnDeletion controls whether resources should be preserved on the\nmember cluster when the Work object is deleted.\nIf set to true, resources will be preserved on the member cluster.\nDefault is false, which means resources will be deleted along with the Work object."
+                  type: "boolean"
                 suspendDispatching:
-                  description: "SuspendDispatching controls whether dispatching should\nbe suspended, nil means not suspend.\nNote: true means stop propagating to all clusters."
+                  description: "SuspendDispatching controls whether dispatching should\nbe suspended, nil means not suspend.\nNote: true means stop propagating to the corresponding member cluster, and\ndoes not prevent status collection."
                   type: "boolean"
                 workload:
                   description: "Workload represents the manifest workload to be deployed on managed cluster."

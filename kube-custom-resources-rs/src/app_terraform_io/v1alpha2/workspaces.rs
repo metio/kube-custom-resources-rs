@@ -585,6 +585,9 @@ pub struct WorkspaceVersionControl {
 /// WorkspaceStatus defines the observed state of Workspace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkspaceStatus {
+    /// Default organization project ID.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultProjectID")]
+    pub default_project_id: Option<String>,
     /// Real world state generation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
