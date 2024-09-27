@@ -58,6 +58,8 @@ fn main() -> Result<()> {
                         .entry(version.to_string())
                         .or_insert_with(Vec::new)
                         .push(crd);
+                } else {
+                    println!("missing {}/{} -> {}", group, version, crd.spec.names.plural)
                 }
             }
             Err(e) => println!("{:?}", e),
