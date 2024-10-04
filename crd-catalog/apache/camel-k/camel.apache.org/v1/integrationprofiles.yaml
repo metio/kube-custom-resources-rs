@@ -30,7 +30,7 @@ spec:
       name: "v1"
       schema:
         openAPIV3Schema:
-          description: "IntegrationProfile is the resource used to apply user defined settings to the Camel K operator behavior.\nIt defines the behavior of all Custom Resources (`IntegrationKit`, `Integration`, `Kamelet`) in the given namespace."
+          description: "IntegrationProfile is the resource used to apply user defined settings to the Camel K operator behavior.\nIt defines the behavior of all Custom Resources (`IntegrationKit`, `Integration`, `Kamelet`) in the given namespace.\nDeprecated: may be removed in future releases. Make use of IntegrationPlatform instead."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

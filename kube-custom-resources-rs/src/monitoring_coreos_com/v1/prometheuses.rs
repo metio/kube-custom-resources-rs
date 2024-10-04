@@ -600,6 +600,10 @@ pub struct PrometheusSpec {
     /// namespace only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleNamespaceSelector")]
     pub rule_namespace_selector: Option<PrometheusRuleNamespaceSelector>,
+    /// Defines the offset the rule evaluation timestamp of this particular group by the specified duration into the past.
+    /// It requires Prometheus >= v2.53.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleQueryOffset")]
+    pub rule_query_offset: Option<String>,
     /// PrometheusRule objects to be selected for rule evaluation. An empty
     /// label selector matches all objects. A null label selector matches no
     /// objects.

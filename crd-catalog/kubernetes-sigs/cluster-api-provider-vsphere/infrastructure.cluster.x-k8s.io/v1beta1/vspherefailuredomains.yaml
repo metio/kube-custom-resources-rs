@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.3"
   name: "vspherefailuredomains.infrastructure.cluster.x-k8s.io"
 spec:
   group: "infrastructure.cluster.x-k8s.io"
@@ -35,7 +35,7 @@ spec:
                   description: "Region defines the name and type of a region"
                   properties:
                     autoConfigure:
-                      description: "AutoConfigure tags the Type which is specified in the Topology\n\n\nDeprecated: This field is going to be removed in a future release."
+                      description: "AutoConfigure tags the Type which is specified in the Topology\n\nDeprecated: This field is going to be removed in a future release."
                       type: "boolean"
                     name:
                       description: "Name is the name of the tag that represents this failure domain"
@@ -92,7 +92,7 @@ spec:
                   description: "Zone defines the name and type of a zone"
                   properties:
                     autoConfigure:
-                      description: "AutoConfigure tags the Type which is specified in the Topology\n\n\nDeprecated: This field is going to be removed in a future release."
+                      description: "AutoConfigure tags the Type which is specified in the Topology\n\nDeprecated: This field is going to be removed in a future release."
                       type: "boolean"
                     name:
                       description: "Name is the name of the tag that represents this failure domain"

@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// AddonSpec defines the desired state of Addon.
 /// 
-/// 
 /// An Amazon EKS add-on. For more information, see Amazon EKS add-ons (https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html)
 /// in the Amazon EKS User Guide.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -40,7 +39,6 @@ pub struct AddonSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
@@ -52,27 +50,31 @@ pub struct AddonSpec {
     /// The name of the add-on. The name must match one of the names returned by
     /// DescribeAddonVersions.
     pub name: String,
+    /// An array of Pod Identity Assocations to be created. Each EKS Pod Identity
+    /// association maps a Kubernetes service account to an IAM Role.
+    /// 
+    /// For more information, see Attach an IAM Role to an Amazon EKS add-on using
+    /// Pod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)
+    /// in the EKS User Guide.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentityAssociations")]
+    pub pod_identity_associations: Option<Vec<AddonPodIdentityAssociations>>,
     /// How to resolve field value conflicts for an Amazon EKS add-on. Conflicts
     /// are handled based on the value you choose:
-    /// 
     /// 
     ///    * None – If the self-managed version of the add-on is installed on your
     ///    cluster, Amazon EKS doesn't change the value. Creation of the add-on might
     ///    fail.
-    /// 
     /// 
     ///    * Overwrite – If the self-managed version of the add-on is installed
     ///    on your cluster and the Amazon EKS default value is different than the
     ///    existing value, Amazon EKS changes the value to the Amazon EKS default
     ///    value.
     /// 
-    /// 
     ///    * Preserve – This is similar to the NONE option. If the self-managed
     ///    version of the add-on is installed on your cluster Amazon EKS doesn't
     ///    change the add-on resource properties. Creation of the add-on might fail
     ///    if conflicts are detected. This option works differently during the update
     ///    operation. For more information, see UpdateAddon (https://docs.aws.amazon.com/eks/latest/APIReference/API_UpdateAddon.html).
-    /// 
     /// 
     /// If you don't currently have the self-managed version of the add-on installed
     /// on your cluster, the Amazon EKS add-on is installed. Amazon EKS sets all
@@ -86,7 +88,6 @@ pub struct AddonSpec {
     /// Amazon EKS node IAM role (https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html)
     /// in the Amazon EKS User Guide.
     /// 
-    /// 
     /// To specify an existing IAM role, you must have an IAM OpenID Connect (OIDC)
     /// provider created for your cluster. For more information, see Enabling IAM
     /// roles for service accounts on your cluster (https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html)
@@ -97,7 +98,6 @@ pub struct AddonSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -114,7 +114,6 @@ pub struct AddonSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -136,11 +135,26 @@ pub struct AddonClusterRefFrom {
     pub namespace: Option<String>,
 }
 
+/// A type of Pod Identity Association owned by an Amazon EKS Add-on.
+/// 
+/// Each EKS Pod Identity Association maps a role to a service account in a namespace
+/// in the cluster.
+/// 
+/// For more information, see Attach an IAM Role to an Amazon EKS add-on using
+/// Pod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)
+/// in the EKS User Guide.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AddonPodIdentityAssociations {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
+    pub role_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
+}
+
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -210,7 +224,6 @@ pub struct AddonStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

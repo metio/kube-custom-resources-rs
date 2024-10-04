@@ -26,6 +26,18 @@ pub struct BatchSpec {
     /// Name of the ConfigMap containing the batch and resource files to be executed
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<String>,
+    /// Specify resource requirements per container
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container: Option<BatchContainer>,
+}
+
+/// Specify resource requirements per container
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BatchContainer {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<String>,
 }
 
 /// BatchStatus defines the observed state of Batch

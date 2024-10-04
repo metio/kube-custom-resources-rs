@@ -56,10 +56,8 @@ pub struct AdoptedResourceKubernetes {
     /// automatically converts this to an arbitrary string-string map.
     /// https://github.com/kubernetes-sigs/controller-tools/issues/385
     /// 
-    /// 
     /// Active discussion about inclusion of this field in the spec is happening in this PR:
     /// https://github.com/kubernetes-sigs/controller-tools/pull/395
-    /// 
     /// 
     /// Until this is allowed, or if it never is, we will produce a subset of the object meta
     /// that contains only the fields which the user is allowed to modify in the metadata.
@@ -73,10 +71,8 @@ pub struct AdoptedResourceKubernetes {
 /// automatically converts this to an arbitrary string-string map.
 /// https://github.com/kubernetes-sigs/controller-tools/issues/385
 /// 
-/// 
 /// Active discussion about inclusion of this field in the spec is happening in this PR:
 /// https://github.com/kubernetes-sigs/controller-tools/pull/395
-/// 
 /// 
 /// Until this is allowed, or if it never is, we will produce a subset of the object meta
 /// that contains only the fields which the user is allowed to modify in the metadata.
@@ -96,12 +92,10 @@ pub struct AdoptedResourceKubernetesMetadata {
     /// and may be truncated by the length of the suffix required to make the value
     /// unique on the server.
     /// 
-    /// 
     /// If this field is specified and the generated name exists, the server will
     /// NOT return a 409 - instead, it will either return 201 Created or 500 with Reason
     /// ServerTimeout indicating a unique name could not be found in the time allotted, and the client
     /// should retry (optionally after the time indicated in the Retry-After header).
-    /// 
     /// 
     /// Applied only if Name is not specified.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency
@@ -125,7 +119,6 @@ pub struct AdoptedResourceKubernetesMetadata {
     /// equivalent to the "default" namespace, but "default" is the canonical representation.
     /// Not all objects are required to be scoped to a namespace - the value of this field for
     /// those objects will be empty.
-    /// 
     /// 
     /// Must be a DNS_LABEL.
     /// Cannot be updated.

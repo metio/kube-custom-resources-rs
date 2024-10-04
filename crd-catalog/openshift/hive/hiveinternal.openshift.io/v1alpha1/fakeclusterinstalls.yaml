@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "(devel)"
+    controller-gen.kubebuilder.io/version: "v0.13.0"
   labels:
     contracts.hive.openshift.io/clusterinstall: "true"
   name: "fakeclusterinstalls.hiveinternal.openshift.io"
@@ -35,9 +35,11 @@ spec:
                   description: "ClusterDeploymentRef is a reference to the ClusterDeployment associated with this AgentClusterInstall."
                   properties:
                     name:
+                      default: ""
                       description: "Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                       type: "string"
                   type: "object"
+                  x-kubernetes-map-type: "atomic"
                 clusterMetadata:
                   description: "ClusterMetadata contains metadata information about the installed cluster. It should be populated once the cluster install is completed. (it can be populated sooner if desired, but Hive will not copy back to ClusterDeployment until the Installed condition goes True."
                   properties:

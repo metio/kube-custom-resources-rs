@@ -60,6 +60,18 @@ pub struct MachineSpec {
     /// be interfacing with cluster-api as generic provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
+    /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
+    /// 
+    /// This field can be used e.g. by Cluster API control plane providers to extend the semantic of the
+    /// Ready condition for the Machine they control, like the kubeadm control provider adding ReadinessGates
+    /// for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc.
+    /// 
+    /// Another example are external controllers, e.g. responsible to install special software/hardware on the Machines;
+    /// they can include the status of those components with a new condition and add this condition to ReadinessGates.
+    /// 
+    /// NOTE: this field is considered only for computing v1beta2 conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
+    pub readiness_gates: Option<Vec<MachineReadinessGates>>,
     /// Version defines the desired Kubernetes version.
     /// This field is meant to be optionally used by bootstrap providers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -160,6 +172,16 @@ pub struct MachineInfrastructureRef {
     pub uid: Option<String>,
 }
 
+/// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineReadinessGates {
+    /// conditionType refers to a positive polarity condition (status true means good) with matching type in the Machine's condition list.
+    /// If the conditions doesn't exist, it will be treated as unknown.
+    /// Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
+    #[serde(rename = "conditionType")]
+    pub condition_type: String,
+}
+
 /// MachineStatus defines the observed state of Machine.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineStatus {
@@ -177,6 +199,10 @@ pub struct MachineStatus {
     /// Conditions defines current service state of the Machine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// deletion contains information relating to removal of the Machine.
+    /// Only present when the Machine has a deletionTimestamp and drain or wait for volume detach started.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deletion: Option<MachineStatusDeletion>,
     /// FailureMessage will be set in the event that there is a terminal problem
     /// reconciling the Machine and will contain a more verbose string suitable
     /// for logging and human consumption.
@@ -233,6 +259,9 @@ pub struct MachineStatus {
     /// E.g. Pending, Running, Terminating, Failed etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
+    /// v1beta2 groups all the fields that will be added or modified in Machine's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<MachineStatusV1beta2>,
 }
 
 /// MachineAddress contains information for the node's address.
@@ -243,6 +272,24 @@ pub struct MachineStatusAddresses {
     /// Machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
     #[serde(rename = "type")]
     pub r#type: String,
+}
+
+/// deletion contains information relating to removal of the Machine.
+/// Only present when the Machine has a deletionTimestamp and drain or wait for volume detach started.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineStatusDeletion {
+    /// nodeDrainStartTime is the time when the drain of the node started and is used to determine
+    /// if the NodeDrainTimeout is exceeded.
+    /// Only present when the Machine has a deletionTimestamp and draining the node had been started.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainStartTime")]
+    pub node_drain_start_time: Option<String>,
+    /// waitForNodeVolumeDetachStartTime is the time when waiting for volume detachment started
+    /// and is used to determine if the NodeVolumeDetachTimeout is exceeded.
+    /// Detaching volumes from nodes is usually done by CSI implementations and the current state
+    /// is observed from the node's `.Status.VolumesAttached` field.
+    /// Only present when the Machine has a deletionTimestamp and waiting for volume detachments had been started.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForNodeVolumeDetachStartTime")]
+    pub wait_for_node_volume_detach_start_time: Option<String>,
 }
 
 /// NodeInfo is a set of ids/uuids to uniquely identify the node.
@@ -319,5 +366,18 @@ pub struct MachineStatusNodeRef {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in Machine's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineStatusV1beta2 {
+    /// conditions represents the observations of a Machine's current state.
+    /// Known condition types are Available, Ready, UpToDate, BootstrapConfigReady, InfrastructureReady, NodeReady,
+    /// NodeHealthy, Deleting, Paused.
+    /// If a MachineHealthCheck is targeting this machine, also HealthCheckSucceeded, OwnerRemediated conditions are added.
+    /// Additionally control plane Machines controlled by KubeadmControlPlane will have following additional conditions:
+    /// APIServerPodHealthy, ControllerManagerPodHealthy, SchedulerPodHealthy, EtcdPodHealthy, EtcdMemberHealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 

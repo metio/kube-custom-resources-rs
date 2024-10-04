@@ -52,6 +52,9 @@ pub struct TeleportSAMLConnectorSpec {
     /// Issuer is the identity provider issuer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
+    /// MFASettings contains settings to enable SSO MFA checks through this auth connector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mfa: Option<TeleportSAMLConnectorMfa>,
     /// Provider is the external identity provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider: Option<String>,
@@ -102,6 +105,20 @@ pub struct TeleportSAMLConnectorClientRedirectSettings {
     /// a list of CIDRs allowed for HTTP or HTTPS client redirect URLs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure_allowed_cidr_ranges: Option<Vec<String>>,
+}
+
+/// MFASettings contains settings to enable SSO MFA checks through this auth connector.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TeleportSAMLConnectorMfa {
+    /// Enabled specified whether this SAML connector supports MFA checks. Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// EntityDescriptor is XML with descriptor. It can be used to supply configuration parameters in one XML file rather than supplying them in the individual elements.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub entity_descriptor: Option<String>,
+    /// EntityDescriptorUrl is a URL that supplies a configuration XML.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub entity_descriptor_url: Option<String>,
 }
 
 /// SigningKeyPair is an x509 key pair used to sign AuthnRequest.

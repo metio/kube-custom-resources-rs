@@ -25,7 +25,7 @@ pub struct SecretClassSpec {
 pub struct SecretClassBackend {
     /// The [`autoTls` backend](https://docs.stackable.tech/home/nightly/secret-operator/secretclass#backend-autotls) issues a TLS certificate signed by the Secret Operator. The certificate authority can be provided by the administrator, or managed automatically by the Secret Operator.
     /// 
-    /// A new certificate and keypair will be generated and signed for each Pod, keys or certificates are never reused.
+    /// A new certificate and key pair will be generated and signed for each Pod, keys or certificates are never reused.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoTls")]
     pub auto_tls: Option<SecretClassBackendAutoTls>,
     /// The [`experimentalCertManager` backend][1] injects a TLS certificate issued by [cert-manager](https://cert-manager.io/).
@@ -45,7 +45,7 @@ pub struct SecretClassBackend {
 
 /// The [`autoTls` backend](https://docs.stackable.tech/home/nightly/secret-operator/secretclass#backend-autotls) issues a TLS certificate signed by the Secret Operator. The certificate authority can be provided by the administrator, or managed automatically by the Secret Operator.
 /// 
-/// A new certificate and keypair will be generated and signed for each Pod, keys or certificates are never reused.
+/// A new certificate and key pair will be generated and signed for each Pod, keys or certificates are never reused.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretClassBackendAutoTls {
     /// Configures the certificate authority used to issue Pod certificates.
@@ -68,8 +68,34 @@ pub struct SecretClassBackendAutoTlsCa {
     /// If `autoGenerate: true` then the Secret Operator will prepare a new CA certificate the old CA approaches expiration. If `autoGenerate: false` then the Secret Operator will log a warning instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificateLifetime")]
     pub ca_certificate_lifetime: Option<String>,
+    /// The algorithm used to generate a key pair and required configuration settings. Currently only RSA and a key length of 2048, 3072 or 4096 bits can be configured.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyGeneration")]
+    pub key_generation: Option<SecretClassBackendAutoTlsCaKeyGeneration>,
     /// Reference (name and namespace) to a Kubernetes Secret object where the CA certificate and key is stored in the keys `ca.crt` and `ca.key` respectively.
     pub secret: SecretClassBackendAutoTlsCaSecret,
+}
+
+/// The algorithm used to generate a key pair and required configuration settings. Currently only RSA and a key length of 2048, 3072 or 4096 bits can be configured.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretClassBackendAutoTlsCaKeyGeneration {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rsa: Option<SecretClassBackendAutoTlsCaKeyGenerationRsa>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretClassBackendAutoTlsCaKeyGenerationRsa {
+    /// The amount of bits used for generating the RSA keypair. Currently, `2048`, `3072` and `4096` are supported. Defaults to `2048` bits.
+    pub length: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SecretClassBackendAutoTlsCaKeyGenerationRsaLength {
+    #[serde(rename = "2048")]
+    r#_2048,
+    #[serde(rename = "3072")]
+    r#_3072,
+    #[serde(rename = "4096")]
+    r#_4096,
 }
 
 /// Reference (name and namespace) to a Kubernetes Secret object where the CA certificate and key is stored in the keys `ca.crt` and `ca.key` respectively.

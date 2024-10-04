@@ -24,6 +24,9 @@ pub struct ConfigurationSpec {
     /// Clusters holds a registry to clusters to support multi-cluster tests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<BTreeMap<String, ConfigurationClusters>>,
+    /// Compiler defines the default compiler to use when evaluating expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compiler: Option<ConfigurationCompiler>,
     /// DelayBeforeCleanup adds a delay between the time a test ends and the time cleanup starts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "delayBeforeCleanup")]
     pub delay_before_cleanup: Option<String>,
@@ -53,7 +56,10 @@ pub struct ConfigurationSpec {
     pub namespace: Option<String>,
     /// NamespaceTemplate defines a template to create the test namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceTemplate")]
-    pub namespace_template: Option<BTreeMap<String, serde_json::Value>>,
+    pub namespace_template: Option<serde_json::Value>,
+    /// NamespaceTemplateCompiler defines the default compiler to use when evaluating expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceTemplateCompiler")]
+    pub namespace_template_compiler: Option<ConfigurationNamespaceTemplateCompiler>,
     /// The maximum number of tests to run at once.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallel: Option<i64>,
@@ -91,6 +97,9 @@ pub struct ConfigurationCatch {
     /// Command defines a command to run.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<ConfigurationCatchCommand>,
+    /// Compiler defines the default compiler to use when evaluating expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compiler: Option<ConfigurationCatchCompiler>,
     /// Delete represents a deletion operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delete: Option<ConfigurationCatchDelete>,
@@ -131,7 +140,7 @@ pub struct ConfigurationCatchCommand {
     pub bindings: Option<Vec<ConfigurationCatchCommandBindings>>,
     /// Check is an assertion tree to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub check: Option<BTreeMap<String, serde_json::Value>>,
+    pub check: Option<serde_json::Value>,
     /// Cluster defines the target cluster (will be inherited if not specified).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
@@ -160,10 +169,22 @@ pub struct ConfigurationCatchCommand {
 /// Binding represents a key/value set as a binding in an executing test.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationCatchCommandBindings {
+    /// Compiler defines the default compiler to use when evaluating expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compiler: Option<ConfigurationCatchCommandBindingsCompiler>,
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
     pub value: serde_json::Value,
+}
+
+/// Binding represents a key/value set as a binding in an executing test.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigurationCatchCommandBindingsCompiler {
+    #[serde(rename = "jp")]
+    Jp,
+    #[serde(rename = "cel")]
+    Cel,
 }
 
 /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -180,6 +201,33 @@ pub struct ConfigurationCatchCommandClusters {
 /// Binding represents a key/value set as a binding in an executing test.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationCatchCommandEnv {
+    /// Compiler defines the default compiler to use when evaluating expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compiler: Option<ConfigurationCatchCommandEnvCompiler>,
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
+}
+
+/// Binding represents a key/value set as a binding in an executing test.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigurationCatchCommandEnvCompiler {
+    #[serde(rename = "jp")]
+    Jp,
+    #[serde(rename = "cel")]
+    Cel,
+}
+
+/// Output represents an output binding with a match to determine if the binding must be considered or not.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationCatchCommandOutputs {
+    /// Compiler defines the default compiler to use when evaluating expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compiler: Option<ConfigurationCatchCommandOutputsCompiler>,
+    /// Match defines the matching statement.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
+    pub r#match: Option<serde_json::Value>,
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
@@ -187,15 +235,21 @@ pub struct ConfigurationCatchCommandEnv {
 }
 
 /// Output represents an output binding with a match to determine if the binding must be considered or not.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationCatchCommandOutputs {
-    /// Match defines the matching statement.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
-    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
-    /// Name the name of the binding.
-    pub name: String,
-    /// Value value of the binding.
-    pub value: serde_json::Value,
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigurationCatchCommandOutputsCompiler {
+    #[serde(rename = "jp")]
+    Jp,
+    #[serde(rename = "cel")]
+    Cel,
+}
+
+/// CatchFinally defines actions to be executed in catch, finally and cleanup blocks.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigurationCatchCompiler {
+    #[serde(rename = "jp")]
+    Jp,
+    #[serde(rename = "cel")]
+    Cel,
 }
 
 /// Delete represents a deletion operation.
@@ -237,10 +291,22 @@ pub struct ConfigurationCatchDelete {
 /// Binding represents a key/value set as a binding in an executing test.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationCatchDeleteBindings {
+    /// Compiler defines the default compiler to use when evaluating expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compiler: Option<ConfigurationCatchDeleteBindingsCompiler>,
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
     pub value: serde_json::Value,
+}
+
+/// Binding represents a key/value set as a binding in an executing test.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigurationCatchDeleteBindingsCompiler {
+    #[serde(rename = "jp")]
+    Jp,
+    #[serde(rename = "cel")]
+    Cel,
 }
 
 /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -267,10 +333,10 @@ pub enum ConfigurationCatchDeleteDeletionPropagationPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationCatchDeleteExpect {
     /// Check defines the verification statement.
-    pub check: BTreeMap<String, serde_json::Value>,
+    pub check: serde_json::Value,
     /// Match defines the matching statement.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
-    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
+    pub r#match: Option<serde_json::Value>,
 }
 
 /// Ref determines objects to be deleted.
@@ -476,7 +542,7 @@ pub struct ConfigurationCatchScript {
     pub bindings: Option<Vec<ConfigurationCatchScriptBindings>>,
     /// Check is an assertion tree to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub check: Option<BTreeMap<String, serde_json::Value>>,
+    pub check: Option<serde_json::Value>,
     /// Cluster defines the target cluster (will be inherited if not specified).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
@@ -506,10 +572,22 @@ pub struct ConfigurationCatchScript {
 /// Binding represents a key/value set as a binding in an executing test.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationCatchScriptBindings {
+    /// Compiler defines the default compiler to use when evaluating expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compiler: Option<ConfigurationCatchScriptBindingsCompiler>,
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
     pub value: serde_json::Value,
+}
+
+/// Binding represents a key/value set as a binding in an executing test.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigurationCatchScriptBindingsCompiler {
+    #[serde(rename = "jp")]
+    Jp,
+    #[serde(rename = "cel")]
+    Cel,
 }
 
 /// Clusters holds a registry to clusters to support multi-cluster tests.
@@ -526,6 +604,33 @@ pub struct ConfigurationCatchScriptClusters {
 /// Binding represents a key/value set as a binding in an executing test.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationCatchScriptEnv {
+    /// Compiler defines the default compiler to use when evaluating expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compiler: Option<ConfigurationCatchScriptEnvCompiler>,
+    /// Name the name of the binding.
+    pub name: String,
+    /// Value value of the binding.
+    pub value: serde_json::Value,
+}
+
+/// Binding represents a key/value set as a binding in an executing test.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigurationCatchScriptEnvCompiler {
+    #[serde(rename = "jp")]
+    Jp,
+    #[serde(rename = "cel")]
+    Cel,
+}
+
+/// Output represents an output binding with a match to determine if the binding must be considered or not.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationCatchScriptOutputs {
+    /// Compiler defines the default compiler to use when evaluating expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compiler: Option<ConfigurationCatchScriptOutputsCompiler>,
+    /// Match defines the matching statement.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
+    pub r#match: Option<serde_json::Value>,
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
@@ -533,15 +638,12 @@ pub struct ConfigurationCatchScriptEnv {
 }
 
 /// Output represents an output binding with a match to determine if the binding must be considered or not.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationCatchScriptOutputs {
-    /// Match defines the matching statement.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
-    pub r#match: Option<BTreeMap<String, serde_json::Value>>,
-    /// Name the name of the binding.
-    pub name: String,
-    /// Value value of the binding.
-    pub value: serde_json::Value,
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigurationCatchScriptOutputsCompiler {
+    #[serde(rename = "jp")]
+    Jp,
+    #[serde(rename = "cel")]
+    Cel,
 }
 
 /// Sleep defines zzzz.
@@ -651,10 +753,28 @@ pub struct ConfigurationClusters {
 
 /// Configuration spec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigurationCompiler {
+    #[serde(rename = "jp")]
+    Jp,
+    #[serde(rename = "cel")]
+    Cel,
+}
+
+/// Configuration spec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ConfigurationDeletionPropagationPolicy {
     Orphan,
     Background,
     Foreground,
+}
+
+/// Configuration spec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigurationNamespaceTemplateCompiler {
+    #[serde(rename = "jp")]
+    Jp,
+    #[serde(rename = "cel")]
+    Cel,
 }
 
 /// Configuration spec.

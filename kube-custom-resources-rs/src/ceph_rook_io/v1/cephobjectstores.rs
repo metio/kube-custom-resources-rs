@@ -1257,7 +1257,6 @@ pub struct CephObjectStoreHosting {
     /// If the DNS name corresponds to an endpoint with DNS wildcard support, do not include the
     /// wildcard itself in the list of hostnames.
     /// E.g., use "mystore.example.com" instead of "*.mystore.example.com".
-    /// The feature is supported only for Ceph v18 and later versions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsNames")]
     pub dns_names: Option<Vec<String>>,
 }

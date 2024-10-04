@@ -26,6 +26,8 @@ pub struct LimitadorSpec {
     pub affinity: Option<LimitadorAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<LimitadorImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<Vec<LimitadorLimits>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -660,6 +662,17 @@ pub struct LimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuring
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LimitadorImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// RateLimit defines the desired Limitador limit

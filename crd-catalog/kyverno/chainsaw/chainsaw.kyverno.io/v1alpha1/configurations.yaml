@@ -66,6 +66,12 @@ spec:
                             items:
                               description: "Binding represents a key/value set as a binding in an executing test."
                               properties:
+                                compiler:
+                                  description: "Compiler defines the default compiler to use when evaluating expressions."
+                                  enum:
+                                    - "jp"
+                                    - "cel"
+                                  type: "string"
                                 name:
                                   description: "Name the name of the binding."
                                   pattern: "^(?:\\w+|\\(.+\\))$"
@@ -80,7 +86,6 @@ spec:
                             type: "array"
                           check:
                             description: "Check is an assertion tree to validate the operation outcome."
-                            type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           cluster:
                             description: "Cluster defines the target cluster (will be inherited if not specified)."
@@ -108,6 +113,12 @@ spec:
                             items:
                               description: "Binding represents a key/value set as a binding in an executing test."
                               properties:
+                                compiler:
+                                  description: "Compiler defines the default compiler to use when evaluating expressions."
+                                  enum:
+                                    - "jp"
+                                    - "cel"
+                                  type: "string"
                                 name:
                                   description: "Name the name of the binding."
                                   pattern: "^(?:\\w+|\\(.+\\))$"
@@ -125,9 +136,14 @@ spec:
                             items:
                               description: "Output represents an output binding with a match to determine if the binding must be considered or not."
                               properties:
+                                compiler:
+                                  description: "Compiler defines the default compiler to use when evaluating expressions."
+                                  enum:
+                                    - "jp"
+                                    - "cel"
+                                  type: "string"
                                 match:
                                   description: "Match defines the matching statement."
-                                  type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 name:
                                   description: "Name the name of the binding."
@@ -153,6 +169,12 @@ spec:
                         required:
                           - "entrypoint"
                         type: "object"
+                      compiler:
+                        description: "Compiler defines the default compiler to use when evaluating expressions."
+                        enum:
+                          - "jp"
+                          - "cel"
+                        type: "string"
                       delete:
                         description: "Delete represents a deletion operation."
                         not:
@@ -165,6 +187,12 @@ spec:
                             items:
                               description: "Binding represents a key/value set as a binding in an executing test."
                               properties:
+                                compiler:
+                                  description: "Compiler defines the default compiler to use when evaluating expressions."
+                                  enum:
+                                    - "jp"
+                                    - "cel"
+                                  type: "string"
                                 name:
                                   description: "Name the name of the binding."
                                   pattern: "^(?:\\w+|\\(.+\\))$"
@@ -209,11 +237,9 @@ spec:
                               properties:
                                 check:
                                   description: "Check defines the verification statement."
-                                  type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 match:
                                   description: "Match defines the matching statement."
-                                  type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                               required:
                                 - "check"
@@ -451,6 +477,12 @@ spec:
                             items:
                               description: "Binding represents a key/value set as a binding in an executing test."
                               properties:
+                                compiler:
+                                  description: "Compiler defines the default compiler to use when evaluating expressions."
+                                  enum:
+                                    - "jp"
+                                    - "cel"
+                                  type: "string"
                                 name:
                                   description: "Name the name of the binding."
                                   pattern: "^(?:\\w+|\\(.+\\))$"
@@ -465,7 +497,6 @@ spec:
                             type: "array"
                           check:
                             description: "Check is an assertion tree to validate the operation outcome."
-                            type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           cluster:
                             description: "Cluster defines the target cluster (will be inherited if not specified)."
@@ -493,6 +524,12 @@ spec:
                             items:
                               description: "Binding represents a key/value set as a binding in an executing test."
                               properties:
+                                compiler:
+                                  description: "Compiler defines the default compiler to use when evaluating expressions."
+                                  enum:
+                                    - "jp"
+                                    - "cel"
+                                  type: "string"
                                 name:
                                   description: "Name the name of the binding."
                                   pattern: "^(?:\\w+|\\(.+\\))$"
@@ -510,9 +547,14 @@ spec:
                             items:
                               description: "Output represents an output binding with a match to determine if the binding must be considered or not."
                               properties:
+                                compiler:
+                                  description: "Compiler defines the default compiler to use when evaluating expressions."
+                                  enum:
+                                    - "jp"
+                                    - "cel"
+                                  type: "string"
                                 match:
                                   description: "Match defines the matching statement."
-                                  type: "object"
                                   x-kubernetes-preserve-unknown-fields: true
                                 name:
                                   description: "Name the name of the binding."
@@ -645,6 +687,12 @@ spec:
                     type: "object"
                   description: "Clusters holds a registry to clusters to support multi-cluster tests."
                   type: "object"
+                compiler:
+                  description: "Compiler defines the default compiler to use when evaluating expressions."
+                  enum:
+                    - "jp"
+                    - "cel"
+                  type: "string"
                 delayBeforeCleanup:
                   description: "DelayBeforeCleanup adds a delay between the time a test ends and the time cleanup starts."
                   type: "string"
@@ -676,8 +724,13 @@ spec:
                   type: "string"
                 namespaceTemplate:
                   description: "NamespaceTemplate defines a template to create the test namespace."
-                  type: "object"
                   x-kubernetes-preserve-unknown-fields: true
+                namespaceTemplateCompiler:
+                  description: "NamespaceTemplateCompiler defines the default compiler to use when evaluating expressions."
+                  enum:
+                    - "jp"
+                    - "cel"
+                  type: "string"
                 parallel:
                   description: "The maximum number of tests to run at once."
                   format: "int"

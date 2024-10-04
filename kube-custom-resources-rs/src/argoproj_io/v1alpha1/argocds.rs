@@ -405,12 +405,13 @@ pub struct ArgoCDApplicationSetWebhookServerRoute {
 }
 
 /// TLS provides the ability to configure certificates and termination for the Route.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ArgoCDApplicationSetWebhookServerRouteTls {
     /// caCertificate provides the cert authority certificate contents
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificate")]
     pub ca_certificate: Option<String>,
-    /// certificate provides certificate contents
+    /// certificate provides certificate contents. This should be a single serving certificate, not a certificate
+    /// chain. Do not include a CA certificate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
     /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt
@@ -420,20 +421,69 @@ pub struct ArgoCDApplicationSetWebhookServerRouteTls {
     /// verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCACertificate")]
     pub destination_ca_certificate: Option<String>,
+    /// externalCertificate provides certificate contents as a secret reference.
+    /// This should be a single serving certificate, not a certificate
+    /// chain. Do not include a CA certificate. The secret referenced should
+    /// be present in the same namespace as that of the Route.
+    /// Forbidden when `certificate` is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalCertificate")]
+    pub external_certificate: Option<ArgoCDApplicationSetWebhookServerRouteTlsExternalCertificate>,
     /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While
     /// each router may make its own decisions on which ports to expose, this is normally port 80.
     /// 
     /// 
-    /// * Allow - traffic is sent to the server on the insecure port (default)
-    /// * Disable - no traffic is allowed on the insecure port.
+    /// * Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).
+    /// * None - no traffic is allowed on the insecure port.
     /// * Redirect - clients are redirected to the secure port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureEdgeTerminationPolicy")]
-    pub insecure_edge_termination_policy: Option<String>,
+    pub insecure_edge_termination_policy: Option<ArgoCDApplicationSetWebhookServerRouteTlsInsecureEdgeTerminationPolicy>,
     /// key provides key file contents
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// termination indicates termination type.
-    pub termination: String,
+    /// 
+    /// 
+    /// * edge - TLS termination is done by the router and http is used to communicate with the backend (default)
+    /// * passthrough - Traffic is sent straight to the destination without the router providing TLS termination
+    /// * reencrypt - TLS termination is done by the router and https is used to communicate with the backend
+    /// 
+    /// 
+    /// Note: passthrough termination is incompatible with httpHeader actions
+    pub termination: ArgoCDApplicationSetWebhookServerRouteTlsTermination,
+}
+
+/// externalCertificate provides certificate contents as a secret reference.
+/// This should be a single serving certificate, not a certificate
+/// chain. Do not include a CA certificate. The secret referenced should
+/// be present in the same namespace as that of the Route.
+/// Forbidden when `certificate` is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDApplicationSetWebhookServerRouteTlsExternalCertificate {
+    /// name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// TLS provides the ability to configure certificates and termination for the Route.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCDApplicationSetWebhookServerRouteTlsInsecureEdgeTerminationPolicy {
+    Allow,
+    None,
+    Redirect,
+    #[serde(rename = "")]
+    KopiumEmpty,
+}
+
+/// TLS provides the ability to configure certificates and termination for the Route.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCDApplicationSetWebhookServerRouteTlsTermination {
+    #[serde(rename = "edge")]
+    Edge,
+    #[serde(rename = "reencrypt")]
+    Reencrypt,
+    #[serde(rename = "passthrough")]
+    Passthrough,
 }
 
 /// Banner defines an additional banner to be displayed in Argo CD UI
@@ -831,12 +881,13 @@ pub struct ArgoCDGrafanaRoute {
 }
 
 /// TLS provides the ability to configure certificates and termination for the Route.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ArgoCDGrafanaRouteTls {
     /// caCertificate provides the cert authority certificate contents
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificate")]
     pub ca_certificate: Option<String>,
-    /// certificate provides certificate contents
+    /// certificate provides certificate contents. This should be a single serving certificate, not a certificate
+    /// chain. Do not include a CA certificate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
     /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt
@@ -846,20 +897,69 @@ pub struct ArgoCDGrafanaRouteTls {
     /// verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCACertificate")]
     pub destination_ca_certificate: Option<String>,
+    /// externalCertificate provides certificate contents as a secret reference.
+    /// This should be a single serving certificate, not a certificate
+    /// chain. Do not include a CA certificate. The secret referenced should
+    /// be present in the same namespace as that of the Route.
+    /// Forbidden when `certificate` is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalCertificate")]
+    pub external_certificate: Option<ArgoCDGrafanaRouteTlsExternalCertificate>,
     /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While
     /// each router may make its own decisions on which ports to expose, this is normally port 80.
     /// 
     /// 
-    /// * Allow - traffic is sent to the server on the insecure port (default)
-    /// * Disable - no traffic is allowed on the insecure port.
+    /// * Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).
+    /// * None - no traffic is allowed on the insecure port.
     /// * Redirect - clients are redirected to the secure port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureEdgeTerminationPolicy")]
-    pub insecure_edge_termination_policy: Option<String>,
+    pub insecure_edge_termination_policy: Option<ArgoCDGrafanaRouteTlsInsecureEdgeTerminationPolicy>,
     /// key provides key file contents
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// termination indicates termination type.
-    pub termination: String,
+    /// 
+    /// 
+    /// * edge - TLS termination is done by the router and http is used to communicate with the backend (default)
+    /// * passthrough - Traffic is sent straight to the destination without the router providing TLS termination
+    /// * reencrypt - TLS termination is done by the router and https is used to communicate with the backend
+    /// 
+    /// 
+    /// Note: passthrough termination is incompatible with httpHeader actions
+    pub termination: ArgoCDGrafanaRouteTlsTermination,
+}
+
+/// externalCertificate provides certificate contents as a secret reference.
+/// This should be a single serving certificate, not a certificate
+/// chain. Do not include a CA certificate. The secret referenced should
+/// be present in the same namespace as that of the Route.
+/// Forbidden when `certificate` is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDGrafanaRouteTlsExternalCertificate {
+    /// name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// TLS provides the ability to configure certificates and termination for the Route.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCDGrafanaRouteTlsInsecureEdgeTerminationPolicy {
+    Allow,
+    None,
+    Redirect,
+    #[serde(rename = "")]
+    KopiumEmpty,
+}
+
+/// TLS provides the ability to configure certificates and termination for the Route.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCDGrafanaRouteTlsTermination {
+    #[serde(rename = "edge")]
+    Edge,
+    #[serde(rename = "reencrypt")]
+    Reencrypt,
+    #[serde(rename = "passthrough")]
+    Passthrough,
 }
 
 /// HA options for High Availability support for the Redis component.
@@ -1237,12 +1337,13 @@ pub struct ArgoCDPrometheusRoute {
 }
 
 /// TLS provides the ability to configure certificates and termination for the Route.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ArgoCDPrometheusRouteTls {
     /// caCertificate provides the cert authority certificate contents
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificate")]
     pub ca_certificate: Option<String>,
-    /// certificate provides certificate contents
+    /// certificate provides certificate contents. This should be a single serving certificate, not a certificate
+    /// chain. Do not include a CA certificate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
     /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt
@@ -1252,20 +1353,69 @@ pub struct ArgoCDPrometheusRouteTls {
     /// verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCACertificate")]
     pub destination_ca_certificate: Option<String>,
+    /// externalCertificate provides certificate contents as a secret reference.
+    /// This should be a single serving certificate, not a certificate
+    /// chain. Do not include a CA certificate. The secret referenced should
+    /// be present in the same namespace as that of the Route.
+    /// Forbidden when `certificate` is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalCertificate")]
+    pub external_certificate: Option<ArgoCDPrometheusRouteTlsExternalCertificate>,
     /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While
     /// each router may make its own decisions on which ports to expose, this is normally port 80.
     /// 
     /// 
-    /// * Allow - traffic is sent to the server on the insecure port (default)
-    /// * Disable - no traffic is allowed on the insecure port.
+    /// * Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).
+    /// * None - no traffic is allowed on the insecure port.
     /// * Redirect - clients are redirected to the secure port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureEdgeTerminationPolicy")]
-    pub insecure_edge_termination_policy: Option<String>,
+    pub insecure_edge_termination_policy: Option<ArgoCDPrometheusRouteTlsInsecureEdgeTerminationPolicy>,
     /// key provides key file contents
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// termination indicates termination type.
-    pub termination: String,
+    /// 
+    /// 
+    /// * edge - TLS termination is done by the router and http is used to communicate with the backend (default)
+    /// * passthrough - Traffic is sent straight to the destination without the router providing TLS termination
+    /// * reencrypt - TLS termination is done by the router and https is used to communicate with the backend
+    /// 
+    /// 
+    /// Note: passthrough termination is incompatible with httpHeader actions
+    pub termination: ArgoCDPrometheusRouteTlsTermination,
+}
+
+/// externalCertificate provides certificate contents as a secret reference.
+/// This should be a single serving certificate, not a certificate
+/// chain. Do not include a CA certificate. The secret referenced should
+/// be present in the same namespace as that of the Route.
+/// Forbidden when `certificate` is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDPrometheusRouteTlsExternalCertificate {
+    /// name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// TLS provides the ability to configure certificates and termination for the Route.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCDPrometheusRouteTlsInsecureEdgeTerminationPolicy {
+    Allow,
+    None,
+    Redirect,
+    #[serde(rename = "")]
+    KopiumEmpty,
+}
+
+/// TLS provides the ability to configure certificates and termination for the Route.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCDPrometheusRouteTlsTermination {
+    #[serde(rename = "edge")]
+    Edge,
+    #[serde(rename = "reencrypt")]
+    Reencrypt,
+    #[serde(rename = "passthrough")]
+    Passthrough,
 }
 
 /// RBAC defines the RBAC configuration for Argo CD.
@@ -5762,12 +5912,13 @@ pub struct ArgoCDServerRoute {
 }
 
 /// TLS provides the ability to configure certificates and termination for the Route.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ArgoCDServerRouteTls {
     /// caCertificate provides the cert authority certificate contents
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificate")]
     pub ca_certificate: Option<String>,
-    /// certificate provides certificate contents
+    /// certificate provides certificate contents. This should be a single serving certificate, not a certificate
+    /// chain. Do not include a CA certificate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
     /// destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt
@@ -5777,20 +5928,69 @@ pub struct ArgoCDServerRouteTls {
     /// verify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCACertificate")]
     pub destination_ca_certificate: Option<String>,
+    /// externalCertificate provides certificate contents as a secret reference.
+    /// This should be a single serving certificate, not a certificate
+    /// chain. Do not include a CA certificate. The secret referenced should
+    /// be present in the same namespace as that of the Route.
+    /// Forbidden when `certificate` is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalCertificate")]
+    pub external_certificate: Option<ArgoCDServerRouteTlsExternalCertificate>,
     /// insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While
     /// each router may make its own decisions on which ports to expose, this is normally port 80.
     /// 
     /// 
-    /// * Allow - traffic is sent to the server on the insecure port (default)
-    /// * Disable - no traffic is allowed on the insecure port.
+    /// * Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).
+    /// * None - no traffic is allowed on the insecure port.
     /// * Redirect - clients are redirected to the secure port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureEdgeTerminationPolicy")]
-    pub insecure_edge_termination_policy: Option<String>,
+    pub insecure_edge_termination_policy: Option<ArgoCDServerRouteTlsInsecureEdgeTerminationPolicy>,
     /// key provides key file contents
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// termination indicates termination type.
-    pub termination: String,
+    /// 
+    /// 
+    /// * edge - TLS termination is done by the router and http is used to communicate with the backend (default)
+    /// * passthrough - Traffic is sent straight to the destination without the router providing TLS termination
+    /// * reencrypt - TLS termination is done by the router and https is used to communicate with the backend
+    /// 
+    /// 
+    /// Note: passthrough termination is incompatible with httpHeader actions
+    pub termination: ArgoCDServerRouteTlsTermination,
+}
+
+/// externalCertificate provides certificate contents as a secret reference.
+/// This should be a single serving certificate, not a certificate
+/// chain. Do not include a CA certificate. The secret referenced should
+/// be present in the same namespace as that of the Route.
+/// Forbidden when `certificate` is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDServerRouteTlsExternalCertificate {
+    /// name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// TLS provides the ability to configure certificates and termination for the Route.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCDServerRouteTlsInsecureEdgeTerminationPolicy {
+    Allow,
+    None,
+    Redirect,
+    #[serde(rename = "")]
+    KopiumEmpty,
+}
+
+/// TLS provides the ability to configure certificates and termination for the Route.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCDServerRouteTlsTermination {
+    #[serde(rename = "edge")]
+    Edge,
+    #[serde(rename = "reencrypt")]
+    Reencrypt,
+    #[serde(rename = "passthrough")]
+    Passthrough,
 }
 
 /// Service defines the options for the Service backing the ArgoCD Server component.

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.3"
   name: "vsphereclusters.infrastructure.cluster.x-k8s.io"
 spec:
   group: "infrastructure.cluster.x-k8s.io"
@@ -37,7 +37,7 @@ spec:
       name: "v1alpha3"
       schema:
         openAPIV3Schema:
-          description: "VSphereCluster is the Schema for the vsphereclusters API\n\n\nDeprecated: This type will be removed in one of the next releases."
+          description: "VSphereCluster is the Schema for the vsphereclusters API\n\nDeprecated: This type will be removed in one of the next releases."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -51,7 +51,7 @@ spec:
               description: "VSphereClusterSpec defines the desired state of VSphereCluster."
               properties:
                 cloudProviderConfiguration:
-                  description: "CloudProviderConfiguration holds the cluster-wide configuration for the vSphere cloud provider.\n\n\nDeprecated: will be removed in v1alpha4."
+                  description: "CloudProviderConfiguration holds the cluster-wide configuration for the vSphere cloud provider.\n\nDeprecated: will be removed in v1alpha4."
                   properties:
                     disk:
                       description: "Disk is the vSphere cloud provider's disk configuration."
@@ -233,16 +233,16 @@ spec:
                     - "name"
                   type: "object"
                 insecure:
-                  description: "Insecure is a flag that controls whether to validate the\nvSphere server's certificate.\n\n\nDeprecated: will be removed in v1alpha4."
+                  description: "Insecure is a flag that controls whether to validate the\nvSphere server's certificate.\n\nDeprecated: will be removed in v1alpha4."
                   type: "boolean"
                 loadBalancerRef:
-                  description: "LoadBalancerRef may be used to enable a control plane load balancer\nfor this cluster.\nWhen a LoadBalancerRef is provided, the VSphereCluster.Status.Ready field\nwill not be true until the referenced resource is Status.Ready and has a\nnon-empty Status.Address value.\n\n\nDeprecated: will be removed in v1alpha4."
+                  description: "LoadBalancerRef may be used to enable a control plane load balancer\nfor this cluster.\nWhen a LoadBalancerRef is provided, the VSphereCluster.Status.Ready field\nwill not be true until the referenced resource is Status.Ready and has a\nnon-empty Status.Address value.\n\nDeprecated: will be removed in v1alpha4."
                   properties:
                     apiVersion:
                       description: "API version of the referent."
                       type: "string"
                     fieldPath:
-                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                       type: "string"
                     kind:
                       description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"

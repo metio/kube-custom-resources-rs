@@ -3391,15 +3391,10 @@ spec:
                             additionalProperties:
                               type: "string"
                             type: "object"
-                          loadBalancerIP:
-                            type: "string"
                           loadBalancerSourceRanges:
                             items:
                               type: "string"
                             type: "array"
-                          nodePort:
-                            format: "int32"
-                            type: "integer"
                           serviceAnnotations:
                             additionalProperties:
                               type: "string"
@@ -8369,6 +8364,8 @@ spec:
                   properties:
                     encryptionKey:
                       type: "string"
+                    keyFile:
+                      type: "string"
                     ldapSecret:
                       type: "string"
                     sse:
@@ -11152,15 +11149,10 @@ spec:
                               additionalProperties:
                                 type: "string"
                               type: "object"
-                            loadBalancerIP:
-                              type: "string"
                             loadBalancerSourceRanges:
                               items:
                                 type: "string"
                               type: "array"
-                            nodePort:
-                              format: "int32"
-                              type: "integer"
                             serviceAnnotations:
                               additionalProperties:
                                 type: "string"
@@ -16607,8 +16599,6 @@ spec:
                               additionalProperties:
                                 type: "string"
                               type: "object"
-                            loadBalancerIP:
-                              type: "string"
                             loadBalancerSourceRanges:
                               items:
                                 type: "string"

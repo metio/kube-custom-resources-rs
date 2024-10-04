@@ -55,6 +55,9 @@ pub struct TeleportOIDCConnectorSpec {
     /// MaxAge is the amount of time that user logins are valid for. If a user logs in, but then does not login again within this time period, they will be forced to re-authenticate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_age: Option<String>,
+    /// MFASettings contains settings to enable SSO MFA checks through this auth connector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mfa: Option<TeleportOIDCConnectorMfa>,
     /// Prompt is an optional OIDC prompt. An empty string omits prompt. If not specified, it defaults to select_account for backwards compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prompt: Option<String>,
@@ -94,6 +97,26 @@ pub struct TeleportOIDCConnectorClientRedirectSettings {
     /// a list of CIDRs allowed for HTTP or HTTPS client redirect URLs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure_allowed_cidr_ranges: Option<Vec<String>>,
+}
+
+/// MFASettings contains settings to enable SSO MFA checks through this auth connector.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TeleportOIDCConnectorMfa {
+    /// AcrValues are Authentication Context Class Reference values. The meaning of the ACR value is context-specific and varies for identity providers. Some identity providers support MFA specific contexts, such Okta with its "phr" (phishing-resistant) ACR.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub acr_values: Option<String>,
+    /// ClientID is the OIDC OAuth app client ID.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_id: Option<String>,
+    /// ClientSecret is the OIDC OAuth app client secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_secret: Option<String>,
+    /// Enabled specified whether this OIDC connector supports MFA checks. Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Prompt is an optional OIDC prompt. An empty string omits prompt. If not specified, it defaults to select_account for backwards compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prompt: Option<String>,
 }
 
 /// Status defines the observed state of the Teleport resource

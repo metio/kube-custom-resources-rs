@@ -233,6 +233,13 @@ spec:
                 replicationSourceIdentifier:
                   description: "The Amazon Resource Name (ARN) of the source DB instance or DB cluster if\nthis DB cluster is created as a read replica.\n\n\nValid for: Aurora DB clusters and Multi-AZ DB clusters"
                   type: "string"
+                restoreToTime:
+                  description: "The date and time to restore the DB cluster to.\n\n\nValid Values: Value must be a time in Universal Coordinated Time (UTC) format\n\n\nConstraints:\n\n\n   * Must be before the latest restorable time for the DB instance\n\n\n   * Must be specified if UseLatestRestorableTime parameter isn't provided\n\n\n   * Can't be specified if the UseLatestRestorableTime parameter is enabled\n\n\n   * Can't be specified if the RestoreType parameter is copy-on-write\n\n\nExample: 2015-03-07T23:45:00Z\n\n\nValid for: Aurora DB clusters and Multi-AZ DB clusters"
+                  format: "date-time"
+                  type: "string"
+                restoreType:
+                  description: "The type of restore to be performed. You can specify one of the following\nvalues:\n\n\n   * full-copy - The new DB cluster is restored as a full copy of the source\n   DB cluster.\n\n\n   * copy-on-write - The new DB cluster is restored as a clone of the source\n   DB cluster.\n\n\nConstraints: You can't specify copy-on-write if the engine version of the\nsource DB cluster is earlier than 1.11.\n\n\nIf you don't specify a RestoreType value, then the new DB cluster is restored\nas a full copy of the source DB cluster.\n\n\nValid for: Aurora DB clusters and Multi-AZ DB clusters"
+                  type: "string"
                 scalingConfiguration:
                   description: "For DB clusters in serverless DB engine mode, the scaling properties of the\nDB cluster.\n\n\nValid for: Aurora DB clusters only"
                   properties:
@@ -264,6 +271,9 @@ spec:
                 snapshotIdentifier:
                   description: "The identifier for the DB snapshot or DB cluster snapshot to restore from.\n\n\nYou can use either the name or the Amazon Resource Name (ARN) to specify\na DB cluster snapshot. However, you can use only the ARN to specify a DB\nsnapshot.\n\n\nConstraints:\n\n\n   * Must match the identifier of an existing Snapshot.\n\n\nValid for: Aurora DB clusters and Multi-AZ DB clusters"
                   type: "string"
+                sourceDBClusterIdentifier:
+                  description: "The identifier of the source DB cluster from which to restore.\n\n\nConstraints:\n\n\n   * Must match the identifier of an existing DBCluster.\n\n\nValid for: Aurora DB clusters and Multi-AZ DB clusters"
+                  type: "string"
                 sourceRegion:
                   description: "SourceRegion is the source region where the resource exists. This is not\nsent over the wire and is only used for presigning. This value should always\nhave the same region as the source ARN."
                   type: "string"
@@ -284,6 +294,9 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                useLatestRestorableTime:
+                  description: "A value that indicates whether to restore the DB cluster to the latest restorable\nbackup time. By default, the DB cluster isn't restored to the latest restorable\nbackup time.\n\n\nConstraints: Can't be specified if RestoreToTime parameter is provided.\n\n\nValid for: Aurora DB clusters and Multi-AZ DB clusters"
+                  type: "boolean"
                 vpcSecurityGroupIDs:
                   description: "A list of EC2 VPC security groups to associate with this DB cluster.\n\n\nValid for: Aurora DB clusters and Multi-AZ DB clusters"
                   items:

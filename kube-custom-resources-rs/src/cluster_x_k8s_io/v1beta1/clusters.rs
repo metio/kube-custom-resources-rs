@@ -22,6 +22,11 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterSpec {
+    /// availabilityGates specifies additional conditions to include when evaluating Cluster Available condition.
+    /// 
+    /// NOTE: this field is considered only for computing v1beta2 conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityGates")]
+    pub availability_gates: Option<Vec<ClusterAvailabilityGates>>,
     /// Cluster network configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetwork")]
     pub cluster_network: Option<ClusterClusterNetwork>,
@@ -45,6 +50,16 @@ pub struct ClusterSpec {
     /// this feature is highly experimental, and parts of it might still be not implemented.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topology: Option<ClusterTopology>,
+}
+
+/// ClusterAvailabilityGate contains the type of a Cluster condition to be used as availability gate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterAvailabilityGates {
+    /// conditionType refers to a positive polarity condition (status true means good) with matching type in the Cluster's condition list.
+    /// If the conditions doesn't exist, it will be treated as unknown.
+    /// Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as availability gates.
+    #[serde(rename = "conditionType")]
+    pub condition_type: String,
 }
 
 /// Cluster network configuration.
@@ -868,6 +883,9 @@ pub struct ClusterStatus {
     /// E.g. Pending, Running, Terminating, Failed etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
+    /// v1beta2 groups all the fields that will be added or modified in Cluster's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<ClusterStatusV1beta2>,
 }
 
 /// FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
@@ -879,5 +897,64 @@ pub struct ClusterStatusFailureDomains {
     /// ControlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in Cluster's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusV1beta2 {
+    /// conditions represents the observations of a Cluster's current state.
+    /// Known condition types are Available, InfrastructureReady, ControlPlaneInitialized, ControlPlaneAvailable, WorkersAvailable, MachinesReady
+    /// MachinesUpToDate, RemoteConnectionProbe, ScalingUp, ScalingDown, Remediating, Deleting, Paused.
+    /// Additionally, a TopologyReconciled condition will be added in case the Cluster is referencing a ClusterClass / defining a managed Topology.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// controlPlane groups all the observations about Cluster's ControlPlane current state.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
+    pub control_plane: Option<ClusterStatusV1beta2ControlPlane>,
+    /// workers groups all the observations about Cluster's Workers current state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub workers: Option<ClusterStatusV1beta2Workers>,
+}
+
+/// controlPlane groups all the observations about Cluster's ControlPlane current state.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusV1beta2ControlPlane {
+    /// availableReplicas is the total number of available control plane machines in this cluster. A machine is considered available when Machine's Available condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
+    pub available_replicas: Option<i32>,
+    /// desiredReplicas is the total number of desired control plane machines in this cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredReplicas")]
+    pub desired_replicas: Option<i32>,
+    /// readyReplicas is the total number of ready control plane machines in this cluster. A machine is considered ready when Machine's Ready condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
+    pub ready_replicas: Option<i32>,
+    /// replicas is the total number of control plane machines in this cluster.
+    /// NOTE: replicas also includes machines still being provisioned or being deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// upToDateReplicas is the number of up-to-date control plane machines in this cluster. A machine is considered up-to-date when Machine's UpToDate condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
+    pub up_to_date_replicas: Option<i32>,
+}
+
+/// workers groups all the observations about Cluster's Workers current state.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusV1beta2Workers {
+    /// availableReplicas is the total number of available worker machines in this cluster. A machine is considered available when Machine's Available condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
+    pub available_replicas: Option<i32>,
+    /// desiredReplicas is the total number of desired worker machines in this cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredReplicas")]
+    pub desired_replicas: Option<i32>,
+    /// readyReplicas is the total number of ready worker machines in this cluster. A machine is considered ready when Machine's Ready condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
+    pub ready_replicas: Option<i32>,
+    /// replicas is the total number of worker machines in this cluster.
+    /// NOTE: replicas also includes machines still being provisioned or being deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// upToDateReplicas is the number of up-to-date worker machines in this cluster. A machine is considered up-to-date when Machine's UpToDate condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
+    pub up_to_date_replicas: Option<i32>,
 }
 

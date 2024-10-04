@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// NodegroupSpec defines the desired state of Nodegroup.
 /// 
-/// 
 /// An object representing an Amazon EKS managed node group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "eks.services.k8s.aws", version = "v1alpha1", kind = "Nodegroup", plural = "nodegroups")]
@@ -28,7 +27,7 @@ pub struct NodegroupSpec {
     /// group deployment will fail. If your launch template uses a Windows custom
     /// AMI, then add eks:kube-proxy-windows to your Windows nodes rolearn in the
     /// aws-auth ConfigMap. For more information about using launch templates with
-    /// Amazon EKS, see Launch template support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+    /// Amazon EKS, see Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "amiType")]
     pub ami_type: Option<String>,
@@ -47,7 +46,6 @@ pub struct NodegroupSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
@@ -56,7 +54,8 @@ pub struct NodegroupSpec {
     /// disk size is 20 GiB for Linux and Bottlerocket. The default disk size is
     /// 50 GiB for Windows. If you specify launchTemplate, then don't specify diskSize,
     /// or the node group deployment will fail. For more information about using
-    /// launch templates with Amazon EKS, see Launch template support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+    /// launch templates with Amazon EKS, see Customizing managed nodes with launch
+    /// templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSize")]
     pub disk_size: Option<i64>,
@@ -70,7 +69,7 @@ pub struct NodegroupSpec {
     /// then t3.medium is used, by default. If you specify Spot for capacityType,
     /// then we recommend specifying multiple values for instanceTypes. For more
     /// information, see Managed node group capacity types (https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html#managed-node-group-capacity-types)
-    /// and Launch template support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+    /// and Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceTypes")]
     pub instance_types: Option<Vec<String>>,
@@ -78,9 +77,11 @@ pub struct NodegroupSpec {
     /// created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// An object representing a node group's launch template specification. If specified,
-    /// then do not specify instanceTypes, diskSize, or remoteAccess and make sure
-    /// that the launch template meets the requirements in launchTemplateSpecification.
+    /// An object representing a node group's launch template specification. When
+    /// using this object, don't directly specify instanceTypes, diskSize, or remoteAccess.
+    /// Make sure that the launch template meets the requirements in launchTemplateSpecification.
+    /// Also refer to Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+    /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "launchTemplate")]
     pub launch_template: Option<NodegroupLaunchTemplate>,
     /// The unique name to give your node group.
@@ -95,8 +96,8 @@ pub struct NodegroupSpec {
     /// in the Amazon EKS User Guide . If you specify launchTemplate, then don't
     /// specify IamInstanceProfile (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_IamInstanceProfile.html)
     /// in your launch template, or the node group deployment will fail. For more
-    /// information about using launch templates with Amazon EKS, see Launch template
-    /// support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+    /// information about using launch templates with Amazon EKS, see Customizing
+    /// managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeRole")]
     pub node_role: Option<String>,
@@ -104,7 +105,6 @@ pub struct NodegroupSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -119,19 +119,18 @@ pub struct NodegroupSpec {
     /// Windows versions, see Amazon EKS optimized Windows AMI versions (https://docs.aws.amazon.com/eks/latest/userguide/eks-ami-versions-windows.html)
     /// in the Amazon EKS User Guide.
     /// 
-    /// 
     /// If you specify launchTemplate, and your launch template uses a custom AMI,
     /// then don't specify releaseVersion, or the node group deployment will fail.
-    /// For more information about using launch templates with Amazon EKS, see Launch
-    /// template support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+    /// For more information about using launch templates with Amazon EKS, see Customizing
+    /// managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "releaseVersion")]
     pub release_version: Option<String>,
     /// The remote access configuration to use with your node group. For Linux, the
     /// protocol is SSH. For Windows, the protocol is RDP. If you specify launchTemplate,
     /// then don't specify remoteAccess, or the node group deployment will fail.
-    /// For more information about using launch templates with Amazon EKS, see Launch
-    /// template support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+    /// For more information about using launch templates with Amazon EKS, see Customizing
+    /// managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteAccess")]
     pub remote_access: Option<NodegroupRemoteAccess>,
@@ -144,8 +143,8 @@ pub struct NodegroupSpec {
     /// The subnets to use for the Auto Scaling group that is created for your node
     /// group. If you specify launchTemplate, then don't specify SubnetId (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateNetworkInterface.html)
     /// in your launch template, or the node group deployment will fail. For more
-    /// information about using launch templates with Amazon EKS, see Launch template
-    /// support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+    /// information about using launch templates with Amazon EKS, see Customizing
+    /// managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<String>>,
@@ -165,8 +164,8 @@ pub struct NodegroupSpec {
     /// version of the cluster is used, and this is the only accepted specified value.
     /// If you specify launchTemplate, and your launch template uses a custom AMI,
     /// then don't specify version, or the node group deployment will fail. For more
-    /// information about using launch templates with Amazon EKS, see Launch template
-    /// support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+    /// information about using launch templates with Amazon EKS, see Customizing
+    /// managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -176,7 +175,6 @@ pub struct NodegroupSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -198,9 +196,11 @@ pub struct NodegroupClusterRefFrom {
     pub namespace: Option<String>,
 }
 
-/// An object representing a node group's launch template specification. If specified,
-/// then do not specify instanceTypes, diskSize, or remoteAccess and make sure
-/// that the launch template meets the requirements in launchTemplateSpecification.
+/// An object representing a node group's launch template specification. When
+/// using this object, don't directly specify instanceTypes, diskSize, or remoteAccess.
+/// Make sure that the launch template meets the requirements in launchTemplateSpecification.
+/// Also refer to Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+/// in the Amazon EKS User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodegroupLaunchTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -215,7 +215,6 @@ pub struct NodegroupLaunchTemplate {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -240,8 +239,8 @@ pub struct NodegroupNodeRoleRefFrom {
 /// The remote access configuration to use with your node group. For Linux, the
 /// protocol is SSH. For Windows, the protocol is RDP. If you specify launchTemplate,
 /// then don't specify remoteAccess, or the node group deployment will fail.
-/// For more information about using launch templates with Amazon EKS, see Launch
-/// template support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+/// For more information about using launch templates with Amazon EKS, see Customizing
+/// managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
 /// in the Amazon EKS User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodegroupRemoteAccess {
@@ -258,7 +257,6 @@ pub struct NodegroupRemoteAccess {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -296,7 +294,6 @@ pub struct NodegroupScalingConfig {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -384,7 +381,6 @@ pub struct NodegroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

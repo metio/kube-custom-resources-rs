@@ -51,8 +51,6 @@ pub struct CiliumEndpointStatus {
     /// State is the state of the endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<CiliumEndpointStatusState>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "visibility-policy-status")]
-    pub visibility_policy_status: Option<String>,
 }
 
 /// ControllerStatus is the status of a failing controller.

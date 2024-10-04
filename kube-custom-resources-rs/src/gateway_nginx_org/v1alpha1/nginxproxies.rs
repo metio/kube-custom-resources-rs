@@ -85,22 +85,23 @@ pub enum NginxProxyRewriteClientIpMode {
 }
 
 /// Address is a struct that specifies address type and value.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct NginxProxyRewriteClientIpTrustedAddresses {
     /// Type specifies the type of address.
-    /// Default is "cidr" which specifies that the address is a CIDR block.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<NginxProxyRewriteClientIpTrustedAddressesType>,
+    #[serde(rename = "type")]
+    pub r#type: NginxProxyRewriteClientIpTrustedAddressesType,
     /// Value specifies the address value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: String,
 }
 
 /// Address is a struct that specifies address type and value.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NginxProxyRewriteClientIpTrustedAddressesType {
-    #[serde(rename = "cidr")]
+    #[serde(rename = "CIDR")]
     Cidr,
+    #[serde(rename = "IPAddress")]
+    IpAddress,
+    Hostname,
 }
 
 /// Telemetry specifies the OpenTelemetry configuration.

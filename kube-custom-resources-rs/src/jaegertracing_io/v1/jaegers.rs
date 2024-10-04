@@ -6334,6 +6334,8 @@ pub struct JaegerIngressOpenshift {
     pub sar: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogout")]
     pub skip_logout: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -29,7 +29,8 @@ pub struct VaultDynamicSecretSpec {
     pub destination: VaultDynamicSecretDestination,
     /// Mount path of the secret's engine in Vault.
     pub mount: String,
-    /// Namespace where the secrets engine is mounted in Vault.
+    /// Namespace of the secrets engine mount in Vault. If not set, the namespace that's
+    /// part of VaultAuth resource will be inferred.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Params that can be passed when requesting credentials/secrets.
@@ -77,8 +78,8 @@ pub struct VaultDynamicSecretSpec {
     pub rollout_restart_targets: Option<Vec<VaultDynamicSecretRolloutRestartTargets>>,
     /// VaultAuthRef to the VaultAuth resource, can be prefixed with a namespace,
     /// eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to
-    /// namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator will
-    /// default to the `default` VaultAuth, configured in the operator's namespace.
+    /// the namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator
+    /// will default to the `default` VaultAuth, configured in the operator's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultAuthRef")]
     pub vault_auth_ref: Option<String>,
 }

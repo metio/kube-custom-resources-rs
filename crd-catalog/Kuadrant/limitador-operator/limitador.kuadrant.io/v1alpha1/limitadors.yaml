@@ -503,6 +503,16 @@ spec:
                   type: "object"
                 image:
                   type: "string"
+                imagePullSecrets:
+                  items:
+                    description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
+                    properties:
+                      name:
+                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                        type: "string"
+                    type: "object"
+                    x-kubernetes-map-type: "atomic"
+                  type: "array"
                 limits:
                   items:
                     description: "RateLimit defines the desired Limitador limit"

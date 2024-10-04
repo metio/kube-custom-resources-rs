@@ -1399,7 +1399,7 @@ spec:
                         - "useTls"
                       type: "object"
                     dnsNames:
-                      description: "A list of DNS host names on which object store gateways will accept client S3 connections.\nWhen specified, object store gateways will reject client S3 connections to hostnames that are\nnot present in this list, so include all endpoints.\nThe object store's advertiseEndpoint and Kubernetes service endpoint, plus CephObjectZone\n`customEndpoints` are automatically added to the list but may be set here again if desired.\nEach DNS name must be valid according RFC-1123.\nIf the DNS name corresponds to an endpoint with DNS wildcard support, do not include the\nwildcard itself in the list of hostnames.\nE.g., use \"mystore.example.com\" instead of \"*.mystore.example.com\".\nThe feature is supported only for Ceph v18 and later versions."
+                      description: "A list of DNS host names on which object store gateways will accept client S3 connections.\nWhen specified, object store gateways will reject client S3 connections to hostnames that are\nnot present in this list, so include all endpoints.\nThe object store's advertiseEndpoint and Kubernetes service endpoint, plus CephObjectZone\n`customEndpoints` are automatically added to the list but may be set here again if desired.\nEach DNS name must be valid according RFC-1123.\nIf the DNS name corresponds to an endpoint with DNS wildcard support, do not include the\nwildcard itself in the list of hostnames.\nE.g., use \"mystore.example.com\" instead of \"*.mystore.example.com\"."
                       items:
                         type: "string"
                       type: "array"

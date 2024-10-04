@@ -67,8 +67,10 @@ spec:
                         description: "LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace."
                         properties:
                           name:
-                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
+                        required:
+                          - "name"
                         type: "object"
                       nullable: true
                       type: "array"
@@ -90,7 +92,6 @@ spec:
                     s3:
                       properties:
                         bucket:
-                          description: "An S3 bucket definition, it can either be a reference to an explicit S3Bucket object, or it can be an inline definition of a bucket. Read the [S3 resources concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3) to learn more."
                           oneOf:
                             - required:
                                 - "inline"
@@ -98,15 +99,13 @@ spec:
                                 - "reference"
                           properties:
                             inline:
-                              description: "An inline definition, containing the S3 bucket properties."
+                              description: "S3 bucket specification containing the bucket name and an inlined or referenced connection specification. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3)."
                               properties:
                                 bucketName:
                                   description: "The name of the S3 bucket."
-                                  nullable: true
                                   type: "string"
                                 connection:
                                   description: "The definition of an S3 connection, either inline or as a reference."
-                                  nullable: true
                                   oneOf:
                                     - required:
                                         - "inline"
@@ -114,14 +113,14 @@ spec:
                                         - "reference"
                                   properties:
                                     inline:
-                                      description: "Inline definition of an S3 connection."
+                                      description: "S3 connection definition as a resource. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3)."
                                       properties:
                                         accessStyle:
+                                          default: "VirtualHosted"
                                           description: "Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html)."
                                           enum:
                                             - "Path"
                                             - "VirtualHosted"
-                                          nullable: true
                                           type: "string"
                                         credentials:
                                           description: "If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) providing `accessKey` and `secretKey` is sufficient."
@@ -131,6 +130,12 @@ spec:
                                               description: "[Scope](https://docs.stackable.tech/home/nightly/secret-operator/scope) of the [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass)."
                                               nullable: true
                                               properties:
+                                                listenerVolumes:
+                                                  default: []
+                                                  description: "The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners."
+                                                  items:
+                                                    type: "string"
+                                                  type: "array"
                                                 node:
                                                   default: false
                                                   description: "The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node."
@@ -153,8 +158,7 @@ spec:
                                             - "secretClass"
                                           type: "object"
                                         host:
-                                          description: "Hostname of the S3 server without any protocol or port. For example: `west1.my-cloud.com`."
-                                          nullable: true
+                                          description: "Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`."
                                           type: "string"
                                         port:
                                           description: "Port the S3 server listens on. If not specified the product will determine the port to use."
@@ -163,7 +167,7 @@ spec:
                                           nullable: true
                                           type: "integer"
                                         tls:
-                                          description: "If you want to use TLS when talking to S3 you can enable TLS encrypted communication with this setting."
+                                          description: "Use a TLS connection. If not specified no TLS will be used."
                                           nullable: true
                                           properties:
                                             verification:
@@ -202,14 +206,17 @@ spec:
                                           required:
                                             - "verification"
                                           type: "object"
+                                      required:
+                                        - "host"
                                       type: "object"
                                     reference:
-                                      description: "A reference to an S3Connection resource."
                                       type: "string"
                                   type: "object"
+                              required:
+                                - "bucketName"
+                                - "connection"
                               type: "object"
                             reference:
-                              description: "A reference to an S3 bucket object. This is simply the name of the `S3Bucket` resource."
                               type: "string"
                           type: "object"
                         prefix:
@@ -259,10 +266,6 @@ spec:
                               nullable: true
                               type: "object"
                               x-kubernetes-preserve-unknown-fields: true
-                          required:
-                            - "nodeAffinity"
-                            - "podAffinity"
-                            - "podAntiAffinity"
                           type: "object"
                         cleaner:
                           nullable: true
@@ -474,10 +477,6 @@ spec:
                                     nullable: true
                                     type: "object"
                                     x-kubernetes-preserve-unknown-fields: true
-                                required:
-                                  - "nodeAffinity"
-                                  - "podAffinity"
-                                  - "podAntiAffinity"
                                 type: "object"
                               cleaner:
                                 nullable: true

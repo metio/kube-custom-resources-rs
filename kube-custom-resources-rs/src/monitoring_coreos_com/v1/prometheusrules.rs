@@ -42,6 +42,12 @@ pub struct PrometheusRuleGroups {
     /// More info: https://github.com/thanos-io/thanos/blob/main/docs/components/rule.md#partial-response
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partial_response_strategy: Option<String>,
+    /// Defines the offset the rule evaluation timestamp of this particular group by the specified duration into the past.
+    /// 
+    /// It requires Prometheus >= v2.53.0.
+    /// It is not supported for ThanosRuler.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub query_offset: Option<String>,
     /// List of alerting and recording rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<PrometheusRuleGroupsRules>>,

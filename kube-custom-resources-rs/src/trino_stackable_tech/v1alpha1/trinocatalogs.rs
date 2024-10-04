@@ -91,15 +91,14 @@ pub struct TrinoCatalogConnectorDeltaLakeMetastore {
 /// Connection to an S3 store. Please make sure that the underlying Hive metastore also has access to the S3 store. Learn more about S3 configuration in the [S3 concept docs](https://docs.stackable.tech/home/nightly/concepts/s3).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorDeltaLakeS3 {
-    /// Inline definition of an S3 connection.
+    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<TrinoCatalogConnectorDeltaLakeS3Inline>,
-    /// A reference to an S3Connection resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// Inline definition of an S3 connection.
+/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorDeltaLakeS3Inline {
     /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).
@@ -108,18 +107,17 @@ pub struct TrinoCatalogConnectorDeltaLakeS3Inline {
     /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<TrinoCatalogConnectorDeltaLakeS3InlineCredentials>,
-    /// Hostname of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
+    /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
+    pub host: String,
     /// Port the S3 server listens on. If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
-    /// If you want to use TLS when talking to S3 you can enable TLS encrypted communication with this setting.
+    /// Use a TLS connection. If not specified no TLS will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TrinoCatalogConnectorDeltaLakeS3InlineTls>,
 }
 
-/// Inline definition of an S3 connection.
+/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3).
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TrinoCatalogConnectorDeltaLakeS3InlineAccessStyle {
     Path,
@@ -140,6 +138,9 @@ pub struct TrinoCatalogConnectorDeltaLakeS3InlineCredentials {
 /// [Scope](https://docs.stackable.tech/home/nightly/secret-operator/scope) of the [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorDeltaLakeS3InlineCredentialsScope {
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
+    pub listener_volumes: Option<Vec<String>>,
     /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
@@ -151,7 +152,7 @@ pub struct TrinoCatalogConnectorDeltaLakeS3InlineCredentialsScope {
     pub services: Option<Vec<String>>,
 }
 
-/// If you want to use TLS when talking to S3 you can enable TLS encrypted communication with this setting.
+/// Use a TLS connection. If not specified no TLS will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorDeltaLakeS3InlineTls {
     /// The verification method used to verify the certificates of the server and/or the client.
@@ -227,9 +228,8 @@ pub struct TrinoCatalogConnectorGenericProperties {
 pub struct TrinoCatalogConnectorGenericPropertiesValueFromConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    pub name: String,
     /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
@@ -240,9 +240,8 @@ pub struct TrinoCatalogConnectorGenericPropertiesValueFromConfigMap {
 pub struct TrinoCatalogConnectorGenericPropertiesValueFromSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    pub name: String,
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
@@ -305,15 +304,14 @@ pub struct TrinoCatalogConnectorHiveMetastore {
 /// Connection to an S3 store. Please make sure that the underlying Hive metastore also has access to the S3 store. Learn more about S3 configuration in the [S3 concept docs](https://docs.stackable.tech/home/nightly/concepts/s3).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorHiveS3 {
-    /// Inline definition of an S3 connection.
+    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<TrinoCatalogConnectorHiveS3Inline>,
-    /// A reference to an S3Connection resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// Inline definition of an S3 connection.
+/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorHiveS3Inline {
     /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).
@@ -322,18 +320,17 @@ pub struct TrinoCatalogConnectorHiveS3Inline {
     /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<TrinoCatalogConnectorHiveS3InlineCredentials>,
-    /// Hostname of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
+    /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
+    pub host: String,
     /// Port the S3 server listens on. If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
-    /// If you want to use TLS when talking to S3 you can enable TLS encrypted communication with this setting.
+    /// Use a TLS connection. If not specified no TLS will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TrinoCatalogConnectorHiveS3InlineTls>,
 }
 
-/// Inline definition of an S3 connection.
+/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3).
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TrinoCatalogConnectorHiveS3InlineAccessStyle {
     Path,
@@ -354,6 +351,9 @@ pub struct TrinoCatalogConnectorHiveS3InlineCredentials {
 /// [Scope](https://docs.stackable.tech/home/nightly/secret-operator/scope) of the [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorHiveS3InlineCredentialsScope {
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
+    pub listener_volumes: Option<Vec<String>>,
     /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
@@ -365,7 +365,7 @@ pub struct TrinoCatalogConnectorHiveS3InlineCredentialsScope {
     pub services: Option<Vec<String>>,
 }
 
-/// If you want to use TLS when talking to S3 you can enable TLS encrypted communication with this setting.
+/// Use a TLS connection. If not specified no TLS will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorHiveS3InlineTls {
     /// The verification method used to verify the certificates of the server and/or the client.
@@ -444,15 +444,14 @@ pub struct TrinoCatalogConnectorIcebergMetastore {
 /// Connection to an S3 store. Please make sure that the underlying Hive metastore also has access to the S3 store. Learn more about S3 configuration in the [S3 concept docs](https://docs.stackable.tech/home/nightly/concepts/s3).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorIcebergS3 {
-    /// Inline definition of an S3 connection.
+    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<TrinoCatalogConnectorIcebergS3Inline>,
-    /// A reference to an S3Connection resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// Inline definition of an S3 connection.
+/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorIcebergS3Inline {
     /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).
@@ -461,18 +460,17 @@ pub struct TrinoCatalogConnectorIcebergS3Inline {
     /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<TrinoCatalogConnectorIcebergS3InlineCredentials>,
-    /// Hostname of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
+    /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
+    pub host: String,
     /// Port the S3 server listens on. If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
-    /// If you want to use TLS when talking to S3 you can enable TLS encrypted communication with this setting.
+    /// Use a TLS connection. If not specified no TLS will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TrinoCatalogConnectorIcebergS3InlineTls>,
 }
 
-/// Inline definition of an S3 connection.
+/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](https://docs.stackable.tech/home/nightly/concepts/s3).
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TrinoCatalogConnectorIcebergS3InlineAccessStyle {
     Path,
@@ -493,6 +491,9 @@ pub struct TrinoCatalogConnectorIcebergS3InlineCredentials {
 /// [Scope](https://docs.stackable.tech/home/nightly/secret-operator/scope) of the [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorIcebergS3InlineCredentialsScope {
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
+    pub listener_volumes: Option<Vec<String>>,
     /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
@@ -504,7 +505,7 @@ pub struct TrinoCatalogConnectorIcebergS3InlineCredentialsScope {
     pub services: Option<Vec<String>>,
 }
 
-/// If you want to use TLS when talking to S3 you can enable TLS encrypted communication with this setting.
+/// Use a TLS connection. If not specified no TLS will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorIcebergS3InlineTls {
     /// The verification method used to verify the certificates of the server and/or the client.

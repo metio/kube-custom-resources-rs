@@ -40,7 +40,7 @@ pub struct CephObjectStoreUserSpec {
 /// Additional admin-level capabilities for the Ceph object store user
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreUserCapabilities {
-    /// Add capabilities for user to send request to RGW Cache API header. Documented in https://docs.ceph.com/en/quincy/radosgw/rgw-cache/#cache-api
+    /// Add capabilities for user to send request to RGW Cache API header. Documented in https://docs.ceph.com/en/latest/radosgw/rgw-cache/#cache-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "amz-cache")]
     pub amz_cache: Option<CephObjectStoreUserCapabilitiesAmzCache>,
     /// Add capabilities for user to change bucket index logging. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities

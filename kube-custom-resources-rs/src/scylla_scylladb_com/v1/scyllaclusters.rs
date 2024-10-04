@@ -1970,7 +1970,7 @@ pub struct ScyllaClusterNetwork {
     /// dnsPolicy defines how a pod's DNS will be configured.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<String>,
-    /// hostNetworking determines if scylla uses the host's network namespace. Setting this option avoids going through Kubernetes SDN and exposes scylla on node's IP.
+    /// hostNetworking determines if scylla uses the host's network namespace. Setting this option avoids going through Kubernetes SDN and exposes scylla on node's IP. Deprecated: `hostNetworking` is deprecated and may be ignored in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetworking")]
     pub host_networking: Option<bool>,
 }

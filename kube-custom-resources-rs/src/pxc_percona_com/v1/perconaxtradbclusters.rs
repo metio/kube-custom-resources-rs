@@ -28,6 +28,8 @@ pub struct PerconaXtraDBClusterSpec {
     pub cr_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCRValidationWebhook")]
     pub enable_cr_validation_webhook: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVolumeExpansion")]
+    pub enable_volume_expansion: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub haproxy: Option<PerconaXtraDBClusterHaproxy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreAnnotations")]

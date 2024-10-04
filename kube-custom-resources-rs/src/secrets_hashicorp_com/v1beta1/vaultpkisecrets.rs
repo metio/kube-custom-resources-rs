@@ -63,7 +63,8 @@ pub struct VaultPKISecretSpec {
     pub issuer_ref: Option<String>,
     /// Mount for the secret in Vault
     pub mount: String,
-    /// Namespace to get the secret from in Vault
+    /// Namespace of the secrets engine mount in Vault. If not set, the namespace that's
+    /// part of VaultAuth resource will be inferred.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// NotAfter field of the certificate with specified date value.
@@ -112,8 +113,8 @@ pub struct VaultPKISecretSpec {
     pub user_i_ds: Option<Vec<String>>,
     /// VaultAuthRef to the VaultAuth resource, can be prefixed with a namespace,
     /// eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to
-    /// namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator will
-    /// default to the `default` VaultAuth, configured in the operator's namespace.
+    /// the namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator
+    /// will default to the `default` VaultAuth, configured in the operator's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultAuthRef")]
     pub vault_auth_ref: Option<String>,
 }

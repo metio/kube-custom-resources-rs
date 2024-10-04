@@ -283,6 +283,11 @@ pub struct CiliumNodeIpam {
     /// get involved.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pre-allocate")]
     pub pre_allocate: Option<i64>,
+    /// StaticIPTags are used to determine the pool of IPs from which to
+    /// attribute a static IP to the node. For example in AWS this is used to
+    /// filter Elastic IP Addresses.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "static-ip-tags")]
+    pub static_ip_tags: Option<BTreeMap<String, String>>,
 }
 
 /// IPv6Pool is the list of IPv6 addresses available to the node for allocation.
@@ -576,6 +581,9 @@ pub struct CiliumNodeStatusEniEnis {
     /// Prefixes is the list of all /28 prefixes associated with the ENI
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefixes: Option<Vec<String>>,
+    /// PublicIP is the public IP associated with the ENI
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "public-ip")]
+    pub public_ip: Option<String>,
     /// SecurityGroups are the security groups associated with the ENI
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "security-groups")]
     pub security_groups: Option<Vec<String>>,
@@ -619,6 +627,9 @@ pub struct CiliumNodeStatusEniEnisVpc {
 /// IPAM is the IPAM status of the node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNodeStatusIpam {
+    /// AssignedStaticIP is the static IP assigned to the node (ex: public Elastic IP address in AWS)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assigned-static-ip")]
+    pub assigned_static_ip: Option<String>,
     /// IPv6Used lists all IPv6 addresses out of Spec.IPAM.IPv6Pool which have been
     /// allocated and are in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6-used")]

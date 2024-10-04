@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "nodegroups.eks.services.k8s.aws"
 spec:
   group: "eks.services.k8s.aws"
@@ -60,10 +60,10 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "NodegroupSpec defines the desired state of Nodegroup.\n\n\nAn object representing an Amazon EKS managed node group."
+              description: "NodegroupSpec defines the desired state of Nodegroup.\n\nAn object representing an Amazon EKS managed node group."
               properties:
                 amiType:
-                  description: "The AMI type for your node group. If you specify launchTemplate, and your\nlaunch template uses a custom AMI, then don't specify amiType, or the node\ngroup deployment will fail. If your launch template uses a Windows custom\nAMI, then add eks:kube-proxy-windows to your Windows nodes rolearn in the\naws-auth ConfigMap. For more information about using launch templates with\nAmazon EKS, see Launch template support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
+                  description: "The AMI type for your node group. If you specify launchTemplate, and your\nlaunch template uses a custom AMI, then don't specify amiType, or the node\ngroup deployment will fail. If your launch template uses a Windows custom\nAMI, then add eks:kube-proxy-windows to your Windows nodes rolearn in the\naws-auth ConfigMap. For more information about using launch templates with\nAmazon EKS, see Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   type: "string"
                 capacityType:
                   description: "The capacity type for your node group."
@@ -75,7 +75,7 @@ spec:
                   description: "The name of your cluster."
                   type: "string"
                 clusterRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -87,11 +87,11 @@ spec:
                       type: "object"
                   type: "object"
                 diskSize:
-                  description: "The root device disk size (in GiB) for your node group instances. The default\ndisk size is 20 GiB for Linux and Bottlerocket. The default disk size is\n50 GiB for Windows. If you specify launchTemplate, then don't specify diskSize,\nor the node group deployment will fail. For more information about using\nlaunch templates with Amazon EKS, see Launch template support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
+                  description: "The root device disk size (in GiB) for your node group instances. The default\ndisk size is 20 GiB for Linux and Bottlerocket. The default disk size is\n50 GiB for Windows. If you specify launchTemplate, then don't specify diskSize,\nor the node group deployment will fail. For more information about using\nlaunch templates with Amazon EKS, see Customizing managed nodes with launch\ntemplates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   format: "int64"
                   type: "integer"
                 instanceTypes:
-                  description: "Specify the instance types for a node group. If you specify a GPU instance\ntype, make sure to also specify an applicable GPU AMI type with the amiType\nparameter. If you specify launchTemplate, then you can specify zero or one\ninstance type in your launch template or you can specify 0-20 instance types\nfor instanceTypes. If however, you specify an instance type in your launch\ntemplate and specify any instanceTypes, the node group deployment will fail.\nIf you don't specify an instance type in a launch template or for instanceTypes,\nthen t3.medium is used, by default. If you specify Spot for capacityType,\nthen we recommend specifying multiple values for instanceTypes. For more\ninformation, see Managed node group capacity types (https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html#managed-node-group-capacity-types)\nand Launch template support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
+                  description: "Specify the instance types for a node group. If you specify a GPU instance\ntype, make sure to also specify an applicable GPU AMI type with the amiType\nparameter. If you specify launchTemplate, then you can specify zero or one\ninstance type in your launch template or you can specify 0-20 instance types\nfor instanceTypes. If however, you specify an instance type in your launch\ntemplate and specify any instanceTypes, the node group deployment will fail.\nIf you don't specify an instance type in a launch template or for instanceTypes,\nthen t3.medium is used, by default. If you specify Spot for capacityType,\nthen we recommend specifying multiple values for instanceTypes. For more\ninformation, see Managed node group capacity types (https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html#managed-node-group-capacity-types)\nand Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   items:
                     type: "string"
                   type: "array"
@@ -101,7 +101,7 @@ spec:
                   description: "The Kubernetes labels to apply to the nodes in the node group when they are\ncreated."
                   type: "object"
                 launchTemplate:
-                  description: "An object representing a node group's launch template specification. If specified,\nthen do not specify instanceTypes, diskSize, or remoteAccess and make sure\nthat the launch template meets the requirements in launchTemplateSpecification."
+                  description: "An object representing a node group's launch template specification. When\nusing this object, don't directly specify instanceTypes, diskSize, or remoteAccess.\nMake sure that the launch template meets the requirements in launchTemplateSpecification.\nAlso refer to Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   properties:
                     id:
                       type: "string"
@@ -114,10 +114,10 @@ spec:
                   description: "The unique name to give your node group."
                   type: "string"
                 nodeRole:
-                  description: "The Amazon Resource Name (ARN) of the IAM role to associate with your node\ngroup. The Amazon EKS worker node kubelet daemon makes calls to Amazon Web\nServices APIs on your behalf. Nodes receive permissions for these API calls\nthrough an IAM instance profile and associated policies. Before you can launch\nnodes and register them into a cluster, you must create an IAM role for those\nnodes to use when they are launched. For more information, see Amazon EKS\nnode IAM role (https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html)\nin the Amazon EKS User Guide . If you specify launchTemplate, then don't\nspecify IamInstanceProfile (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_IamInstanceProfile.html)\nin your launch template, or the node group deployment will fail. For more\ninformation about using launch templates with Amazon EKS, see Launch template\nsupport (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
+                  description: "The Amazon Resource Name (ARN) of the IAM role to associate with your node\ngroup. The Amazon EKS worker node kubelet daemon makes calls to Amazon Web\nServices APIs on your behalf. Nodes receive permissions for these API calls\nthrough an IAM instance profile and associated policies. Before you can launch\nnodes and register them into a cluster, you must create an IAM role for those\nnodes to use when they are launched. For more information, see Amazon EKS\nnode IAM role (https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html)\nin the Amazon EKS User Guide . If you specify launchTemplate, then don't\nspecify IamInstanceProfile (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_IamInstanceProfile.html)\nin your launch template, or the node group deployment will fail. For more\ninformation about using launch templates with Amazon EKS, see Customizing\nmanaged nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   type: "string"
                 nodeRoleRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -129,17 +129,17 @@ spec:
                       type: "object"
                   type: "object"
                 releaseVersion:
-                  description: "The AMI version of the Amazon EKS optimized AMI to use with your node group.\nBy default, the latest available AMI version for the node group's current\nKubernetes version is used. For information about Linux versions, see Amazon\nEKS optimized Amazon Linux AMI versions (https://docs.aws.amazon.com/eks/latest/userguide/eks-linux-ami-versions.html)\nin the Amazon EKS User Guide. Amazon EKS managed node groups support the\nNovember 2022 and later releases of the Windows AMIs. For information about\nWindows versions, see Amazon EKS optimized Windows AMI versions (https://docs.aws.amazon.com/eks/latest/userguide/eks-ami-versions-windows.html)\nin the Amazon EKS User Guide.\n\n\nIf you specify launchTemplate, and your launch template uses a custom AMI,\nthen don't specify releaseVersion, or the node group deployment will fail.\nFor more information about using launch templates with Amazon EKS, see Launch\ntemplate support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
+                  description: "The AMI version of the Amazon EKS optimized AMI to use with your node group.\nBy default, the latest available AMI version for the node group's current\nKubernetes version is used. For information about Linux versions, see Amazon\nEKS optimized Amazon Linux AMI versions (https://docs.aws.amazon.com/eks/latest/userguide/eks-linux-ami-versions.html)\nin the Amazon EKS User Guide. Amazon EKS managed node groups support the\nNovember 2022 and later releases of the Windows AMIs. For information about\nWindows versions, see Amazon EKS optimized Windows AMI versions (https://docs.aws.amazon.com/eks/latest/userguide/eks-ami-versions-windows.html)\nin the Amazon EKS User Guide.\n\nIf you specify launchTemplate, and your launch template uses a custom AMI,\nthen don't specify releaseVersion, or the node group deployment will fail.\nFor more information about using launch templates with Amazon EKS, see Customizing\nmanaged nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   type: "string"
                 remoteAccess:
-                  description: "The remote access configuration to use with your node group. For Linux, the\nprotocol is SSH. For Windows, the protocol is RDP. If you specify launchTemplate,\nthen don't specify remoteAccess, or the node group deployment will fail.\nFor more information about using launch templates with Amazon EKS, see Launch\ntemplate support (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
+                  description: "The remote access configuration to use with your node group. For Linux, the\nprotocol is SSH. For Windows, the protocol is RDP. If you specify launchTemplate,\nthen don't specify remoteAccess, or the node group deployment will fail.\nFor more information about using launch templates with Amazon EKS, see Customizing\nmanaged nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   properties:
                     ec2SshKey:
                       type: "string"
                     sourceSecurityGroupRefs:
                       description: "Reference field for SourceSecurityGroups"
                       items:
-                        description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                        description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                         properties:
                           from:
                             description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -171,7 +171,7 @@ spec:
                   type: "object"
                 subnetRefs:
                   items:
-                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                     properties:
                       from:
                         description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -184,7 +184,7 @@ spec:
                     type: "object"
                   type: "array"
                 subnets:
-                  description: "The subnets to use for the Auto Scaling group that is created for your node\ngroup. If you specify launchTemplate, then don't specify SubnetId (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateNetworkInterface.html)\nin your launch template, or the node group deployment will fail. For more\ninformation about using launch templates with Amazon EKS, see Launch template\nsupport (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
+                  description: "The subnets to use for the Auto Scaling group that is created for your node\ngroup. If you specify launchTemplate, then don't specify SubnetId (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateNetworkInterface.html)\nin your launch template, or the node group deployment will fail. For more\ninformation about using launch templates with Amazon EKS, see Customizing\nmanaged nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   items:
                     type: "string"
                   type: "array"
@@ -217,7 +217,7 @@ spec:
                       type: "integer"
                   type: "object"
                 version:
-                  description: "The Kubernetes version to use for your managed nodes. By default, the Kubernetes\nversion of the cluster is used, and this is the only accepted specified value.\nIf you specify launchTemplate, and your launch template uses a custom AMI,\nthen don't specify version, or the node group deployment will fail. For more\ninformation about using launch templates with Amazon EKS, see Launch template\nsupport (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
+                  description: "The Kubernetes version to use for your managed nodes. By default, the Kubernetes\nversion of the cluster is used, and this is the only accepted specified value.\nIf you specify launchTemplate, and your launch template uses a custom AMI,\nthen don't specify version, or the node group deployment will fail. For more\ninformation about using launch templates with Amazon EKS, see Customizing\nmanaged nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   type: "string"
               required:
                 - "name"
@@ -229,7 +229,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

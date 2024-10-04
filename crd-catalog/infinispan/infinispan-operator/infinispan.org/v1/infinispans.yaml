@@ -662,6 +662,9 @@ spec:
                           - "error"
                         type: "string"
                       type: "object"
+                    pattern:
+                      description: "A custom pattern to be applied to the Log4j STDOUT output"
+                      type: "string"
                   type: "object"
                 replicas:
                   description: "The number of nodes in the Infinispan cluster."
@@ -1694,6 +1697,9 @@ spec:
                       description: "The secret that contains user credentials."
                       type: "string"
                   type: "object"
+                selector:
+                  description: "The Selector used to identify Infinispan cluster pods"
+                  type: "string"
                 statefulSetName:
                   type: "string"
               type: "object"
@@ -1701,4 +1707,8 @@ spec:
       served: true
       storage: true
       subresources:
+        scale:
+          labelSelectorPath: ".status.selector"
+          specReplicasPath: ".spec.replicas"
+          statusReplicasPath: ".status.replicas"
         status: {}

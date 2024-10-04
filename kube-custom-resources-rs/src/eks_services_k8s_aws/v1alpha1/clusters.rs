@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// ClusterSpec defines the desired state of Cluster.
 /// 
-/// 
 /// An object representing an Amazon EKS cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "eks.services.k8s.aws", version = "v1alpha1", kind = "Cluster", plural = "clusters")]
@@ -41,7 +40,6 @@ pub struct ClusterSpec {
     /// to CloudWatch Logs. For more information, see Amazon EKS Cluster control
     /// plane logs (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
     /// in the Amazon EKS User Guide .
-    /// 
     /// 
     /// CloudWatch Logs ingestion, archive storage, and data scanning rates apply
     /// to exported control plane logs. For more information, see CloudWatch Pricing
@@ -79,7 +77,6 @@ pub struct ClusterSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleRef")]
@@ -91,7 +88,6 @@ pub struct ClusterSpec {
     pub tags: Option<BTreeMap<String, String>>,
     /// The desired Kubernetes version for your cluster. If you don't specify a value
     /// here, the default version available in Amazon EKS is used.
-    /// 
     /// 
     /// The default version might not be the latest version available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -160,7 +156,6 @@ pub struct ClusterKubernetesNetworkConfig {
 /// to CloudWatch Logs. For more information, see Amazon EKS Cluster control
 /// plane logs (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
 /// in the Amazon EKS User Guide .
-/// 
 /// 
 /// CloudWatch Logs ingestion, archive storage, and data scanning rates apply
 /// to exported control plane logs. For more information, see CloudWatch Pricing
@@ -243,7 +238,6 @@ pub struct ClusterResourcesVpcConfig {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -269,7 +263,6 @@ pub struct ClusterResourcesVpcConfigSecurityGroupRefsFrom {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -294,7 +287,6 @@ pub struct ClusterResourcesVpcConfigSubnetRefsFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -342,9 +334,7 @@ pub struct ClusterStatus {
     /// The endpoint for your Kubernetes API server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    /// An object representing the health of your local Amazon EKS cluster on an
-    /// Amazon Web Services Outpost. This object isn't available for clusters on
-    /// the Amazon Web Services cloud.
+    /// An object representing the health of your Amazon EKS cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<ClusterStatusHealth>,
     /// The ID of your local Amazon EKS cluster on an Amazon Web Services Outpost.
@@ -379,7 +369,6 @@ pub struct ClusterStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
@@ -413,18 +402,14 @@ pub struct ClusterStatusConnectorConfig {
     pub role_arn: Option<String>,
 }
 
-/// An object representing the health of your local Amazon EKS cluster on an
-/// Amazon Web Services Outpost. This object isn't available for clusters on
-/// the Amazon Web Services cloud.
+/// An object representing the health of your Amazon EKS cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusHealth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issues: Option<Vec<ClusterStatusHealthIssues>>,
 }
 
-/// An issue with your local Amazon EKS cluster on an Amazon Web Services Outpost.
-/// You can't use this API with an Amazon EKS cluster on the Amazon Web Services
-/// cloud.
+/// An issue with your Amazon EKS cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusHealthIssues {
     #[serde(default, skip_serializing_if = "Option::is_none")]

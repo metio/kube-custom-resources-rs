@@ -1362,7 +1362,6 @@ spec:
                       type: "string"
                     host:
                       description: "IP address or hostname of the target InfluxDB service."
-                      format: "ipv6"
                       type: "string"
                     httpPassword:
                       description: "Password for user defined in HTTP_User"
@@ -1492,8 +1491,8 @@ spec:
                     port:
                       description: "TCP port of the target InfluxDB service."
                       format: "int32"
-                      maximum: 65536.0
-                      minimum: 0.0
+                      maximum: 65535.0
+                      minimum: 1.0
                       type: "integer"
                     sequenceTag:
                       description: "The name of the tag whose value is incremented for the consecutive simultaneous events."
