@@ -377,6 +377,12 @@ spec:
                               additionalProperties:
                                 description: "AdditionalProperties specifies the schema of values in a map (keys are always strings).\nNOTE: Can only be set if type is object.\nNOTE: AdditionalProperties is mutually exclusive with Properties.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
                                 x-kubernetes-preserve-unknown-fields: true
+                              allOf:
+                                description: "AllOf specifies that the variable must validate against all of the subschemas in the array.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
+                                x-kubernetes-preserve-unknown-fields: true
+                              anyOf:
+                                description: "AnyOf specifies that the variable must validate against one or more of the subschemas in the array.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
+                                x-kubernetes-preserve-unknown-fields: true
                               default:
                                 description: "Default is the default value of the variable.\nNOTE: Can be set for all types."
                                 x-kubernetes-preserve-unknown-fields: true
@@ -435,6 +441,12 @@ spec:
                                 description: "Minimum is the minimum of an integer or number variable.\nIf ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum.\nIf ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum.\nNOTE: Can only be set if type is integer or number."
                                 format: "int64"
                                 type: "integer"
+                              not:
+                                description: "Not specifies that the variable must not validate against the subschema.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
+                                x-kubernetes-preserve-unknown-fields: true
+                              oneOf:
+                                description: "OneOf specifies that the variable must validate against exactly one of the subschemas in the array.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
+                                x-kubernetes-preserve-unknown-fields: true
                               pattern:
                                 description: "Pattern is the regex which a string variable must match.\nNOTE: Can only be set if type is string."
                                 type: "string"
@@ -451,6 +463,9 @@ spec:
                                 type: "string"
                               uniqueItems:
                                 description: "UniqueItems specifies if items in an array must be unique.\nNOTE: Can only be set if type is array."
+                                type: "boolean"
+                              x-kubernetes-int-or-string:
+                                description: "x-kubernetes-int-or-string specifies that this value is\neither an integer or a string. If this is true, an empty\ntype is allowed and type as child of anyOf is permitted\nif following one of the following patterns:\n\n1) anyOf:\n   - type: integer\n   - type: string\n2) allOf:\n   - anyOf:\n     - type: integer\n     - type: string\n   - ... zero or more"
                                 type: "boolean"
                               x-kubernetes-preserve-unknown-fields:
                                 description: "XPreserveUnknownFields allows setting fields in a variable object\nwhich are not defined in the variable schema. This affects fields recursively,\nexcept if nested properties or additionalProperties are specified in the schema."
@@ -911,6 +926,58 @@ spec:
                   description: "ObservedGeneration is the latest generation observed by the controller."
                   format: "int64"
                   type: "integer"
+                v1beta2:
+                  description: "v1beta2 groups all the fields that will be added or modified in ClusterClass's status with the V1Beta2 version."
+                  properties:
+                    conditions:
+                      description: "conditions represents the observations of a ClusterClass's current state.\nKnown condition types are VariablesReady, RefVersionsUpToDate, Paused."
+                      items:
+                        description: "Condition contains details for one aspect of the current state of this API Resource."
+                        properties:
+                          lastTransitionTime:
+                            description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                            format: "date-time"
+                            type: "string"
+                          message:
+                            description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                            maxLength: 32768
+                            type: "string"
+                          observedGeneration:
+                            description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                            format: "int64"
+                            minimum: 0.0
+                            type: "integer"
+                          reason:
+                            description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                            maxLength: 1024
+                            minLength: 1
+                            pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+                            type: "string"
+                          status:
+                            description: "status of the condition, one of True, False, Unknown."
+                            enum:
+                              - "True"
+                              - "False"
+                              - "Unknown"
+                            type: "string"
+                          type:
+                            description: "type of condition in CamelCase or in foo.example.com/CamelCase."
+                            maxLength: 316
+                            pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                            type: "string"
+                        required:
+                          - "lastTransitionTime"
+                          - "message"
+                          - "reason"
+                          - "status"
+                          - "type"
+                        type: "object"
+                      maxItems: 32
+                      type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "type"
+                      x-kubernetes-list-type: "map"
+                  type: "object"
                 variables:
                   description: "Variables is a list of ClusterClassStatusVariable that are defined for the ClusterClass."
                   items:
@@ -949,6 +1016,12 @@ spec:
                                   properties:
                                     additionalProperties:
                                       description: "AdditionalProperties specifies the schema of values in a map (keys are always strings).\nNOTE: Can only be set if type is object.\nNOTE: AdditionalProperties is mutually exclusive with Properties.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
+                                      x-kubernetes-preserve-unknown-fields: true
+                                    allOf:
+                                      description: "AllOf specifies that the variable must validate against all of the subschemas in the array.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
+                                      x-kubernetes-preserve-unknown-fields: true
+                                    anyOf:
+                                      description: "AnyOf specifies that the variable must validate against one or more of the subschemas in the array.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
                                       x-kubernetes-preserve-unknown-fields: true
                                     default:
                                       description: "Default is the default value of the variable.\nNOTE: Can be set for all types."
@@ -1008,6 +1081,12 @@ spec:
                                       description: "Minimum is the minimum of an integer or number variable.\nIf ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum.\nIf ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum.\nNOTE: Can only be set if type is integer or number."
                                       format: "int64"
                                       type: "integer"
+                                    not:
+                                      description: "Not specifies that the variable must not validate against the subschema.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
+                                      x-kubernetes-preserve-unknown-fields: true
+                                    oneOf:
+                                      description: "OneOf specifies that the variable must validate against exactly one of the subschemas in the array.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
+                                      x-kubernetes-preserve-unknown-fields: true
                                     pattern:
                                       description: "Pattern is the regex which a string variable must match.\nNOTE: Can only be set if type is string."
                                       type: "string"
@@ -1024,6 +1103,9 @@ spec:
                                       type: "string"
                                     uniqueItems:
                                       description: "UniqueItems specifies if items in an array must be unique.\nNOTE: Can only be set if type is array."
+                                      type: "boolean"
+                                    x-kubernetes-int-or-string:
+                                      description: "x-kubernetes-int-or-string specifies that this value is\neither an integer or a string. If this is true, an empty\ntype is allowed and type as child of anyOf is permitted\nif following one of the following patterns:\n\n1) anyOf:\n   - type: integer\n   - type: string\n2) allOf:\n   - anyOf:\n     - type: integer\n     - type: string\n   - ... zero or more"
                                       type: "boolean"
                                     x-kubernetes-preserve-unknown-fields:
                                       description: "XPreserveUnknownFields allows setting fields in a variable object\nwhich are not defined in the variable schema. This affects fields recursively,\nexcept if nested properties or additionalProperties are specified in the schema."

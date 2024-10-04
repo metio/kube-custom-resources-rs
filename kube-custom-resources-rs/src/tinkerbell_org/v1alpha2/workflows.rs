@@ -25,7 +25,6 @@ pub struct WorkflowSpec {
     /// TemplateParams are a list of key-value pairs that are injected into templates at render
     /// time. TemplateParams are exposed to templates using a top level .Params key.
     /// 
-    /// 
     /// For example, TemplateParams = {"foo": "bar"}, the foo key can be accessed via .Params.foo.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateParams")]
     pub template_params: Option<BTreeMap<String, String>>,
@@ -45,9 +44,7 @@ pub struct WorkflowHardwareRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -59,9 +56,7 @@ pub struct WorkflowTemplateRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

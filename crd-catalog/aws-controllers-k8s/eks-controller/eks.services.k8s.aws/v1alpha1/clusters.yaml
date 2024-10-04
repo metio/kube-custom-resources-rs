@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "clusters.eks.services.k8s.aws"
 spec:
   group: "eks.services.k8s.aws"
@@ -48,7 +48,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "ClusterSpec defines the desired state of Cluster.\n\n\nAn object representing an Amazon EKS cluster."
+              description: "ClusterSpec defines the desired state of Cluster.\n\nAn object representing an Amazon EKS cluster."
               properties:
                 accessConfig:
                   description: "The access configuration for the cluster."
@@ -99,7 +99,7 @@ spec:
                       type: "string"
                   type: "object"
                 logging:
-                  description: "Enable or disable exporting the Kubernetes control plane logs for your cluster\nto CloudWatch Logs. By default, cluster control plane logs aren't exported\nto CloudWatch Logs. For more information, see Amazon EKS Cluster control\nplane logs (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)\nin the Amazon EKS User Guide .\n\n\nCloudWatch Logs ingestion, archive storage, and data scanning rates apply\nto exported control plane logs. For more information, see CloudWatch Pricing\n(http://aws.amazon.com/cloudwatch/pricing/)."
+                  description: "Enable or disable exporting the Kubernetes control plane logs for your cluster\nto CloudWatch Logs. By default, cluster control plane logs aren't exported\nto CloudWatch Logs. For more information, see Amazon EKS Cluster control\nplane logs (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)\nin the Amazon EKS User Guide .\n\nCloudWatch Logs ingestion, archive storage, and data scanning rates apply\nto exported control plane logs. For more information, see CloudWatch Pricing\n(http://aws.amazon.com/cloudwatch/pricing/)."
                   properties:
                     clusterLogging:
                       items:
@@ -151,7 +151,7 @@ spec:
                     securityGroupRefs:
                       description: "Reference field for SecurityGroupIDs"
                       items:
-                        description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                        description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                         properties:
                           from:
                             description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -170,7 +170,7 @@ spec:
                     subnetRefs:
                       description: "Reference field for SubnetIDs"
                       items:
-                        description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                        description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                         properties:
                           from:
                             description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -187,7 +187,7 @@ spec:
                   description: "The Amazon Resource Name (ARN) of the IAM role that provides permissions\nfor the Kubernetes control plane to make calls to Amazon Web Services API\noperations on your behalf. For more information, see Amazon EKS Service IAM\nRole (https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html)\nin the Amazon EKS User Guide ."
                   type: "string"
                 roleRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -204,7 +204,7 @@ spec:
                   description: "Metadata that assists with categorization and organization. Each tag consists\nof a key and an optional value. You define both. Tags don't propagate to\nany other cluster or Amazon Web Services resources."
                   type: "object"
                 version:
-                  description: "The desired Kubernetes version for your cluster. If you don't specify a value\nhere, the default version available in Amazon EKS is used.\n\n\nThe default version might not be the latest version available."
+                  description: "The desired Kubernetes version for your cluster. If you don't specify a value\nhere, the default version available in Amazon EKS is used.\n\nThe default version might not be the latest version available."
                   type: "string"
               required:
                 - "name"
@@ -217,7 +217,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
@@ -284,11 +284,11 @@ spec:
                   description: "The endpoint for your Kubernetes API server."
                   type: "string"
                 health:
-                  description: "An object representing the health of your local Amazon EKS cluster on an\nAmazon Web Services Outpost. This object isn't available for clusters on\nthe Amazon Web Services cloud."
+                  description: "An object representing the health of your Amazon EKS cluster."
                   properties:
                     issues:
                       items:
-                        description: "An issue with your local Amazon EKS cluster on an Amazon Web Services Outpost.\nYou can't use this API with an Amazon EKS cluster on the Amazon Web Services\ncloud."
+                        description: "An issue with your Amazon EKS cluster."
                         properties:
                           code:
                             type: "string"

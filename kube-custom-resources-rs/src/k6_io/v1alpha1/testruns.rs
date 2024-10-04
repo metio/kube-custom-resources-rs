@@ -195,6 +195,10 @@ pub struct TestRunInitializerAffinityPodAffinityPreferredDuringSchedulingIgnored
 pub struct TestRunInitializerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunInitializerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunInitializerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -239,6 +243,10 @@ pub struct TestRunInitializerAffinityPodAffinityPreferredDuringSchedulingIgnored
 pub struct TestRunInitializerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunInitializerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunInitializerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -298,6 +306,10 @@ pub struct TestRunInitializerAffinityPodAntiAffinityPreferredDuringSchedulingIgn
 pub struct TestRunInitializerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunInitializerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunInitializerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -342,6 +354,10 @@ pub struct TestRunInitializerAffinityPodAntiAffinityPreferredDuringSchedulingIgn
 pub struct TestRunInitializerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunInitializerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunInitializerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -386,6 +402,8 @@ pub struct TestRunInitializerAffinityPodAntiAffinityRequiredDuringSchedulingIgno
 pub struct TestRunInitializerContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<TestRunInitializerContainerSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<TestRunInitializerContainerSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -406,6 +424,14 @@ pub struct TestRunInitializerContainerSecurityContext {
     pub seccomp_profile: Option<TestRunInitializerContainerSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TestRunInitializerContainerSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunInitializerContainerSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -647,6 +673,8 @@ pub struct TestRunInitializerInitContainersVolumeMounts {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -800,10 +828,14 @@ pub struct TestRunInitializerResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunInitializerResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunInitializerSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<TestRunInitializerSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
@@ -820,10 +852,20 @@ pub struct TestRunInitializerSecurityContext {
     pub seccomp_profile: Option<TestRunInitializerSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<TestRunInitializerSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TestRunInitializerSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunInitializerSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -923,6 +965,8 @@ pub struct TestRunInitializerVolumeMounts {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -965,6 +1009,8 @@ pub struct TestRunInitializerVolumes {
     pub glusterfs: Option<TestRunInitializerVolumesGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<TestRunInitializerVolumesHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<TestRunInitializerVolumesImage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<TestRunInitializerVolumesIscsi>,
     pub name: String,
@@ -1183,6 +1229,8 @@ pub struct TestRunInitializerVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<TestRunInitializerVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -1210,16 +1258,9 @@ pub struct TestRunInitializerVolumesEphemeralVolumeClaimTemplateSpecDataSourceRe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunInitializerVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<TestRunInitializerVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestRunInitializerVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1316,6 +1357,14 @@ pub struct TestRunInitializerVolumesHostPath {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunInitializerVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunInitializerVolumesIscsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -1389,6 +1438,8 @@ pub struct TestRunInitializerVolumesProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunInitializerVolumesProjectedSources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<TestRunInitializerVolumesProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<TestRunInitializerVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
@@ -1397,6 +1448,35 @@ pub struct TestRunInitializerVolumesProjectedSources {
     pub secret: Option<TestRunInitializerVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<TestRunInitializerVolumesProjectedSourcesServiceAccountToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunInitializerVolumesProjectedSourcesClusterTrustBundle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TestRunInitializerVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunInitializerVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TestRunInitializerVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunInitializerVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1751,6 +1831,10 @@ pub struct TestRunRunnerAffinityPodAffinityPreferredDuringSchedulingIgnoredDurin
 pub struct TestRunRunnerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunRunnerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunRunnerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1795,6 +1879,10 @@ pub struct TestRunRunnerAffinityPodAffinityPreferredDuringSchedulingIgnoredDurin
 pub struct TestRunRunnerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunRunnerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunRunnerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1854,6 +1942,10 @@ pub struct TestRunRunnerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredD
 pub struct TestRunRunnerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunRunnerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunRunnerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1898,6 +1990,10 @@ pub struct TestRunRunnerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredD
 pub struct TestRunRunnerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunRunnerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunRunnerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1942,6 +2038,8 @@ pub struct TestRunRunnerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDu
 pub struct TestRunRunnerContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<TestRunRunnerContainerSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<TestRunRunnerContainerSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1962,6 +2060,14 @@ pub struct TestRunRunnerContainerSecurityContext {
     pub seccomp_profile: Option<TestRunRunnerContainerSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TestRunRunnerContainerSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunRunnerContainerSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2203,6 +2309,8 @@ pub struct TestRunRunnerInitContainersVolumeMounts {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -2356,10 +2464,14 @@ pub struct TestRunRunnerResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunRunnerResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunRunnerSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<TestRunRunnerSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
@@ -2376,10 +2488,20 @@ pub struct TestRunRunnerSecurityContext {
     pub seccomp_profile: Option<TestRunRunnerSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<TestRunRunnerSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TestRunRunnerSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunRunnerSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2479,6 +2601,8 @@ pub struct TestRunRunnerVolumeMounts {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -2521,6 +2645,8 @@ pub struct TestRunRunnerVolumes {
     pub glusterfs: Option<TestRunRunnerVolumesGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<TestRunRunnerVolumesHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<TestRunRunnerVolumesImage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<TestRunRunnerVolumesIscsi>,
     pub name: String,
@@ -2739,6 +2865,8 @@ pub struct TestRunRunnerVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<TestRunRunnerVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -2766,16 +2894,9 @@ pub struct TestRunRunnerVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunRunnerVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<TestRunRunnerVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestRunRunnerVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2872,6 +2993,14 @@ pub struct TestRunRunnerVolumesHostPath {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunRunnerVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunRunnerVolumesIscsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -2945,6 +3074,8 @@ pub struct TestRunRunnerVolumesProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunRunnerVolumesProjectedSources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<TestRunRunnerVolumesProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<TestRunRunnerVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
@@ -2953,6 +3084,35 @@ pub struct TestRunRunnerVolumesProjectedSources {
     pub secret: Option<TestRunRunnerVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<TestRunRunnerVolumesProjectedSourcesServiceAccountToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunRunnerVolumesProjectedSourcesClusterTrustBundle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TestRunRunnerVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunRunnerVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TestRunRunnerVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunRunnerVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3343,6 +3503,10 @@ pub struct TestRunStarterAffinityPodAffinityPreferredDuringSchedulingIgnoredDuri
 pub struct TestRunStarterAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunStarterAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunStarterAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3387,6 +3551,10 @@ pub struct TestRunStarterAffinityPodAffinityPreferredDuringSchedulingIgnoredDuri
 pub struct TestRunStarterAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunStarterAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunStarterAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3446,6 +3614,10 @@ pub struct TestRunStarterAffinityPodAntiAffinityPreferredDuringSchedulingIgnored
 pub struct TestRunStarterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunStarterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunStarterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3490,6 +3662,10 @@ pub struct TestRunStarterAffinityPodAntiAffinityPreferredDuringSchedulingIgnored
 pub struct TestRunStarterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestRunStarterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TestRunStarterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3534,6 +3710,8 @@ pub struct TestRunStarterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredD
 pub struct TestRunStarterContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<TestRunStarterContainerSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<TestRunStarterContainerSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3554,6 +3732,14 @@ pub struct TestRunStarterContainerSecurityContext {
     pub seccomp_profile: Option<TestRunStarterContainerSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TestRunStarterContainerSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunStarterContainerSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3795,6 +3981,8 @@ pub struct TestRunStarterInitContainersVolumeMounts {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -3948,10 +4136,14 @@ pub struct TestRunStarterResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunStarterResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunStarterSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<TestRunStarterSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
@@ -3968,10 +4160,20 @@ pub struct TestRunStarterSecurityContext {
     pub seccomp_profile: Option<TestRunStarterSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<TestRunStarterSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TestRunStarterSecurityContextWindowsOptions>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunStarterSecurityContextAppArmorProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4071,6 +4273,8 @@ pub struct TestRunStarterVolumeMounts {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
@@ -4113,6 +4317,8 @@ pub struct TestRunStarterVolumes {
     pub glusterfs: Option<TestRunStarterVolumesGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<TestRunStarterVolumesHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<TestRunStarterVolumesImage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<TestRunStarterVolumesIscsi>,
     pub name: String,
@@ -4331,6 +4537,8 @@ pub struct TestRunStarterVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<TestRunStarterVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -4358,16 +4566,9 @@ pub struct TestRunStarterVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunStarterVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<TestRunStarterVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestRunStarterVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4464,6 +4665,14 @@ pub struct TestRunStarterVolumesHostPath {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunStarterVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunStarterVolumesIscsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -4537,6 +4746,8 @@ pub struct TestRunStarterVolumesProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestRunStarterVolumesProjectedSources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<TestRunStarterVolumesProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<TestRunStarterVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
@@ -4545,6 +4756,35 @@ pub struct TestRunStarterVolumesProjectedSources {
     pub secret: Option<TestRunStarterVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<TestRunStarterVolumesProjectedSourcesServiceAccountToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunStarterVolumesProjectedSourcesClusterTrustBundle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TestRunStarterVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunStarterVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TestRunStarterVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestRunStarterVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

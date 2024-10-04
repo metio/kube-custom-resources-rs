@@ -82,19 +82,37 @@ pub struct DNSRecordEndpointsProviderSpecific {
 /// the listeners assigned to the target gateway
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSRecordHealthCheck {
-    /// Endpoint is the path to append to the host to reach the expected health check.
-    /// Must start with "?" or "/", contain only valid URL characters and end with alphanumeric char or "/". For example "/" or "/healthz" are common
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub endpoint: Option<String>,
+    /// AdditionalHeadersRef refers to a secret that contains extra headers to send in the probe request, this is primarily useful if an authentication
+    /// token is required by the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalHeadersRef")]
+    pub additional_headers_ref: Option<DNSRecordHealthCheckAdditionalHeadersRef>,
+    /// AllowInsecureCertificate will instruct the health check probe to not fail on a self-signed or otherwise invalid SSL certificate
+    /// this is primarily used in development or testing environments
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureCertificate")]
+    pub allow_insecure_certificate: Option<bool>,
     /// FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
+    /// Interval defines how frequently this probe should execute
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
+    /// Path is the path to append to the host to reach the expected health check.
+    /// Must start with "?" or "/", contain only valid URL characters and end with alphanumeric char or "/". For example "/" or "/healthz" are common
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// Port to connect to the host on. Must be either 80, 443 or 1024-49151
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// Protocol to use when connecting to the host, valid values are "HTTP" or "HTTPS"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
+}
+
+/// AdditionalHeadersRef refers to a secret that contains extra headers to send in the probe request, this is primarily useful if an authentication
+/// token is required by the endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DNSRecordHealthCheckAdditionalHeadersRef {
+    pub name: String,
 }
 
 /// providerRef is a reference to a provider secret.

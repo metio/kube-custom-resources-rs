@@ -181,6 +181,18 @@ pub struct MachineSetTemplateSpec {
     /// be interfacing with cluster-api as generic provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
+    /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
+    /// 
+    /// This field can be used e.g. by Cluster API control plane providers to extend the semantic of the
+    /// Ready condition for the Machine they control, like the kubeadm control provider adding ReadinessGates
+    /// for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc.
+    /// 
+    /// Another example are external controllers, e.g. responsible to install special software/hardware on the Machines;
+    /// they can include the status of those components with a new condition and add this condition to ReadinessGates.
+    /// 
+    /// NOTE: this field is considered only for computing v1beta2 conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
+    pub readiness_gates: Option<Vec<MachineSetTemplateSpecReadinessGates>>,
     /// Version defines the desired Kubernetes version.
     /// This field is meant to be optionally used by bootstrap providers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -281,6 +293,16 @@ pub struct MachineSetTemplateSpecInfrastructureRef {
     pub uid: Option<String>,
 }
 
+/// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineSetTemplateSpecReadinessGates {
+    /// conditionType refers to a positive polarity condition (status true means good) with matching type in the Machine's condition list.
+    /// If the conditions doesn't exist, it will be treated as unknown.
+    /// Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
+    #[serde(rename = "conditionType")]
+    pub condition_type: String,
+}
+
 /// MachineSetStatus defines the observed state of MachineSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetStatus {
@@ -329,5 +351,26 @@ pub struct MachineSetStatus {
     /// More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
+    /// v1beta2 groups all the fields that will be added or modified in MachineSet's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<MachineSetStatusV1beta2>,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in MachineSet's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineSetStatusV1beta2 {
+    /// availableReplicas is the number of available replicas for this MachineSet. A machine is considered available when Machine's Available condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
+    pub available_replicas: Option<i32>,
+    /// conditions represents the observations of a MachineSet's current state.
+    /// Known condition types are MachinesReady, MachinesUpToDate, ScalingUp, ScalingDown, Remediating, Deleting, Paused.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// readyReplicas is the number of ready replicas for this MachineSet. A machine is considered ready when Machine's Ready condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
+    pub ready_replicas: Option<i32>,
+    /// upToDateReplicas is the number of up-to-date replicas for this MachineSet. A machine is considered up-to-date when Machine's UpToDate condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
+    pub up_to_date_replicas: Option<i32>,
 }
 

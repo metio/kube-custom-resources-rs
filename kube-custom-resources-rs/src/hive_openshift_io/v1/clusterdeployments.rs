@@ -529,9 +529,22 @@ pub struct ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachment {
 /// Subnet configures the subnetwork that contains the service attachment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachmentSubnet {
-    /// Cidr configures the network cidr of the subnetwork that contains the service attachment.
+    /// Cidr specifies the cidr to use when creating a service attachment subnet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
+    /// Existing specifies a pre-existing subnet to use instead of creating a new service attachment subnet. This is required when using BYO VPCs. It must be in the same region as the api-int load balancer, be configured with a purpose of "Private Service Connect", and have sufficient routing and firewall rules to access the api-int load balancer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub existing: Option<ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachmentSubnetExisting>,
+}
+
+/// Existing specifies a pre-existing subnet to use instead of creating a new service attachment subnet. This is required when using BYO VPCs. It must be in the same region as the api-int load balancer, be configured with a purpose of "Private Service Connect", and have sufficient routing and firewall rules to access the api-int load balancer.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachmentSubnetExisting {
+    /// Name specifies the name of the existing subnet.
+    pub name: String,
+    /// Project specifies the project the subnet exists in. This is required for Shared VPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub project: Option<String>,
 }
 
 /// IBMCloud is the configuration used when installing on IBM Cloud

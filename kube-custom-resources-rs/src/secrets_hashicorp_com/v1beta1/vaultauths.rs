@@ -74,7 +74,7 @@ pub struct VaultAuthSpec {
     pub vault_auth_global_ref: Option<VaultAuthVaultAuthGlobalRef>,
     /// VaultConnectionRef to the VaultConnection resource, can be prefixed with a namespace,
     /// eg: `namespaceA/vaultConnectionRefB`. If no namespace prefix is provided it will default to
-    /// namespace of the VaultConnection CR. If no value is specified for VaultConnectionRef the
+    /// the namespace of the VaultConnection CR. If no value is specified for VaultConnectionRef the
     /// Operator will default to the `default` VaultConnection, configured in the operator's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultConnectionRef")]
     pub vault_connection_ref: Option<String>,

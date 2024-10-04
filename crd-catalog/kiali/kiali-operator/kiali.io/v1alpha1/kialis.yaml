@@ -434,6 +434,18 @@ spec:
                       description: "When true, Kiali will be in 'view only' mode, allowing the user to view and retrieve management and monitoring data for the service mesh, but not allow the user to modify the service mesh."
                       type: "boolean"
                   type: "object"
+                extensions:
+                  description: "Defines third-party extensions whose metrics can be integrated into the Kiali traffic graph.\n"
+                  items:
+                    properties:
+                      enabled:
+                        description: "Determines if the Kiali traffic graph should incorporate the extension's metrics."
+                        type: "boolean"
+                      name:
+                        description: "The name that is used to identify the metric time series for the extension."
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 external_services:
                   description: "These external service configuration settings define how to connect to the external services\nlike Prometheus, Grafana, and Jaeger.\n\nRegarding sensitive values in the external_services 'auth' sections:\nSome external services configured below support an 'auth' sub-section in order to tell Kiali\nhow it should authenticate with the external services. Credentials used to authenticate Kiali\nto those external services can be defined in the `auth.password` and `auth.token` values\nwithin the `auth` sub-section. Because these are sensitive values, you may not want to declare\nthe actual credentials here in the Kiali CR. In this case, you may store the actual password\nor token string in a Kubernetes secret. If you do, you need to set the `auth.password` or\n`auth.token` to a value in the format `secret:<secretName>:<secretKey>` where `<secretName>`\nis the name of the secret object that Kiali can access, and `<secretKey>` is the name of the\nkey within the named secret that contains the actual password or token string. For example,\nif Grafana requires a password, you can store that password in a secret named 'myGrafanaCredentials'\nin a key named 'myGrafanaPw'. In this case, you would set `external_services.grafana.auth.password`\nto `secret:myGrafanaCredentials:myGrafanaPw`.\n"
                   properties:
@@ -914,16 +926,6 @@ spec:
                 kiali_feature_flags:
                   description: "Kiali features that can be enabled or disabled."
                   properties:
-                    certificates_information_indicators:
-                      description: "Flag to enable/disable displaying certificates information and which secrets to grant read permissions."
-                      properties:
-                        enabled:
-                          type: "boolean"
-                        secrets:
-                          items:
-                            type: "string"
-                          type: "array"
-                      type: "object"
                     disabled_features:
                       description: "There may be some features that admins do not want to be accessible to users (even in 'view only' mode). In this case, this setting allows you to disable one or more of those features entirely."
                       items:

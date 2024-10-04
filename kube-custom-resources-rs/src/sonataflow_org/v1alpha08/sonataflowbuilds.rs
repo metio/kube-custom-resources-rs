@@ -20,7 +20,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct SonataFlowBuildSpec {
-    /// Arguments lists the command line arguments to send to the internal builder command. Depending on the build method you might set this attribute instead of BuildArgs. For example: ".spec.arguments=verbose=3". Please see the SonataFlow guides.
+    /// Arguments lists the command line arguments to send to the internal builder command.
+    /// Depending on the build method you might set this attribute instead of BuildArgs.
+    /// For example: ".spec.arguments=verbose=3".
+    /// Please see the SonataFlow guides.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arguments: Option<Vec<String>>,
     /// Optional build arguments that can be set to the internal build (e.g. Docker ARG)
@@ -32,7 +35,10 @@ pub struct SonataFlowBuildSpec {
     /// Resources optional compute resource requirements for the builder
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SonataFlowBuildResources>,
-    /// Timeout defines the Build maximum execution duration. The Build deadline is set to the Build start time plus the Timeout duration. If the Build deadline is exceeded, the Build context is canceled, and its phase set to BuildPhaseFailed.
+    /// Timeout defines the Build maximum execution duration.
+    /// The Build deadline is set to the Build start time plus the Timeout duration.
+    /// If the Build deadline is exceeded, the Build context is canceled,
+    /// and its phase set to BuildPhaseFailed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -42,7 +48,15 @@ pub struct SonataFlowBuildSpec {
 pub struct SonataFlowBuildBuildArgs {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -56,10 +70,12 @@ pub struct SonataFlowBuildBuildArgsValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SonataFlowBuildBuildArgsValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<SonataFlowBuildBuildArgsValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SonataFlowBuildBuildArgsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -72,7 +88,13 @@ pub struct SonataFlowBuildBuildArgsValueFrom {
 pub struct SonataFlowBuildBuildArgsValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -80,7 +102,8 @@ pub struct SonataFlowBuildBuildArgsValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildBuildArgsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -91,7 +114,8 @@ pub struct SonataFlowBuildBuildArgsValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildBuildArgsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -109,7 +133,13 @@ pub struct SonataFlowBuildBuildArgsValueFromResourceFieldRef {
 pub struct SonataFlowBuildBuildArgsValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -122,7 +152,15 @@ pub struct SonataFlowBuildBuildArgsValueFromSecretKeyRef {
 pub struct SonataFlowBuildEnvs {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -136,10 +174,12 @@ pub struct SonataFlowBuildEnvsValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SonataFlowBuildEnvsValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<SonataFlowBuildEnvsValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SonataFlowBuildEnvsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -152,7 +192,13 @@ pub struct SonataFlowBuildEnvsValueFrom {
 pub struct SonataFlowBuildEnvsValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -160,7 +206,8 @@ pub struct SonataFlowBuildEnvsValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildEnvsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -171,7 +218,8 @@ pub struct SonataFlowBuildEnvsValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildEnvsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -189,7 +237,13 @@ pub struct SonataFlowBuildEnvsValueFromResourceFieldRef {
 pub struct SonataFlowBuildEnvsValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -200,15 +254,25 @@ pub struct SonataFlowBuildEnvsValueFromSecretKeyRef {
 /// Resources optional compute resource requirements for the builder
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<SonataFlowBuildResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -216,7 +280,9 @@ pub struct SonataFlowBuildResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 

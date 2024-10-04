@@ -19,7 +19,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct WorkflowSpec {
-    /// A mapping of template devices to hadware mac addresses
+    /// BootOptions are options that control the booting of Hardware.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootOptions")]
+    pub boot_options: Option<WorkflowBootOptions>,
+    /// A mapping of template devices to hadware mac addresses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareMap")]
     pub hardware_map: Option<BTreeMap<String, String>>,
     /// Name of the Hardware associated with this workflow.
@@ -30,18 +33,94 @@ pub struct WorkflowSpec {
     pub template_ref: Option<String>,
 }
 
-/// WorkflowStatus defines the observed state of Workflow.
+/// BootOptions are options that control the booting of Hardware.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowBootOptions {
+    /// OneTimeNetboot indicates whether the controller should create a job.bmc.tinkerbell.org object for getting the associated hardware
+    /// into a netbooting state.
+    /// A HardwareRef that contains a spec.BmcRef must be provided.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oneTimeNetboot")]
+    pub one_time_netboot: Option<bool>,
+    /// ToggleAllowNetboot indicates whether the controller should toggle the field in the associated hardware for allowing PXE booting.
+    /// This will be enabled before a Workflow is executed and disabled after the Workflow has completed successfully.
+    /// A HardwareRef must be provided.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toggleAllowNetboot")]
+    pub toggle_allow_netboot: Option<bool>,
+}
+
+/// WorkflowStatus defines the observed state of a Workflow.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowStatus {
-    /// GlobalTimeout represents the max execution time
+    /// BootOptions holds the state of any boot options.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootOptions")]
+    pub boot_options: Option<WorkflowStatusBootOptions>,
+    /// Conditions are the latest available observations of an object's current state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<WorkflowStatusConditions>>,
+    /// CurrentAction is the action that is currently in the running state.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentAction")]
+    pub current_action: Option<String>,
+    /// GlobalTimeout represents the max execution time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalTimeout")]
     pub global_timeout: Option<i64>,
-    /// State is the state of the workflow in Tinkerbell.
+    /// State is the current overall state of the Workflow.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
-    /// Tasks are the tasks to be completed
+    /// Tasks are the tasks to be run by the worker(s).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tasks: Option<Vec<WorkflowStatusTasks>>,
+    /// TemplateRendering indicates whether the template was rendered successfully.
+    /// Possible values are "successful" or "failed" or "unknown".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRending")]
+    pub template_rending: Option<String>,
+}
+
+/// BootOptions holds the state of any boot options.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowStatusBootOptions {
+    /// OneTimeNetboot holds the state of a specific job.bmc.tinkerbell.org object created.
+    /// Only used when BootOptions.OneTimeNetboot is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "netbootJob")]
+    pub netboot_job: Option<WorkflowStatusBootOptionsNetbootJob>,
+}
+
+/// OneTimeNetboot holds the state of a specific job.bmc.tinkerbell.org object created.
+/// Only used when BootOptions.OneTimeNetboot is true.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowStatusBootOptionsNetbootJob {
+    /// Complete indicates whether the created job.bmc.tinkerbell.org has reported its conditions as complete.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub complete: Option<bool>,
+    /// ExistingJobDeleted indicates whether any existing job.bmc.tinkerbell.org was deleted.
+    /// The name of each job.bmc.tinkerbell.org object created by the controller is the same, so only one can exist at a time.
+    /// Using the same name was chosen so that there is only ever 1 job.bmc.tinkerbell.org per Hardware/Machine.bmc.tinkerbell.org.
+    /// This makes clean up easier and we dont just orphan jobs every time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "existingJobDeleted")]
+    pub existing_job_deleted: Option<bool>,
+    /// UID is the UID of the job.bmc.tinkerbell.org object associated with this workflow.
+    /// This is used to uniquely identify the job.bmc.tinkerbell.org object, as
+    /// all objects for a specific Hardware/Machine.bmc.tinkerbell.org are created with the same name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
+}
+
+/// JobCondition describes current state of a job.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowStatusConditions {
+    /// Message is a human readable message indicating details about last transition.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Reason is a (brief) reason for the condition's last transition.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
+    /// Status of the condition, one of True, False, Unknown.
+    pub status: String,
+    /// Time when the condition was created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub time: Option<String>,
+    /// Type of job condition, Complete or Failed.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// Task represents a series of actions to be completed by a worker.

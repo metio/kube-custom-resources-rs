@@ -65,9 +65,7 @@ pub struct VSphereMachineSpec {
     /// The VM will be powered off forcibly after the timeout if the VM is still
     /// up and running when the PowerOffMode is set to trySoft.
     /// 
-    /// 
     /// This parameter only applies when the PowerOffMode is set to trySoft.
-    /// 
     /// 
     /// If omitted, the timeout defaults to 5 minutes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "guestSoftPowerOffTimeout")]
@@ -105,7 +103,6 @@ pub struct VSphereMachineSpec {
     pub pci_devices: Option<Vec<VSphereMachinePciDevices>>,
     /// PowerOffMode describes the desired behavior when powering off a VM.
     /// 
-    /// 
     /// There are three, supported power off modes: hard, soft, and
     /// trySoft. The first mode, hard, is the equivalent of a physical
     /// system's power cord being ripped from the wall. The soft mode
@@ -113,7 +110,6 @@ pub struct VSphereMachineSpec {
     /// gracefully shut down the VM. Its variant, trySoft, first attempts
     /// a graceful shutdown, and if that fails or the VM is not in a powered off
     /// state after reaching the GuestSoftPowerOffTimeout, the VM is halted.
-    /// 
     /// 
     /// If omitted, the mode defaults to hard.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerOffMode")]
@@ -158,12 +154,10 @@ pub struct VSphereMachineSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereMachineNetwork {
     /// Devices is the list of network devices used by the virtual machine.
-    /// TODO(akutz) Make sure at least one network matches the
-    ///             ClusterSpec.CloudProviderConfiguration.Network.Name
+    /// 
     pub devices: Vec<VSphereMachineNetworkDevices>,
     /// PreferredAPIServeCIDR is the preferred CIDR for the Kubernetes API
     /// server endpoint on this machine
-    /// 
     /// 
     /// Deprecated: This field is going to be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAPIServerCidr")]
@@ -447,7 +441,6 @@ pub struct VSphereMachineStatus {
     /// reconciling the Machine and will contain a more verbose string suitable
     /// for logging and human consumption.
     /// 
-    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
@@ -456,7 +449,6 @@ pub struct VSphereMachineStatus {
     /// of terminal errors would be invalid combinations of settings in the
     /// spec, values that are unsupported by the controller, or the
     /// responsible controller itself being critically misconfigured.
-    /// 
     /// 
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the Machine object and/or logged in the
@@ -467,7 +459,6 @@ pub struct VSphereMachineStatus {
     /// reconciling the Machine and will contain a succinct value suitable
     /// for machine interpretation.
     /// 
-    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
@@ -476,7 +467,6 @@ pub struct VSphereMachineStatus {
     /// of terminal errors would be invalid combinations of settings in the
     /// spec, values that are unsupported by the controller, or the
     /// responsible controller itself being critically misconfigured.
-    /// 
     /// 
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the Machine object and/or logged in the

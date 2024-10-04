@@ -30,6 +30,9 @@ pub struct BackupSpec {
     /// BackoffLimit defines the maximum number of attempts to successfully take a Backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
+    /// Compression algorithm to be used in the Backup.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compression: Option<BackupCompression>,
     /// Databases defines the logical databases to be backed up. If not provided, all databases are backed up.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub databases: Option<Vec<String>>,
@@ -213,6 +216,17 @@ pub struct BackupAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExe
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// BackupSpec defines the desired state of Backup
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackupCompression {
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "bzip2")]
+    Bzip2,
+    #[serde(rename = "gzip")]
+    Gzip,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.

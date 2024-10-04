@@ -3401,6 +3401,8 @@ pub struct OutputKafka {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keytab: Option<OutputKafkaKeytab>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_send_limit_bytes: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_send_retries: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message_key_key: Option<String>,

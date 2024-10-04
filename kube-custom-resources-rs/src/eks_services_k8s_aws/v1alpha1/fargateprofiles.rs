@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// FargateProfileSpec defines the desired state of FargateProfile.
 /// 
-/// 
 /// An object representing an Fargate profile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "eks.services.k8s.aws", version = "v1alpha1", kind = "FargateProfile", plural = "fargateprofiles")]
@@ -35,7 +34,6 @@ pub struct FargateProfileSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
@@ -54,7 +52,6 @@ pub struct FargateProfileSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -85,7 +82,6 @@ pub struct FargateProfileSpec {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -110,7 +106,6 @@ pub struct FargateProfileClusterRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -145,7 +140,6 @@ pub struct FargateProfileSelectors {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -200,7 +194,6 @@ pub struct FargateProfileStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

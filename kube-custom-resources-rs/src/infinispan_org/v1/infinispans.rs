@@ -833,6 +833,9 @@ pub struct InfinispanJmx {
 pub struct InfinispanLogging {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub categories: Option<BTreeMap<String, String>>,
+    /// A custom pattern to be applied to the Log4j STDOUT output
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1995,6 +1998,9 @@ pub struct InfinispanStatus {
     /// InfinispanSecurity info for the user application connection
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<InfinispanStatusSecurity>,
+    /// The Selector used to identify Infinispan cluster pods
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statefulSetName")]
     pub stateful_set_name: Option<String>,
 }

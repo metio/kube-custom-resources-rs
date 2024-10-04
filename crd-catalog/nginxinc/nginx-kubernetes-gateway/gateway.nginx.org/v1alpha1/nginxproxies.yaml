@@ -64,14 +64,18 @@ spec:
                         description: "Address is a struct that specifies address type and value."
                         properties:
                           type:
-                            default: "cidr"
-                            description: "Type specifies the type of address.\nDefault is \"cidr\" which specifies that the address is a CIDR block."
+                            description: "Type specifies the type of address."
                             enum:
-                              - "cidr"
+                              - "CIDR"
+                              - "IPAddress"
+                              - "Hostname"
                             type: "string"
                           value:
                             description: "Value specifies the address value."
                             type: "string"
+                        required:
+                          - "type"
+                          - "value"
                         type: "object"
                       maxItems: 16
                       type: "array"

@@ -2582,6 +2582,7 @@ spec:
                       properties:
                         volumeSnapshotClassName:
                           description: "Name of the VolumeSnapshotClass that should be used by VolumeSnapshots"
+                          minLength: 1
                           type: "string"
                       required:
                         - "volumeSnapshotClassName"

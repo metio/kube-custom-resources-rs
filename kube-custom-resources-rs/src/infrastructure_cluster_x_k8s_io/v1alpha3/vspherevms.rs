@@ -126,7 +126,6 @@ pub struct VSphereVMBootstrapRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -155,8 +154,7 @@ pub struct VSphereVMBootstrapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVMNetwork {
     /// Devices is the list of network devices used by the virtual machine.
-    /// TODO(akutz) Make sure at least one network matches the
-    ///             ClusterSpec.CloudProviderConfiguration.Network.Name
+    /// 
     pub devices: Vec<VSphereVMNetworkDevices>,
     /// PreferredAPIServeCIDR is the preferred CIDR for the Kubernetes API
     /// server endpoint on this machine
@@ -271,12 +269,10 @@ pub struct VSphereVMStatus {
     /// reconciling the vspherevm and will contain a more verbose string suitable
     /// for logging and human consumption.
     /// 
-    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
     /// fundamentally wrong with the vm.
-    /// 
     /// 
     /// Any transient errors that occur during the reconciliation of vspherevms
     /// can be added as events to the vspherevm object and/or logged in the
@@ -287,12 +283,10 @@ pub struct VSphereVMStatus {
     /// reconciling the vspherevm and will contain a succinct value suitable
     /// for vm interpretation.
     /// 
-    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
     /// fundamentally wrong with the vm.
-    /// 
     /// 
     /// Any transient errors that occur during the reconciliation of vspherevms
     /// can be added as events to the vspherevm object and/or logged in the

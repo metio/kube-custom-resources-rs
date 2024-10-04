@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// ClusterSpec defines the desired state of Cluster.
 /// 
-/// 
 /// Returns information about a cluster of either the provisioned or the serverless
 /// type.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -71,7 +70,6 @@ pub struct ClusterSpec {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -126,7 +124,7 @@ pub struct ClusterBrokerNodeGroupInfoConnectivityInfo {
 /// Broker public access control.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBrokerNodeGroupInfoConnectivityInfoPublicAccess {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
@@ -339,6 +337,26 @@ pub struct ClusterStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ClusterStatusAckResourceMetadata>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerString")]
+    pub bootstrap_broker_string: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerStringPublicSASLIAM")]
+    pub bootstrap_broker_string_public_sasliam: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerStringPublicSASLSCRAM")]
+    pub bootstrap_broker_string_public_saslscram: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerStringPublicTLS")]
+    pub bootstrap_broker_string_public_tls: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerStringSASLIAM")]
+    pub bootstrap_broker_string_sasliam: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerStringSASLSCRAM")]
+    pub bootstrap_broker_string_saslscram: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerStringTLS")]
+    pub bootstrap_broker_string_tls: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerStringVPCConnectivitySASLIAM")]
+    pub bootstrap_broker_string_vpc_connectivity_sasliam: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerStringVPCConnectivitySASLSCRAM")]
+    pub bootstrap_broker_string_vpc_connectivity_saslscram: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerStringVPCConnectivityTLS")]
+    pub bootstrap_broker_string_vpc_connectivity_tls: Option<String>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
@@ -366,7 +384,6 @@ pub struct ClusterStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

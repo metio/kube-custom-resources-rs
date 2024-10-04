@@ -143,8 +143,7 @@ pub struct VSphereMachineTemplateTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereMachineTemplateTemplateSpecNetwork {
     /// Devices is the list of network devices used by the virtual machine.
-    /// TODO(akutz) Make sure at least one network matches the
-    ///             ClusterSpec.CloudProviderConfiguration.Network.Name
+    /// 
     pub devices: Vec<VSphereMachineTemplateTemplateSpecNetworkDevices>,
     /// PreferredAPIServeCIDR is the preferred CIDR for the Kubernetes API
     /// server endpoint on this machine

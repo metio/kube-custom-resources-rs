@@ -74,9 +74,7 @@ pub struct VSphereVMSpec {
     /// The VM will be powered off forcibly after the timeout if the VM is still
     /// up and running when the PowerOffMode is set to trySoft.
     /// 
-    /// 
     /// This parameter only applies when the PowerOffMode is set to trySoft.
-    /// 
     /// 
     /// If omitted, the timeout defaults to 5 minutes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "guestSoftPowerOffTimeout")]
@@ -114,7 +112,6 @@ pub struct VSphereVMSpec {
     pub pci_devices: Option<Vec<VSphereVMPciDevices>>,
     /// PowerOffMode describes the desired behavior when powering off a VM.
     /// 
-    /// 
     /// There are three, supported power off modes: hard, soft, and
     /// trySoft. The first mode, hard, is the equivalent of a physical
     /// system's power cord being ripped from the wall. The soft mode
@@ -122,7 +119,6 @@ pub struct VSphereVMSpec {
     /// gracefully shut down the VM. Its variant, trySoft, first attempts
     /// a graceful shutdown, and if that fails or the VM is not in a powered off
     /// state after reaching the GuestSoftPowerOffTimeout, the VM is halted.
-    /// 
     /// 
     /// If omitted, the mode defaults to hard.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerOffMode")]
@@ -175,7 +171,6 @@ pub struct VSphereVMBootstrapRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -204,12 +199,10 @@ pub struct VSphereVMBootstrapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVMNetwork {
     /// Devices is the list of network devices used by the virtual machine.
-    /// TODO(akutz) Make sure at least one network matches the
-    ///             ClusterSpec.CloudProviderConfiguration.Network.Name
+    /// 
     pub devices: Vec<VSphereVMNetworkDevices>,
     /// PreferredAPIServeCIDR is the preferred CIDR for the Kubernetes API
     /// server endpoint on this machine
-    /// 
     /// 
     /// Deprecated: This field is going to be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAPIServerCidr")]
@@ -501,12 +494,10 @@ pub struct VSphereVMStatus {
     /// reconciling the vspherevm and will contain a more verbose string suitable
     /// for logging and human consumption.
     /// 
-    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
     /// fundamentally wrong with the vm.
-    /// 
     /// 
     /// Any transient errors that occur during the reconciliation of vspherevms
     /// can be added as events to the vspherevm object and/or logged in the
@@ -517,12 +508,10 @@ pub struct VSphereVMStatus {
     /// reconciling the vspherevm and will contain a succinct value suitable
     /// for vm interpretation.
     /// 
-    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
     /// fundamentally wrong with the vm.
-    /// 
     /// 
     /// Any transient errors that occur during the reconciliation of vspherevms
     /// can be added as events to the vspherevm object and/or logged in the

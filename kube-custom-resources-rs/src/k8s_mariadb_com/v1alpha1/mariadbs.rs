@@ -1607,6 +1607,9 @@ pub struct MariaDBGaleraRecovery {
     /// Once this timeout is reached, the Galera recovery state is reset and a new cluster bootstrap will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterBootstrapTimeout")]
     pub cluster_bootstrap_timeout: Option<String>,
+    /// ClusterDownscaleTimeout represents the maximum duration for downscaling the cluster's StatefulSet during the recovery process.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDownscaleTimeout")]
+    pub cluster_downscale_timeout: Option<String>,
     /// ClusterHealthyTimeout represents the duration at which a Galera cluster, that consistently failed health checks,
     /// is considered unhealthy, and consequently the Galera recovery process will be initiated by the operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterHealthyTimeout")]
@@ -1614,6 +1617,9 @@ pub struct MariaDBGaleraRecovery {
     /// ClusterMonitorInterval represents the interval used to monitor the Galera cluster health.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterMonitorInterval")]
     pub cluster_monitor_interval: Option<String>,
+    /// ClusterUpscaleTimeout represents the maximum duration for upscaling the cluster's StatefulSet during the recovery process.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterUpscaleTimeout")]
+    pub cluster_upscale_timeout: Option<String>,
     /// Enabled is a flag to enable GaleraRecovery.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -1627,7 +1633,8 @@ pub struct MariaDBGaleraRecovery {
     pub job: Option<MariaDBGaleraRecoveryJob>,
     /// MinClusterSize is the minimum number of replicas to consider the cluster healthy. It can be either a number of replicas (1) or a percentage (50%).
     /// If Galera consistently reports less replicas than this value for the given 'ClusterHealthyTimeout' interval, a cluster recovery is iniated.
-    /// It defaults to '1' replica.
+    /// It defaults to '1' replica, and it is highly recommendeded to keep this value at '1' in most cases.
+    /// If set to more than one replica, the cluster recovery process may restart the healthy replicas as well.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minClusterSize")]
     pub min_cluster_size: Option<IntOrString>,
     /// PodRecoveryTimeout is the time limit for recevorying the sequence of a Pod during the cluster recovery.

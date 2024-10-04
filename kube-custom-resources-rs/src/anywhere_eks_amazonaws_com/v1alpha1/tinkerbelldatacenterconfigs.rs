@@ -20,6 +20,9 @@ pub struct TinkerbellDatacenterConfigSpec {
     /// HookImagesURLPath can be used to override the default Hook images path to pull from a local server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookImagesURLPath")]
     pub hook_images_url_path: Option<String>,
+    /// LoadBalancerInterface can be used to configure a load balancer interface for the Tinkerbell stack.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerInterface")]
+    pub load_balancer_interface: Option<String>,
     /// OSImageURL can be used to override the default OS image path to pull from a local server. OSImageURL is a URL to the OS image used during provisioning. To perform modular upgrades the OSImageURL must be specified on the TinkerbellMachineConfig objects. You cannot specify an OSImageURL on the TinkerbellDatacenterConfig and TinkerbellMachineConfigs simultaneously. It must include the Kubernetes version(s). For example, a URL used for Kubernetes 1.27 could be http://localhost:8080/ubuntu-2204-1.27.tgz
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "osImageURL")]
     pub os_image_url: Option<String>,

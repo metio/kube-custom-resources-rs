@@ -38,6 +38,11 @@ spec:
                 applicationSet:
                   description: "ArgoCDApplicationSet defines whether the Argo CD ApplicationSet controller should be installed."
                   properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Custom annotations to pods deployed by the operator"
+                      type: "object"
                     enabled:
                       description: "Enabled is the flag to enable the Application Set Controller during ArgoCD installation. (optional, default `true`)"
                       type: "boolean"
@@ -133,6 +138,11 @@ spec:
                     image:
                       description: "Image is the Argo CD ApplicationSet image (optional)"
                       type: "string"
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Custom labels to pods deployed by the operator"
+                      type: "object"
                     logLevel:
                       description: "LogLevel describes the log level that should be used by the ApplicationSet controller. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn."
                       type: "string"
@@ -257,23 +267,43 @@ spec:
                                   description: "caCertificate provides the cert authority certificate contents"
                                   type: "string"
                                 certificate:
-                                  description: "certificate provides certificate contents"
+                                  description: "certificate provides certificate contents. This should be a single serving certificate, not a certificate\nchain. Do not include a CA certificate."
                                   type: "string"
                                 destinationCACertificate:
                                   description: "destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt\ntermination this file should be provided in order to have routers use it for health checks on the secure connection.\nIf this field is not specified, the router may provide its own destination CA and perform hostname validation using\nthe short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically\nverify."
                                   type: "string"
+                                externalCertificate:
+                                  description: "externalCertificate provides certificate contents as a secret reference.\nThis should be a single serving certificate, not a certificate\nchain. Do not include a CA certificate. The secret referenced should\nbe present in the same namespace as that of the Route.\nForbidden when `certificate` is set."
+                                  properties:
+                                    name:
+                                      description: "name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                      type: "string"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 insecureEdgeTerminationPolicy:
-                                  description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (default)\n* Disable - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                                  description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                                  enum:
+                                    - "Allow"
+                                    - "None"
+                                    - "Redirect"
+                                    - ""
                                   type: "string"
                                 key:
                                   description: "key provides key file contents"
                                   type: "string"
                                 termination:
-                                  description: "termination indicates termination type."
+                                  description: "termination indicates termination type.\n\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\n\nNote: passthrough termination is incompatible with httpHeader actions"
+                                  enum:
+                                    - "edge"
+                                    - "reencrypt"
+                                    - "passthrough"
                                   type: "string"
                               required:
                                 - "termination"
                               type: "object"
+                              x-kubernetes-validations:
+                                - message: "cannot have both spec.tls.termination: passthrough and spec.tls.insecureEdgeTerminationPolicy: Allow"
+                                  rule: "has(self.termination) && has(self.insecureEdgeTerminationPolicy) ? !((self.termination=='passthrough') && (self.insecureEdgeTerminationPolicy=='Allow')) : true"
                             wildcardPolicy:
                               description: "WildcardPolicy if any for the route. Currently only 'Subdomain' or 'None' is allowed."
                               type: "string"
@@ -300,6 +330,11 @@ spec:
                 controller:
                   description: "Controller defines the Application Controller options for ArgoCD."
                   properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Custom annotations to pods deployed by the operator"
+                      type: "object"
                     appSync:
                       description: "AppSync is used to control the sync frequency, by default the ArgoCD\ncontroller polls Git every 3m.\n\n\nSet this to a duration, e.g. 10m or 600s to control the synchronisation\nfrequency."
                       type: "string"
@@ -1216,6 +1251,11 @@ spec:
                           - "name"
                         type: "object"
                       type: "array"
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Custom labels to pods deployed by the operator"
+                      type: "object"
                     logFormat:
                       description: "LogFormat refers to the log format used by the Application Controller component. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json."
                       type: "string"
@@ -3232,23 +3272,43 @@ spec:
                               description: "caCertificate provides the cert authority certificate contents"
                               type: "string"
                             certificate:
-                              description: "certificate provides certificate contents"
+                              description: "certificate provides certificate contents. This should be a single serving certificate, not a certificate\nchain. Do not include a CA certificate."
                               type: "string"
                             destinationCACertificate:
                               description: "destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt\ntermination this file should be provided in order to have routers use it for health checks on the secure connection.\nIf this field is not specified, the router may provide its own destination CA and perform hostname validation using\nthe short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically\nverify."
                               type: "string"
+                            externalCertificate:
+                              description: "externalCertificate provides certificate contents as a secret reference.\nThis should be a single serving certificate, not a certificate\nchain. Do not include a CA certificate. The secret referenced should\nbe present in the same namespace as that of the Route.\nForbidden when `certificate` is set."
+                              properties:
+                                name:
+                                  description: "name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
                             insecureEdgeTerminationPolicy:
-                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (default)\n* Disable - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                              enum:
+                                - "Allow"
+                                - "None"
+                                - "Redirect"
+                                - ""
                               type: "string"
                             key:
                               description: "key provides key file contents"
                               type: "string"
                             termination:
-                              description: "termination indicates termination type."
+                              description: "termination indicates termination type.\n\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\n\nNote: passthrough termination is incompatible with httpHeader actions"
+                              enum:
+                                - "edge"
+                                - "reencrypt"
+                                - "passthrough"
                               type: "string"
                           required:
                             - "termination"
                           type: "object"
+                          x-kubernetes-validations:
+                            - message: "cannot have both spec.tls.termination: passthrough and spec.tls.insecureEdgeTerminationPolicy: Allow"
+                              rule: "has(self.termination) && has(self.insecureEdgeTerminationPolicy) ? !((self.termination=='passthrough') && (self.insecureEdgeTerminationPolicy=='Allow')) : true"
                         wildcardPolicy:
                           description: "WildcardPolicy if any for the route. Currently only 'Subdomain' or 'None' is allowed."
                           type: "string"
@@ -3628,23 +3688,43 @@ spec:
                               description: "caCertificate provides the cert authority certificate contents"
                               type: "string"
                             certificate:
-                              description: "certificate provides certificate contents"
+                              description: "certificate provides certificate contents. This should be a single serving certificate, not a certificate\nchain. Do not include a CA certificate."
                               type: "string"
                             destinationCACertificate:
                               description: "destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt\ntermination this file should be provided in order to have routers use it for health checks on the secure connection.\nIf this field is not specified, the router may provide its own destination CA and perform hostname validation using\nthe short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically\nverify."
                               type: "string"
+                            externalCertificate:
+                              description: "externalCertificate provides certificate contents as a secret reference.\nThis should be a single serving certificate, not a certificate\nchain. Do not include a CA certificate. The secret referenced should\nbe present in the same namespace as that of the Route.\nForbidden when `certificate` is set."
+                              properties:
+                                name:
+                                  description: "name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
                             insecureEdgeTerminationPolicy:
-                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (default)\n* Disable - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                              enum:
+                                - "Allow"
+                                - "None"
+                                - "Redirect"
+                                - ""
                               type: "string"
                             key:
                               description: "key provides key file contents"
                               type: "string"
                             termination:
-                              description: "termination indicates termination type."
+                              description: "termination indicates termination type.\n\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\n\nNote: passthrough termination is incompatible with httpHeader actions"
+                              enum:
+                                - "edge"
+                                - "reencrypt"
+                                - "passthrough"
                               type: "string"
                           required:
                             - "termination"
                           type: "object"
+                          x-kubernetes-validations:
+                            - message: "cannot have both spec.tls.termination: passthrough and spec.tls.insecureEdgeTerminationPolicy: Allow"
+                              rule: "has(self.termination) && has(self.insecureEdgeTerminationPolicy) ? !((self.termination=='passthrough') && (self.insecureEdgeTerminationPolicy=='Allow')) : true"
                         wildcardPolicy:
                           description: "WildcardPolicy if any for the route. Currently only 'Subdomain' or 'None' is allowed."
                           type: "string"
@@ -3736,6 +3816,11 @@ spec:
                 repo:
                   description: "Repo defines the repo server options for Argo CD."
                   properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Custom annotations to pods deployed by the operator"
+                      type: "object"
                     autotls:
                       description: "AutoTLS specifies the method to use for automatic TLS configuration for the repo server\nThe value specified here can currently be:\n- openshift - Use the OpenShift service CA to request TLS config"
                       type: "string"
@@ -4658,6 +4743,11 @@ spec:
                           - "name"
                         type: "object"
                       type: "array"
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Custom labels to pods deployed by the operator"
+                      type: "object"
                     logFormat:
                       description: "LogFormat describes the log format that should be used by the Repo Server. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json."
                       type: "string"
@@ -6606,6 +6696,11 @@ spec:
                 server:
                   description: "Server defines the options for the ArgoCD Server component."
                   properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Custom annotations to pods deployed by the operator"
+                      type: "object"
                     autoscale:
                       description: "Autoscale defines the autoscale options for the Argo CD Server component."
                       properties:
@@ -7649,6 +7744,11 @@ spec:
                     insecure:
                       description: "Insecure toggles the insecure flag."
                       type: "boolean"
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Custom labels to pods deployed by the operator"
+                      type: "object"
                     logFormat:
                       description: "LogFormat refers to the log level to be used by the ArgoCD Server component. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json."
                       type: "string"
@@ -7722,23 +7822,43 @@ spec:
                               description: "caCertificate provides the cert authority certificate contents"
                               type: "string"
                             certificate:
-                              description: "certificate provides certificate contents"
+                              description: "certificate provides certificate contents. This should be a single serving certificate, not a certificate\nchain. Do not include a CA certificate."
                               type: "string"
                             destinationCACertificate:
                               description: "destinationCACertificate provides the contents of the ca certificate of the final destination.  When using reencrypt\ntermination this file should be provided in order to have routers use it for health checks on the secure connection.\nIf this field is not specified, the router may provide its own destination CA and perform hostname validation using\nthe short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically\nverify."
                               type: "string"
+                            externalCertificate:
+                              description: "externalCertificate provides certificate contents as a secret reference.\nThis should be a single serving certificate, not a certificate\nchain. Do not include a CA certificate. The secret referenced should\nbe present in the same namespace as that of the Route.\nForbidden when `certificate` is set."
+                              properties:
+                                name:
+                                  description: "name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
                             insecureEdgeTerminationPolicy:
-                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (default)\n* Disable - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                              enum:
+                                - "Allow"
+                                - "None"
+                                - "Redirect"
+                                - ""
                               type: "string"
                             key:
                               description: "key provides key file contents"
                               type: "string"
                             termination:
-                              description: "termination indicates termination type."
+                              description: "termination indicates termination type.\n\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\n\nNote: passthrough termination is incompatible with httpHeader actions"
+                              enum:
+                                - "edge"
+                                - "reencrypt"
+                                - "passthrough"
                               type: "string"
                           required:
                             - "termination"
                           type: "object"
+                          x-kubernetes-validations:
+                            - message: "cannot have both spec.tls.termination: passthrough and spec.tls.insecureEdgeTerminationPolicy: Allow"
+                              rule: "has(self.termination) && has(self.insecureEdgeTerminationPolicy) ? !((self.termination=='passthrough') && (self.insecureEdgeTerminationPolicy=='Allow')) : true"
                         wildcardPolicy:
                           description: "WildcardPolicy if any for the route. Currently only 'Subdomain' or 'None' is allowed."
                           type: "string"

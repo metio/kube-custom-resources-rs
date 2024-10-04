@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "adoptedresources.services.k8s.aws"
 spec:
   group: "services.k8s.aws"
@@ -52,7 +52,7 @@ spec:
                     kind:
                       type: "string"
                     metadata:
-                      description: "ObjectMeta is metadata that all persisted resources must have, which includes all objects\nusers must create.\nIt is not possible to use `metav1.ObjectMeta` inside spec, as the controller-gen\nautomatically converts this to an arbitrary string-string map.\nhttps://github.com/kubernetes-sigs/controller-tools/issues/385\n\n\nActive discussion about inclusion of this field in the spec is happening in this PR:\nhttps://github.com/kubernetes-sigs/controller-tools/pull/395\n\n\nUntil this is allowed, or if it never is, we will produce a subset of the object meta\nthat contains only the fields which the user is allowed to modify in the metadata."
+                      description: "ObjectMeta is metadata that all persisted resources must have, which includes all objects\nusers must create.\nIt is not possible to use `metav1.ObjectMeta` inside spec, as the controller-gen\nautomatically converts this to an arbitrary string-string map.\nhttps://github.com/kubernetes-sigs/controller-tools/issues/385\n\nActive discussion about inclusion of this field in the spec is happening in this PR:\nhttps://github.com/kubernetes-sigs/controller-tools/pull/395\n\nUntil this is allowed, or if it never is, we will produce a subset of the object meta\nthat contains only the fields which the user is allowed to modify in the metadata."
                       properties:
                         annotations:
                           additionalProperties:
@@ -60,7 +60,7 @@ spec:
                           description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
                           type: "object"
                         generateName:
-                          description: "GenerateName is an optional prefix, used by the server, to generate a unique\nname ONLY IF the Name field has not been provided.\nIf this field is used, the name returned to the client will be different\nthan the name passed. This value will also be combined with a unique suffix.\nThe provided value has the same validation rules as the Name field,\nand may be truncated by the length of the suffix required to make the value\nunique on the server.\n\n\nIf this field is specified and the generated name exists, the server will\nNOT return a 409 - instead, it will either return 201 Created or 500 with Reason\nServerTimeout indicating a unique name could not be found in the time allotted, and the client\nshould retry (optionally after the time indicated in the Retry-After header).\n\n\nApplied only if Name is not specified.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency"
+                          description: "GenerateName is an optional prefix, used by the server, to generate a unique\nname ONLY IF the Name field has not been provided.\nIf this field is used, the name returned to the client will be different\nthan the name passed. This value will also be combined with a unique suffix.\nThe provided value has the same validation rules as the Name field,\nand may be truncated by the length of the suffix required to make the value\nunique on the server.\n\nIf this field is specified and the generated name exists, the server will\nNOT return a 409 - instead, it will either return 201 Created or 500 with Reason\nServerTimeout indicating a unique name could not be found in the time allotted, and the client\nshould retry (optionally after the time indicated in the Retry-After header).\n\nApplied only if Name is not specified.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency"
                           type: "string"
                         labels:
                           additionalProperties:
@@ -71,7 +71,7 @@ spec:
                           description: "Name must be unique within a namespace. Is required when creating resources, although\nsome resources may allow a client to request the generation of an appropriate name\nautomatically. Name is primarily intended for creation idempotence and configuration\ndefinition.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/identifiers#names"
                           type: "string"
                         namespace:
-                          description: "Namespace defines the space within each name must be unique. An empty namespace is\nequivalent to the \"default\" namespace, but \"default\" is the canonical representation.\nNot all objects are required to be scoped to a namespace - the value of this field for\nthose objects will be empty.\n\n\nMust be a DNS_LABEL.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/namespaces"
+                          description: "Namespace defines the space within each name must be unique. An empty namespace is\nequivalent to the \"default\" namespace, but \"default\" is the canonical representation.\nNot all objects are required to be scoped to a namespace - the value of this field for\nthose objects will be empty.\n\nMust be a DNS_LABEL.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/namespaces"
                           type: "string"
                         ownerReferences:
                           description: "List of objects depended by this object. If ALL objects in the list have\nbeen deleted, this object will be garbage collected. If this object is managed by a controller,\nthen an entry in this list will point to this controller, with the controller field set to true.\nThere cannot be more than one managing controller."

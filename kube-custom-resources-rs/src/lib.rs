@@ -1297,7 +1297,6 @@ apiVersion `gateway.networking.k8s.io/v1`:
 - `HTTPRoute`
 
 apiVersion `gateway.networking.k8s.io/v1alpha2`:
-- `ReferenceGrant`
 - `BackendLBPolicy`
 - `GRPCRoute`
 - `ReferenceGrant`

@@ -33,11 +33,11 @@ pub struct CephObjectZoneSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customEndpoints")]
     pub custom_endpoints: Option<Vec<String>>,
     /// The data pool settings
-    #[serde(rename = "dataPool")]
-    pub data_pool: CephObjectZoneDataPool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataPool")]
+    pub data_pool: Option<CephObjectZoneDataPool>,
     /// The metadata pool settings
-    #[serde(rename = "metadataPool")]
-    pub metadata_pool: CephObjectZoneMetadataPool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataPool")]
+    pub metadata_pool: Option<CephObjectZoneMetadataPool>,
     /// Preserve pools on object zone deletion
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservePoolsOnDelete")]
     pub preserve_pools_on_delete: Option<bool>,

@@ -591,6 +591,16 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
     pub additional_properties: Option<serde_json::Value>,
+    /// AllOf specifies that the variable must validate against all of the subschemas in the array.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allOf")]
+    pub all_of: Option<serde_json::Value>,
+    /// AnyOf specifies that the variable must validate against one or more of the subschemas in the array.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyOf")]
+    pub any_of: Option<serde_json::Value>,
     /// Default is the default value of the variable.
     /// NOTE: Can be set for all types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -661,6 +671,16 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
+    /// Not specifies that the variable must not validate against the subschema.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<serde_json::Value>,
+    /// OneOf specifies that the variable must validate against exactly one of the subschemas in the array.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oneOf")]
+    pub one_of: Option<serde_json::Value>,
     /// Pattern is the regex which a string variable must match.
     /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -684,6 +704,21 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
     pub unique_items: Option<bool>,
+    /// x-kubernetes-int-or-string specifies that this value is
+    /// either an integer or a string. If this is true, an empty
+    /// type is allowed and type as child of anyOf is permitted
+    /// if following one of the following patterns:
+    /// 
+    /// 1) anyOf:
+    ///    - type: integer
+    ///    - type: string
+    /// 2) allOf:
+    ///    - anyOf:
+    ///      - type: integer
+    ///      - type: string
+    ///    - ... zero or more
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-kubernetes-int-or-string")]
+    pub x_kubernetes_int_or_string: Option<bool>,
     /// XPreserveUnknownFields allows setting fields in a variable object
     /// which are not defined in the variable schema. This affects fields recursively,
     /// except if nested properties or additionalProperties are specified in the schema.
@@ -1415,9 +1450,21 @@ pub struct ClusterClassStatus {
     /// ObservedGeneration is the latest generation observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    /// v1beta2 groups all the fields that will be added or modified in ClusterClass's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<ClusterClassStatusV1beta2>,
     /// Variables is a list of ClusterClassStatusVariable that are defined for the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<Vec<ClusterClassStatusVariables>>,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in ClusterClass's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassStatusV1beta2 {
+    /// conditions represents the observations of a ClusterClass's current state.
+    /// Known condition types are VariablesReady, RefVersionsUpToDate, Paused.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 
 /// ClusterClassStatusVariable defines a variable which appears in the status of a ClusterClass.
@@ -1495,6 +1542,16 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
     pub additional_properties: Option<serde_json::Value>,
+    /// AllOf specifies that the variable must validate against all of the subschemas in the array.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allOf")]
+    pub all_of: Option<serde_json::Value>,
+    /// AnyOf specifies that the variable must validate against one or more of the subschemas in the array.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyOf")]
+    pub any_of: Option<serde_json::Value>,
     /// Default is the default value of the variable.
     /// NOTE: Can be set for all types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1565,6 +1622,16 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
+    /// Not specifies that the variable must not validate against the subschema.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<serde_json::Value>,
+    /// OneOf specifies that the variable must validate against exactly one of the subschemas in the array.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oneOf")]
+    pub one_of: Option<serde_json::Value>,
     /// Pattern is the regex which a string variable must match.
     /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1588,6 +1655,21 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
     pub unique_items: Option<bool>,
+    /// x-kubernetes-int-or-string specifies that this value is
+    /// either an integer or a string. If this is true, an empty
+    /// type is allowed and type as child of anyOf is permitted
+    /// if following one of the following patterns:
+    /// 
+    /// 1) anyOf:
+    ///    - type: integer
+    ///    - type: string
+    /// 2) allOf:
+    ///    - anyOf:
+    ///      - type: integer
+    ///      - type: string
+    ///    - ... zero or more
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-kubernetes-int-or-string")]
+    pub x_kubernetes_int_or_string: Option<bool>,
     /// XPreserveUnknownFields allows setting fields in a variable object
     /// which are not defined in the variable schema. This affects fields recursively,
     /// except if nested properties or additionalProperties are specified in the schema.
