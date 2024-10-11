@@ -666,10 +666,10 @@ spec:
                   description: "Kind of the deployment type"
                   type: "string"
                 ldap_cacert_secret:
-                  description: "Secret where can be found the LDAP trusted Certificate Authority Bundle"
+                  description: "(Deprecated) Secret where can be found the LDAP trusted Certificate Authority Bundle"
                   type: "string"
                 ldap_password_secret:
-                  description: "Secret where can be found the LDAP bind password"
+                  description: "(Deprecated) Secret where can be found the LDAP bind password"
                   type: "string"
                 loadbalancer_class:
                   default: ""

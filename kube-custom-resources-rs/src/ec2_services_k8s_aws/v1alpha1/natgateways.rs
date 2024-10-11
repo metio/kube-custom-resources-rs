@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// NatGatewaySpec defines the desired state of NatGateway.
 /// 
-/// 
 /// Describes a NAT gateway.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "NATGateway", plural = "natgateways")]
@@ -33,7 +32,6 @@ pub struct NATGatewaySpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocationRef")]
@@ -50,7 +48,6 @@ pub struct NATGatewaySpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRef")]
@@ -66,7 +63,6 @@ pub struct NATGatewaySpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -92,7 +88,6 @@ pub struct NATGatewayAllocationRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -151,26 +146,20 @@ pub struct NATGatewayStatus {
     /// If the NAT gateway could not be created, specifies the error message for
     /// the failure, that corresponds to the error code.
     /// 
-    /// 
     ///    * For InsufficientFreeAddressesInSubnet: "Subnet has insufficient free
     ///    addresses to create this NAT gateway"
-    /// 
     /// 
     ///    * For Gateway.NotAttached: "Network vpc-xxxxxxxx has no Internet gateway
     ///    attached"
     /// 
-    /// 
     ///    * For InvalidAllocationID.NotFound: "Elastic IP address eipalloc-xxxxxxxx
     ///    could not be associated with this NAT gateway"
-    /// 
     /// 
     ///    * For Resource.AlreadyAssociated: "Elastic IP address eipalloc-xxxxxxxx
     ///    is already associated"
     /// 
-    /// 
     ///    * For InternalError: "Network interface eni-xxxxxxxx, created and used
     ///    internally by this NAT gateway is in an invalid state. Please try again."
-    /// 
     /// 
     ///    * For InvalidSubnetID.NotFound: "The specified subnet subnet-xxxxxxxx
     ///    does not exist or could not be found."
@@ -190,23 +179,18 @@ pub struct NATGatewayStatus {
     pub provisioned_bandwidth: Option<NATGatewayStatusProvisionedBandwidth>,
     /// The state of the NAT gateway.
     /// 
-    /// 
     ///    * pending: The NAT gateway is being created and is not ready to process
     ///    traffic.
     /// 
-    /// 
     ///    * failed: The NAT gateway could not be created. Check the failureCode
     ///    and failureMessage fields for the reason.
-    /// 
     /// 
     ///    * available: The NAT gateway is able to process traffic. This status remains
     ///    until you delete the NAT gateway, and does not indicate the health of
     ///    the NAT gateway.
     /// 
-    /// 
     ///    * deleting: The NAT gateway is in the process of being terminated and
     ///    may still be processing traffic.
-    /// 
     /// 
     ///    * deleted: The NAT gateway has been terminated and is no longer processing
     ///    traffic.
@@ -228,7 +212,6 @@ pub struct NATGatewayStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

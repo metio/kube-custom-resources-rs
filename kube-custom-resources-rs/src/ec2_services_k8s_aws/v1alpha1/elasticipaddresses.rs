@@ -33,10 +33,8 @@ pub struct ElasticIPAddressSpec {
     /// limit the IP address to this location. IP addresses cannot move between network
     /// border groups.
     /// 
-    /// 
     /// Use DescribeAvailabilityZones (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeAvailabilityZones.html)
     /// to view the network border groups.
-    /// 
     /// 
     /// You cannot use a network border group with EC2 Classic. If you attempt this
     /// operation on EC2 Classic, you receive an InvalidParameterCombination error.
@@ -104,7 +102,6 @@ pub struct ElasticIPAddressStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

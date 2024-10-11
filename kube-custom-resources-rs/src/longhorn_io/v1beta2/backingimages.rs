@@ -74,11 +74,14 @@ pub struct BackingImageStatus {
     pub disk_last_ref_at_map: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
+    /// Real size of image in bytes, which may be smaller than the size when the file is a sparse file. Will be zero until known (e.g. while a backing image is uploading)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realSize")]
+    pub real_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
-    /// Virtual size of image, which may be larger than physical size. Will be zero until known (e.g. while a backing image is uploading)
+    /// Virtual size of image in bytes, which may be larger than physical size. Will be zero until known (e.g. while a backing image is uploading)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualSize")]
     pub virtual_size: Option<i64>,
 }

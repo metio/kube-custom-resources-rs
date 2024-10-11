@@ -3708,7 +3708,7 @@ spec:
                       type: "object"
                   type: "object"
                 fipsMode:
-                  description: "FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.\nDefault: Disabled"
+                  description: "FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.\nOnly supported for Variant=Calico.\nDefault: Disabled"
                   enum:
                     - "Enabled"
                     - "Disabled"
@@ -8454,7 +8454,7 @@ spec:
                           type: "object"
                       type: "object"
                     fipsMode:
-                      description: "FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.\nDefault: Disabled"
+                      description: "FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.\nOnly supported for Variant=Calico.\nDefault: Disabled"
                       enum:
                         - "Enabled"
                         - "Disabled"

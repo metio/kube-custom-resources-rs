@@ -712,6 +712,9 @@ spec:
                             peerIP:
                               description: "`peerIP` defines the IP address to filter flows by.\nExample: `10.10.10.10`."
                               type: "string"
+                            pktDrops:
+                              description: "`pktDrops`, to filter flows with packet drops"
+                              type: "boolean"
                             ports:
                               anyOf:
                                 - type: "integer"

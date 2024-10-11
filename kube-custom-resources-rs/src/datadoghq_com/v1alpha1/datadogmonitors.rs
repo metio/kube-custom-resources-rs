@@ -37,7 +37,9 @@ pub struct DatadogMonitorSpec {
     /// Query is the Datadog monitor query
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub query: Option<String>,
-    /// RestrictedRoles is a list of unique role identifiers to define which roles are allowed to edit the monitor. `restricted_roles` is the successor of `locked`. For more information about `locked` and `restricted_roles`, see the [monitor options docs](https://docs.datadoghq.com/monitors/guide/monitor_api_options/#permissions-options).
+    /// RestrictedRoles is a list of unique role identifiers to define which roles are allowed to edit the monitor.
+    /// `restricted_roles` is the successor of `locked`. For more information about `locked` and `restricted_roles`,
+    /// see the [monitor options docs](https://docs.datadoghq.com/monitors/guide/monitor_api_options/#permissions-options).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restrictedRoles")]
     pub restricted_roles: Option<Vec<String>>,
     /// Tags is the monitor tags associated with your monitor
@@ -65,7 +67,9 @@ pub struct DatadogMonitorOptions {
     /// A message to include with a re-notification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "escalationMessage")]
     pub escalation_message: Option<String>,
-    /// Time (in seconds) to delay evaluation, as a non-negative integer. For example, if the value is set to 300 (5min), the timeframe is set to last_5m and the time is 7:00, the monitor evaluates data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor always has data during evaluation.
+    /// Time (in seconds) to delay evaluation, as a non-negative integer. For example, if the value is set to 300 (5min),
+    /// the timeframe is set to last_5m and the time is 7:00, the monitor evaluates data from 6:50 to 6:55.
+    /// This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor always has data during evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationDelay")]
     pub evaluation_delay: Option<i64>,
     /// A Boolean indicating whether the log alert monitor triggers a single alert or multiple alerts when any group breaches a threshold.
@@ -74,13 +78,16 @@ pub struct DatadogMonitorOptions {
     /// A Boolean indicating whether notifications from this monitor automatically inserts its triggering tags into the title.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeTags")]
     pub include_tags: Option<bool>,
-    /// Whether or not the monitor is locked (only editable by creator and admins).
+    /// DEPRECATED: Whether or not the monitor is locked (only editable by creator and admins). Use `restricted_roles` instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub locked: Option<bool>,
-    /// Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non negative integer.
+    /// Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of
+    /// monitor results. Should be a non negative integer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "newGroupDelay")]
     pub new_group_delay: Option<i64>,
-    /// The number of minutes before a monitor notifies after data stops reporting. Datadog recommends at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. If omitted, 2x the evaluation timeframe is used for metric alerts, and 24 hours is used for service checks.
+    /// The number of minutes before a monitor notifies after data stops reporting. Datadog recommends at least 2x the
+    /// monitor timeframe for metric alerts or 2 minutes for service checks. If omitted, 2x the evaluation timeframe
+    /// is used for metric alerts, and 24 hours is used for service checks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noDataTimeframe")]
     pub no_data_timeframe: Option<i64>,
     /// An enum that toggles the display of additional content sent in the monitor notification.
@@ -89,22 +96,35 @@ pub struct DatadogMonitorOptions {
     /// A Boolean indicating whether tagged users are notified on changes to this monitor.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notifyAudit")]
     pub notify_audit: Option<bool>,
-    /// A string indicating the granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by cluster, namespace, and pod can be configured to only notify on each new cluster violating the alert conditions by setting notify_by to ["cluster"]. Tags mentioned in notify_by must be a subset of the grouping tags in the query. For example, a query grouped by cluster and namespace cannot notify on region. Setting notify_by to [*] configures the monitor to notify as a simple-alert.
+    /// A string indicating the granularity a monitor alerts on. Only available for monitors with groupings.
+    /// For instance, a monitor grouped by cluster, namespace, and pod can be configured to only notify on each new
+    /// cluster violating the alert conditions by setting notify_by to ["cluster"]. Tags mentioned in notify_by must
+    /// be a subset of the grouping tags in the query. For example, a query grouped by cluster and namespace cannot
+    /// notify on region. Setting notify_by to [*] configures the monitor to notify as a simple-alert.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notifyBy")]
     pub notify_by: Option<Vec<String>>,
     /// A Boolean indicating whether this monitor notifies when data stops reporting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notifyNoData")]
     pub notify_no_data: Option<bool>,
-    /// An enum that controls how groups or monitors are treated if an evaluation does not return data points. The default option results in different behavior depending on the monitor query type. For monitors using Count queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitors using any query type other than Count, for example Gauge, Measure, or Rate, the monitor shows the last known status. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors
+    /// An enum that controls how groups or monitors are treated if an evaluation does not return data points.
+    /// The default option results in different behavior depending on the monitor query type.
+    /// For monitors using Count queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions.
+    /// For monitors using any query type other than Count, for example Gauge, Measure, or Rate, the monitor shows the last known status.
+    /// This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onMissingData")]
     pub on_missing_data: Option<String>,
-    /// The number of minutes after the last notification before a monitor re-notifies on the current status. It only re-notifies if it’s not resolved.
+    /// The number of minutes after the last notification before a monitor re-notifies on the current status.
+    /// It only re-notifies if it’s not resolved.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "renotifyInterval")]
     pub renotify_interval: Option<i64>,
     /// The number of times re-notification messages should be sent on the current status at the provided re-notification interval.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "renotifyOccurrences")]
     pub renotify_occurrences: Option<i64>,
-    /// A Boolean indicating whether this monitor needs a full window of data before it’s evaluated. We highly recommend you set this to false for sparse metrics, otherwise some evaluations are skipped. Default is false.
+    /// The types of statuses for which re-notification messages should be sent. Valid values are alert, warn, no data.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "renotifyStatuses")]
+    pub renotify_statuses: Option<Vec<String>>,
+    /// A Boolean indicating whether this monitor needs a full window of data before it’s evaluated. We highly
+    /// recommend you set this to false for sparse metrics, otherwise some evaluations are skipped. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireFullWindow")]
     pub require_full_window: Option<bool>,
     /// A struct of the alerting time window options.
@@ -164,7 +184,8 @@ pub struct DatadogMonitorStatus {
     /// Creator is the identify of the monitor creator
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub creator: Option<String>,
-    /// CurrentHash tracks the hash of the current DatadogMonitorSpec to know if the Spec has changed and needs an update
+    /// CurrentHash tracks the hash of the current DatadogMonitorSpec to know
+    /// if the Spec has changed and needs an update
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentHash")]
     pub current_hash: Option<String>,
     /// DowntimeStatus defines whether the monitor is downtimed
@@ -185,12 +206,13 @@ pub struct DatadogMonitorStatus {
     /// MonitorStateLastUpdateTime is the last time the monitor state updated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorStateLastUpdateTime")]
     pub monitor_state_last_update_time: Option<String>,
-    /// Primary defines whether the monitor is managed by the Kubernetes custom resource (true) or outside Kubernetes (false)
+    /// MonitorStateSyncStatus shows the health of syncing the monitor state to Datadog
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorStateSyncStatus")]
+    pub monitor_state_sync_status: Option<String>,
+    /// Primary defines whether the monitor is managed by the Kubernetes custom
+    /// resource (true) or outside Kubernetes (false)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub primary: Option<bool>,
-    /// MonitorStateSyncStatus shows the health of syncing the monitor state to Datadog
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncStatus")]
-    pub sync_status: Option<String>,
     /// TriggeredState only includes details for monitor groups that are triggering
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggeredState")]
     pub triggered_state: Option<Vec<DatadogMonitorStatusTriggeredState>>,
@@ -199,13 +221,16 @@ pub struct DatadogMonitorStatus {
 /// DowntimeStatus defines whether the monitor is downtimed
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogMonitorStatusDowntimeStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downtimeId")]
+    /// DowntimeID is the downtime ID.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downtimeID")]
     pub downtime_id: Option<i64>,
+    /// IsDowntimed shows the downtime status of the monitor.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDowntimed")]
     pub is_downtimed: Option<bool>,
 }
 
-/// DatadogMonitorTriggeredState represents the details of a triggering DatadogMonitor The DatadogMonitor is triggering if one of its groups is in Alert, Warn, or No Data
+/// DatadogMonitorTriggeredState represents the details of a triggering DatadogMonitor
+/// The DatadogMonitor is triggering if one of its groups is in Alert, Warn, or No Data
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogMonitorStatusTriggeredState {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]

@@ -948,6 +948,9 @@ pub struct FlowCollectorAgentEbpfFlowFilter {
     /// Example: `10.10.10.10`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerIP")]
     pub peer_ip: Option<String>,
+    /// `pktDrops`, to filter flows with packet drops
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pktDrops")]
+    pub pkt_drops: Option<bool>,
     /// `ports` defines the ports to filter flows by. It is used both for source and destination ports.
     /// To filter a single port, set a single port as an integer value. For example, `ports: 80`.
     /// To filter a range of ports, use a "start-end" range in string format. For example, `ports: "80-100"`.

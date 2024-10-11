@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
@@ -49,6 +50,9 @@ pub struct TeleportSAMLConnectorSpec {
     /// EntityDescriptorURL is a URL that supplies a configuration XML.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entity_descriptor_url: Option<String>,
+    /// ForceAuthn specified whether re-authentication should be forced on login. UNSPECIFIED is treated as NO.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub force_authn: Option<IntOrString>,
     /// Issuer is the identity provider issuer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
@@ -110,15 +114,27 @@ pub struct TeleportSAMLConnectorClientRedirectSettings {
 /// MFASettings contains settings to enable SSO MFA checks through this auth connector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TeleportSAMLConnectorMfa {
+    /// Cert is the identity provider certificate PEM. IDP signs `<Response>` responses using this certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<String>,
     /// Enabled specified whether this SAML connector supports MFA checks. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// EntityDescriptor is XML with descriptor. It can be used to supply configuration parameters in one XML file rather than supplying them in the individual elements.
+    /// EntityDescriptor is XML with descriptor. It can be used to supply configuration parameters in one XML file rather than supplying them in the individual elements. Usually set from EntityDescriptorUrl.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entity_descriptor: Option<String>,
     /// EntityDescriptorUrl is a URL that supplies a configuration XML.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entity_descriptor_url: Option<String>,
+    /// ForceAuthn specified whether re-authentication should be forced for MFA checks. UNSPECIFIED is treated as YES to always re-authentication for MFA checks. This should only be set to NO if the IdP is setup to perform MFA checks on top of active user sessions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub force_authn: Option<IntOrString>,
+    /// Issuer is the identity provider issuer. Usually set from EntityDescriptor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<String>,
+    /// SSO is the URL of the identity provider's SSO service. Usually set from EntityDescriptor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sso: Option<String>,
 }
 
 /// SigningKeyPair is an x509 key pair used to sign AuthnRequest.

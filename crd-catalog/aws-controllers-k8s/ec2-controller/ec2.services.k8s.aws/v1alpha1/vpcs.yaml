@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "vpcs.ec2.services.k8s.aws"
 spec:
   group: "ec2.services.k8s.aws"
@@ -34,7 +34,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "VpcSpec defines the desired state of Vpc.\n\n\nDescribes a VPC."
+              description: "VpcSpec defines the desired state of Vpc.\n\nDescribes a VPC."
               properties:
                 amazonProvidedIPv6CIDRBlock:
                   description: "Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for\nthe VPC. You cannot specify the range of IP addresses, or the size of the\nCIDR block."
@@ -52,7 +52,7 @@ spec:
                   description: "The attribute value. The valid values are true or false."
                   type: "boolean"
                 instanceTenancy:
-                  description: "The tenancy options for instances launched into the VPC. For default, instances\nare launched with shared tenancy by default. You can launch instances with\nany tenancy into a shared tenancy VPC. For dedicated, instances are launched\nas dedicated tenancy instances by default. You can only launch instances\nwith a tenancy of dedicated or host into a dedicated tenancy VPC.\n\n\nImportant: The host value cannot be used with this parameter. Use the default\nor dedicated values only.\n\n\nDefault: default"
+                  description: "The tenancy options for instances launched into the VPC. For default, instances\nare launched with shared tenancy by default. You can launch instances with\nany tenancy into a shared tenancy VPC. For dedicated, instances are launched\nas dedicated tenancy instances by default. You can only launch instances\nwith a tenancy of dedicated or host into a dedicated tenancy VPC.\n\nImportant: The host value cannot be used with this parameter. Use the default\nor dedicated values only.\n\nDefault: default"
                   type: "string"
                 ipv4IPAMPoolID:
                   description: "The ID of an IPv4 IPAM pool you want to use for allocating this VPC's CIDR.\nFor more information, see What is IPAM? (https://docs.aws.amazon.com/vpc/latest/ipam/what-is-it-ipam.html)\nin the Amazon VPC IPAM User Guide."
@@ -62,10 +62,10 @@ spec:
                   format: "int64"
                   type: "integer"
                 ipv6CIDRBlock:
-                  description: "The IPv6 CIDR block from the IPv6 address pool. You must also specify Ipv6Pool\nin the request.\n\n\nTo let Amazon choose the IPv6 CIDR block for you, omit this parameter."
+                  description: "The IPv6 CIDR block from the IPv6 address pool. You must also specify Ipv6Pool\nin the request.\n\nTo let Amazon choose the IPv6 CIDR block for you, omit this parameter."
                   type: "string"
                 ipv6CIDRBlockNetworkBorderGroup:
-                  description: "The name of the location from which we advertise the IPV6 CIDR block. Use\nthis parameter to limit the address to this location.\n\n\nYou must set AmazonProvidedIpv6CidrBlock to true to use this parameter."
+                  description: "The name of the location from which we advertise the IPV6 CIDR block. Use\nthis parameter to limit the address to this location.\n\nYou must set AmazonProvidedIpv6CidrBlock to true to use this parameter."
                   type: "string"
                 ipv6IPAMPoolID:
                   description: "The ID of an IPv6 IPAM pool which will be used to allocate this VPC an IPv6\nCIDR. IPAM is a VPC feature that you can use to automate your IP address\nmanagement workflows including assigning, tracking, troubleshooting, and\nauditing IP addresses across Amazon Web Services Regions and accounts throughout\nyour Amazon Web Services Organization. For more information, see What is\nIPAM? (https://docs.aws.amazon.com/vpc/latest/ipam/what-is-it-ipam.html)\nin the Amazon VPC IPAM User Guide."
@@ -98,7 +98,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

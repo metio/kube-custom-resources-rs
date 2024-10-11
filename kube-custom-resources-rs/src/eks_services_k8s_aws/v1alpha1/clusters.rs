@@ -25,6 +25,15 @@ pub struct ClusterSpec {
     /// The access configuration for the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessConfig")]
     pub access_config: Option<ClusterAccessConfig>,
+    /// If you set this value to False when creating a cluster, the default networking
+    /// add-ons will not be installed.
+    /// 
+    /// The default networking addons include vpc-cni, coredns, and kube-proxy.
+    /// 
+    /// Use this option when you plan to install third-party alternative add-ons
+    /// or self-manage the default networking add-ons.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapSelfManagedAddons")]
+    pub bootstrap_self_managed_addons: Option<bool>,
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency
     /// of the request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRequestToken")]
@@ -86,6 +95,10 @@ pub struct ClusterSpec {
     /// any other cluster or Amazon Web Services resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
+    /// New clusters, by default, have extended support enabled. You can disable
+    /// extended support when creating a cluster by setting this value to STANDARD.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradePolicy")]
+    pub upgrade_policy: Option<ClusterUpgradePolicy>,
     /// The desired Kubernetes version for your cluster. If you don't specify a value
     /// here, the default version available in Amazon EKS is used.
     /// 
@@ -306,6 +319,14 @@ pub struct ClusterRoleRefFrom {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// New clusters, by default, have extended support enabled. You can disable
+/// extended support when creating a cluster by setting this value to STANDARD.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterUpgradePolicy {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportType")]
+    pub support_type: Option<String>,
 }
 
 /// ClusterStatus defines the observed state of Cluster

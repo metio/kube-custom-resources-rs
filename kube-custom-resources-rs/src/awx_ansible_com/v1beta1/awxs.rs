@@ -170,10 +170,10 @@ pub struct AWXSpec {
     /// Kind of the deployment type
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Secret where can be found the LDAP trusted Certificate Authority Bundle
+    /// (Deprecated) Secret where can be found the LDAP trusted Certificate Authority Bundle
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ldap_cacert_secret: Option<String>,
-    /// Secret where can be found the LDAP bind password
+    /// (Deprecated) Secret where can be found the LDAP bind password
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ldap_password_secret: Option<String>,
     /// Class of LoadBalancer to use

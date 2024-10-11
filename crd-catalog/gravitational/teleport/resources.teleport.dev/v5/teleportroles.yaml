@@ -252,7 +252,7 @@ spec:
                             items:
                               type: "string"
                             type: "array"
-                          description: "Annotations is a collection of annotations to be programmatically appended to pending access requests at the time of their creation. These annotations serve as a mechanism to propagate extra information to plugins.  Since these annotations support variable interpolation syntax, they also offer a mechanism for forwarding claims from an external identity provider, to a plugin via `{{external.trait_name}}` style substitutions."
+                          description: "Annotations is a collection of annotations to be programmatically appended to pending Access Requests at the time of their creation. These annotations serve as a mechanism to propagate extra information to plugins.  Since these annotations support variable interpolation syntax, they also offer a mechanism for forwarding claims from an external identity provider, to a plugin via `{{external.trait_name}}` style substitutions."
                           type: "object"
                         claims_to_roles:
                           description: "ClaimsToRoles specifies a mapping from claims (traits) to teleport roles."
@@ -674,7 +674,7 @@ spec:
                             items:
                               type: "string"
                             type: "array"
-                          description: "Annotations is a collection of annotations to be programmatically appended to pending access requests at the time of their creation. These annotations serve as a mechanism to propagate extra information to plugins.  Since these annotations support variable interpolation syntax, they also offer a mechanism for forwarding claims from an external identity provider, to a plugin via `{{external.trait_name}}` style substitutions."
+                          description: "Annotations is a collection of annotations to be programmatically appended to pending Access Requests at the time of their creation. These annotations serve as a mechanism to propagate extra information to plugins.  Since these annotations support variable interpolation syntax, they also offer a mechanism for forwarding claims from an external identity provider, to a plugin via `{{external.trait_name}}` style substitutions."
                           type: "object"
                         claims_to_roles:
                           description: "ClaimsToRoles specifies a mapping from claims (traits) to teleport roles."

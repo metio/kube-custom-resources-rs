@@ -530,7 +530,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         components:
-                          description: "A comma separated list of the Camel components that need to be customized in order for them to work when the schedule is triggered externally by Kubernetes.\nA specific customizer is activated for each specified component. E.g. for the `timer` component, the `cron-timer` customizer is\nactivated (it's present in the `org.apache.camel.k:camel-k-cron` library).\n\n\nSupported components are currently: `cron`, `timer` and `quartz`."
+                          description: "A comma separated list of the Camel components that need to be customized in order for them to work when the schedule is triggered externally by Kubernetes.\nSupported components are currently: `cron`, `timer` and `quartz`."
                           type: "string"
                         concurrencyPolicy:
                           description: "Specifies how to treat concurrent executions of a Job.\nValid values are:\n- \"Allow\": allows CronJobs to run concurrently;\n- \"Forbid\" (default): forbids concurrent runs, skipping next run if previous run hasn't finished yet;\n- \"Replace\": cancels currently running job and replaces it with a new one"
@@ -2026,7 +2026,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         components:
-                          description: "A comma separated list of the Camel components that need to be customized in order for them to work when the schedule is triggered externally by Kubernetes.\nA specific customizer is activated for each specified component. E.g. for the `timer` component, the `cron-timer` customizer is\nactivated (it's present in the `org.apache.camel.k:camel-k-cron` library).\n\n\nSupported components are currently: `cron`, `timer` and `quartz`."
+                          description: "A comma separated list of the Camel components that need to be customized in order for them to work when the schedule is triggered externally by Kubernetes.\nSupported components are currently: `cron`, `timer` and `quartz`."
                           type: "string"
                         concurrencyPolicy:
                           description: "Specifies how to treat concurrent executions of a Job.\nValid values are:\n- \"Allow\": allows CronJobs to run concurrently;\n- \"Forbid\" (default): forbids concurrent runs, skipping next run if previous run hasn't finished yet;\n- \"Replace\": cancels currently running job and replaces it with a new one"

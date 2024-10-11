@@ -247,7 +247,6 @@ pub struct VaultPKISecretDestinationTransformationTransformationRefsTemplateRefs
 /// with a timestamp value of when the trigger was executed.
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
 /// 
-/// 
 /// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VaultPKISecretRolloutRestartTargets {
@@ -263,7 +262,6 @@ pub struct VaultPKISecretRolloutRestartTargets {
 /// 'spec.template.metadata.annotations' to include 'vso.secrets.hashicorp.com/restartedAt'
 /// with a timestamp value of when the trigger was executed.
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
-/// 
 /// 
 /// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -289,10 +287,8 @@ pub struct VaultPKISecretStatus {
     pub last_rotation: i64,
     /// SecretMAC used when deciding whether new Vault secret data should be synced.
     /// 
-    /// 
     /// The controller will compare the "new" Vault secret data to this value using HMAC,
     /// if they are different, then the data will be synced to the Destination.
-    /// 
     /// 
     /// The SecretMac is also used to detect drift in the Destination Secret's Data.
     /// If drift is detected the data will be synced to the Destination.

@@ -21,7 +21,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterPoolSpec {
-    /// Annotations to be applied to new ClusterDeployments created for the pool. ClusterDeployments that have already been claimed will not be affected when this value is modified.
+    /// Annotations to be applied to new ClusterDeployments created for the pool. ClusterDeployments that have already been
+    /// claimed will not be affected when this value is modified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// BaseDomain is the base domain to use for all clusters created in this pool.
@@ -30,34 +31,52 @@ pub struct ClusterPoolSpec {
     /// ClaimLifetime defines the lifetimes for claims for the cluster pool.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimLifetime")]
     pub claim_lifetime: Option<ClusterPoolClaimLifetime>,
-    /// HibernateAfter will be applied to new ClusterDeployments created for the pool. HibernateAfter will transition clusters in the clusterpool to hibernating power state after it has been running for the given duration. The time that a cluster has been running is the time since the cluster was installed or the time since the cluster last came out of hibernation. This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats. Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See https://bugzilla.redhat.com/show_bug.cgi?id=2050332 https://github.com/kubernetes/apimachinery/issues/131 https://github.com/kubernetes/apiextensions-apiserver/issues/56
+    /// HibernateAfter will be applied to new ClusterDeployments created for the pool. HibernateAfter will transition
+    /// clusters in the clusterpool to hibernating power state after it has been running for the given duration. The time
+    /// that a cluster has been running is the time since the cluster was installed or the time since the cluster last came
+    /// out of hibernation.
+    /// This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats.
+    /// Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See
+    /// https://bugzilla.redhat.com/show_bug.cgi?id=2050332
+    /// https://github.com/kubernetes/apimachinery/issues/131
+    /// https://github.com/kubernetes/apiextensions-apiserver/issues/56
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hibernateAfter")]
     pub hibernate_after: Option<String>,
     /// HibernationConfig configures the hibernation/resume behavior of ClusterDeployments owned by the ClusterPool.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hibernationConfig")]
     pub hibernation_config: Option<ClusterPoolHibernationConfig>,
-    /// ImageSetRef is a reference to a ClusterImageSet. The release image specified in the ClusterImageSet will be used by clusters created for this cluster pool.
+    /// ImageSetRef is a reference to a ClusterImageSet. The release image specified in the ClusterImageSet will be used
+    /// by clusters created for this cluster pool.
     #[serde(rename = "imageSetRef")]
     pub image_set_ref: ClusterPoolImageSetRef,
     /// InstallAttemptsLimit is the maximum number of times Hive will attempt to install the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installAttemptsLimit")]
     pub install_attempts_limit: Option<i32>,
-    /// InstallConfigSecretTemplateRef is a secret with the key install-config.yaml consisting of the content of the install-config.yaml to be used as a template for all clusters in this pool. Cluster specific settings (name, basedomain) will be injected dynamically when the ClusterDeployment install-config Secret is generated.
+    /// InstallConfigSecretTemplateRef is a secret with the key install-config.yaml consisting of the content of the install-config.yaml
+    /// to be used as a template for all clusters in this pool.
+    /// Cluster specific settings (name, basedomain) will be injected dynamically when the ClusterDeployment install-config Secret is generated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installConfigSecretTemplateRef")]
     pub install_config_secret_template_ref: Option<ClusterPoolInstallConfigSecretTemplateRef>,
-    /// InstallerEnv are extra environment variables to pass through to the installer. This may be used to enable additional features of the installer.
+    /// InstallerEnv are extra environment variables to pass through to the installer. This may be used to enable
+    /// additional features of the installer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installerEnv")]
     pub installer_env: Option<Vec<ClusterPoolInstallerEnv>>,
-    /// Inventory maintains a list of entries consumed by the ClusterPool to customize the default ClusterDeployment.
+    /// Inventory maintains a list of entries consumed by the ClusterPool
+    /// to customize the default ClusterDeployment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inventory: Option<Vec<ClusterPoolInventory>>,
-    /// Labels to be applied to new ClusterDeployments created for the pool. ClusterDeployments that have already been claimed will not be affected when this value is modified.
+    /// Labels to be applied to new ClusterDeployments created for the pool. ClusterDeployments that have already been
+    /// claimed will not be affected when this value is modified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// MaxConcurrent is the maximum number of clusters that will be provisioned or deprovisioned at an time. This includes the claimed clusters being deprovisioned. By default there is no limit.
+    /// MaxConcurrent is the maximum number of clusters that will be provisioned or deprovisioned at an time. This includes the
+    /// claimed clusters being deprovisioned.
+    /// By default there is no limit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrent")]
     pub max_concurrent: Option<i32>,
-    /// MaxSize is the maximum number of clusters that will be provisioned including clusters that have been claimed and ones waiting to be used. By default there is no limit.
+    /// MaxSize is the maximum number of clusters that will be provisioned including clusters that have been claimed
+    /// and ones waiting to be used.
+    /// By default there is no limit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
     pub max_size: Option<i32>,
     /// Platform encompasses the desired platform for the cluster.
@@ -65,7 +84,8 @@ pub struct ClusterPoolSpec {
     /// PullSecretRef is the reference to the secret to use when pulling images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecretRef")]
     pub pull_secret_ref: Option<ClusterPoolPullSecretRef>,
-    /// RunningCount is the number of clusters we should keep running. The remainder will be kept hibernated until claimed. By default no clusters will be kept running (all will be hibernated).
+    /// RunningCount is the number of clusters we should keep running. The remainder will be kept hibernated until claimed.
+    /// By default no clusters will be kept running (all will be hibernated).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningCount")]
     pub running_count: Option<i32>,
     /// Size is the default number of clusters that we should keep provisioned and waiting for use.
@@ -78,10 +98,22 @@ pub struct ClusterPoolSpec {
 /// ClaimLifetime defines the lifetimes for claims for the cluster pool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolClaimLifetime {
-    /// Default is the default lifetime of the claim when no lifetime is set on the claim itself. This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats. Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See https://bugzilla.redhat.com/show_bug.cgi?id=2050332 https://github.com/kubernetes/apimachinery/issues/131 https://github.com/kubernetes/apiextensions-apiserver/issues/56
+    /// Default is the default lifetime of the claim when no lifetime is set on the claim itself.
+    /// This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats.
+    /// Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See
+    /// https://bugzilla.redhat.com/show_bug.cgi?id=2050332
+    /// https://github.com/kubernetes/apimachinery/issues/131
+    /// https://github.com/kubernetes/apiextensions-apiserver/issues/56
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<String>,
-    /// Maximum is the maximum lifetime of the claim after it is assigned a cluster. If the claim still exists when the lifetime has elapsed, the claim will be deleted by Hive. The lifetime of a claim is the mimimum of the lifetimes set by the cluster pool and the claim itself. This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats. Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See https://bugzilla.redhat.com/show_bug.cgi?id=2050332 https://github.com/kubernetes/apimachinery/issues/131 https://github.com/kubernetes/apiextensions-apiserver/issues/56
+    /// Maximum is the maximum lifetime of the claim after it is assigned a cluster. If the claim still exists
+    /// when the lifetime has elapsed, the claim will be deleted by Hive.
+    /// The lifetime of a claim is the mimimum of the lifetimes set by the cluster pool and the claim itself.
+    /// This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats.
+    /// Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See
+    /// https://bugzilla.redhat.com/show_bug.cgi?id=2050332
+    /// https://github.com/kubernetes/apimachinery/issues/131
+    /// https://github.com/kubernetes/apiextensions-apiserver/issues/56
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maximum: Option<String>,
 }
@@ -89,22 +121,37 @@ pub struct ClusterPoolClaimLifetime {
 /// HibernationConfig configures the hibernation/resume behavior of ClusterDeployments owned by the ClusterPool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolHibernationConfig {
-    /// ResumeTimeout is the maximum amount of time we will wait for an unclaimed ClusterDeployment to resume from hibernation (e.g. at the behest of runningCount, or in preparation for being claimed). If this time is exceeded, the ClusterDeployment will be considered Broken and we will replace it. The default (unspecified or zero) means no timeout -- we will allow the ClusterDeployment to continue trying to resume "forever". This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats. Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See https://bugzilla.redhat.com/show_bug.cgi?id=2050332 https://github.com/kubernetes/apimachinery/issues/131 https://github.com/kubernetes/apiextensions-apiserver/issues/56
+    /// ResumeTimeout is the maximum amount of time we will wait for an unclaimed ClusterDeployment to resume from
+    /// hibernation (e.g. at the behest of runningCount, or in preparation for being claimed). If this time is
+    /// exceeded, the ClusterDeployment will be considered Broken and we will replace it. The default (unspecified
+    /// or zero) means no timeout -- we will allow the ClusterDeployment to continue trying to resume "forever".
+    /// This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats.
+    /// Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See
+    /// https://bugzilla.redhat.com/show_bug.cgi?id=2050332
+    /// https://github.com/kubernetes/apimachinery/issues/131
+    /// https://github.com/kubernetes/apiextensions-apiserver/issues/56
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resumeTimeout")]
     pub resume_timeout: Option<String>,
 }
 
-/// ImageSetRef is a reference to a ClusterImageSet. The release image specified in the ClusterImageSet will be used by clusters created for this cluster pool.
+/// ImageSetRef is a reference to a ClusterImageSet. The release image specified in the ClusterImageSet will be used
+/// by clusters created for this cluster pool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolImageSetRef {
     /// Name is the name of the ClusterImageSet that this refers to
     pub name: String,
 }
 
-/// InstallConfigSecretTemplateRef is a secret with the key install-config.yaml consisting of the content of the install-config.yaml to be used as a template for all clusters in this pool. Cluster specific settings (name, basedomain) will be injected dynamically when the ClusterDeployment install-config Secret is generated.
+/// InstallConfigSecretTemplateRef is a secret with the key install-config.yaml consisting of the content of the install-config.yaml
+/// to be used as a template for all clusters in this pool.
+/// Cluster specific settings (name, basedomain) will be injected dynamically when the ClusterDeployment install-config Secret is generated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolInstallConfigSecretTemplateRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -114,7 +161,15 @@ pub struct ClusterPoolInstallConfigSecretTemplateRef {
 pub struct ClusterPoolInstallerEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -128,10 +183,12 @@ pub struct ClusterPoolInstallerEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ClusterPoolInstallerEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ClusterPoolInstallerEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ClusterPoolInstallerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -144,7 +201,11 @@ pub struct ClusterPoolInstallerEnvValueFrom {
 pub struct ClusterPoolInstallerEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -152,7 +213,8 @@ pub struct ClusterPoolInstallerEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolInstallerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -163,7 +225,8 @@ pub struct ClusterPoolInstallerEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolInstallerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -181,7 +244,11 @@ pub struct ClusterPoolInstallerEnvValueFromResourceFieldRef {
 pub struct ClusterPoolInstallerEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -196,8 +263,7 @@ pub struct ClusterPoolInventory {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<ClusterPoolInventoryKind>,
     /// Name is the name of the referenced resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// InventoryEntry maintains a reference to a custom resource consumed by a clusterpool to customize the cluster deployment.
@@ -211,7 +277,8 @@ pub enum ClusterPoolInventoryKind {
 /// Platform encompasses the desired platform for the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatform {
-    /// AgentBareMetal is the configuration used when performing an Assisted Agent based installation to bare metal.
+    /// AgentBareMetal is the configuration used when performing an Assisted Agent based installation
+    /// to bare metal.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentBareMetal")]
     pub agent_bare_metal: Option<ClusterPoolPlatformAgentBareMetal>,
     /// AWS is the configuration used when installing on AWS.
@@ -229,7 +296,8 @@ pub struct ClusterPoolPlatform {
     /// IBMCloud is the configuration used when installing on IBM Cloud
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ibmcloud: Option<ClusterPoolPlatformIbmcloud>,
-    /// None indicates platform-agnostic install. https://docs.openshift.com/container-platform/4.7/installing/installing_platform_agnostic/installing-platform-agnostic.html
+    /// None indicates platform-agnostic install.
+    /// https://docs.openshift.com/container-platform/4.7/installing/installing_platform_agnostic/installing-platform-agnostic.html
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub none: Option<ClusterPoolPlatformNone>,
     /// OpenStack is the configuration used when installing on OpenStack
@@ -243,33 +311,43 @@ pub struct ClusterPoolPlatform {
     pub vsphere: Option<ClusterPoolPlatformVsphere>,
 }
 
-/// AgentBareMetal is the configuration used when performing an Assisted Agent based installation to bare metal.
+/// AgentBareMetal is the configuration used when performing an Assisted Agent based installation
+/// to bare metal.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformAgentBareMetal {
-    /// AgentSelector is a label selector used for associating relevant custom resources with this cluster. (Agent, BareMetalHost, etc)
+    /// AgentSelector is a label selector used for associating relevant custom resources with this cluster.
+    /// (Agent, BareMetalHost, etc)
     #[serde(rename = "agentSelector")]
     pub agent_selector: ClusterPoolPlatformAgentBareMetalAgentSelector,
 }
 
-/// AgentSelector is a label selector used for associating relevant custom resources with this cluster. (Agent, BareMetalHost, etc)
+/// AgentSelector is a label selector used for associating relevant custom resources with this cluster.
+/// (Agent, BareMetalHost, etc)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformAgentBareMetalAgentSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterPoolPlatformAgentBareMetalAgentSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformAgentBareMetalAgentSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -277,13 +355,18 @@ pub struct ClusterPoolPlatformAgentBareMetalAgentSelectorMatchExpressions {
 /// AWS is the configuration used when installing on AWS.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformAws {
-    /// CredentialsAssumeRole refers to the IAM role that must be assumed to obtain AWS account access for the cluster operations.
+    /// CredentialsAssumeRole refers to the IAM role that must be assumed to obtain
+    /// AWS account access for the cluster operations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsAssumeRole")]
     pub credentials_assume_role: Option<ClusterPoolPlatformAwsCredentialsAssumeRole>,
-    /// CredentialsSecretRef refers to a secret that contains the AWS account access credentials.
+    /// CredentialsSecretRef refers to a secret that contains the AWS account access
+    /// credentials.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretRef")]
     pub credentials_secret_ref: Option<ClusterPoolPlatformAwsCredentialsSecretRef>,
-    /// PrivateLink allows uses to enable access to the cluster's API server using AWS PrivateLink. AWS PrivateLink includes a pair of VPC Endpoint Service and VPC Endpoint accross AWS accounts and allows clients to connect to services using AWS's internal networking instead of the Internet.
+    /// PrivateLink allows uses to enable access to the cluster's API server using AWS
+    /// PrivateLink. AWS PrivateLink includes a pair of VPC Endpoint Service and VPC
+    /// Endpoint accross AWS accounts and allows clients to connect to services using AWS's
+    /// internal networking instead of the Internet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateLink")]
     pub private_link: Option<ClusterPoolPlatformAwsPrivateLink>,
     /// Region specifies the AWS region where the cluster will be created.
@@ -293,28 +376,42 @@ pub struct ClusterPoolPlatformAws {
     pub user_tags: Option<BTreeMap<String, String>>,
 }
 
-/// CredentialsAssumeRole refers to the IAM role that must be assumed to obtain AWS account access for the cluster operations.
+/// CredentialsAssumeRole refers to the IAM role that must be assumed to obtain
+/// AWS account access for the cluster operations.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformAwsCredentialsAssumeRole {
-    /// ExternalID is random string generated by platform so that assume role is protected from confused deputy problem. more info: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html
+    /// ExternalID is random string generated by platform so that assume role
+    /// is protected from confused deputy problem.
+    /// more info: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalID")]
     pub external_id: Option<String>,
     #[serde(rename = "roleARN")]
     pub role_arn: String,
 }
 
-/// CredentialsSecretRef refers to a secret that contains the AWS account access credentials.
+/// CredentialsSecretRef refers to a secret that contains the AWS account access
+/// credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformAwsCredentialsSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// PrivateLink allows uses to enable access to the cluster's API server using AWS PrivateLink. AWS PrivateLink includes a pair of VPC Endpoint Service and VPC Endpoint accross AWS accounts and allows clients to connect to services using AWS's internal networking instead of the Internet.
+/// PrivateLink allows uses to enable access to the cluster's API server using AWS
+/// PrivateLink. AWS PrivateLink includes a pair of VPC Endpoint Service and VPC
+/// Endpoint accross AWS accounts and allows clients to connect to services using AWS's
+/// internal networking instead of the Internet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformAwsPrivateLink {
-    /// AdditionalAllowedPrincipals is a list of additional allowed principal ARNs to be configured for the Private Link cluster's VPC Endpoint Service. ARNs provided as AdditionalAllowedPrincipals will be configured for the cluster's VPC Endpoint Service in addition to the IAM entity used by Hive.
+    /// AdditionalAllowedPrincipals is a list of additional allowed principal ARNs to be configured
+    /// for the Private Link cluster's VPC Endpoint Service.
+    /// ARNs provided as AdditionalAllowedPrincipals will be configured for the cluster's VPC Endpoint
+    /// Service in addition to the IAM entity used by Hive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAllowedPrincipals")]
     pub additional_allowed_principals: Option<Vec<String>>,
     pub enabled: bool,
@@ -326,10 +423,13 @@ pub struct ClusterPoolPlatformAzure {
     /// BaseDomainResourceGroupName specifies the resource group where the azure DNS zone for the base domain is found
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseDomainResourceGroupName")]
     pub base_domain_resource_group_name: Option<String>,
-    /// cloudName is the name of the Azure cloud environment which can be used to configure the Azure SDK with the appropriate Azure API endpoints. If empty, the value is equal to "AzurePublicCloud".
+    /// cloudName is the name of the Azure cloud environment which can be used to configure the Azure SDK
+    /// with the appropriate Azure API endpoints.
+    /// If empty, the value is equal to "AzurePublicCloud".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudName")]
     pub cloud_name: Option<ClusterPoolPlatformAzureCloudName>,
-    /// CredentialsSecretRef refers to a secret that contains the Azure account access credentials.
+    /// CredentialsSecretRef refers to a secret that contains the Azure account access
+    /// credentials.
     #[serde(rename = "credentialsSecretRef")]
     pub credentials_secret_ref: ClusterPoolPlatformAzureCredentialsSecretRef,
     /// Region specifies the Azure region where the cluster will be created.
@@ -348,10 +448,15 @@ pub enum ClusterPoolPlatformAzureCloudName {
     AzureGermanCloud,
 }
 
-/// CredentialsSecretRef refers to a secret that contains the Azure account access credentials.
+/// CredentialsSecretRef refers to a secret that contains the Azure account access
+/// credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformAzureCredentialsSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -359,15 +464,23 @@ pub struct ClusterPoolPlatformAzureCredentialsSecretRef {
 /// BareMetal is the configuration used when installing on bare metal.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformBaremetal {
-    /// LibvirtSSHPrivateKeySecretRef is the reference to the secret that contains the private SSH key to use for access to the libvirt provisioning host. The SSH private key is expected to be in the secret data under the "ssh-privatekey" key.
+    /// LibvirtSSHPrivateKeySecretRef is the reference to the secret that contains the private SSH key to use
+    /// for access to the libvirt provisioning host.
+    /// The SSH private key is expected to be in the secret data under the "ssh-privatekey" key.
     #[serde(rename = "libvirtSSHPrivateKeySecretRef")]
     pub libvirt_ssh_private_key_secret_ref: ClusterPoolPlatformBaremetalLibvirtSshPrivateKeySecretRef,
 }
 
-/// LibvirtSSHPrivateKeySecretRef is the reference to the secret that contains the private SSH key to use for access to the libvirt provisioning host. The SSH private key is expected to be in the secret data under the "ssh-privatekey" key.
+/// LibvirtSSHPrivateKeySecretRef is the reference to the secret that contains the private SSH key to use
+/// for access to the libvirt provisioning host.
+/// The SSH private key is expected to be in the secret data under the "ssh-privatekey" key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformBaremetalLibvirtSshPrivateKeySecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -378,7 +491,10 @@ pub struct ClusterPoolPlatformGcp {
     /// CredentialsSecretRef refers to a secret that contains the GCP account access credentials.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretRef")]
     pub credentials_secret_ref: Option<ClusterPoolPlatformGcpCredentialsSecretRef>,
-    /// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP Private Service Connect. It includes a forwarding rule paired with a Service Attachment across GCP accounts and allows clients to connect to services using GCP internal networking of using public load balancers.
+    /// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP
+    /// Private Service Connect. It includes a forwarding rule paired with a Service Attachment
+    /// across GCP accounts and allows clients to connect to services using GCP internal networking
+    /// of using public load balancers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateServiceConnect")]
     pub private_service_connect: Option<ClusterPoolPlatformGcpPrivateServiceConnect>,
     /// Region specifies the GCP region where the cluster will be created.
@@ -388,12 +504,19 @@ pub struct ClusterPoolPlatformGcp {
 /// CredentialsSecretRef refers to a secret that contains the GCP account access credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformGcpCredentialsSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP Private Service Connect. It includes a forwarding rule paired with a Service Attachment across GCP accounts and allows clients to connect to services using GCP internal networking of using public load balancers.
+/// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP
+/// Private Service Connect. It includes a forwarding rule paired with a Service Attachment
+/// across GCP accounts and allows clients to connect to services using GCP internal networking
+/// of using public load balancers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformGcpPrivateServiceConnect {
     /// Enabled specifies if Private Service Connect is to be enabled on the cluster.
@@ -417,17 +540,24 @@ pub struct ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachmentSubnet {
     /// Cidr specifies the cidr to use when creating a service attachment subnet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
-    /// Existing specifies a pre-existing subnet to use instead of creating a new service attachment subnet. This is required when using BYO VPCs. It must be in the same region as the api-int load balancer, be configured with a purpose of "Private Service Connect", and have sufficient routing and firewall rules to access the api-int load balancer.
+    /// Existing specifies a pre-existing subnet to use instead of creating a new service attachment subnet.
+    /// This is required when using BYO VPCs. It must be in the same region as the api-int load balancer, be
+    /// configured with a purpose of "Private Service Connect", and have sufficient routing and firewall rules
+    /// to access the api-int load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub existing: Option<ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachmentSubnetExisting>,
 }
 
-/// Existing specifies a pre-existing subnet to use instead of creating a new service attachment subnet. This is required when using BYO VPCs. It must be in the same region as the api-int load balancer, be configured with a purpose of "Private Service Connect", and have sufficient routing and firewall rules to access the api-int load balancer.
+/// Existing specifies a pre-existing subnet to use instead of creating a new service attachment subnet.
+/// This is required when using BYO VPCs. It must be in the same region as the api-int load balancer, be
+/// configured with a purpose of "Private Service Connect", and have sufficient routing and firewall rules
+/// to access the api-int load balancer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachmentSubnetExisting {
     /// Name specifies the name of the existing subnet.
     pub name: String,
-    /// Project specifies the project the subnet exists in. This is required for Shared VPC.
+    /// Project specifies the project the subnet exists in.
+    /// This is required for Shared VPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project: Option<String>,
 }
@@ -435,28 +565,40 @@ pub struct ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachmentSubnetExi
 /// IBMCloud is the configuration used when installing on IBM Cloud
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformIbmcloud {
-    /// AccountID is the IBM Cloud Account ID. AccountID is DEPRECATED and is gathered via the IBM Cloud API for the provided credentials. This field will be ignored.
+    /// AccountID is the IBM Cloud Account ID.
+    /// AccountID is DEPRECATED and is gathered via the IBM Cloud API for the provided
+    /// credentials. This field will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountID")]
     pub account_id: Option<String>,
-    /// CISInstanceCRN is the IBM Cloud Internet Services Instance CRN CISInstanceCRN is DEPRECATED and gathered via the IBM Cloud API for the provided credentials and cluster deployment base domain. This field will be ignored.
+    /// CISInstanceCRN is the IBM Cloud Internet Services Instance CRN
+    /// CISInstanceCRN is DEPRECATED and gathered via the IBM Cloud API for the provided
+    /// credentials and cluster deployment base domain. This field will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cisInstanceCRN")]
     pub cis_instance_crn: Option<String>,
-    /// CredentialsSecretRef refers to a secret that contains IBM Cloud account access credentials.
+    /// CredentialsSecretRef refers to a secret that contains IBM Cloud account access
+    /// credentials.
     #[serde(rename = "credentialsSecretRef")]
     pub credentials_secret_ref: ClusterPoolPlatformIbmcloudCredentialsSecretRef,
-    /// Region specifies the IBM Cloud region where the cluster will be created.
+    /// Region specifies the IBM Cloud region where the cluster will be
+    /// created.
     pub region: String,
 }
 
-/// CredentialsSecretRef refers to a secret that contains IBM Cloud account access credentials.
+/// CredentialsSecretRef refers to a secret that contains IBM Cloud account access
+/// credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformIbmcloudCredentialsSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// None indicates platform-agnostic install. https://docs.openshift.com/container-platform/4.7/installing/installing_platform_agnostic/installing-platform-agnostic.html
+/// None indicates platform-agnostic install.
+/// https://docs.openshift.com/container-platform/4.7/installing/installing_platform_agnostic/installing-platform-agnostic.html
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformNone {
 }
@@ -464,13 +606,31 @@ pub struct ClusterPoolPlatformNone {
 /// OpenStack is the configuration used when installing on OpenStack
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformOpenstack {
-    /// CertificatesSecretRef refers to a secret that contains CA certificates necessary for communicating with the OpenStack. There is additional configuration required for the OpenShift cluster to trust the certificates provided in this secret. The "clouds.yaml" file included in the credentialsSecretRef Secret must also include a reference to the certificate bundle file for the OpenShift cluster being created to trust the OpenStack endpoints. The "clouds.yaml" file must set the "cacert" field to either "/etc/openstack-ca/<key name containing the trust bundle in credentialsSecretRef Secret>" or "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem". 
-    ///  For example, """clouds.yaml clouds: shiftstack: auth: ... cacert: "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem" """
+    /// CertificatesSecretRef refers to a secret that contains CA certificates
+    /// necessary for communicating with the OpenStack.
+    /// There is additional configuration required for the OpenShift cluster to trust
+    /// the certificates provided in this secret.
+    /// The "clouds.yaml" file included in the credentialsSecretRef Secret must also include
+    /// a reference to the certificate bundle file for the OpenShift cluster being created to
+    /// trust the OpenStack endpoints.
+    /// The "clouds.yaml" file must set the "cacert" field to
+    /// either "/etc/openstack-ca/<key name containing the trust bundle in credentialsSecretRef Secret>" or
+    /// "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem".
+    /// 
+    /// For example,
+    /// """clouds.yaml
+    /// clouds:
+    ///   shiftstack:
+    ///     auth: ...
+    ///     cacert: "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
+    /// """
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesSecretRef")]
     pub certificates_secret_ref: Option<ClusterPoolPlatformOpenstackCertificatesSecretRef>,
-    /// Cloud will be used to indicate the OS_CLOUD value to use the right section from the clouds.yaml in the CredentialsSecretRef.
+    /// Cloud will be used to indicate the OS_CLOUD value to use the right section
+    /// from the clouds.yaml in the CredentialsSecretRef.
     pub cloud: String,
-    /// CredentialsSecretRef refers to a secret that contains the OpenStack account access credentials.
+    /// CredentialsSecretRef refers to a secret that contains the OpenStack account access
+    /// credentials.
     #[serde(rename = "credentialsSecretRef")]
     pub credentials_secret_ref: ClusterPoolPlatformOpenstackCredentialsSecretRef,
     /// TrunkSupport indicates whether or not to use trunk ports in your OpenShift cluster.
@@ -478,19 +638,44 @@ pub struct ClusterPoolPlatformOpenstack {
     pub trunk_support: Option<bool>,
 }
 
-/// CertificatesSecretRef refers to a secret that contains CA certificates necessary for communicating with the OpenStack. There is additional configuration required for the OpenShift cluster to trust the certificates provided in this secret. The "clouds.yaml" file included in the credentialsSecretRef Secret must also include a reference to the certificate bundle file for the OpenShift cluster being created to trust the OpenStack endpoints. The "clouds.yaml" file must set the "cacert" field to either "/etc/openstack-ca/<key name containing the trust bundle in credentialsSecretRef Secret>" or "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem". 
-///  For example, """clouds.yaml clouds: shiftstack: auth: ... cacert: "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem" """
+/// CertificatesSecretRef refers to a secret that contains CA certificates
+/// necessary for communicating with the OpenStack.
+/// There is additional configuration required for the OpenShift cluster to trust
+/// the certificates provided in this secret.
+/// The "clouds.yaml" file included in the credentialsSecretRef Secret must also include
+/// a reference to the certificate bundle file for the OpenShift cluster being created to
+/// trust the OpenStack endpoints.
+/// The "clouds.yaml" file must set the "cacert" field to
+/// either "/etc/openstack-ca/<key name containing the trust bundle in credentialsSecretRef Secret>" or
+/// "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem".
+/// 
+/// For example,
+/// """clouds.yaml
+/// clouds:
+///   shiftstack:
+///     auth: ...
+///     cacert: "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
+/// """
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformOpenstackCertificatesSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// CredentialsSecretRef refers to a secret that contains the OpenStack account access credentials.
+/// CredentialsSecretRef refers to a secret that contains the OpenStack account access
+/// credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformOpenstackCredentialsSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -498,33 +683,46 @@ pub struct ClusterPoolPlatformOpenstackCredentialsSecretRef {
 /// Ovirt is the configuration used when installing on oVirt
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformOvirt {
-    /// CertificatesSecretRef refers to a secret that contains the oVirt CA certificates necessary for communicating with oVirt.
+    /// CertificatesSecretRef refers to a secret that contains the oVirt CA certificates
+    /// necessary for communicating with oVirt.
     #[serde(rename = "certificatesSecretRef")]
     pub certificates_secret_ref: ClusterPoolPlatformOvirtCertificatesSecretRef,
-    /// CredentialsSecretRef refers to a secret that contains the oVirt account access credentials with fields: ovirt_url, ovirt_username, ovirt_password, ovirt_ca_bundle
+    /// CredentialsSecretRef refers to a secret that contains the oVirt account access
+    /// credentials with fields: ovirt_url, ovirt_username, ovirt_password, ovirt_ca_bundle
     #[serde(rename = "credentialsSecretRef")]
     pub credentials_secret_ref: ClusterPoolPlatformOvirtCredentialsSecretRef,
     /// The target cluster under which all VMs will run
     pub ovirt_cluster_id: String,
-    /// The target network of all the network interfaces of the nodes. Omitting defaults to ovirtmgmt network which is a default network for evert ovirt cluster.
+    /// The target network of all the network interfaces of the nodes. Omitting defaults to ovirtmgmt
+    /// network which is a default network for evert ovirt cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ovirt_network_name: Option<String>,
     /// The target storage domain under which all VM disk would be created.
     pub storage_domain_id: String,
 }
 
-/// CertificatesSecretRef refers to a secret that contains the oVirt CA certificates necessary for communicating with oVirt.
+/// CertificatesSecretRef refers to a secret that contains the oVirt CA certificates
+/// necessary for communicating with oVirt.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformOvirtCertificatesSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// CredentialsSecretRef refers to a secret that contains the oVirt account access credentials with fields: ovirt_url, ovirt_username, ovirt_password, ovirt_ca_bundle
+/// CredentialsSecretRef refers to a secret that contains the oVirt account access
+/// credentials with fields: ovirt_url, ovirt_username, ovirt_password, ovirt_ca_bundle
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformOvirtCredentialsSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -532,13 +730,15 @@ pub struct ClusterPoolPlatformOvirtCredentialsSecretRef {
 /// VSphere is the configuration used when installing on vSphere
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformVsphere {
-    /// CertificatesSecretRef refers to a secret that contains the vSphere CA certificates necessary for communicating with the VCenter.
+    /// CertificatesSecretRef refers to a secret that contains the vSphere CA certificates
+    /// necessary for communicating with the VCenter.
     #[serde(rename = "certificatesSecretRef")]
     pub certificates_secret_ref: ClusterPoolPlatformVsphereCertificatesSecretRef,
     /// Cluster is the name of the cluster virtual machines will be cloned into.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
-    /// CredentialsSecretRef refers to a secret that contains the vSphere account access credentials: GOVC_USERNAME, GOVC_PASSWORD fields.
+    /// CredentialsSecretRef refers to a secret that contains the vSphere account access
+    /// credentials: GOVC_USERNAME, GOVC_PASSWORD fields.
     #[serde(rename = "credentialsSecretRef")]
     pub credentials_secret_ref: ClusterPoolPlatformVsphereCredentialsSecretRef,
     /// Datacenter is the name of the datacenter to use in the vCenter.
@@ -546,7 +746,8 @@ pub struct ClusterPoolPlatformVsphere {
     /// DefaultDatastore is the default datastore to use for provisioning volumes.
     #[serde(rename = "defaultDatastore")]
     pub default_datastore: String,
-    /// Folder is the name of the folder that will be used and/or created for virtual machines.
+    /// Folder is the name of the folder that will be used and/or created for
+    /// virtual machines.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub folder: Option<String>,
     /// Network specifies the name of the network to be used by the cluster.
@@ -557,18 +758,28 @@ pub struct ClusterPoolPlatformVsphere {
     pub v_center: String,
 }
 
-/// CertificatesSecretRef refers to a secret that contains the vSphere CA certificates necessary for communicating with the VCenter.
+/// CertificatesSecretRef refers to a secret that contains the vSphere CA certificates
+/// necessary for communicating with the VCenter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformVsphereCertificatesSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// CredentialsSecretRef refers to a secret that contains the vSphere account access credentials: GOVC_USERNAME, GOVC_PASSWORD fields.
+/// CredentialsSecretRef refers to a secret that contains the vSphere account access
+/// credentials: GOVC_USERNAME, GOVC_PASSWORD fields.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformVsphereCredentialsSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -576,7 +787,11 @@ pub struct ClusterPoolPlatformVsphereCredentialsSecretRef {
 /// PullSecretRef is the reference to the secret to use when pulling images.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPullSecretRef {
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

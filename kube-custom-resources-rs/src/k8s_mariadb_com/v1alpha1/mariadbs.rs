@@ -167,6 +167,9 @@ pub struct MariaDBSpec {
     /// ServiceAccountName is the name of the ServiceAccount to be used by the Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
+    /// ServicePorts is the list of additional named ports to be added to the Services created by the operator.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePorts")]
+    pub service_ports: Option<Vec<MariaDBServicePorts>>,
     /// SidecarContainers to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarContainers")]
     pub sidecar_containers: Option<Vec<MariaDBSidecarContainers>>,
@@ -1732,6 +1735,9 @@ pub struct MariaDBInitContainers {
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBInitContainersImagePullPolicy>,
+    /// Name to be given to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBInitContainersResources>,
@@ -2354,6 +2360,9 @@ pub struct MariaDBMaxScaleMetricsExporter {
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBMaxScaleMetricsExporterResources>,
+    /// SecurityContext holds container-level security attributes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<MariaDBMaxScaleMetricsExporterSecurityContext>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<MariaDBMaxScaleMetricsExporterTolerations>>,
@@ -2506,100 +2515,33 @@ pub struct MariaDBMaxScaleMetricsExporterPodMetadata {
 /// SecurityContext holds pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleMetricsExporterPodSecurityContext {
-    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// AppArmorProfile defines a pod or container's AppArmor settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<MariaDBMaxScaleMetricsExporterPodSecurityContextAppArmorProfile>,
-    /// A special supplemental group that applies to all containers in a pod.
-    /// Some volume types allow the Kubelet to change the ownership of that volume
-    /// to be owned by the pod:
-    /// 
-    /// 1. The owning GID will be the FSGroup
-    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
-    /// 3. The permission bits are OR'd with rw-rw----
-    /// 
-    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
-    /// before being exposed inside Pod. This field will only apply to
-    /// volume types which support fsGroup based ownership(and permissions).
-    /// It will have no effect on ephemeral volume types such as: secret, configmaps
-    /// and emptydir.
-    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
+    /// when volume is mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process.
-    /// Uses runtime default if unset.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence
-    /// for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user.
-    /// If true, the Kubelet will validate the image at runtime to ensure that it
-    /// does not run as UID 0 (root) and fail to start the container if it does.
-    /// If unset or false, no such validation will be performed.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process.
-    /// Defaults to user specified in image metadata if unspecified.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence
-    /// for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers.
-    /// If unspecified, the container runtime will allocate a random SELinux context for each
-    /// container.  May also be set in SecurityContext.  If set in
-    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
-    /// takes precedence for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// SELinuxOptions are the labels to be applied to the container
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<MariaDBMaxScaleMetricsExporterPodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// SeccompProfile defines a pod/container's seccomp profile settings.
+    /// Only one profile source may be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<MariaDBMaxScaleMetricsExporterPodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in
-    /// addition to the container's primary GID and fsGroup (if specified).  If
-    /// the SupplementalGroupsPolicy feature is enabled, the
-    /// supplementalGroupsPolicy field determines whether these are in addition
-    /// to or instead of any group memberships defined in the container image.
-    /// If unspecified, no additional groups are added, though group memberships
-    /// defined in the container image may still be used, depending on the
-    /// supplementalGroupsPolicy field.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Defines how supplemental groups of the first container processes are calculated.
-    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
-    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
-    /// and the container runtime must implement support for this feature.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
-    pub supplemental_groups_policy: Option<String>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
-    /// sysctls (by the container runtime) might fail to launch.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sysctls: Option<Vec<MariaDBMaxScaleMetricsExporterPodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers.
-    /// If unspecified, the options within a container's SecurityContext will be used.
-    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
-    pub windows_options: Option<MariaDBMaxScaleMetricsExporterPodSecurityContextWindowsOptions>,
 }
 
-/// appArmorProfile is the AppArmor options to use by the containers in this pod.
-/// Note that this field cannot be set when spec.os.name is windows.
+/// AppArmorProfile defines a pod or container's AppArmor settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextAppArmorProfile {
     /// localhostProfile indicates a profile loaded on the node that should be used.
@@ -2617,12 +2559,7 @@ pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextAppArmorProfile {
     pub r#type: String,
 }
 
-/// The SELinux context to be applied to all containers.
-/// If unspecified, the container runtime will allocate a random SELinux context for each
-/// container.  May also be set in SecurityContext.  If set in
-/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
-/// takes precedence for that container.
-/// Note that this field cannot be set when spec.os.name is windows.
+/// SELinuxOptions are the labels to be applied to the container
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -2639,8 +2576,8 @@ pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod.
-/// Note that this field cannot be set when spec.os.name is windows.
+/// SeccompProfile defines a pod/container's seccomp profile settings.
+/// Only one profile source may be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
@@ -2659,43 +2596,6 @@ pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextSeccompProfile {
     pub r#type: String,
 }
 
-/// Sysctl defines a kernel parameter to be set
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextSysctls {
-    /// Name of a property to set
-    pub name: String,
-    /// Value of a property to set
-    pub value: String,
-}
-
-/// The Windows specific settings applied to all containers.
-/// If unspecified, the options within a container's SecurityContext will be used.
-/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-/// Note that this field cannot be set when spec.os.name is linux.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook
-    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
-    /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
-    pub gmsa_credential_spec: Option<String>,
-    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
-    pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// All of a Pod's containers must have the same effective HostProcess value
-    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
-    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
-    pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process.
-    /// Defaults to the user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext. If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
-    pub run_as_user_name: Option<String>,
-}
-
 /// Resouces describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleMetricsExporterResources {
@@ -2705,6 +2605,37 @@ pub struct MariaDBMaxScaleMetricsExporterResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// SecurityContext holds container-level security attributes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleMetricsExporterSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// Adds and removes POSIX capabilities from running containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<MariaDBMaxScaleMetricsExporterSecurityContextCapabilities>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+}
+
+/// Adds and removes POSIX capabilities from running containers.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleMetricsExporterSecurityContextCapabilities {
+    /// Added capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// Removed capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches
@@ -2954,6 +2885,9 @@ pub struct MariaDBMetricsExporter {
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBMetricsExporterResources>,
+    /// SecurityContext holds container-level security attributes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<MariaDBMetricsExporterSecurityContext>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<MariaDBMetricsExporterTolerations>>,
@@ -3106,100 +3040,33 @@ pub struct MariaDBMetricsExporterPodMetadata {
 /// SecurityContext holds pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMetricsExporterPodSecurityContext {
-    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// AppArmorProfile defines a pod or container's AppArmor settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<MariaDBMetricsExporterPodSecurityContextAppArmorProfile>,
-    /// A special supplemental group that applies to all containers in a pod.
-    /// Some volume types allow the Kubelet to change the ownership of that volume
-    /// to be owned by the pod:
-    /// 
-    /// 1. The owning GID will be the FSGroup
-    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
-    /// 3. The permission bits are OR'd with rw-rw----
-    /// 
-    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
-    /// before being exposed inside Pod. This field will only apply to
-    /// volume types which support fsGroup based ownership(and permissions).
-    /// It will have no effect on ephemeral volume types such as: secret, configmaps
-    /// and emptydir.
-    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
+    /// when volume is mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process.
-    /// Uses runtime default if unset.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence
-    /// for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user.
-    /// If true, the Kubelet will validate the image at runtime to ensure that it
-    /// does not run as UID 0 (root) and fail to start the container if it does.
-    /// If unset or false, no such validation will be performed.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process.
-    /// Defaults to user specified in image metadata if unspecified.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence
-    /// for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers.
-    /// If unspecified, the container runtime will allocate a random SELinux context for each
-    /// container.  May also be set in SecurityContext.  If set in
-    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
-    /// takes precedence for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// SELinuxOptions are the labels to be applied to the container
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<MariaDBMetricsExporterPodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// SeccompProfile defines a pod/container's seccomp profile settings.
+    /// Only one profile source may be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<MariaDBMetricsExporterPodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in
-    /// addition to the container's primary GID and fsGroup (if specified).  If
-    /// the SupplementalGroupsPolicy feature is enabled, the
-    /// supplementalGroupsPolicy field determines whether these are in addition
-    /// to or instead of any group memberships defined in the container image.
-    /// If unspecified, no additional groups are added, though group memberships
-    /// defined in the container image may still be used, depending on the
-    /// supplementalGroupsPolicy field.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Defines how supplemental groups of the first container processes are calculated.
-    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
-    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
-    /// and the container runtime must implement support for this feature.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
-    pub supplemental_groups_policy: Option<String>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
-    /// sysctls (by the container runtime) might fail to launch.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sysctls: Option<Vec<MariaDBMetricsExporterPodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers.
-    /// If unspecified, the options within a container's SecurityContext will be used.
-    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
-    pub windows_options: Option<MariaDBMetricsExporterPodSecurityContextWindowsOptions>,
 }
 
-/// appArmorProfile is the AppArmor options to use by the containers in this pod.
-/// Note that this field cannot be set when spec.os.name is windows.
+/// AppArmorProfile defines a pod or container's AppArmor settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMetricsExporterPodSecurityContextAppArmorProfile {
     /// localhostProfile indicates a profile loaded on the node that should be used.
@@ -3217,12 +3084,7 @@ pub struct MariaDBMetricsExporterPodSecurityContextAppArmorProfile {
     pub r#type: String,
 }
 
-/// The SELinux context to be applied to all containers.
-/// If unspecified, the container runtime will allocate a random SELinux context for each
-/// container.  May also be set in SecurityContext.  If set in
-/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
-/// takes precedence for that container.
-/// Note that this field cannot be set when spec.os.name is windows.
+/// SELinuxOptions are the labels to be applied to the container
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMetricsExporterPodSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -3239,8 +3101,8 @@ pub struct MariaDBMetricsExporterPodSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod.
-/// Note that this field cannot be set when spec.os.name is windows.
+/// SeccompProfile defines a pod/container's seccomp profile settings.
+/// Only one profile source may be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMetricsExporterPodSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
@@ -3259,43 +3121,6 @@ pub struct MariaDBMetricsExporterPodSecurityContextSeccompProfile {
     pub r#type: String,
 }
 
-/// Sysctl defines a kernel parameter to be set
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMetricsExporterPodSecurityContextSysctls {
-    /// Name of a property to set
-    pub name: String,
-    /// Value of a property to set
-    pub value: String,
-}
-
-/// The Windows specific settings applied to all containers.
-/// If unspecified, the options within a container's SecurityContext will be used.
-/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-/// Note that this field cannot be set when spec.os.name is linux.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMetricsExporterPodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook
-    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
-    /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
-    pub gmsa_credential_spec: Option<String>,
-    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
-    pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// All of a Pod's containers must have the same effective HostProcess value
-    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
-    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
-    pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process.
-    /// Defaults to the user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext. If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
-    pub run_as_user_name: Option<String>,
-}
-
 /// Resouces describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMetricsExporterResources {
@@ -3305,6 +3130,37 @@ pub struct MariaDBMetricsExporterResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// SecurityContext holds container-level security attributes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMetricsExporterSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// Adds and removes POSIX capabilities from running containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<MariaDBMetricsExporterSecurityContextCapabilities>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+}
+
+/// Adds and removes POSIX capabilities from running containers.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMetricsExporterSecurityContextCapabilities {
+    /// Added capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// Removed capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches
@@ -3453,100 +3309,33 @@ pub struct MariaDBPodMetadata {
 /// SecurityContext holds pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBPodSecurityContext {
-    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// AppArmorProfile defines a pod or container's AppArmor settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<MariaDBPodSecurityContextAppArmorProfile>,
-    /// A special supplemental group that applies to all containers in a pod.
-    /// Some volume types allow the Kubelet to change the ownership of that volume
-    /// to be owned by the pod:
-    /// 
-    /// 1. The owning GID will be the FSGroup
-    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
-    /// 3. The permission bits are OR'd with rw-rw----
-    /// 
-    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
-    /// before being exposed inside Pod. This field will only apply to
-    /// volume types which support fsGroup based ownership(and permissions).
-    /// It will have no effect on ephemeral volume types such as: secret, configmaps
-    /// and emptydir.
-    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
+    /// when volume is mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process.
-    /// Uses runtime default if unset.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence
-    /// for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user.
-    /// If true, the Kubelet will validate the image at runtime to ensure that it
-    /// does not run as UID 0 (root) and fail to start the container if it does.
-    /// If unset or false, no such validation will be performed.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process.
-    /// Defaults to user specified in image metadata if unspecified.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence
-    /// for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers.
-    /// If unspecified, the container runtime will allocate a random SELinux context for each
-    /// container.  May also be set in SecurityContext.  If set in
-    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
-    /// takes precedence for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// SELinuxOptions are the labels to be applied to the container
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<MariaDBPodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    /// SeccompProfile defines a pod/container's seccomp profile settings.
+    /// Only one profile source may be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<MariaDBPodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in
-    /// addition to the container's primary GID and fsGroup (if specified).  If
-    /// the SupplementalGroupsPolicy feature is enabled, the
-    /// supplementalGroupsPolicy field determines whether these are in addition
-    /// to or instead of any group memberships defined in the container image.
-    /// If unspecified, no additional groups are added, though group memberships
-    /// defined in the container image may still be used, depending on the
-    /// supplementalGroupsPolicy field.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Defines how supplemental groups of the first container processes are calculated.
-    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
-    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
-    /// and the container runtime must implement support for this feature.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
-    pub supplemental_groups_policy: Option<String>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
-    /// sysctls (by the container runtime) might fail to launch.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sysctls: Option<Vec<MariaDBPodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers.
-    /// If unspecified, the options within a container's SecurityContext will be used.
-    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
-    pub windows_options: Option<MariaDBPodSecurityContextWindowsOptions>,
 }
 
-/// appArmorProfile is the AppArmor options to use by the containers in this pod.
-/// Note that this field cannot be set when spec.os.name is windows.
+/// AppArmorProfile defines a pod or container's AppArmor settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBPodSecurityContextAppArmorProfile {
     /// localhostProfile indicates a profile loaded on the node that should be used.
@@ -3564,12 +3353,7 @@ pub struct MariaDBPodSecurityContextAppArmorProfile {
     pub r#type: String,
 }
 
-/// The SELinux context to be applied to all containers.
-/// If unspecified, the container runtime will allocate a random SELinux context for each
-/// container.  May also be set in SecurityContext.  If set in
-/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
-/// takes precedence for that container.
-/// Note that this field cannot be set when spec.os.name is windows.
+/// SELinuxOptions are the labels to be applied to the container
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBPodSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -3586,8 +3370,8 @@ pub struct MariaDBPodSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod.
-/// Note that this field cannot be set when spec.os.name is windows.
+/// SeccompProfile defines a pod/container's seccomp profile settings.
+/// Only one profile source may be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBPodSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
@@ -3604,43 +3388,6 @@ pub struct MariaDBPodSecurityContextSeccompProfile {
     /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
-}
-
-/// Sysctl defines a kernel parameter to be set
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBPodSecurityContextSysctls {
-    /// Name of a property to set
-    pub name: String,
-    /// Value of a property to set
-    pub value: String,
-}
-
-/// The Windows specific settings applied to all containers.
-/// If unspecified, the options within a container's SecurityContext will be used.
-/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-/// Note that this field cannot be set when spec.os.name is linux.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBPodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook
-    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
-    /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
-    pub gmsa_credential_spec: Option<String>,
-    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
-    pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// All of a Pod's containers must have the same effective HostProcess value
-    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
-    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
-    pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process.
-    /// Defaults to the user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext. If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
-    pub run_as_user_name: Option<String>,
 }
 
 /// PrimaryConnection defines a template to configure the primary Connection object.
@@ -4118,6 +3865,13 @@ pub enum MariaDBServiceType {
     LoadBalancer,
 }
 
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#serviceport-v1-core
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBServicePorts {
+    pub name: String,
+    pub port: i32,
+}
+
 /// Container object definition.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBSidecarContainers {
@@ -4132,6 +3886,9 @@ pub struct MariaDBSidecarContainers {
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBSidecarContainersImagePullPolicy>,
+    /// Name to be given to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBSidecarContainersResources>,

@@ -58,6 +58,9 @@ pub struct DataBackupRunAfter {
 /// AffinityStrategy specifies the pod affinity strategy with the referent operation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataBackupRunAfterAffinityStrategy {
+    /// Specifies the dependent preceding operation in a workflow. If not set, use the operation referred to by RunAfter.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependOn")]
+    pub depend_on: Option<DataBackupRunAfterAffinityStrategyDependOn>,
     /// Policy one of: "", "Require", "Prefer"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<String>,
@@ -65,6 +68,30 @@ pub struct DataBackupRunAfterAffinityStrategy {
     pub prefers: Option<Vec<DataBackupRunAfterAffinityStrategyPrefers>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requires: Option<Vec<DataBackupRunAfterAffinityStrategyRequires>>,
+}
+
+/// Specifies the dependent preceding operation in a workflow. If not set, use the operation referred to by RunAfter.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct DataBackupRunAfterAffinityStrategyDependOn {
+    /// API version of the referent operation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Kind specifies the type of the referent operation
+    pub kind: DataBackupRunAfterAffinityStrategyDependOnKind,
+    /// Name specifies the name of the referent operation
+    pub name: String,
+    /// Namespace specifies the namespace of the referent operation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Specifies the dependent preceding operation in a workflow. If not set, use the operation referred to by RunAfter.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum DataBackupRunAfterAffinityStrategyDependOnKind {
+    DataLoad,
+    DataBackup,
+    DataMigrate,
+    DataProcess,
 }
 
 /// Prefer defines the label key and weight for generating a PreferredSchedulingTerm.

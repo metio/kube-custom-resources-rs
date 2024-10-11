@@ -67,6 +67,7 @@ pub struct InstallationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiNodeDriverDaemonSet")]
     pub csi_node_driver_daemon_set: Option<InstallationCsiNodeDriverDaemonSet>,
     /// FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.
+    /// Only supported for Variant=Calico.
     /// Default: Disabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fipsMode")]
     pub fips_mode: Option<InstallationFipsMode>,
@@ -6752,6 +6753,7 @@ pub struct InstallationStatusComputed {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiNodeDriverDaemonSet")]
     pub csi_node_driver_daemon_set: Option<InstallationStatusComputedCsiNodeDriverDaemonSet>,
     /// FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.
+    /// Only supported for Variant=Calico.
     /// Default: Disabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fipsMode")]
     pub fips_mode: Option<InstallationStatusComputedFipsMode>,

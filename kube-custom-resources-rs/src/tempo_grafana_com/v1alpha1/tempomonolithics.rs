@@ -55,6 +55,11 @@ pub struct TempoMonolithicSpec {
     /// Storage defines the storage configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<TempoMonolithicStorage>,
+    /// Timeout configures the same timeout on all components starting at ingress down to the ingestor/querier.
+    /// Timeout configuration on a specific component has a higher precedence.
+    /// Default is 30 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
     /// Tolerations defines the tolerations of a node to schedule the pod onto it.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<TempoMonolithicTolerations>>,
@@ -872,6 +877,16 @@ pub struct TempoMonolithicJaegerui {
     pub authentication: Option<TempoMonolithicJaegeruiAuthentication>,
     /// Enabled defines if the Jaeger UI component should be created.
     pub enabled: bool,
+    /// FindTracesConcurrentRequests defines how many concurrent request a single trace search can submit (defaults 2).
+    /// The search for traces in Jaeger submits limit+1 requests. First requests finds trace IDs and then it fetches
+    /// entire traces by ID. This property allows Jaeger to fetch traces in parallel.
+    /// Note that by default a single Tempo querier can process 20 concurrent search jobs.
+    /// Increasing this property might require scaling up querier instances, especially on error "job queue full"
+    /// See also Tempo's extraConfig:
+    /// querier.max_concurrent_queries (20 default)
+    /// query_frontend.max_outstanding_per_tenant: (2000 default). Increase if the query-frontend returns 429
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "findTracesConcurrentRequests")]
+    pub find_traces_concurrent_requests: Option<i64>,
     /// Ingress defines the Ingress configuration for the Jaeger UI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<TempoMonolithicJaegeruiIngress>,

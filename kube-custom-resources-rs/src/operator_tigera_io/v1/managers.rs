@@ -68,7 +68,7 @@ pub struct ManagerManagerDeploymentSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagerManagerDeploymentSpecTemplateSpecContainers {
     /// Name is an enum which identifies the Manager Deployment container by name.
-    /// Supported values are: tigera-voltron, tigera-manager, tigera-es-proxy
+    /// Supported values are: tigera-voltron, tigera-manager, tigera-ui-apis, and tigera-es-proxy (deprecated).
     pub name: ManagerManagerDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named Manager Deployment container's resources.
@@ -86,6 +86,8 @@ pub enum ManagerManagerDeploymentSpecTemplateSpecContainersName {
     TigeraManager,
     #[serde(rename = "tigera-es-proxy")]
     TigeraEsProxy,
+    #[serde(rename = "tigera-ui-apis")]
+    TigeraUiApis,
 }
 
 /// Resources allows customization of limits and requests for compute resources such as cpu and memory.

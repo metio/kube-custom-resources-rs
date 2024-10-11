@@ -16,7 +16,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterImageSetSpec {
-    /// ReleaseImage is the image that contains the payload to use when installing a cluster.
+    /// ReleaseImage is the image that contains the payload to use when installing
+    /// a cluster.
     #[serde(rename = "releaseImage")]
     pub release_image: String,
 }

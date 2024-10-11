@@ -11515,7 +11515,7 @@ pub struct FlinkDeploymentStatusJobStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
+    pub state: Option<FlinkDeploymentStatusJobStatusState>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateTime")]
     pub update_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeSavepointPath")]
@@ -11704,6 +11704,32 @@ pub enum FlinkDeploymentStatusJobStatusSavepointInfoTriggerType {
     Unknown,
     #[serde(rename = "UPGRADE")]
     Upgrade,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlinkDeploymentStatusJobStatusState {
+    #[serde(rename = "CANCELED")]
+    Canceled,
+    #[serde(rename = "CANCELLING")]
+    Cancelling,
+    #[serde(rename = "CREATED")]
+    Created,
+    #[serde(rename = "FAILED")]
+    Failed,
+    #[serde(rename = "FAILING")]
+    Failing,
+    #[serde(rename = "FINISHED")]
+    Finished,
+    #[serde(rename = "INITIALIZING")]
+    Initializing,
+    #[serde(rename = "RECONCILING")]
+    Reconciling,
+    #[serde(rename = "RESTARTING")]
+    Restarting,
+    #[serde(rename = "RUNNING")]
+    Running,
+    #[serde(rename = "SUSPENDED")]
+    Suspended,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

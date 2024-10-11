@@ -58,6 +58,9 @@ spec:
                     bootstrapClusterCreatorAdminPermissions:
                       type: "boolean"
                   type: "object"
+                bootstrapSelfManagedAddons:
+                  description: "If you set this value to False when creating a cluster, the default networking\nadd-ons will not be installed.\n\nThe default networking addons include vpc-cni, coredns, and kube-proxy.\n\nUse this option when you plan to install third-party alternative add-ons\nor self-manage the default networking add-ons."
+                  type: "boolean"
                 clientRequestToken:
                   description: "A unique, case-sensitive identifier that you provide to ensure the idempotency\nof the request."
                   type: "string"
@@ -202,6 +205,12 @@ spec:
                   additionalProperties:
                     type: "string"
                   description: "Metadata that assists with categorization and organization. Each tag consists\nof a key and an optional value. You define both. Tags don't propagate to\nany other cluster or Amazon Web Services resources."
+                  type: "object"
+                upgradePolicy:
+                  description: "New clusters, by default, have extended support enabled. You can disable\nextended support when creating a cluster by setting this value to STANDARD."
+                  properties:
+                    supportType:
+                      type: "string"
                   type: "object"
                 version:
                   description: "The desired Kubernetes version for your cluster. If you don't specify a value\nhere, the default version available in Amazon EKS is used.\n\nThe default version might not be the latest version available."

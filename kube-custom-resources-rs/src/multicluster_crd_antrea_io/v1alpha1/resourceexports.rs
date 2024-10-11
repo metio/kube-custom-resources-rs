@@ -689,8 +689,13 @@ pub struct ResourceExportClusterNetworkPolicyEgressFromExternalEntitySelectorMat
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromIpBlock {
     /// CIDR is a string representing the IP Block
-    /// Valid examples are "192.168.1.1/24".
+    /// Valid examples are "192.168.1.0/24".
     pub cidr: String,
+    /// except is a slice of CIDRs that should not be included within an IPBlock
+    /// Valid examples are "192.168.1.0/28" or "2001:db8::/64"
+    /// Except values will be rejected if they are outside the cidr range
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub except: Option<Vec<String>>,
 }
 
 /// Select all Pods from Namespaces matched by this selector, as
@@ -1036,8 +1041,13 @@ pub struct ResourceExportClusterNetworkPolicyEgressToExternalEntitySelectorMatch
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToIpBlock {
     /// CIDR is a string representing the IP Block
-    /// Valid examples are "192.168.1.1/24".
+    /// Valid examples are "192.168.1.0/24".
     pub cidr: String,
+    /// except is a slice of CIDRs that should not be included within an IPBlock
+    /// Valid examples are "192.168.1.0/28" or "2001:db8::/64"
+    /// Except values will be rejected if they are outside the cidr range
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub except: Option<Vec<String>>,
 }
 
 /// Select all Pods from Namespaces matched by this selector, as
@@ -1545,8 +1555,13 @@ pub struct ResourceExportClusterNetworkPolicyIngressFromExternalEntitySelectorMa
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromIpBlock {
     /// CIDR is a string representing the IP Block
-    /// Valid examples are "192.168.1.1/24".
+    /// Valid examples are "192.168.1.0/24".
     pub cidr: String,
+    /// except is a slice of CIDRs that should not be included within an IPBlock
+    /// Valid examples are "192.168.1.0/28" or "2001:db8::/64"
+    /// Except values will be rejected if they are outside the cidr range
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub except: Option<Vec<String>>,
 }
 
 /// Select all Pods from Namespaces matched by this selector, as
@@ -1892,8 +1907,13 @@ pub struct ResourceExportClusterNetworkPolicyIngressToExternalEntitySelectorMatc
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToIpBlock {
     /// CIDR is a string representing the IP Block
-    /// Valid examples are "192.168.1.1/24".
+    /// Valid examples are "192.168.1.0/24".
     pub cidr: String,
+    /// except is a slice of CIDRs that should not be included within an IPBlock
+    /// Valid examples are "192.168.1.0/28" or "2001:db8::/64"
+    /// Except values will be rejected if they are outside the cidr range
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub except: Option<Vec<String>>,
 }
 
 /// Select all Pods from Namespaces matched by this selector, as

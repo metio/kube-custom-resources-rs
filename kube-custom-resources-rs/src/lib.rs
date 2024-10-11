@@ -1809,6 +1809,9 @@ apiVersion `kuadrant.io/v1beta1`:
 apiVersion `kuadrant.io/v1beta2`:
 - `RateLimitPolicy`
 
+apiVersion `kuadrant.io/v1beta3`:
+- `RateLimitPolicy`
+
 ## kube_green_com
 
 apiVersion `kube-green.com/v1alpha1`:
@@ -1978,6 +1981,11 @@ apiVersion `lerentis.uploadfilter24.eu/v1beta6`:
 - `RegistryCredential`
 
 apiVersion `lerentis.uploadfilter24.eu/v1beta7`:
+- `BitwardenSecret`
+- `BitwardenTemplate`
+- `RegistryCredential`
+
+apiVersion `lerentis.uploadfilter24.eu/v1beta8`:
 - `BitwardenSecret`
 - `BitwardenTemplate`
 - `RegistryCredential`

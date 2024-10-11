@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.3"
   name: "databaseclusters.everest.percona.com"
 spec:
   group: "everest.percona.com"
@@ -145,7 +145,7 @@ spec:
                       description: "Config is the engine configuration"
                       type: "string"
                     crVersion:
-                      description: "CRVersion is the desired version of the CR to use with the\nunderlying operator.\nIf unspecified, everest-operator will use the same version as the operator.\n\n\nNOTE: Updating this property post installation may lead to a restart of the cluster."
+                      description: "CRVersion is the desired version of the CR to use with the\nunderlying operator.\nIf unspecified, everest-operator will use the same version as the operator.\n\nNOTE: Updating this property post installation may lead to a restart of the cluster."
                       type: "string"
                     replicas:
                       description: "Replicas is the number of engine replicas"
@@ -213,12 +213,15 @@ spec:
                       description: "Resources defines resource limitations for the monitoring."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"

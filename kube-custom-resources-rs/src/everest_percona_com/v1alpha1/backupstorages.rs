@@ -20,7 +20,6 @@ use self::prelude::*;
 pub struct BackupStorageSpec {
     /// AllowedNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName.
     /// 
-    /// 
     /// Deprecated: BackupStorages are now used only in the namespaces where they are created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedNamespaces")]
     pub allowed_namespaces: Option<Vec<String>>,

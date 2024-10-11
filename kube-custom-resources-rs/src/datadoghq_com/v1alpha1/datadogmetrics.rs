@@ -22,7 +22,8 @@ pub struct DatadogMetricSpec {
     /// ExternalMetricName is reserved for internal use
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalMetricName")]
     pub external_metric_name: Option<String>,
-    /// MaxAge provides the max age for the metric query (overrides the default setting `external_metrics_provider.max_age`)
+    /// MaxAge provides the max age for the metric query (overrides the default setting
+    /// `external_metrics_provider.max_age`)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
     pub max_age: Option<String>,
     /// Query is the raw datadog query

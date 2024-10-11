@@ -24,6 +24,9 @@ pub struct ThinRuntimeProfileSpec {
     /// The component spec of thinRuntime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fuse: Option<ThinRuntimeProfileFuse>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<ThinRuntimeProfileImagePullSecrets>>,
     /// NodePublishSecretPolicy describes the policy to decide which to do with node publish secret when mounting an existing persistent volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretPolicy")]
     pub node_publish_secret_policy: Option<ThinRuntimeProfileNodePublishSecretPolicy>,
@@ -60,6 +63,9 @@ pub struct ThinRuntimeProfileFuse {
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<ThinRuntimeProfileFuseImagePullSecrets>>,
     /// Image for thinRuntime fuse
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
@@ -185,6 +191,17 @@ pub struct ThinRuntimeProfileFuseEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThinRuntimeProfileFuseImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// livenessProbe of thin fuse pod
@@ -529,6 +546,17 @@ pub struct ThinRuntimeProfileFuseVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThinRuntimeProfileImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// ThinRuntimeProfileSpec defines the desired state of ThinRuntimeProfile
@@ -2141,6 +2169,9 @@ pub struct ThinRuntimeProfileWorker {
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<ThinRuntimeProfileWorkerImagePullSecrets>>,
     /// Image for thinRuntime fuse
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
@@ -2266,6 +2297,17 @@ pub struct ThinRuntimeProfileWorkerEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThinRuntimeProfileWorkerImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// livenessProbe of thin fuse pod

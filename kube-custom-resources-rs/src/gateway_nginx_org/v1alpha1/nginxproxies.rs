@@ -24,6 +24,9 @@ pub struct NginxProxySpec {
     /// Default is "dual", meaning the server will use both IPv4 and IPv6.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamily")]
     pub ip_family: Option<NginxProxyIpFamily>,
+    /// Logging defines logging related settings for NGINX.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<NginxProxyLogging>,
     /// RewriteClientIP defines configuration for rewriting the client IP to the original client's IP.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewriteClientIP")]
     pub rewrite_client_ip: Option<NginxProxyRewriteClientIp>,
@@ -41,6 +44,38 @@ pub enum NginxProxyIpFamily {
     Ipv4,
     #[serde(rename = "ipv6")]
     Ipv6,
+}
+
+/// Logging defines logging related settings for NGINX.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyLogging {
+    /// ErrorLevel defines the error log level. Possible log levels listed in order of increasing severity are
+    /// debug, info, notice, warn, error, crit, alert, and emerg. Setting a certain log level will cause all messages
+    /// of the specified and more severe log levels to be logged. For example, the log level 'error' will cause error,
+    /// crit, alert, and emerg messages to be logged. https://nginx.org/en/docs/ngx_core_module.html#error_log
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorLevel")]
+    pub error_level: Option<NginxProxyLoggingErrorLevel>,
+}
+
+/// Logging defines logging related settings for NGINX.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NginxProxyLoggingErrorLevel {
+    #[serde(rename = "debug")]
+    Debug,
+    #[serde(rename = "info")]
+    Info,
+    #[serde(rename = "notice")]
+    Notice,
+    #[serde(rename = "warn")]
+    Warn,
+    #[serde(rename = "error")]
+    Error,
+    #[serde(rename = "crit")]
+    Crit,
+    #[serde(rename = "alert")]
+    Alert,
+    #[serde(rename = "emerg")]
+    Emerg,
 }
 
 /// RewriteClientIP defines configuration for rewriting the client IP to the original client's IP.

@@ -178,6 +178,10 @@ pub struct FargateProfileStatus {
     /// The Unix epoch timestamp at object creation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdAt")]
     pub created_at: Option<String>,
+    /// The health status of the Fargate profile. If there are issues with your Fargate
+    /// profile's health, they are listed here.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<FargateProfileStatusHealth>,
     /// The current status of the Fargate profile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
@@ -203,5 +207,24 @@ pub struct FargateProfileStatusAckResourceMetadata {
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
+}
+
+/// The health status of the Fargate profile. If there are issues with your Fargate
+/// profile's health, they are listed here.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FargateProfileStatusHealth {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub issues: Option<Vec<FargateProfileStatusHealthIssues>>,
+}
+
+/// An issue that is associated with the Fargate profile.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FargateProfileStatusHealthIssues {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceIDs")]
+    pub resource_i_ds: Option<Vec<String>>,
 }
 

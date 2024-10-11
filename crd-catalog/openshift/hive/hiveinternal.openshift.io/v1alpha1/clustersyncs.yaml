@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.13.0"
+    controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "clustersyncs.hiveinternal.openshift.io"
 spec:
   group: "hiveinternal.openshift.io"
@@ -32,10 +32,10 @@ spec:
           description: "ClusterSync is the status of all of the SelectorSyncSets and SyncSets that apply to a ClusterDeployment."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -76,7 +76,7 @@ spec:
                     type: "object"
                   type: "array"
                 controlledByReplica:
-                  description: "ControlledByReplica indicates which replica of the hive-clustersync StatefulSet is responsible for (the CD related to) this clustersync. Note that this value indicates the replica that most recently handled the ClusterSync. If the hive-clustersync statefulset is scaled up or down, the controlling replica can change, potentially causing logs to be spread across multiple pods."
+                  description: "ControlledByReplica indicates which replica of the hive-clustersync StatefulSet is responsible\nfor (the CD related to) this clustersync. Note that this value indicates the replica that most\nrecently handled the ClusterSync. If the hive-clustersync statefulset is scaled up or down, the\ncontrolling replica can change, potentially causing logs to be spread across multiple pods."
                   format: "int64"
                   type: "integer"
                 firstSuccessTime:
@@ -89,7 +89,7 @@ spec:
                     description: "SyncStatus is the status of applying a specific SyncSet or SelectorSyncSet to the cluster."
                     properties:
                       failureMessage:
-                        description: "FailureMessage is a message describing why the SyncSet or SelectorSyncSet could not be applied. This is only set when Result is Failure."
+                        description: "FailureMessage is a message describing why the SyncSet or SelectorSyncSet could not be applied. This is only\nset when Result is Failure."
                         type: "string"
                       firstSuccessTime:
                         description: "FirstSuccessTime is the time when the SyncSet or SelectorSyncSet was first successfully applied to the cluster."
@@ -107,7 +107,7 @@ spec:
                         format: "int64"
                         type: "integer"
                       resourcesToDelete:
-                        description: "ResourcesToDelete is the list of resources in the cluster that should be deleted when the SyncSet or SelectorSyncSet is deleted or is no longer matched to the cluster."
+                        description: "ResourcesToDelete is the list of resources in the cluster that should be deleted when the SyncSet or SelectorSyncSet\nis deleted or is no longer matched to the cluster."
                         items:
                           description: "SyncResourceReference is a reference to a resource that is synced to a cluster via a SyncSet or SelectorSyncSet."
                           properties:
@@ -147,7 +147,7 @@ spec:
                     description: "SyncStatus is the status of applying a specific SyncSet or SelectorSyncSet to the cluster."
                     properties:
                       failureMessage:
-                        description: "FailureMessage is a message describing why the SyncSet or SelectorSyncSet could not be applied. This is only set when Result is Failure."
+                        description: "FailureMessage is a message describing why the SyncSet or SelectorSyncSet could not be applied. This is only\nset when Result is Failure."
                         type: "string"
                       firstSuccessTime:
                         description: "FirstSuccessTime is the time when the SyncSet or SelectorSyncSet was first successfully applied to the cluster."
@@ -165,7 +165,7 @@ spec:
                         format: "int64"
                         type: "integer"
                       resourcesToDelete:
-                        description: "ResourcesToDelete is the list of resources in the cluster that should be deleted when the SyncSet or SelectorSyncSet is deleted or is no longer matched to the cluster."
+                        description: "ResourcesToDelete is the list of resources in the cluster that should be deleted when the SyncSet or SelectorSyncSet\nis deleted or is no longer matched to the cluster."
                         items:
                           description: "SyncResourceReference is a reference to a resource that is synced to a cluster via a SyncSet or SelectorSyncSet."
                           properties:

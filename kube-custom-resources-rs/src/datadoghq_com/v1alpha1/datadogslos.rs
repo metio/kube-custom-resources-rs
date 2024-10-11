@@ -22,10 +22,13 @@ pub struct DatadogSLOSpec {
     /// ControllerOptions are the optional parameters in the DatadogSLO controller
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerOptions")]
     pub controller_options: Option<DatadogSLOControllerOptions>,
-    /// Description is a user-defined description of the service level objective. Always included in service level objective responses (but may be null). Optional in create/update requests.
+    /// Description is a user-defined description of the service level objective.
+    /// Always included in service level objective responses (but may be null). Optional in create/update requests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Groups is a list of (up to 100) monitor groups that narrow the scope of a monitor service level objective. Included in service level objective responses if it is not empty. Optional in create/update requests for monitor service level objectives, but may only be used when the length of the monitor_ids field is one.
+    /// Groups is a list of (up to 100) monitor groups that narrow the scope of a monitor service level objective.
+    /// Included in service level objective responses if it is not empty.
+    /// Optional in create/update requests for monitor service level objectives, but may only be used when the length of the monitor_ids field is one.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub groups: Option<Vec<String>>,
     /// MonitorIDs is a list of monitor IDs that defines the scope of a monitor service level objective. Required if type is monitor.
@@ -33,10 +36,13 @@ pub struct DatadogSLOSpec {
     pub monitor_i_ds: Option<Vec<i64>>,
     /// Name is the name of the service level objective.
     pub name: String,
-    /// Query is the query for a metric-based SLO. Required if type is metric. Note that only the `sum by` aggregator is allowed, which sums all request counts. `Average`, `max`, nor `min` request aggregators are not supported.
+    /// Query is the query for a metric-based SLO. Required if type is metric.
+    /// Note that only the `sum by` aggregator is allowed, which sums all request counts. `Average`, `max`, nor `min` request aggregators are not supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub query: Option<DatadogSLOQuery>,
-    /// Tags is a list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API.
+    /// Tags is a list of tags to associate with your service level objective.
+    /// This can help you categorize and filter service level objectives in the service level objectives page of the UI.
+    /// Note: it's not currently possible to filter by these tags when querying via the API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<String>>,
     /// TargetThreshold is the target threshold such that when the service level indicator is above this threshold over the given timeframe, the objective is being met.
@@ -60,7 +66,8 @@ pub struct DatadogSLOControllerOptions {
     pub disable_required_tags: Option<bool>,
 }
 
-/// Query is the query for a metric-based SLO. Required if type is metric. Note that only the `sum by` aggregator is allowed, which sums all request counts. `Average`, `max`, nor `min` request aggregators are not supported.
+/// Query is the query for a metric-based SLO. Required if type is metric.
+/// Note that only the `sum by` aggregator is allowed, which sums all request counts. `Average`, `max`, nor `min` request aggregators are not supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogSLOQuery {
     /// Denominator is a Datadog metric query for total (valid) events.
@@ -81,7 +88,8 @@ pub struct DatadogSLOStatus {
     /// Creator is the identity of the SLO creator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub creator: Option<String>,
-    /// CurrentHash tracks the hash of the current DatadogSLOSpec to know if the Spec has changed and needs an update.
+    /// CurrentHash tracks the hash of the current DatadogSLOSpec to know
+    /// if the Spec has changed and needs an update.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentHash")]
     pub current_hash: Option<String>,
     /// ID is the SLO ID generated in Datadog.

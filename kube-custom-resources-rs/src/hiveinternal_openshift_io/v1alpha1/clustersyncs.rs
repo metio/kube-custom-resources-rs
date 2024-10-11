@@ -27,7 +27,10 @@ pub struct ClusterSyncStatus {
     /// Conditions is a list of conditions associated with syncing to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ControlledByReplica indicates which replica of the hive-clustersync StatefulSet is responsible for (the CD related to) this clustersync. Note that this value indicates the replica that most recently handled the ClusterSync. If the hive-clustersync statefulset is scaled up or down, the controlling replica can change, potentially causing logs to be spread across multiple pods.
+    /// ControlledByReplica indicates which replica of the hive-clustersync StatefulSet is responsible
+    /// for (the CD related to) this clustersync. Note that this value indicates the replica that most
+    /// recently handled the ClusterSync. If the hive-clustersync statefulset is scaled up or down, the
+    /// controlling replica can change, potentially causing logs to be spread across multiple pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlledByReplica")]
     pub controlled_by_replica: Option<i64>,
     /// FirstSuccessTime is the time we first successfully applied all (selector)syncsets to a cluster.
@@ -44,7 +47,8 @@ pub struct ClusterSyncStatus {
 /// SyncStatus is the status of applying a specific SyncSet or SelectorSyncSet to the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterSyncStatusSelectorSyncSets {
-    /// FailureMessage is a message describing why the SyncSet or SelectorSyncSet could not be applied. This is only set when Result is Failure.
+    /// FailureMessage is a message describing why the SyncSet or SelectorSyncSet could not be applied. This is only
+    /// set when Result is Failure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// FirstSuccessTime is the time when the SyncSet or SelectorSyncSet was first successfully applied to the cluster.
@@ -58,7 +62,8 @@ pub struct ClusterSyncStatusSelectorSyncSets {
     /// ObservedGeneration is the generation of the SyncSet or SelectorSyncSet that was last observed.
     #[serde(rename = "observedGeneration")]
     pub observed_generation: i64,
-    /// ResourcesToDelete is the list of resources in the cluster that should be deleted when the SyncSet or SelectorSyncSet is deleted or is no longer matched to the cluster.
+    /// ResourcesToDelete is the list of resources in the cluster that should be deleted when the SyncSet or SelectorSyncSet
+    /// is deleted or is no longer matched to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcesToDelete")]
     pub resources_to_delete: Option<Vec<ClusterSyncStatusSelectorSyncSetsResourcesToDelete>>,
     /// Result is the result of the last attempt to apply the SyncSet or SelectorSyncSet to the cluster.
@@ -91,7 +96,8 @@ pub enum ClusterSyncStatusSelectorSyncSetsResult {
 /// SyncStatus is the status of applying a specific SyncSet or SelectorSyncSet to the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterSyncStatusSyncSets {
-    /// FailureMessage is a message describing why the SyncSet or SelectorSyncSet could not be applied. This is only set when Result is Failure.
+    /// FailureMessage is a message describing why the SyncSet or SelectorSyncSet could not be applied. This is only
+    /// set when Result is Failure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// FirstSuccessTime is the time when the SyncSet or SelectorSyncSet was first successfully applied to the cluster.
@@ -105,7 +111,8 @@ pub struct ClusterSyncStatusSyncSets {
     /// ObservedGeneration is the generation of the SyncSet or SelectorSyncSet that was last observed.
     #[serde(rename = "observedGeneration")]
     pub observed_generation: i64,
-    /// ResourcesToDelete is the list of resources in the cluster that should be deleted when the SyncSet or SelectorSyncSet is deleted or is no longer matched to the cluster.
+    /// ResourcesToDelete is the list of resources in the cluster that should be deleted when the SyncSet or SelectorSyncSet
+    /// is deleted or is no longer matched to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcesToDelete")]
     pub resources_to_delete: Option<Vec<ClusterSyncStatusSyncSetsResourcesToDelete>>,
     /// Result is the result of the last attempt to apply the SyncSet or SelectorSyncSet to the cluster.
