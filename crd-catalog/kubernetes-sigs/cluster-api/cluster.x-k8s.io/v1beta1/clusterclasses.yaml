@@ -517,8 +517,6 @@ spec:
                                     description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) variables."
                                     type: "object"
                                 type: "object"
-                            required:
-                              - "type"
                             type: "object"
                         required:
                           - "openAPIV3Schema"
@@ -1157,8 +1155,6 @@ spec:
                                           description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) variables."
                                           type: "object"
                                       type: "object"
-                                  required:
-                                    - "type"
                                   type: "object"
                               required:
                                 - "openAPIV3Schema"

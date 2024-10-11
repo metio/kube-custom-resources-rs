@@ -130,6 +130,9 @@ pub struct JindoRuntimeFuse {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logConfig")]
     pub log_config: Option<BTreeMap<String, String>>,
+    /// Define whether fuse metrics will be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<JindoRuntimeFuseMetrics>,
     /// NodeSelector is a selector which must be true for the fuse client to fit on a node,
     /// this option only effect when global is enabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -149,6 +152,19 @@ pub struct JindoRuntimeFuse {
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<JindoRuntimeFuseTolerations>>,
+}
+
+/// Define whether fuse metrics will be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JindoRuntimeFuseMetrics {
+    /// Enabled decides whether to expose client metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// ScrapeTarget decides which fuse component will be scraped by Prometheus.
+    /// It is a list separated by comma where supported items are [MountPod, Sidecar, All (indicates MountPod and Sidecar), None].
+    /// Defaults to None when it is not explicitly set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTarget")]
+    pub scrape_target: Option<String>,
 }
 
 /// PodMetadata defines labels and annotations that will be propagated to Jindo's fuse pods

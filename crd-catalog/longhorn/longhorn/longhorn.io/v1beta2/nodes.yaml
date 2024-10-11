@@ -177,6 +177,12 @@ spec:
                         type: "string"
                       instanceManagerName:
                         type: "string"
+                      scheduledBackingImage:
+                        additionalProperties:
+                          format: "int64"
+                          type: "integer"
+                        nullable: true
+                        type: "object"
                       scheduledReplica:
                         additionalProperties:
                           format: "int64"

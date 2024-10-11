@@ -55,7 +55,7 @@ spec:
                     type: "object"
                   type: "array"
                 client_id:
-                  description: "ClientID is the id of the authentication client (Teleport Auth server)."
+                  description: "ClientID is the id of the authentication client (Teleport Auth Service)."
                   type: "string"
                 client_redirect_settings:
                   description: "ClientRedirectSettings defines which client redirect URLs are allowed for non-browser SSO logins other than the standard localhost ones."

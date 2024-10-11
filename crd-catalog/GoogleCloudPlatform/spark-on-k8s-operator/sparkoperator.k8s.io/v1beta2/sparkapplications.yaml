@@ -5984,7 +5984,7 @@ spec:
                 hadoopConf:
                   additionalProperties:
                     type: "string"
-                  description: "HadoopConf carries user-specified Hadoop configuration properties as they would use the  the \"--conf\" option\nin spark-submit.  The SparkApplication controller automatically adds prefix \"spark.hadoop.\" to Hadoop\nconfiguration properties."
+                  description: "HadoopConf carries user-specified Hadoop configuration properties as they would use the \"--conf\" option\nin spark-submit. The SparkApplication controller automatically adds prefix \"spark.hadoop.\" to Hadoop\nconfiguration properties."
                   type: "object"
                 hadoopConfigMap:
                   description: "HadoopConfigMap carries the name of the ConfigMap containing Hadoop configuration files such as core-site.xml.\nThe controller will add environment variable HADOOP_CONF_DIR to the path where the ConfigMap is mounted to."

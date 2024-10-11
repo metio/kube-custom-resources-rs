@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// InstanceSpec defines the desired state of Instance.
 /// 
-/// 
 /// Describes an instance.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "Instance", plural = "instances")]
@@ -45,9 +44,7 @@ pub struct InstanceSpec {
     /// For more information, see Burstable performance instances (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html)
     /// in the Amazon EC2 User Guide.
     /// 
-    /// 
     /// Default: standard (T2 instances) or unlimited (T3/T3a/T4g instances)
-    /// 
     /// 
     /// For T3 instances with host tenancy, only standard is supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creditSpecification")]
@@ -62,7 +59,6 @@ pub struct InstanceSpec {
     /// Alternatively, if you set InstanceInitiatedShutdownBehavior to terminate,
     /// you can terminate the instance by running the shutdown command from the instance.
     /// 
-    /// 
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAPITermination")]
     pub disable_api_termination: Option<bool>,
@@ -71,7 +67,6 @@ pub struct InstanceSpec {
     /// stack to provide optimal Amazon EBS I/O performance. This optimization isn't
     /// available with all instance types. Additional usage charges apply when using
     /// an EBS-optimized instance.
-    /// 
     /// 
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ebsOptimized")]
@@ -86,14 +81,12 @@ pub struct InstanceSpec {
     /// inference accelerators are a resource you can attach to your Amazon EC2 instances
     /// to accelerate your Deep Learning (DL) inference workloads.
     /// 
-    /// 
     /// You cannot specify accelerators from different generations in the same request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticInferenceAccelerators")]
     pub elastic_inference_accelerators: Option<Vec<InstanceElasticInferenceAccelerators>>,
     /// Indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves.
     /// For more information, see What is Amazon Web Services Nitro Enclaves? (https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html)
     /// in the Amazon Web Services Nitro Enclaves User Guide.
-    /// 
     /// 
     /// You can't enable Amazon Web Services Nitro Enclaves and hibernation on the
     /// same instance.
@@ -102,7 +95,6 @@ pub struct InstanceSpec {
     /// Indicates whether an instance is enabled for hibernation. For more information,
     /// see Hibernate your instance (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html)
     /// in the Amazon EC2 User Guide.
-    /// 
     /// 
     /// You can't enable hibernation and Amazon Web Services Nitro Enclaves on the
     /// same instance.
@@ -118,12 +110,10 @@ pub struct InstanceSpec {
     /// Indicates whether an instance stops or terminates when you initiate shutdown
     /// from the instance (using the operating system command for system shutdown).
     /// 
-    /// 
     /// Default: stop
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceInitiatedShutdownBehavior")]
     pub instance_initiated_shutdown_behavior: Option<String>,
     /// The market (purchasing) option for the instances.
-    /// 
     /// 
     /// For RunInstances, persistent Spot Instance requests are only supported when
     /// InstanceInterruptionBehavior is set to either hibernate or stop.
@@ -131,7 +121,6 @@ pub struct InstanceSpec {
     pub instance_market_options: Option<InstanceInstanceMarketOptions>,
     /// The instance type. For more information, see Instance types (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html)
     /// in the Amazon EC2 User Guide.
-    /// 
     /// 
     /// Default: m1.small
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -142,7 +131,6 @@ pub struct InstanceSpec {
     /// in the same request. You can specify this option if you've specified a minimum
     /// number of instances to launch.
     /// 
-    /// 
     /// You cannot specify this option and the network interfaces option in the same
     /// request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6AddressCount")]
@@ -152,13 +140,11 @@ pub struct InstanceSpec {
     /// to assign a number of IPv6 addresses in the same request. You cannot specify
     /// this option if you've specified a minimum number of instances to launch.
     /// 
-    /// 
     /// You cannot specify this option and the network interfaces option in the same
     /// request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6Addresses")]
     pub ipv6_addresses: Option<Vec<InstanceIpv6Addresses>>,
     /// The ID of the kernel.
-    /// 
     /// 
     /// We recommend that you use PV-GRUB instead of kernels and RAM disks. For more
     /// information, see PV-GRUB (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html)
@@ -167,7 +153,6 @@ pub struct InstanceSpec {
     pub kernel_id: Option<String>,
     /// The name of the key pair. You can create a key pair using CreateKeyPair (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateKeyPair.html)
     /// or ImportKeyPair (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ImportKeyPair.html).
-    /// 
     /// 
     /// If you do not specify a key pair, you can't connect to the instance unless
     /// you choose an AMI that is configured to allow users another way to log in.
@@ -188,7 +173,6 @@ pub struct InstanceSpec {
     /// than Amazon EC2 can launch in the target Availability Zone, Amazon EC2 launches
     /// the largest possible number of instances above MinCount.
     /// 
-    /// 
     /// Constraints: Between 1 and the maximum number you're allowed for the specified
     /// instance type. For more information about the default limits, and how to
     /// request an increase, see How many instances can I run in Amazon EC2 (http://aws.amazon.com/ec2/faqs/#How_many_instances_can_I_run_in_Amazon_EC2)
@@ -202,7 +186,6 @@ pub struct InstanceSpec {
     /// The minimum number of instances to launch. If you specify a minimum that
     /// is more instances than Amazon EC2 can launch in the target Availability Zone,
     /// Amazon EC2 launches no instances.
-    /// 
     /// 
     /// Constraints: Between 1 and the maximum number you're allowed for the specified
     /// instance type. For more information about the default limits, and how to
@@ -228,12 +211,10 @@ pub struct InstanceSpec {
     /// [EC2-VPC] The primary IPv4 address. You must specify a value from the IPv4
     /// address range of the subnet.
     /// 
-    /// 
     /// Only one private IP address can be designated as primary. You can't specify
     /// this option if you've specified the option to designate a private IP address
     /// as the primary IP address in a network interface specification. You cannot
     /// specify this option if you're launching more than one instance in the request.
-    /// 
     /// 
     /// You cannot specify this option and the network interfaces option in the same
     /// request.
@@ -244,7 +225,6 @@ pub struct InstanceSpec {
     /// need to specify a RAM disk. To find kernel requirements, go to the Amazon
     /// Web Services Resource Center and search for the kernel ID.
     /// 
-    /// 
     /// We recommend that you use PV-GRUB instead of kernels and RAM disks. For more
     /// information, see PV-GRUB (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html)
     /// in the Amazon EC2 User Guide.
@@ -253,7 +233,6 @@ pub struct InstanceSpec {
     /// The IDs of the security groups. You can create a security group using CreateSecurityGroup
     /// (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSecurityGroup.html).
     /// 
-    /// 
     /// If you specify a network interface, you must specify any security groups
     /// as part of the network interface.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
@@ -261,16 +240,13 @@ pub struct InstanceSpec {
     /// [EC2-Classic, default VPC] The names of the security groups. For a nondefault
     /// VPC, you must use security group IDs instead.
     /// 
-    /// 
     /// If you specify a network interface, you must specify any security groups
     /// as part of the network interface.
-    /// 
     /// 
     /// Default: Amazon EC2 uses the default security group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<String>>,
     /// [EC2-VPC] The ID of the subnet to launch the instance into.
-    /// 
     /// 
     /// If you specify a network interface, you must specify any subnets as part
     /// of the network interface.
@@ -368,9 +344,7 @@ pub struct InstanceCpuOptions {
 /// For more information, see Burstable performance instances (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html)
 /// in the Amazon EC2 User Guide.
 /// 
-/// 
 /// Default: standard (T2 instances) or unlimited (T3/T3a/T4g instances)
-/// 
 /// 
 /// For T3 instances with host tenancy, only standard is supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -399,7 +373,6 @@ pub struct InstanceElasticInferenceAccelerators {
 /// For more information, see What is Amazon Web Services Nitro Enclaves? (https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html)
 /// in the Amazon Web Services Nitro Enclaves User Guide.
 /// 
-/// 
 /// You can't enable Amazon Web Services Nitro Enclaves and hibernation on the
 /// same instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -411,7 +384,6 @@ pub struct InstanceEnclaveOptions {
 /// Indicates whether an instance is enabled for hibernation. For more information,
 /// see Hibernate your instance (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html)
 /// in the Amazon EC2 User Guide.
-/// 
 /// 
 /// You can't enable hibernation and Amazon Web Services Nitro Enclaves on the
 /// same instance.
@@ -431,7 +403,6 @@ pub struct InstanceIamInstanceProfile {
 }
 
 /// The market (purchasing) option for the instances.
-/// 
 /// 
 /// For RunInstances, persistent Spot Instance requests are only supported when
 /// InstanceInterruptionBehavior is set to either hibernate or stop.
@@ -700,7 +671,6 @@ pub struct InstanceStatus {
     /// DNS hostname can only be used inside the Amazon EC2 network. This name is
     /// not available until the instance enters the running state.
     /// 
-    /// 
     /// [EC2-VPC] The Amazon-provided DNS server resolves Amazon-provided private
     /// DNS hostnames if you've enabled DNS resolution and DNS hostnames in your
     /// VPC. If you are not using the Amazon-provided DNS server in your VPC, your
@@ -717,7 +687,6 @@ pub struct InstanceStatus {
     pub public_dns_name: Option<String>,
     /// The public IPv4 address, or the Carrier IP address assigned to the instance,
     /// if applicable.
-    /// 
     /// 
     /// A Carrier IP address only applies to an instance launched in a subnet associated
     /// with a Wavelength Zone.
@@ -781,7 +750,6 @@ pub struct InstanceStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

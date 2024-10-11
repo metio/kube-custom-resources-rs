@@ -28,7 +28,7 @@ pub struct TeleportOIDCConnectorSpec {
     /// ClaimsToRoles specifies a dynamic mapping from claims to roles.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims_to_roles: Option<Vec<TeleportOIDCConnectorClaimsToRoles>>,
-    /// ClientID is the id of the authentication client (Teleport Auth server).
+    /// ClientID is the id of the authentication client (Teleport Auth Service).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_id: Option<String>,
     /// ClientRedirectSettings defines which client redirect URLs are allowed for non-browser SSO logins other than the standard localhost ones.

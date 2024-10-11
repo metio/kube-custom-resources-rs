@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "subnets.ec2.services.k8s.aws"
 spec:
   group: "ec2.services.k8s.aws"
@@ -34,18 +34,18 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "SubnetSpec defines the desired state of Subnet.\n\n\nDescribes a subnet."
+              description: "SubnetSpec defines the desired state of Subnet.\n\nDescribes a subnet."
               properties:
                 assignIPv6AddressOnCreation:
                   type: "boolean"
                 availabilityZone:
-                  description: "The Availability Zone or Local Zone for the subnet.\n\n\nDefault: Amazon Web Services selects one for you. If you create more than\none subnet in your VPC, we do not necessarily select a different zone for\neach subnet.\n\n\nTo create a subnet in a Local Zone, set this value to the Local Zone ID,\nfor example us-west-2-lax-1a. For information about the Regions that support\nLocal Zones, see Available Regions (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)\nin the Amazon Elastic Compute Cloud User Guide.\n\n\nTo create a subnet in an Outpost, set this value to the Availability Zone\nfor the Outpost and specify the Outpost ARN."
+                  description: "The Availability Zone or Local Zone for the subnet.\n\nDefault: Amazon Web Services selects one for you. If you create more than\none subnet in your VPC, we do not necessarily select a different zone for\neach subnet.\n\nTo create a subnet in a Local Zone, set this value to the Local Zone ID,\nfor example us-west-2-lax-1a. For information about the Regions that support\nLocal Zones, see Available Regions (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)\nin the Amazon Elastic Compute Cloud User Guide.\n\nTo create a subnet in an Outpost, set this value to the Availability Zone\nfor the Outpost and specify the Outpost ARN."
                   type: "string"
                 availabilityZoneID:
                   description: "The AZ ID or the Local Zone ID of the subnet."
                   type: "string"
                 cidrBlock:
-                  description: "The IPv4 network range for the subnet, in CIDR notation. For example, 10.0.0.0/24.\nWe modify the specified CIDR block to its canonical form; for example, if\nyou specify 100.68.0.18/18, we modify it to 100.68.0.0/18.\n\n\nThis parameter is not supported for an IPv6 only subnet."
+                  description: "The IPv4 network range for the subnet, in CIDR notation. For example, 10.0.0.0/24.\nWe modify the specified CIDR block to its canonical form; for example, if\nyou specify 100.68.0.18/18, we modify it to 100.68.0.0/18.\n\nThis parameter is not supported for an IPv6 only subnet."
                   type: "string"
                 customerOwnedIPv4Pool:
                   type: "string"
@@ -58,7 +58,7 @@ spec:
                 hostnameType:
                   type: "string"
                 ipv6CIDRBlock:
-                  description: "The IPv6 network range for the subnet, in CIDR notation. The subnet size\nmust use a /64 prefix length.\n\n\nThis parameter is required for an IPv6 only subnet."
+                  description: "The IPv6 network range for the subnet, in CIDR notation. The subnet size\nmust use a /64 prefix length.\n\nThis parameter is required for an IPv6 only subnet."
                   type: "string"
                 ipv6Native:
                   description: "Indicates whether to create an IPv6 only subnet."
@@ -70,7 +70,7 @@ spec:
                   type: "string"
                 routeTableRefs:
                   items:
-                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                     properties:
                       from:
                         description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -101,7 +101,7 @@ spec:
                   description: "The ID of the VPC."
                   type: "string"
                 vpcRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -120,7 +120,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

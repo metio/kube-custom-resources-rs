@@ -368,6 +368,9 @@ pub struct OutputAzureLogAnalytics {
     /// Name of the event type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logType")]
     pub log_type: Option<String>,
+    /// Set a record key that will populate 'logtype'. If the key is found, it will have precedence
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logTypeKey")]
+    pub log_type_key: Option<String>,
     /// Specify the primary or the secondary client authentication key
     #[serde(rename = "sharedKey")]
     pub shared_key: OutputAzureLogAnalyticsSharedKey,

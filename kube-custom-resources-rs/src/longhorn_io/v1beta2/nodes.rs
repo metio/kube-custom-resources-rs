@@ -105,6 +105,8 @@ pub struct NodeStatusDiskStatus {
     pub filesystem_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceManagerName")]
     pub instance_manager_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduledBackingImage")]
+    pub scheduled_backing_image: Option<BTreeMap<String, i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduledReplica")]
     pub scheduled_replica: Option<BTreeMap<String, i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageAvailable")]

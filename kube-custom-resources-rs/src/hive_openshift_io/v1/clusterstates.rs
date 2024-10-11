@@ -24,7 +24,8 @@ pub struct ClusterStateSpec {
 /// ClusterStateStatus defines the observed state of ClusterState
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStateStatus {
-    /// ClusterOperators contains the state for every cluster operator in the target cluster
+    /// ClusterOperators contains the state for every cluster operator in the
+    /// target cluster
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterOperators")]
     pub cluster_operators: Option<Vec<ClusterStateStatusClusterOperators>>,
     /// LastUpdated is the last time that operator state was updated
@@ -35,7 +36,8 @@ pub struct ClusterStateStatus {
 /// ClusterOperatorState summarizes the status of a single cluster operator
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStateStatusClusterOperators {
-    /// Conditions is the set of conditions in the status of the cluster operator on the target cluster
+    /// Conditions is the set of conditions in the status of the cluster operator
+    /// on the target cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Name is the name of the cluster operator

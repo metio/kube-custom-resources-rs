@@ -652,7 +652,7 @@ spec:
                                   description: "True if the spec is generated from a Kamelet"
                                   type: "boolean"
                                 interceptors:
-                                  description: "Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader\nuses to pre/post process sources"
+                                  description: "Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader\nuses to pre/post process sources\nDeprecated: no longer in use."
                                   items:
                                     type: "string"
                                   type: "array"
@@ -1390,7 +1390,7 @@ spec:
                                   description: "True if the spec is generated from a Kamelet"
                                   type: "boolean"
                                 interceptors:
-                                  description: "Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader\nuses to pre/post process sources"
+                                  description: "Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader\nuses to pre/post process sources\nDeprecated: no longer in use."
                                   items:
                                     type: "string"
                                   type: "array"

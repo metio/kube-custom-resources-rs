@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "instances.ec2.services.k8s.aws"
 spec:
   group: "ec2.services.k8s.aws"
@@ -31,7 +31,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "InstanceSpec defines the desired state of Instance.\n\n\nDescribes an instance."
+              description: "InstanceSpec defines the desired state of Instance.\n\nDescribes an instance."
               properties:
                 blockDeviceMappings:
                   description: "The block device mapping, which defines the EBS volumes and instance store\nvolumes to attach to the instance at launch. For more information, see Block\ndevice mappings (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html)\nin the Amazon EC2 User Guide."
@@ -96,7 +96,7 @@ spec:
                       type: "integer"
                   type: "object"
                 creditSpecification:
-                  description: "The credit option for CPU usage of the burstable performance instance. Valid\nvalues are standard and unlimited. To change this attribute after launch,\nuse ModifyInstanceCreditSpecification (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyInstanceCreditSpecification.html).\nFor more information, see Burstable performance instances (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html)\nin the Amazon EC2 User Guide.\n\n\nDefault: standard (T2 instances) or unlimited (T3/T3a/T4g instances)\n\n\nFor T3 instances with host tenancy, only standard is supported."
+                  description: "The credit option for CPU usage of the burstable performance instance. Valid\nvalues are standard and unlimited. To change this attribute after launch,\nuse ModifyInstanceCreditSpecification (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyInstanceCreditSpecification.html).\nFor more information, see Burstable performance instances (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html)\nin the Amazon EC2 User Guide.\n\nDefault: standard (T2 instances) or unlimited (T3/T3a/T4g instances)\n\nFor T3 instances with host tenancy, only standard is supported."
                   properties:
                     cpuCredits:
                       type: "string"
@@ -105,10 +105,10 @@ spec:
                   description: "Indicates whether an instance is enabled for stop protection. For more information,\nsee Stop protection (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html#Using_StopProtection)."
                   type: "boolean"
                 disableAPITermination:
-                  description: "If you set this parameter to true, you can't terminate the instance using\nthe Amazon EC2 console, CLI, or API; otherwise, you can. To change this attribute\nafter launch, use ModifyInstanceAttribute (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyInstanceAttribute.html).\nAlternatively, if you set InstanceInitiatedShutdownBehavior to terminate,\nyou can terminate the instance by running the shutdown command from the instance.\n\n\nDefault: false"
+                  description: "If you set this parameter to true, you can't terminate the instance using\nthe Amazon EC2 console, CLI, or API; otherwise, you can. To change this attribute\nafter launch, use ModifyInstanceAttribute (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyInstanceAttribute.html).\nAlternatively, if you set InstanceInitiatedShutdownBehavior to terminate,\nyou can terminate the instance by running the shutdown command from the instance.\n\nDefault: false"
                   type: "boolean"
                 ebsOptimized:
-                  description: "Indicates whether the instance is optimized for Amazon EBS I/O. This optimization\nprovides dedicated throughput to Amazon EBS and an optimized configuration\nstack to provide optimal Amazon EBS I/O performance. This optimization isn't\navailable with all instance types. Additional usage charges apply when using\nan EBS-optimized instance.\n\n\nDefault: false"
+                  description: "Indicates whether the instance is optimized for Amazon EBS I/O. This optimization\nprovides dedicated throughput to Amazon EBS and an optimized configuration\nstack to provide optimal Amazon EBS I/O performance. This optimization isn't\navailable with all instance types. Additional usage charges apply when using\nan EBS-optimized instance.\n\nDefault: false"
                   type: "boolean"
                 elasticGPUSpecification:
                   description: "An elastic GPU to associate with the instance. An Elastic GPU is a GPU resource\nthat you can attach to your Windows instance to accelerate the graphics performance\nof your applications. For more information, see Amazon EC2 Elastic GPUs (https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/elastic-graphics.html)\nin the Amazon EC2 User Guide."
@@ -120,7 +120,7 @@ spec:
                     type: "object"
                   type: "array"
                 elasticInferenceAccelerators:
-                  description: "An elastic inference accelerator to associate with the instance. Elastic\ninference accelerators are a resource you can attach to your Amazon EC2 instances\nto accelerate your Deep Learning (DL) inference workloads.\n\n\nYou cannot specify accelerators from different generations in the same request."
+                  description: "An elastic inference accelerator to associate with the instance. Elastic\ninference accelerators are a resource you can attach to your Amazon EC2 instances\nto accelerate your Deep Learning (DL) inference workloads.\n\nYou cannot specify accelerators from different generations in the same request."
                   items:
                     description: "Describes an elastic inference accelerator."
                     properties:
@@ -132,13 +132,13 @@ spec:
                     type: "object"
                   type: "array"
                 enclaveOptions:
-                  description: "Indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves.\nFor more information, see What is Amazon Web Services Nitro Enclaves? (https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html)\nin the Amazon Web Services Nitro Enclaves User Guide.\n\n\nYou can't enable Amazon Web Services Nitro Enclaves and hibernation on the\nsame instance."
+                  description: "Indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves.\nFor more information, see What is Amazon Web Services Nitro Enclaves? (https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html)\nin the Amazon Web Services Nitro Enclaves User Guide.\n\nYou can't enable Amazon Web Services Nitro Enclaves and hibernation on the\nsame instance."
                   properties:
                     enabled:
                       type: "boolean"
                   type: "object"
                 hibernationOptions:
-                  description: "Indicates whether an instance is enabled for hibernation. For more information,\nsee Hibernate your instance (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html)\nin the Amazon EC2 User Guide.\n\n\nYou can't enable hibernation and Amazon Web Services Nitro Enclaves on the\nsame instance."
+                  description: "Indicates whether an instance is enabled for hibernation. For more information,\nsee Hibernate your instance (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html)\nin the Amazon EC2 User Guide.\n\nYou can't enable hibernation and Amazon Web Services Nitro Enclaves on the\nsame instance."
                   properties:
                     configured:
                       type: "boolean"
@@ -155,10 +155,10 @@ spec:
                   description: "The ID of the AMI. An AMI ID is required to launch an instance and must be\nspecified here or in a launch template."
                   type: "string"
                 instanceInitiatedShutdownBehavior:
-                  description: "Indicates whether an instance stops or terminates when you initiate shutdown\nfrom the instance (using the operating system command for system shutdown).\n\n\nDefault: stop"
+                  description: "Indicates whether an instance stops or terminates when you initiate shutdown\nfrom the instance (using the operating system command for system shutdown).\n\nDefault: stop"
                   type: "string"
                 instanceMarketOptions:
-                  description: "The market (purchasing) option for the instances.\n\n\nFor RunInstances, persistent Spot Instance requests are only supported when\nInstanceInterruptionBehavior is set to either hibernate or stop."
+                  description: "The market (purchasing) option for the instances.\n\nFor RunInstances, persistent Spot Instance requests are only supported when\nInstanceInterruptionBehavior is set to either hibernate or stop."
                   properties:
                     marketType:
                       type: "string"
@@ -180,14 +180,14 @@ spec:
                       type: "object"
                   type: "object"
                 instanceType:
-                  description: "The instance type. For more information, see Instance types (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html)\nin the Amazon EC2 User Guide.\n\n\nDefault: m1.small"
+                  description: "The instance type. For more information, see Instance types (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html)\nin the Amazon EC2 User Guide.\n\nDefault: m1.small"
                   type: "string"
                 ipv6AddressCount:
-                  description: "[EC2-VPC] The number of IPv6 addresses to associate with the primary network\ninterface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet.\nYou cannot specify this option and the option to assign specific IPv6 addresses\nin the same request. You can specify this option if you've specified a minimum\nnumber of instances to launch.\n\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
+                  description: "[EC2-VPC] The number of IPv6 addresses to associate with the primary network\ninterface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet.\nYou cannot specify this option and the option to assign specific IPv6 addresses\nin the same request. You can specify this option if you've specified a minimum\nnumber of instances to launch.\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
                   format: "int64"
                   type: "integer"
                 ipv6Addresses:
-                  description: "[EC2-VPC] The IPv6 addresses from the range of the subnet to associate with\nthe primary network interface. You cannot specify this option and the option\nto assign a number of IPv6 addresses in the same request. You cannot specify\nthis option if you've specified a minimum number of instances to launch.\n\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
+                  description: "[EC2-VPC] The IPv6 addresses from the range of the subnet to associate with\nthe primary network interface. You cannot specify this option and the option\nto assign a number of IPv6 addresses in the same request. You cannot specify\nthis option if you've specified a minimum number of instances to launch.\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
                   items:
                     description: "Describes an IPv6 address."
                     properties:
@@ -196,10 +196,10 @@ spec:
                     type: "object"
                   type: "array"
                 kernelID:
-                  description: "The ID of the kernel.\n\n\nWe recommend that you use PV-GRUB instead of kernels and RAM disks. For more\ninformation, see PV-GRUB (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html)\nin the Amazon EC2 User Guide."
+                  description: "The ID of the kernel.\n\nWe recommend that you use PV-GRUB instead of kernels and RAM disks. For more\ninformation, see PV-GRUB (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html)\nin the Amazon EC2 User Guide."
                   type: "string"
                 keyName:
-                  description: "The name of the key pair. You can create a key pair using CreateKeyPair (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateKeyPair.html)\nor ImportKeyPair (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ImportKeyPair.html).\n\n\nIf you do not specify a key pair, you can't connect to the instance unless\nyou choose an AMI that is configured to allow users another way to log in."
+                  description: "The name of the key pair. You can create a key pair using CreateKeyPair (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateKeyPair.html)\nor ImportKeyPair (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ImportKeyPair.html).\n\nIf you do not specify a key pair, you can't connect to the instance unless\nyou choose an AMI that is configured to allow users another way to log in."
                   type: "string"
                 launchTemplate:
                   description: "The launch template to use to launch the instances. Any parameters that you\nspecify in RunInstances override the same parameters in the launch template.\nYou can specify either the name or ID of a launch template, but not both."
@@ -227,7 +227,7 @@ spec:
                       type: "string"
                   type: "object"
                 maxCount:
-                  description: "The maximum number of instances to launch. If you specify more instances\nthan Amazon EC2 can launch in the target Availability Zone, Amazon EC2 launches\nthe largest possible number of instances above MinCount.\n\n\nConstraints: Between 1 and the maximum number you're allowed for the specified\ninstance type. For more information about the default limits, and how to\nrequest an increase, see How many instances can I run in Amazon EC2 (http://aws.amazon.com/ec2/faqs/#How_many_instances_can_I_run_in_Amazon_EC2)\nin the Amazon EC2 FAQ."
+                  description: "The maximum number of instances to launch. If you specify more instances\nthan Amazon EC2 can launch in the target Availability Zone, Amazon EC2 launches\nthe largest possible number of instances above MinCount.\n\nConstraints: Between 1 and the maximum number you're allowed for the specified\ninstance type. For more information about the default limits, and how to\nrequest an increase, see How many instances can I run in Amazon EC2 (http://aws.amazon.com/ec2/faqs/#How_many_instances_can_I_run_in_Amazon_EC2)\nin the Amazon EC2 FAQ."
                   format: "int64"
                   type: "integer"
                 metadataOptions:
@@ -246,7 +246,7 @@ spec:
                       type: "string"
                   type: "object"
                 minCount:
-                  description: "The minimum number of instances to launch. If you specify a minimum that\nis more instances than Amazon EC2 can launch in the target Availability Zone,\nAmazon EC2 launches no instances.\n\n\nConstraints: Between 1 and the maximum number you're allowed for the specified\ninstance type. For more information about the default limits, and how to\nrequest an increase, see How many instances can I run in Amazon EC2 (http://aws.amazon.com/ec2/faqs/#How_many_instances_can_I_run_in_Amazon_EC2)\nin the Amazon EC2 General FAQ."
+                  description: "The minimum number of instances to launch. If you specify a minimum that\nis more instances than Amazon EC2 can launch in the target Availability Zone,\nAmazon EC2 launches no instances.\n\nConstraints: Between 1 and the maximum number you're allowed for the specified\ninstance type. For more information about the default limits, and how to\nrequest an increase, see How many instances can I run in Amazon EC2 (http://aws.amazon.com/ec2/faqs/#How_many_instances_can_I_run_in_Amazon_EC2)\nin the Amazon EC2 General FAQ."
                   format: "int64"
                   type: "integer"
                 monitoring:
@@ -362,23 +362,23 @@ spec:
                       type: "string"
                   type: "object"
                 privateIPAddress:
-                  description: "[EC2-VPC] The primary IPv4 address. You must specify a value from the IPv4\naddress range of the subnet.\n\n\nOnly one private IP address can be designated as primary. You can't specify\nthis option if you've specified the option to designate a private IP address\nas the primary IP address in a network interface specification. You cannot\nspecify this option if you're launching more than one instance in the request.\n\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
+                  description: "[EC2-VPC] The primary IPv4 address. You must specify a value from the IPv4\naddress range of the subnet.\n\nOnly one private IP address can be designated as primary. You can't specify\nthis option if you've specified the option to designate a private IP address\nas the primary IP address in a network interface specification. You cannot\nspecify this option if you're launching more than one instance in the request.\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
                   type: "string"
                 ramDiskID:
-                  description: "The ID of the RAM disk to select. Some kernels require additional drivers\nat launch. Check the kernel requirements for information about whether you\nneed to specify a RAM disk. To find kernel requirements, go to the Amazon\nWeb Services Resource Center and search for the kernel ID.\n\n\nWe recommend that you use PV-GRUB instead of kernels and RAM disks. For more\ninformation, see PV-GRUB (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html)\nin the Amazon EC2 User Guide."
+                  description: "The ID of the RAM disk to select. Some kernels require additional drivers\nat launch. Check the kernel requirements for information about whether you\nneed to specify a RAM disk. To find kernel requirements, go to the Amazon\nWeb Services Resource Center and search for the kernel ID.\n\nWe recommend that you use PV-GRUB instead of kernels and RAM disks. For more\ninformation, see PV-GRUB (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html)\nin the Amazon EC2 User Guide."
                   type: "string"
                 securityGroupIDs:
-                  description: "The IDs of the security groups. You can create a security group using CreateSecurityGroup\n(https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSecurityGroup.html).\n\n\nIf you specify a network interface, you must specify any security groups\nas part of the network interface."
+                  description: "The IDs of the security groups. You can create a security group using CreateSecurityGroup\n(https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSecurityGroup.html).\n\nIf you specify a network interface, you must specify any security groups\nas part of the network interface."
                   items:
                     type: "string"
                   type: "array"
                 securityGroups:
-                  description: "[EC2-Classic, default VPC] The names of the security groups. For a nondefault\nVPC, you must use security group IDs instead.\n\n\nIf you specify a network interface, you must specify any security groups\nas part of the network interface.\n\n\nDefault: Amazon EC2 uses the default security group."
+                  description: "[EC2-Classic, default VPC] The names of the security groups. For a nondefault\nVPC, you must use security group IDs instead.\n\nIf you specify a network interface, you must specify any security groups\nas part of the network interface.\n\nDefault: Amazon EC2 uses the default security group."
                   items:
                     type: "string"
                   type: "array"
                 subnetID:
-                  description: "[EC2-VPC] The ID of the subnet to launch the instance into.\n\n\nIf you specify a network interface, you must specify any subnets as part\nof the network interface."
+                  description: "[EC2-VPC] The ID of the subnet to launch the instance into.\n\nIf you specify a network interface, you must specify any subnets as part\nof the network interface."
                   type: "string"
                 tags:
                   description: "The tags. The value parameter is required, but if you don't want the tag\nto have a value, specify the parameter with no value, and we set the value\nto an empty string."
@@ -402,7 +402,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
@@ -522,7 +522,7 @@ spec:
                   description: "The platform details value for the instance. For more information, see AMI\nbilling information fields (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/billing-info-fields.html)\nin the Amazon EC2 User Guide."
                   type: "string"
                 privateDNSName:
-                  description: "(IPv4 only) The private DNS hostname name assigned to the instance. This\nDNS hostname can only be used inside the Amazon EC2 network. This name is\nnot available until the instance enters the running state.\n\n\n[EC2-VPC] The Amazon-provided DNS server resolves Amazon-provided private\nDNS hostnames if you've enabled DNS resolution and DNS hostnames in your\nVPC. If you are not using the Amazon-provided DNS server in your VPC, your\ncustom domain name servers must resolve the hostname as appropriate."
+                  description: "(IPv4 only) The private DNS hostname name assigned to the instance. This\nDNS hostname can only be used inside the Amazon EC2 network. This name is\nnot available until the instance enters the running state.\n\n[EC2-VPC] The Amazon-provided DNS server resolves Amazon-provided private\nDNS hostnames if you've enabled DNS resolution and DNS hostnames in your\nVPC. If you are not using the Amazon-provided DNS server in your VPC, your\ncustom domain name servers must resolve the hostname as appropriate."
                   type: "string"
                 productCodes:
                   description: "The product codes attached to this instance, if applicable."
@@ -539,7 +539,7 @@ spec:
                   description: "(IPv4 only) The public DNS name assigned to the instance. This name is not\navailable until the instance enters the running state. For EC2-VPC, this\nname is only available if you've enabled DNS hostnames for your VPC."
                   type: "string"
                 publicIPAddress:
-                  description: "The public IPv4 address, or the Carrier IP address assigned to the instance,\nif applicable.\n\n\nA Carrier IP address only applies to an instance launched in a subnet associated\nwith a Wavelength Zone."
+                  description: "The public IPv4 address, or the Carrier IP address assigned to the instance,\nif applicable.\n\nA Carrier IP address only applies to an instance launched in a subnet associated\nwith a Wavelength Zone."
                   type: "string"
                 rootDeviceName:
                   description: "The device name of the root device volume (for example, /dev/sda1)."

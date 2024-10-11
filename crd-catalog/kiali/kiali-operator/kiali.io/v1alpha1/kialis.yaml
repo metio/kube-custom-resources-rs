@@ -492,7 +492,7 @@ spec:
                                   description: "When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Prometheus (in this case, `auth.token` config is ignored)."
                                   type: "boolean"
                                 username:
-                                  description: "Username to be used when making requests to Prometheus with `basic` authentication."
+                                  description: "Username to be used when making requests to Prometheus with `basic` authentication. May refer to a secret."
                                   type: "string"
                               type: "object"
                             cache_duration:
@@ -561,7 +561,7 @@ spec:
                               description: "When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Grafana (in this case, `auth.token` config is ignored)."
                               type: "boolean"
                             username:
-                              description: "Username to be used when making requests to Grafana with `basic` authentication."
+                              description: "Username to be used when making requests to Grafana with `basic` authentication. May refer to a secret."
                               type: "string"
                           type: "object"
                         dashboards:
@@ -719,7 +719,7 @@ spec:
                               description: "When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Prometheus (in this case, `auth.token` config is ignored)."
                               type: "boolean"
                             username:
-                              description: "Username to be used when making requests to Prometheus with `basic` authentication."
+                              description: "Username to be used when making requests to Prometheus with `basic` authentication. May refer to a secret."
                               type: "string"
                           type: "object"
                         cache_duration:
@@ -787,7 +787,7 @@ spec:
                               description: "When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to the Tracing server (in this case, `auth.token` config is ignored)."
                               type: "boolean"
                             username:
-                              description: "Username to be used when making requests to the Tracing server with `basic` authentication."
+                              description: "Username to be used when making requests to the Tracing server with `basic` authentication. May refer to a secret."
                               type: "string"
                           type: "object"
                         custom_headers:

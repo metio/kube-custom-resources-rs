@@ -65,7 +65,8 @@ pub struct SecretProviderClassStatus {
     pub by_pod: Option<Vec<SecretProviderClassStatusByPod>>,
 }
 
-/// ByPodStatus defines the state of SecretProviderClass as seen by an individual controller
+/// ByPodStatus defines the state of SecretProviderClass as seen by
+/// an individual controller
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretProviderClassStatusByPod {
     /// id of the pod that wrote the status

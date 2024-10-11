@@ -26,7 +26,6 @@ pub struct CertificateAuthorityActivationSpec {
     /// (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CreateCertificateAuthority.html).
     /// This must be of the form:
     /// 
-    /// 
     /// arn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityARN")]
     pub certificate_authority_arn: Option<String>,
@@ -34,7 +33,6 @@ pub struct CertificateAuthorityActivationSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -70,7 +68,6 @@ pub struct CertificateAuthorityActivationCertificate {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -147,7 +144,6 @@ pub struct CertificateAuthorityActivationStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

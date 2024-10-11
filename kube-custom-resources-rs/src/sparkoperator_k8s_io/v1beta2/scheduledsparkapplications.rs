@@ -70,8 +70,8 @@ pub struct ScheduledSparkApplicationTemplate {
     /// This is best effort and actual retry attempts can be >= the value specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureRetries")]
     pub failure_retries: Option<i32>,
-    /// HadoopConf carries user-specified Hadoop configuration properties as they would use the  the "--conf" option
-    /// in spark-submit.  The SparkApplication controller automatically adds prefix "spark.hadoop." to Hadoop
+    /// HadoopConf carries user-specified Hadoop configuration properties as they would use the "--conf" option
+    /// in spark-submit. The SparkApplication controller automatically adds prefix "spark.hadoop." to Hadoop
     /// configuration properties.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hadoopConf")]
     pub hadoop_conf: Option<BTreeMap<String, String>>,

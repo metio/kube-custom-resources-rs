@@ -71,6 +71,11 @@ pub struct TempoStackSpec {
     /// Tenants defines the per-tenant authentication and authorization spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenants: Option<TempoStackTenants>,
+    /// Timeout configures the same timeout on all components starting at ingress down to the ingestor/querier.
+    /// Timeout configuration on a specific component has a higher precedence.
+    /// Defaults to 30 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
 }
 
 /// ExtraConfigSpec defines extra configurations for tempo that will be merged with the operator generated, configurations defined here
@@ -2121,6 +2126,16 @@ pub struct TempoStackTemplateQueryFrontendJaegerQuery {
     /// Enabled defines if the Jaeger Query component should be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// FindTracesConcurrentRequests defines how many concurrent request a single trace search can submit (defaults querier.replicas*2).
+    /// The search for traces in Jaeger submits limit+1 requests. First requests finds trace IDs and then it fetches
+    /// entire traces by ID. This property allows Jaeger to fetch traces in parallel.
+    /// Note that by default a single Tempo querier can process 20 concurrent search jobs.
+    /// Increasing this property might require scaling up querier instances, especially on error "job queue full"
+    /// See also Tempo's extraConfig:
+    /// querier.max_concurrent_queries (20 default)
+    /// query_frontend.max_outstanding_per_tenant: (2000 default). Increase if the query-frontend returns 429
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "findTracesConcurrentRequests")]
+    pub find_traces_concurrent_requests: Option<i64>,
     /// Ingress defines the options for the Jaeger Query ingress.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<TempoStackTemplateQueryFrontendJaegerQueryIngress>,

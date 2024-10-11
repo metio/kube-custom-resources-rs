@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "certificates.acmpca.services.k8s.aws"
 spec:
   group: "acmpca.services.k8s.aws"
@@ -30,7 +30,7 @@ spec:
               description: "CertificateSpec defines the desired state of Certificate."
               properties:
                 apiPassthrough:
-                  description: "Specifies X.509 certificate information to be included in the issued certificate.\nAn APIPassthrough or APICSRPassthrough template variant must be selected,\nor else this parameter is ignored. For more information about using these\ntemplates, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).\n\n\nIf conflicting or duplicate certificate information is supplied during certificate\nissuance, Amazon Web Services Private CA applies order of operation rules\n(https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations)\nto determine what information is used."
+                  description: "Specifies X.509 certificate information to be included in the issued certificate.\nAn APIPassthrough or APICSRPassthrough template variant must be selected,\nor else this parameter is ignored. For more information about using these\ntemplates, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).\n\nIf conflicting or duplicate certificate information is supplied during certificate\nissuance, Amazon Web Services Private CA applies order of operation rules\n(https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations)\nto determine what information is used."
                   properties:
                     extensions:
                       description: "Contains X.509 extension information for a certificate."
@@ -59,7 +59,7 @@ spec:
                           type: "array"
                         customExtensions:
                           items:
-                            description: "Specifies the X.509 extension information for a certificate.\n\n\nExtensions present in CustomExtensions follow the ApiPassthrough template\nrules (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations)."
+                            description: "Specifies the X.509 extension information for a certificate.\n\nExtensions present in CustomExtensions follow the ApiPassthrough template\nrules (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations)."
                             properties:
                               critical:
                                 type: "boolean"
@@ -220,10 +220,10 @@ spec:
                       type: "object"
                   type: "object"
                 certificateAuthorityARN:
-                  description: "The Amazon Resource Name (ARN) that was returned when you called CreateCertificateAuthority\n(https://docs.aws.amazon.com/privateca/latest/APIReference/API_CreateCertificateAuthority.html).\nThis must be of the form:\n\n\narn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012"
+                  description: "The Amazon Resource Name (ARN) that was returned when you called CreateCertificateAuthority\n(https://docs.aws.amazon.com/privateca/latest/APIReference/API_CreateCertificateAuthority.html).\nThis must be of the form:\n\narn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012"
                   type: "string"
                 certificateAuthorityRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -253,7 +253,7 @@ spec:
                 certificateSigningRequest:
                   type: "string"
                 certificateSigningRequestRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -265,13 +265,13 @@ spec:
                       type: "object"
                   type: "object"
                 signingAlgorithm:
-                  description: "The name of the algorithm that will be used to sign the certificate to be\nissued.\n\n\nThis parameter should not be confused with the SigningAlgorithm parameter\nused to sign a CSR in the CreateCertificateAuthority action.\n\n\nThe specified signing algorithm family (RSA or ECDSA) must match the algorithm\nfamily of the CA's secret key."
+                  description: "The name of the algorithm that will be used to sign the certificate to be\nissued.\n\nThis parameter should not be confused with the SigningAlgorithm parameter\nused to sign a CSR in the CreateCertificateAuthority action.\n\nThe specified signing algorithm family (RSA or ECDSA) must match the algorithm\nfamily of the CA's secret key."
                   type: "string"
                 templateARN:
-                  description: "Specifies a custom configuration template to use when issuing a certificate.\nIf this parameter is not provided, Amazon Web Services Private CA defaults\nto the EndEntityCertificate/V1 template. For CA certificates, you should\nchoose the shortest path length that meets your needs. The path length is\nindicated by the PathLenN portion of the ARN, where N is the CA depth (https://docs.aws.amazon.com/privateca/latest/userguide/PcaTerms.html#terms-cadepth).\n\n\nNote: The CA depth configured on a subordinate CA certificate must not exceed\nthe limit set by its parents in the CA hierarchy.\n\n\nFor a list of TemplateArn values supported by Amazon Web Services Private\nCA, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html)."
+                  description: "Specifies a custom configuration template to use when issuing a certificate.\nIf this parameter is not provided, Amazon Web Services Private CA defaults\nto the EndEntityCertificate/V1 template. For CA certificates, you should\nchoose the shortest path length that meets your needs. The path length is\nindicated by the PathLenN portion of the ARN, where N is the CA depth (https://docs.aws.amazon.com/privateca/latest/userguide/PcaTerms.html#terms-cadepth).\n\nNote: The CA depth configured on a subordinate CA certificate must not exceed\nthe limit set by its parents in the CA hierarchy.\n\nFor a list of TemplateArn values supported by Amazon Web Services Private\nCA, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html)."
                   type: "string"
                 validity:
-                  description: "Information describing the end of the validity period of the certificate.\nThis parameter sets the “Not After” date for the certificate.\n\n\nCertificate validity is the period of time during which a certificate is\nvalid. Validity can be expressed as an explicit date and time when the certificate\nexpires, or as a span of time after issuance, stated in days, months, or\nyears. For more information, see Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)\nin RFC 5280.\n\n\nThis value is unaffected when ValidityNotBefore is also specified. For example,\nif Validity is set to 20 days in the future, the certificate will expire\n20 days from issuance time regardless of the ValidityNotBefore value.\n\n\nThe end of the validity period configured on a certificate must not exceed\nthe limit set on its parents in the CA hierarchy."
+                  description: "Information describing the end of the validity period of the certificate.\nThis parameter sets the “Not After” date for the certificate.\n\nCertificate validity is the period of time during which a certificate is\nvalid. Validity can be expressed as an explicit date and time when the certificate\nexpires, or as a span of time after issuance, stated in days, months, or\nyears. For more information, see Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)\nin RFC 5280.\n\nThis value is unaffected when ValidityNotBefore is also specified. For example,\nif Validity is set to 20 days in the future, the certificate will expire\n20 days from issuance time regardless of the ValidityNotBefore value.\n\nThe end of the validity period configured on a certificate must not exceed\nthe limit set on its parents in the CA hierarchy."
                   properties:
                     type:
                       type: "string"
@@ -280,7 +280,7 @@ spec:
                       type: "integer"
                   type: "object"
                 validityNotBefore:
-                  description: "Information describing the start of the validity period of the certificate.\nThis parameter sets the “Not Before\" date for the certificate.\n\n\nBy default, when issuing a certificate, Amazon Web Services Private CA sets\nthe \"Not Before\" date to the issuance time minus 60 minutes. This compensates\nfor clock inconsistencies across computer systems. The ValidityNotBefore\nparameter can be used to customize the “Not Before” value.\n\n\nUnlike the Validity parameter, the ValidityNotBefore parameter is optional.\n\n\nThe ValidityNotBefore value is expressed as an explicit date and time, using\nthe Validity type value ABSOLUTE. For more information, see Validity (https://docs.aws.amazon.com/privateca/latest/APIReference/API_Validity.html)\nin this API reference and Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)\nin RFC 5280."
+                  description: "Information describing the start of the validity period of the certificate.\nThis parameter sets the “Not Before\" date for the certificate.\n\nBy default, when issuing a certificate, Amazon Web Services Private CA sets\nthe \"Not Before\" date to the issuance time minus 60 minutes. This compensates\nfor clock inconsistencies across computer systems. The ValidityNotBefore\nparameter can be used to customize the “Not Before” value.\n\nUnlike the Validity parameter, the ValidityNotBefore parameter is optional.\n\nThe ValidityNotBefore value is expressed as an explicit date and time, using\nthe Validity type value ABSOLUTE. For more information, see Validity (https://docs.aws.amazon.com/privateca/latest/APIReference/API_Validity.html)\nin this API reference and Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)\nin RFC 5280."
                   properties:
                     type:
                       type: "string"
@@ -299,7 +299,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

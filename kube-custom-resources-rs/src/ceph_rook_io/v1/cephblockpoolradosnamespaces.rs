@@ -23,9 +23,50 @@ pub struct CephBlockPoolRadosNamespaceSpec {
     /// the CephBlockPool CR.
     #[serde(rename = "blockPoolName")]
     pub block_pool_name: String,
+    /// Mirroring configuration of CephBlockPoolRadosNamespace
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mirroring: Option<CephBlockPoolRadosNamespaceMirroring>,
     /// The name of the CephBlockPoolRadosNamespaceSpec namespace. If not set, the default is the name of the CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// Mirroring configuration of CephBlockPoolRadosNamespace
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CephBlockPoolRadosNamespaceMirroring {
+    /// Mode is the mirroring mode; either pool or image
+    pub mode: CephBlockPoolRadosNamespaceMirroringMode,
+    /// RemoteNamespace is the name of the CephBlockPoolRadosNamespace on the secondary cluster CephBlockPool
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteNamespace")]
+    pub remote_namespace: Option<String>,
+    /// SnapshotSchedules is the scheduling of snapshot for mirrored images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
+    pub snapshot_schedules: Option<Vec<CephBlockPoolRadosNamespaceMirroringSnapshotSchedules>>,
+}
+
+/// Mirroring configuration of CephBlockPoolRadosNamespace
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CephBlockPoolRadosNamespaceMirroringMode {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "pool")]
+    Pool,
+    #[serde(rename = "image")]
+    Image,
+}
+
+/// SnapshotScheduleSpec represents the snapshot scheduling settings of a mirrored pool
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephBlockPoolRadosNamespaceMirroringSnapshotSchedules {
+    /// Interval represent the periodicity of the snapshot.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
+    /// Path is the path to snapshot, only valid for CephFS
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// StartTime indicates when to start the snapshot
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
+    pub start_time: Option<String>,
 }
 
 /// Status represents the status of a CephBlockPool Rados Namespace

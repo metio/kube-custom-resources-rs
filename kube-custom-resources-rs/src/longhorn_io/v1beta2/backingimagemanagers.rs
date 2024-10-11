@@ -60,6 +60,8 @@ pub struct BackingImageManagerStatusBackingImageFileMap {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub progress: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realSize")]
+    pub real_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "senderManagerAddress")]
     pub sender_manager_address: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendingReference")]

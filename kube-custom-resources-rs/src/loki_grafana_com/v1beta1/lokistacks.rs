@@ -24,8 +24,8 @@ pub struct LokiStackSpec {
     pub limits: Option<LokiStackLimits>,
     /// ManagementState defines if the CR should be managed by the operator or not.
     /// Default is managed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementState")]
-    pub management_state: Option<LokiStackManagementState>,
+    #[serde(rename = "managementState")]
+    pub management_state: LokiStackManagementState,
     /// ReplicationFactor defines the policy for log stream replication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationFactor")]
     pub replication_factor: Option<i32>,

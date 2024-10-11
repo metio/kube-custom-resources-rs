@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// CertificateAuthoritySpec defines the desired state of CertificateAuthority.
 /// 
-/// 
 /// Contains information about your private certificate authority (CA). Your
 /// private CA can issue and revoke X.509 digital certificates. Digital certificates
 /// verify that the entity named in the certificate Subject field owns or controls
@@ -40,16 +39,13 @@ pub struct CertificateAuthoritySpec {
     /// Specifies a cryptographic key management compliance standard used for handling
     /// CA keys.
     /// 
-    /// 
     /// Default: FIPS_140_2_LEVEL_3_OR_HIGHER
-    /// 
     /// 
     /// Some Amazon Web Services Regions do not support the default. When creating
     /// a CA in these Regions, you must provide FIPS_140_2_LEVEL_2_OR_HIGHER as the
     /// argument for KeyStorageSecurityStandard. Failure to do this results in an
     /// InvalidArgsException with the message, "A certificate authority cannot be
     /// created in this region with the specified security standard."
-    /// 
     /// 
     /// For information about security standard support in various Regions, see Storage
     /// and security compliance of Amazon Web Services Private CA private keys (https://docs.aws.amazon.com/privateca/latest/userguide/data-protection.html#private-keys).
@@ -60,27 +56,21 @@ pub struct CertificateAuthoritySpec {
     /// to enable neither. The default is for both certificate validation mechanisms
     /// to be disabled.
     /// 
-    /// 
     /// The following requirements apply to revocation configurations.
-    /// 
     /// 
     ///    * A configuration disabling CRLs or OCSP must contain only the Enabled=False
     ///    parameter, and will fail if other parameters such as CustomCname or ExpirationInDays
     ///    are included.
     /// 
-    /// 
     ///    * In a CRL configuration, the S3BucketName parameter must conform to Amazon
     ///    S3 bucket naming rules (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html).
-    /// 
     /// 
     ///    * A configuration containing a custom Canonical Name (CNAME) parameter
     ///    for CRLs or OCSP must conform to RFC2396 (https://www.ietf.org/rfc/rfc2396.txt)
     ///    restrictions on the use of special characters in a CNAME.
     /// 
-    /// 
     ///    * In a CRL or OCSP configuration, the value of a CNAME parameter must
     ///    not include a protocol prefix such as "http://" or "https://".
-    /// 
     /// 
     /// For more information, see the OcspConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_OcspConfiguration.html)
     /// and CrlConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CrlConfiguration.html)
@@ -93,13 +83,12 @@ pub struct CertificateAuthoritySpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<CertificateAuthorityTags>>,
     /// The type of the certificate authority.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
     /// Specifies whether the CA issues general-purpose certificates that typically
     /// require a revocation mechanism, or short-lived certificates that may optionally
     /// omit revocation because they expire quickly. Short-lived certificate validity
     /// is limited to seven days.
-    /// 
     /// 
     /// The default value is GENERAL_PURPOSE.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usageMode")]
@@ -349,27 +338,21 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationSubjectCustomAtt
 /// to enable neither. The default is for both certificate validation mechanisms
 /// to be disabled.
 /// 
-/// 
 /// The following requirements apply to revocation configurations.
-/// 
 /// 
 ///    * A configuration disabling CRLs or OCSP must contain only the Enabled=False
 ///    parameter, and will fail if other parameters such as CustomCname or ExpirationInDays
 ///    are included.
 /// 
-/// 
 ///    * In a CRL configuration, the S3BucketName parameter must conform to Amazon
 ///    S3 bucket naming rules (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html).
-/// 
 /// 
 ///    * A configuration containing a custom Canonical Name (CNAME) parameter
 ///    for CRLs or OCSP must conform to RFC2396 (https://www.ietf.org/rfc/rfc2396.txt)
 ///    restrictions on the use of special characters in a CNAME.
 /// 
-/// 
 ///    * In a CRL or OCSP configuration, the value of a CNAME parameter must
 ///    not include a protocol prefix such as "http://" or "https://".
-/// 
 /// 
 /// For more information, see the OcspConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_OcspConfiguration.html)
 /// and CrlConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CrlConfiguration.html)
@@ -386,11 +369,9 @@ pub struct CertificateAuthorityRevocationConfiguration {
     /// Points extension of each certificate it issues. Your S3 bucket policy must
     /// give write permission to Amazon Web Services Private CA.
     /// 
-    /// 
     /// Amazon Web Services Private CA assets that are stored in Amazon S3 can be
     /// protected with encryption. For more information, see Encrypting Your CRLs
     /// (https://docs.aws.amazon.com/privateca/latest/userguide/PcaCreateCa.html#crl-encryption).
-    /// 
     /// 
     /// Your private CA uses the value in the ExpirationInDays parameter to calculate
     /// the nextUpdate field in the CRL. The CRL is refreshed prior to a certificate's
@@ -398,31 +379,23 @@ pub struct CertificateAuthorityRevocationConfiguration {
     /// it appears in the CRL until the certificate expires, and then in one additional
     /// CRL after expiration, and it always appears in the audit report.
     /// 
-    /// 
     /// A CRL is typically updated approximately 30 minutes after a certificate is
     /// revoked. If for any reason a CRL update fails, Amazon Web Services Private
     /// CA makes further attempts every 15 minutes.
     /// 
-    /// 
     /// CRLs contain the following fields:
-    /// 
     /// 
     ///    * Version: The current version number defined in RFC 5280 is V2. The integer
     ///    value is 0x1.
     /// 
-    /// 
     ///    * Signature Algorithm: The name of the algorithm used to sign the CRL.
-    /// 
     /// 
     ///    * Issuer: The X.500 distinguished name of your private CA that issued
     ///    the CRL.
     /// 
-    /// 
     ///    * Last Update: The issue date and time of this CRL.
     /// 
-    /// 
     ///    * Next Update: The day and time by which the next CRL will be issued.
-    /// 
     /// 
     ///    * Revoked Certificates: List of revoked certificates. Each list item contains
     ///    the following information. Serial Number: The serial number, in hexadecimal
@@ -430,25 +403,19 @@ pub struct CertificateAuthorityRevocationConfiguration {
     ///    certificate was revoked. CRL Entry Extensions: Optional extensions for
     ///    the CRL entry. X509v3 CRL Reason Code: Reason the certificate was revoked.
     /// 
-    /// 
     ///    * CRL Extensions: Optional extensions for the CRL. X509v3 Authority Key
     ///    Identifier: Identifies the public key associated with the private key
     ///    used to sign the certificate. X509v3 CRL Number:: Decimal sequence number
     ///    for the CRL.
     /// 
-    /// 
     ///    * Signature Algorithm: Algorithm used by your private CA to sign the CRL.
     /// 
-    /// 
     ///    * Signature Value: Signature computed over the CRL.
-    /// 
     /// 
     /// Certificate revocation lists created by Amazon Web Services Private CA are
     /// DER-encoded. You can use the following OpenSSL command to list a CRL.
     /// 
-    /// 
     /// openssl crl -inform DER -text -in crl_path -noout
-    /// 
     /// 
     /// For more information, see Planning a certificate revocation list (CRL) (https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html)
     /// in the Amazon Web Services Private Certificate Authority User Guide
@@ -456,7 +423,6 @@ pub struct CertificateAuthorityRevocationConfiguration {
     pub crl_configuration: Option<CertificateAuthorityRevocationConfigurationCrlConfiguration>,
     /// Contains information to enable and configure Online Certificate Status Protocol
     /// (OCSP) for validating certificate revocation status.
-    /// 
     /// 
     /// When you revoke a certificate, OCSP responses may take up to 60 minutes to
     /// reflect the new status.
@@ -474,11 +440,9 @@ pub struct CertificateAuthorityRevocationConfiguration {
 /// Points extension of each certificate it issues. Your S3 bucket policy must
 /// give write permission to Amazon Web Services Private CA.
 /// 
-/// 
 /// Amazon Web Services Private CA assets that are stored in Amazon S3 can be
 /// protected with encryption. For more information, see Encrypting Your CRLs
 /// (https://docs.aws.amazon.com/privateca/latest/userguide/PcaCreateCa.html#crl-encryption).
-/// 
 /// 
 /// Your private CA uses the value in the ExpirationInDays parameter to calculate
 /// the nextUpdate field in the CRL. The CRL is refreshed prior to a certificate's
@@ -486,31 +450,23 @@ pub struct CertificateAuthorityRevocationConfiguration {
 /// it appears in the CRL until the certificate expires, and then in one additional
 /// CRL after expiration, and it always appears in the audit report.
 /// 
-/// 
 /// A CRL is typically updated approximately 30 minutes after a certificate is
 /// revoked. If for any reason a CRL update fails, Amazon Web Services Private
 /// CA makes further attempts every 15 minutes.
 /// 
-/// 
 /// CRLs contain the following fields:
-/// 
 /// 
 ///    * Version: The current version number defined in RFC 5280 is V2. The integer
 ///    value is 0x1.
 /// 
-/// 
 ///    * Signature Algorithm: The name of the algorithm used to sign the CRL.
-/// 
 /// 
 ///    * Issuer: The X.500 distinguished name of your private CA that issued
 ///    the CRL.
 /// 
-/// 
 ///    * Last Update: The issue date and time of this CRL.
 /// 
-/// 
 ///    * Next Update: The day and time by which the next CRL will be issued.
-/// 
 /// 
 ///    * Revoked Certificates: List of revoked certificates. Each list item contains
 ///    the following information. Serial Number: The serial number, in hexadecimal
@@ -518,25 +474,19 @@ pub struct CertificateAuthorityRevocationConfiguration {
 ///    certificate was revoked. CRL Entry Extensions: Optional extensions for
 ///    the CRL entry. X509v3 CRL Reason Code: Reason the certificate was revoked.
 /// 
-/// 
 ///    * CRL Extensions: Optional extensions for the CRL. X509v3 Authority Key
 ///    Identifier: Identifies the public key associated with the private key
 ///    used to sign the certificate. X509v3 CRL Number:: Decimal sequence number
 ///    for the CRL.
 /// 
-/// 
 ///    * Signature Algorithm: Algorithm used by your private CA to sign the CRL.
 /// 
-/// 
 ///    * Signature Value: Signature computed over the CRL.
-/// 
 /// 
 /// Certificate revocation lists created by Amazon Web Services Private CA are
 /// DER-encoded. You can use the following OpenSSL command to list a CRL.
 /// 
-/// 
 /// openssl crl -inform DER -text -in crl_path -noout
-/// 
 /// 
 /// For more information, see Planning a certificate revocation list (CRL) (https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html)
 /// in the Amazon Web Services Private Certificate Authority User Guide
@@ -556,7 +506,6 @@ pub struct CertificateAuthorityRevocationConfigurationCrlConfiguration {
 
 /// Contains information to enable and configure Online Certificate Status Protocol
 /// (OCSP) for validating certificate revocation status.
-/// 
 /// 
 /// When you revoke a certificate, OCSP responses may take up to 60 minutes to
 /// reflect the new status.
@@ -643,7 +592,6 @@ pub struct CertificateAuthorityStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

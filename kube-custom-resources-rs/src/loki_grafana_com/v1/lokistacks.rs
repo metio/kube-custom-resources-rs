@@ -73,7 +73,6 @@ pub struct LokiStackHashRing {
 pub struct LokiStackHashRingMemberlist {
     /// EnableIPv6 enables IPv6 support for the memberlist based hash ring.
     /// 
-    /// 
     /// Currently this also forces the instanceAddrType to podIP to avoid local address lookup
     /// for the memberlist.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableIPv6")]
@@ -233,7 +232,6 @@ pub struct LokiStackLimitsGlobalOtlpResourceAttributes {
     /// IgnoreDefaults controls whether to ignore the global configuration for resource attributes
     /// indexed as labels.
     /// 
-    /// 
     /// If IgnoreDefaults is true, then this spec needs to contain at least one mapping to a index label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreDefaults")]
     pub ignore_defaults: Option<bool>,
@@ -241,12 +239,11 @@ pub struct LokiStackLimitsGlobalOtlpResourceAttributes {
 
 /// OTLPResourceAttributesConfigSpec contains the configuration for a set of resource attributes
 /// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LokiStackLimitsGlobalOtlpResourceAttributesAttributes {
     /// Action defines the indexing action for the selected resoure attributes. They
     /// can be either indexed as labels, added to structured metadata or drop altogether.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub action: Option<LokiStackLimitsGlobalOtlpResourceAttributesAttributesAction>,
+    pub action: LokiStackLimitsGlobalOtlpResourceAttributesAttributesAction,
     /// Attributes is the list of attributes to configure indexing or drop them
     /// altogether.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -457,7 +454,6 @@ pub struct LokiStackLimitsTenantsOtlpResourceAttributes {
     /// IgnoreDefaults controls whether to ignore the global configuration for resource attributes
     /// indexed as labels.
     /// 
-    /// 
     /// If IgnoreDefaults is true, then this spec needs to contain at least one mapping to a index label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreDefaults")]
     pub ignore_defaults: Option<bool>,
@@ -465,12 +461,11 @@ pub struct LokiStackLimitsTenantsOtlpResourceAttributes {
 
 /// OTLPResourceAttributesConfigSpec contains the configuration for a set of resource attributes
 /// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LokiStackLimitsTenantsOtlpResourceAttributesAttributes {
     /// Action defines the indexing action for the selected resoure attributes. They
     /// can be either indexed as labels, added to structured metadata or drop altogether.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub action: Option<LokiStackLimitsTenantsOtlpResourceAttributesAttributesAction>,
+    pub action: LokiStackLimitsTenantsOtlpResourceAttributesAttributesAction,
     /// Attributes is the list of attributes to configure indexing or drop them
     /// altogether.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -737,7 +732,6 @@ pub struct LokiStackStorage {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LokiStackStorageSchemas {
     /// EffectiveDate contains a date in YYYY-MM-DD format which is interpreted in the UTC time zone.
-    /// 
     /// 
     /// The configuration always needs at least one schema that is currently valid. This means that when creating a new
     /// LokiStack it is recommended to add a schema with the latest available version and an effective date of "yesterday".
@@ -3226,7 +3220,6 @@ pub struct LokiStackTenantsOpenshift {
     /// AdminGroups defines a list of groups, whose members are considered to have admin-privileges by the Loki Operator.
     /// Setting this to an empty array disables admin groups.
     /// 
-    /// 
     /// By default the following groups are considered admin-groups:
     ///  - system:cluster-admins
     ///  - cluster-admin
@@ -3310,7 +3303,6 @@ pub enum LokiStackStatusStorageCredentialMode {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LokiStackStatusStorageSchemas {
     /// EffectiveDate contains a date in YYYY-MM-DD format which is interpreted in the UTC time zone.
-    /// 
     /// 
     /// The configuration always needs at least one schema that is currently valid. This means that when creating a new
     /// LokiStack it is recommended to add a schema with the latest available version and an effective date of "yesterday".

@@ -22,10 +22,18 @@ pub struct ClusterClaimSpec {
     /// ClusterPoolName is the name of the cluster pool from which to claim a cluster.
     #[serde(rename = "clusterPoolName")]
     pub cluster_pool_name: String,
-    /// Lifetime is the maximum lifetime of the claim after it is assigned a cluster. If the claim still exists when the lifetime has elapsed, the claim will be deleted by Hive. This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats. Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See https://bugzilla.redhat.com/show_bug.cgi?id=2050332 https://github.com/kubernetes/apimachinery/issues/131 https://github.com/kubernetes/apiextensions-apiserver/issues/56
+    /// Lifetime is the maximum lifetime of the claim after it is assigned a cluster. If the claim still exists
+    /// when the lifetime has elapsed, the claim will be deleted by Hive.
+    /// This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats.
+    /// Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See
+    /// https://bugzilla.redhat.com/show_bug.cgi?id=2050332
+    /// https://github.com/kubernetes/apimachinery/issues/131
+    /// https://github.com/kubernetes/apiextensions-apiserver/issues/56
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifetime: Option<String>,
-    /// Namespace is the namespace containing the ClusterDeployment (name will match the namespace) of the claimed cluster. This field will be set as soon as a suitable cluster can be found, however that cluster may still be resuming and not yet ready for use. Wait for the ClusterRunning condition to be true to avoid this issue.
+    /// Namespace is the namespace containing the ClusterDeployment (name will match the namespace) of the claimed cluster.
+    /// This field will be set as soon as a suitable cluster can be found, however that cluster may still be
+    /// resuming and not yet ready for use. Wait for the ClusterRunning condition to be true to avoid this issue.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Subjects hold references to which to authorize access to the claimed cluster.
@@ -33,17 +41,22 @@ pub struct ClusterClaimSpec {
     pub subjects: Option<Vec<ClusterClaimSubjects>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClaimSubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -54,7 +67,8 @@ pub struct ClusterClaimStatus {
     /// Conditions includes more detailed status for the cluster pool.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Lifetime is the maximum lifetime of the claim after it is assigned a cluster. If the claim still exists when the lifetime has elapsed, the claim will be deleted by Hive.
+    /// Lifetime is the maximum lifetime of the claim after it is assigned a cluster. If the claim still exists
+    /// when the lifetime has elapsed, the claim will be deleted by Hive.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifetime: Option<String>,
 }

@@ -459,8 +459,13 @@ spec:
                                   description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.\nIPBlock cannot be set as part of the AppliedTo field.\nCannot be set with any other selector."
                                   properties:
                                     cidr:
-                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.1/24\"."
+                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.0/24\"."
                                       type: "string"
+                                    except:
+                                      description: "except is a slice of CIDRs that should not be included within an IPBlock\nValid examples are \"192.168.1.0/28\" or \"2001:db8::/64\"\nExcept values will be rejected if they are outside the cidr range"
+                                      items:
+                                        type: "string"
+                                      type: "array"
                                   required:
                                     - "cidr"
                                   type: "object"
@@ -722,8 +727,13 @@ spec:
                                   description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.\nIPBlock cannot be set as part of the AppliedTo field.\nCannot be set with any other selector."
                                   properties:
                                     cidr:
-                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.1/24\"."
+                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.0/24\"."
                                       type: "string"
+                                    except:
+                                      description: "except is a slice of CIDRs that should not be included within an IPBlock\nValid examples are \"192.168.1.0/28\" or \"2001:db8::/64\"\nExcept values will be rejected if they are outside the cidr range"
+                                      items:
+                                        type: "string"
+                                      type: "array"
                                   required:
                                     - "cidr"
                                   type: "object"
@@ -1085,8 +1095,13 @@ spec:
                                   description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.\nIPBlock cannot be set as part of the AppliedTo field.\nCannot be set with any other selector."
                                   properties:
                                     cidr:
-                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.1/24\"."
+                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.0/24\"."
                                       type: "string"
+                                    except:
+                                      description: "except is a slice of CIDRs that should not be included within an IPBlock\nValid examples are \"192.168.1.0/28\" or \"2001:db8::/64\"\nExcept values will be rejected if they are outside the cidr range"
+                                      items:
+                                        type: "string"
+                                      type: "array"
                                   required:
                                     - "cidr"
                                   type: "object"
@@ -1348,8 +1363,13 @@ spec:
                                   description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.\nIPBlock cannot be set as part of the AppliedTo field.\nCannot be set with any other selector."
                                   properties:
                                     cidr:
-                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.1/24\"."
+                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.0/24\"."
                                       type: "string"
+                                    except:
+                                      description: "except is a slice of CIDRs that should not be included within an IPBlock\nValid examples are \"192.168.1.0/28\" or \"2001:db8::/64\"\nExcept values will be rejected if they are outside the cidr range"
+                                      items:
+                                        type: "string"
+                                      type: "array"
                                   required:
                                     - "cidr"
                                   type: "object"

@@ -24,7 +24,6 @@ pub struct CertificateSpec {
     /// or else this parameter is ignored. For more information about using these
     /// templates, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).
     /// 
-    /// 
     /// If conflicting or duplicate certificate information is supplied during certificate
     /// issuance, Amazon Web Services Private CA applies order of operation rules
     /// (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations)
@@ -35,7 +34,6 @@ pub struct CertificateSpec {
     /// (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CreateCertificateAuthority.html).
     /// This must be of the form:
     /// 
-    /// 
     /// arn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityARN")]
     pub certificate_authority_arn: Option<String>,
@@ -43,7 +41,6 @@ pub struct CertificateSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -60,7 +57,6 @@ pub struct CertificateSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateSigningRequestRef")]
@@ -68,10 +64,8 @@ pub struct CertificateSpec {
     /// The name of the algorithm that will be used to sign the certificate to be
     /// issued.
     /// 
-    /// 
     /// This parameter should not be confused with the SigningAlgorithm parameter
     /// used to sign a CSR in the CreateCertificateAuthority action.
-    /// 
     /// 
     /// The specified signing algorithm family (RSA or ECDSA) must match the algorithm
     /// family of the CA's secret key.
@@ -83,10 +77,8 @@ pub struct CertificateSpec {
     /// choose the shortest path length that meets your needs. The path length is
     /// indicated by the PathLenN portion of the ARN, where N is the CA depth (https://docs.aws.amazon.com/privateca/latest/userguide/PcaTerms.html#terms-cadepth).
     /// 
-    /// 
     /// Note: The CA depth configured on a subordinate CA certificate must not exceed
     /// the limit set by its parents in the CA hierarchy.
-    /// 
     /// 
     /// For a list of TemplateArn values supported by Amazon Web Services Private
     /// CA, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).
@@ -95,18 +87,15 @@ pub struct CertificateSpec {
     /// Information describing the end of the validity period of the certificate.
     /// This parameter sets the “Not After” date for the certificate.
     /// 
-    /// 
     /// Certificate validity is the period of time during which a certificate is
     /// valid. Validity can be expressed as an explicit date and time when the certificate
     /// expires, or as a span of time after issuance, stated in days, months, or
     /// years. For more information, see Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)
     /// in RFC 5280.
     /// 
-    /// 
     /// This value is unaffected when ValidityNotBefore is also specified. For example,
     /// if Validity is set to 20 days in the future, the certificate will expire
     /// 20 days from issuance time regardless of the ValidityNotBefore value.
-    /// 
     /// 
     /// The end of the validity period configured on a certificate must not exceed
     /// the limit set on its parents in the CA hierarchy.
@@ -114,15 +103,12 @@ pub struct CertificateSpec {
     /// Information describing the start of the validity period of the certificate.
     /// This parameter sets the “Not Before" date for the certificate.
     /// 
-    /// 
     /// By default, when issuing a certificate, Amazon Web Services Private CA sets
     /// the "Not Before" date to the issuance time minus 60 minutes. This compensates
     /// for clock inconsistencies across computer systems. The ValidityNotBefore
     /// parameter can be used to customize the “Not Before” value.
     /// 
-    /// 
     /// Unlike the Validity parameter, the ValidityNotBefore parameter is optional.
-    /// 
     /// 
     /// The ValidityNotBefore value is expressed as an explicit date and time, using
     /// the Validity type value ABSOLUTE. For more information, see Validity (https://docs.aws.amazon.com/privateca/latest/APIReference/API_Validity.html)
@@ -136,7 +122,6 @@ pub struct CertificateSpec {
 /// An APIPassthrough or APICSRPassthrough template variant must be selected,
 /// or else this parameter is ignored. For more information about using these
 /// templates, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).
-/// 
 /// 
 /// If conflicting or duplicate certificate information is supplied during certificate
 /// issuance, Amazon Web Services Private CA applies order of operation rules
@@ -207,7 +192,6 @@ pub struct CertificateApiPassthroughExtensionsCertificatePoliciesPolicyQualifier
 }
 
 /// Specifies the X.509 extension information for a certificate.
-/// 
 /// 
 /// Extensions present in CustomExtensions follow the ApiPassthrough template
 /// rules (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations).
@@ -415,7 +399,6 @@ pub struct CertificateApiPassthroughSubjectCustomAttributes {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -455,7 +438,6 @@ pub struct CertificateCertificateOutput {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -479,18 +461,15 @@ pub struct CertificateCertificateSigningRequestRefFrom {
 /// Information describing the end of the validity period of the certificate.
 /// This parameter sets the “Not After” date for the certificate.
 /// 
-/// 
 /// Certificate validity is the period of time during which a certificate is
 /// valid. Validity can be expressed as an explicit date and time when the certificate
 /// expires, or as a span of time after issuance, stated in days, months, or
 /// years. For more information, see Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)
 /// in RFC 5280.
 /// 
-/// 
 /// This value is unaffected when ValidityNotBefore is also specified. For example,
 /// if Validity is set to 20 days in the future, the certificate will expire
 /// 20 days from issuance time regardless of the ValidityNotBefore value.
-/// 
 /// 
 /// The end of the validity period configured on a certificate must not exceed
 /// the limit set on its parents in the CA hierarchy.
@@ -505,15 +484,12 @@ pub struct CertificateValidity {
 /// Information describing the start of the validity period of the certificate.
 /// This parameter sets the “Not Before" date for the certificate.
 /// 
-/// 
 /// By default, when issuing a certificate, Amazon Web Services Private CA sets
 /// the "Not Before" date to the issuance time minus 60 minutes. This compensates
 /// for clock inconsistencies across computer systems. The ValidityNotBefore
 /// parameter can be used to customize the “Not Before” value.
 /// 
-/// 
 /// Unlike the Validity parameter, the ValidityNotBefore parameter is optional.
-/// 
 /// 
 /// The ValidityNotBefore value is expressed as an explicit date and time, using
 /// the Validity type value ABSOLUTE. For more information, see Validity (https://docs.aws.amazon.com/privateca/latest/APIReference/API_Validity.html)
@@ -554,7 +530,6 @@ pub struct CertificateStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

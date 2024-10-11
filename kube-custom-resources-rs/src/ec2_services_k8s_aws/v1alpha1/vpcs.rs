@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// VpcSpec defines the desired state of Vpc.
 /// 
-/// 
 /// Describes a VPC.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "VPC", plural = "vpcs")]
@@ -43,10 +42,8 @@ pub struct VPCSpec {
     /// as dedicated tenancy instances by default. You can only launch instances
     /// with a tenancy of dedicated or host into a dedicated tenancy VPC.
     /// 
-    /// 
     /// Important: The host value cannot be used with this parameter. Use the default
     /// or dedicated values only.
-    /// 
     /// 
     /// Default: default
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceTenancy")]
@@ -65,13 +62,11 @@ pub struct VPCSpec {
     /// The IPv6 CIDR block from the IPv6 address pool. You must also specify Ipv6Pool
     /// in the request.
     /// 
-    /// 
     /// To let Amazon choose the IPv6 CIDR block for you, omit this parameter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6CIDRBlock")]
     pub ipv6_cidr_block: Option<String>,
     /// The name of the location from which we advertise the IPV6 CIDR block. Use
     /// this parameter to limit the address to this location.
-    /// 
     /// 
     /// You must set AmazonProvidedIpv6CidrBlock to true to use this parameter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6CIDRBlockNetworkBorderGroup")]
@@ -160,7 +155,6 @@ pub struct VPCStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

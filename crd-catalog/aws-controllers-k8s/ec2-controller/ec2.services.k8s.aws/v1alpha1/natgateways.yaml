@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "natgateways.ec2.services.k8s.aws"
 spec:
   group: "ec2.services.k8s.aws"
@@ -34,13 +34,13 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "NatGatewaySpec defines the desired state of NatGateway.\n\n\nDescribes a NAT gateway."
+              description: "NatGatewaySpec defines the desired state of NatGateway.\n\nDescribes a NAT gateway."
               properties:
                 allocationID:
                   description: "[Public NAT gateways only] The allocation ID of an Elastic IP address to\nassociate with the NAT gateway. You cannot specify an Elastic IP address\nwith a private NAT gateway. If the Elastic IP address is associated with\nanother resource, you must first disassociate it."
                   type: "string"
                 allocationRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -58,7 +58,7 @@ spec:
                   description: "The subnet in which to create the NAT gateway."
                   type: "string"
                 subnetRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -88,7 +88,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
@@ -138,7 +138,7 @@ spec:
                   description: "If the NAT gateway could not be created, specifies the error code for the\nfailure. (InsufficientFreeAddressesInSubnet | Gateway.NotAttached | InvalidAllocationID.NotFound\n| Resource.AlreadyAssociated | InternalError | InvalidSubnetID.NotFound)"
                   type: "string"
                 failureMessage:
-                  description: "If the NAT gateway could not be created, specifies the error message for\nthe failure, that corresponds to the error code.\n\n\n   * For InsufficientFreeAddressesInSubnet: \"Subnet has insufficient free\n   addresses to create this NAT gateway\"\n\n\n   * For Gateway.NotAttached: \"Network vpc-xxxxxxxx has no Internet gateway\n   attached\"\n\n\n   * For InvalidAllocationID.NotFound: \"Elastic IP address eipalloc-xxxxxxxx\n   could not be associated with this NAT gateway\"\n\n\n   * For Resource.AlreadyAssociated: \"Elastic IP address eipalloc-xxxxxxxx\n   is already associated\"\n\n\n   * For InternalError: \"Network interface eni-xxxxxxxx, created and used\n   internally by this NAT gateway is in an invalid state. Please try again.\"\n\n\n   * For InvalidSubnetID.NotFound: \"The specified subnet subnet-xxxxxxxx\n   does not exist or could not be found.\""
+                  description: "If the NAT gateway could not be created, specifies the error message for\nthe failure, that corresponds to the error code.\n\n   * For InsufficientFreeAddressesInSubnet: \"Subnet has insufficient free\n   addresses to create this NAT gateway\"\n\n   * For Gateway.NotAttached: \"Network vpc-xxxxxxxx has no Internet gateway\n   attached\"\n\n   * For InvalidAllocationID.NotFound: \"Elastic IP address eipalloc-xxxxxxxx\n   could not be associated with this NAT gateway\"\n\n   * For Resource.AlreadyAssociated: \"Elastic IP address eipalloc-xxxxxxxx\n   is already associated\"\n\n   * For InternalError: \"Network interface eni-xxxxxxxx, created and used\n   internally by this NAT gateway is in an invalid state. Please try again.\"\n\n   * For InvalidSubnetID.NotFound: \"The specified subnet subnet-xxxxxxxx\n   does not exist or could not be found.\""
                   type: "string"
                 natGatewayAddresses:
                   description: "Information about the IP addresses and network interface associated with\nthe NAT gateway."
@@ -175,7 +175,7 @@ spec:
                       type: "string"
                   type: "object"
                 state:
-                  description: "The state of the NAT gateway.\n\n\n   * pending: The NAT gateway is being created and is not ready to process\n   traffic.\n\n\n   * failed: The NAT gateway could not be created. Check the failureCode\n   and failureMessage fields for the reason.\n\n\n   * available: The NAT gateway is able to process traffic. This status remains\n   until you delete the NAT gateway, and does not indicate the health of\n   the NAT gateway.\n\n\n   * deleting: The NAT gateway is in the process of being terminated and\n   may still be processing traffic.\n\n\n   * deleted: The NAT gateway has been terminated and is no longer processing\n   traffic."
+                  description: "The state of the NAT gateway.\n\n   * pending: The NAT gateway is being created and is not ready to process\n   traffic.\n\n   * failed: The NAT gateway could not be created. Check the failureCode\n   and failureMessage fields for the reason.\n\n   * available: The NAT gateway is able to process traffic. This status remains\n   until you delete the NAT gateway, and does not indicate the health of\n   the NAT gateway.\n\n   * deleting: The NAT gateway is in the process of being terminated and\n   may still be processing traffic.\n\n   * deleted: The NAT gateway has been terminated and is no longer processing\n   traffic."
                   type: "string"
                 vpcID:
                   description: "The ID of the VPC in which the NAT gateway is located."

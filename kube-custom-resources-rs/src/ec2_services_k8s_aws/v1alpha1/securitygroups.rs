@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// SecurityGroupSpec defines the desired state of SecurityGroup.
 /// 
-/// 
 /// Describes a security group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "SecurityGroup", plural = "securitygroups")]
@@ -24,12 +23,9 @@ use self::prelude::*;
 pub struct SecurityGroupSpec {
     /// A description for the security group. This is informational only.
     /// 
-    /// 
     /// Constraints: Up to 255 characters in length
     /// 
-    /// 
     /// Constraints for EC2-Classic: ASCII characters
-    /// 
     /// 
     /// Constraints for EC2-VPC: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&;{}!$*
     pub description: String,
@@ -39,12 +35,9 @@ pub struct SecurityGroupSpec {
     pub ingress_rules: Option<Vec<SecurityGroupIngressRules>>,
     /// The name of the security group.
     /// 
-    /// 
     /// Constraints: Up to 255 characters in length. Cannot start with sg-.
     /// 
-    /// 
     /// Constraints for EC2-Classic: ASCII characters
-    /// 
     /// 
     /// Constraints for EC2-VPC: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&;{}!$*
     pub name: String,
@@ -60,7 +53,6 @@ pub struct SecurityGroupSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -115,7 +107,6 @@ pub struct SecurityGroupEgressRulesPrefixListIDs {
 }
 
 /// Describes a security group and Amazon Web Services account ID pair.
-/// 
 /// 
 /// We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate
 /// from EC2-Classic to a VPC. For more information, see Migrate from EC2-Classic
@@ -231,7 +222,6 @@ pub struct SecurityGroupIngressRulesPrefixListIDs {
 
 /// Describes a security group and Amazon Web Services account ID pair.
 /// 
-/// 
 /// We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate
 /// from EC2-Classic to a VPC. For more information, see Migrate from EC2-Classic
 /// to a VPC (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html)
@@ -312,7 +302,6 @@ pub struct SecurityGroupTags {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -366,7 +355,6 @@ pub struct SecurityGroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

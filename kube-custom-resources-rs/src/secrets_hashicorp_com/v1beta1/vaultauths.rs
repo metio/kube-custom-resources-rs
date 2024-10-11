@@ -231,7 +231,6 @@ pub struct VaultAuthVaultAuthGlobalRef {
     /// as the default if Name is not set. The 'allow-default-globals' option must be
     /// set on the operator's '-global-vault-auth-options' flag
     /// 
-    /// 
     /// The default VaultAuthGlobal search is conditional.
     /// When a ref Namespace is set, the search for the default
     /// VaultAuthGlobal resource is constrained to that namespace.
@@ -261,14 +260,11 @@ pub struct VaultAuthVaultAuthGlobalRefMergeStrategy {
     /// Headers configures the merge strategy for HTTP headers that are included in
     /// all Vault requests. Choices are `union`, `replace`, or `none`.
     /// 
-    /// 
     /// If `union` is set, the headers from the VaultAuthGlobal and VaultAuth
     /// resources are merged. The headers from the VaultAuth always take precedence.
     /// 
-    /// 
     /// If `replace` is set, the first set of non-empty headers taken in order from:
     /// VaultAuth, VaultAuthGlobal auth method, VaultGlobal default headers.
-    /// 
     /// 
     /// If `none` is set, the headers from the
     /// VaultAuthGlobal resource are ignored and only the headers from the VaultAuth
@@ -278,15 +274,12 @@ pub struct VaultAuthVaultAuthGlobalRefMergeStrategy {
     /// Params configures the merge strategy for HTTP parameters that are included in
     /// all Vault requests. Choices are `union`, `replace`, or `none`.
     /// 
-    /// 
     /// If `union` is set, the parameters from the VaultAuthGlobal and VaultAuth
     /// resources are merged. The parameters from the VaultAuth always take
     /// precedence.
     /// 
-    /// 
     /// If `replace` is set, the first set of non-empty parameters taken in order from:
     /// VaultAuth, VaultAuthGlobal auth method, VaultGlobal default parameters.
-    /// 
     /// 
     /// If `none` is set, the parameters from the VaultAuthGlobal resource are ignored
     /// and only the parameters from the VaultAuth resource are used. The default is

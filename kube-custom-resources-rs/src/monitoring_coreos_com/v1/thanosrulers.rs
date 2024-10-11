@@ -73,6 +73,12 @@ pub struct ThanosRulerSpec {
     /// so, you accept that this behaviour may break at any time without notice.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ThanosRulerContainers>>,
+    /// Defines the DNS configuration for the pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<ThanosRulerDnsConfig>,
+    /// Defines the DNS policy for the pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<ThanosRulerDnsPolicy>,
     /// EnforcedNamespaceLabel enforces adding a namespace label of origin for each alert
     /// and metric that is user created. The label value will always be the namespace of the object that is
     /// being created.
@@ -2225,6 +2231,45 @@ pub struct ThanosRulerContainersVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// Defines the DNS configuration for the pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerDnsConfig {
+    /// A list of DNS name server IP addresses.
+    /// This will be appended to the base nameservers generated from DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    /// A list of DNS resolver options.
+    /// This will be merged with the base options generated from DNSPolicy.
+    /// Resolution options given in Options
+    /// will override those that appear in the base DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<ThanosRulerDnsConfigOptions>>,
+    /// A list of DNS search domains for host-name lookup.
+    /// This will be appended to the base search paths generated from DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+/// PodDNSConfigOption defines DNS resolver options of a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerDnsConfigOptions {
+    /// Name is required and must be unique.
+    pub name: String,
+    /// Value is optional.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Specification of the desired behavior of the ThanosRuler cluster. More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerDnsPolicy {
+    ClusterFirstWithHostNet,
+    ClusterFirst,
+    Default,
+    None,
 }
 
 /// ObjectReference references a PodMonitor, ServiceMonitor, Probe or PrometheusRule object.

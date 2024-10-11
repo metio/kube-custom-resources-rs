@@ -698,8 +698,8 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     pub required: Option<Vec<String>>,
     /// Type is the type of the variable.
     /// Valid values are: object, array, string, integer, number or boolean.
-    #[serde(rename = "type")]
-    pub r#type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// UniqueItems specifies if items in an array must be unique.
     /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
@@ -1649,8 +1649,8 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     pub required: Option<Vec<String>>,
     /// Type is the type of the variable.
     /// Valid values are: object, array, string, integer, number or boolean.
-    #[serde(rename = "type")]
-    pub r#type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// UniqueItems specifies if items in an array must be unique.
     /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]

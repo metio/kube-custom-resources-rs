@@ -36,7 +36,7 @@ pub struct ScyllaClusterSpec {
     /// backups specifies backup tasks in Scylla Manager. When Scylla Manager is not installed, these will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backups: Option<Vec<ScyllaClusterBackups>>,
-    /// cpuset determines if the cluster will use cpu-pinning. Deprecated: `cpuset` is deprecated and may be ignored in the future.
+    /// cpuset determines if the cluster will use cpu-pinning. Deprecated: `cpuset` is deprecated. It is now treated as if it is always set to true regardless of its value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpuset: Option<bool>,
     /// datacenter holds a specification of a datacenter.

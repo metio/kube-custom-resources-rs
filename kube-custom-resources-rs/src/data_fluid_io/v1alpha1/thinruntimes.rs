@@ -28,6 +28,9 @@ pub struct ThinRuntimeSpec {
     /// The component spec of thinRuntime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fuse: Option<ThinRuntimeFuse>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<ThinRuntimeImagePullSecrets>>,
     /// RuntimeManagement defines policies when managing the runtime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub management: Option<ThinRuntimeManagement>,
@@ -76,6 +79,9 @@ pub struct ThinRuntimeFuse {
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<ThinRuntimeFuseImagePullSecrets>>,
     /// Image for thinRuntime fuse
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
@@ -201,6 +207,17 @@ pub struct ThinRuntimeFuseEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThinRuntimeFuseImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// livenessProbe of thin fuse pod
@@ -545,6 +562,17 @@ pub struct ThinRuntimeFuseVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThinRuntimeImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// RuntimeManagement defines policies when managing the runtime
@@ -3853,6 +3881,9 @@ pub struct ThinRuntimeWorker {
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<ThinRuntimeWorkerImagePullSecrets>>,
     /// Image for thinRuntime fuse
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
@@ -3978,6 +4009,17 @@ pub struct ThinRuntimeWorkerEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThinRuntimeWorkerImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// livenessProbe of thin fuse pod

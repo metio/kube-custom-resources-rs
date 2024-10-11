@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "elasticipaddresses.ec2.services.k8s.aws"
 spec:
   group: "ec2.services.k8s.aws"
@@ -43,7 +43,7 @@ spec:
                   description: "The ID of a customer-owned address pool. Use this parameter to let Amazon\nEC2 select an address from the address pool. Alternatively, specify a specific\naddress from the address pool."
                   type: "string"
                 networkBorderGroup:
-                  description: "A unique set of Availability Zones, Local Zones, or Wavelength Zones from\nwhich Amazon Web Services advertises IP addresses. Use this parameter to\nlimit the IP address to this location. IP addresses cannot move between network\nborder groups.\n\n\nUse DescribeAvailabilityZones (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeAvailabilityZones.html)\nto view the network border groups.\n\n\nYou cannot use a network border group with EC2 Classic. If you attempt this\noperation on EC2 Classic, you receive an InvalidParameterCombination error."
+                  description: "A unique set of Availability Zones, Local Zones, or Wavelength Zones from\nwhich Amazon Web Services advertises IP addresses. Use this parameter to\nlimit the IP address to this location. IP addresses cannot move between network\nborder groups.\n\nUse DescribeAvailabilityZones (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeAvailabilityZones.html)\nto view the network border groups.\n\nYou cannot use a network border group with EC2 Classic. If you attempt this\noperation on EC2 Classic, you receive an InvalidParameterCombination error."
                   type: "string"
                 publicIPv4Pool:
                   description: "The ID of an address pool that you own. Use this parameter to let Amazon\nEC2 select an address from the address pool. To specify a specific address\nfrom the address pool, use the Address parameter instead."
@@ -67,7 +67,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

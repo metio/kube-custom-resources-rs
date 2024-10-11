@@ -677,6 +677,9 @@ spec:
                     enabled:
                       description: "Enabled defines if the Jaeger UI component should be created."
                       type: "boolean"
+                    findTracesConcurrentRequests:
+                      description: "FindTracesConcurrentRequests defines how many concurrent request a single trace search can submit (defaults 2).\nThe search for traces in Jaeger submits limit+1 requests. First requests finds trace IDs and then it fetches\nentire traces by ID. This property allows Jaeger to fetch traces in parallel.\nNote that by default a single Tempo querier can process 20 concurrent search jobs.\nIncreasing this property might require scaling up querier instances, especially on error \"job queue full\"\nSee also Tempo's extraConfig:\nquerier.max_concurrent_queries (20 default)\nquery_frontend.max_outstanding_per_tenant: (2000 default). Increase if the query-frontend returns 429"
+                      type: "integer"
                     ingress:
                       description: "Ingress defines the Ingress configuration for the Jaeger UI."
                       properties:
@@ -1122,6 +1125,9 @@ spec:
                   required:
                     - "traces"
                   type: "object"
+                timeout:
+                  description: "Timeout configures the same timeout on all components starting at ingress down to the ingestor/querier.\nTimeout configuration on a specific component has a higher precedence.\nDefault is 30 seconds."
+                  type: "string"
                 tolerations:
                   description: "Tolerations defines the tolerations of a node to schedule the pod onto it."
                   items:

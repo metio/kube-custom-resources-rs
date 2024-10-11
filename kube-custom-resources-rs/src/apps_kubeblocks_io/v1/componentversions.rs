@@ -50,7 +50,11 @@ pub struct ComponentVersionReleases {
     /// Changes provides information about the changes made in this release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub changes: Option<String>,
-    /// Images define the new images for different containers within the release.
+    /// Images define the new images for containers, actions or external applications within the release.
+    /// 
+    /// 
+    /// If an image is specified for a lifecycle action, the key should be the field name (case-insensitive) of
+    /// the action in the LifecycleActions struct.
     pub images: BTreeMap<String, String>,
     /// Name is a unique identifier for this release.
     /// Cannot be updated.

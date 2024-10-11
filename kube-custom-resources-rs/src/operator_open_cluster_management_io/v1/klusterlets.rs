@@ -197,6 +197,9 @@ pub struct KlusterletRegistrationConfiguration {
     /// If it is set empty, use the default value: 50
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIQPS")]
     pub kube_apiqps: Option<i32>,
+    /// This provides driver details required to register with hub
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationDriver")]
+    pub registration_driver: Option<KlusterletRegistrationConfigurationRegistrationDriver>,
 }
 
 /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.
@@ -271,6 +274,42 @@ pub struct KlusterletRegistrationConfigurationFeatureGates {
 pub enum KlusterletRegistrationConfigurationFeatureGatesMode {
     Enable,
     Disable,
+}
+
+/// This provides driver details required to register with hub
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KlusterletRegistrationConfigurationRegistrationDriver {
+    /// Type of the authentication used by managedcluster to register as well as pull work from hub. Possible values are csr and awsirsa.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authType")]
+    pub auth_type: Option<KlusterletRegistrationConfigurationRegistrationDriverAuthType>,
+    /// Contain the details required for registering with hub cluster (ie: an EKS cluster) using AWS IAM roles for service account.
+    /// This is required only when the authType is awsirsa.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsIrsa")]
+    pub aws_irsa: Option<KlusterletRegistrationConfigurationRegistrationDriverAwsIrsa>,
+}
+
+/// This provides driver details required to register with hub
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KlusterletRegistrationConfigurationRegistrationDriverAuthType {
+    #[serde(rename = "csr")]
+    Csr,
+    #[serde(rename = "awsirsa")]
+    Awsirsa,
+}
+
+/// Contain the details required for registering with hub cluster (ie: an EKS cluster) using AWS IAM roles for service account.
+/// This is required only when the authType is awsirsa.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KlusterletRegistrationConfigurationRegistrationDriverAwsIrsa {
+    /// The arn of the hub cluster (ie: an EKS cluster). This will be required to pass information to hub, which hub will use to create IAM identities for this klusterlet.
+    /// Example - arn:eks:us-west-2:12345678910:cluster/hub-cluster1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubClusterArn")]
+    pub hub_cluster_arn: Option<String>,
+    /// The arn of the managed cluster (ie: an EKS cluster). This will be required to generate the md5hash which will be used as a suffix to create IAM role on hub
+    /// as well as used by kluslerlet-agent, to assume role suffixed with the md5hash, on startup.
+    /// Example - arn:eks:us-west-2:12345678910:cluster/managed-cluster1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedClusterArn")]
+    pub managed_cluster_arn: Option<String>,
 }
 
 /// ResourceRequirement specify QoS classes of deployments managed by klusterlet.
